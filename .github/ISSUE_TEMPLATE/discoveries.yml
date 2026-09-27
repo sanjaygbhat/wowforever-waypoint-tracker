@@ -1,0 +1,24 @@
+name: Share discoveries
+description: Paste what Waypoint Tracker learned while you played, so it can be added for everyone.
+title: "Discoveries: "
+labels: ["discoveries"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping! In game: open **Find** (type `/wp find`), press **Share discoveries**, press **Ctrl+C**, then paste it below with **Ctrl+V**.
+        It only contains NPC, quest, object and item names and where you saw them. No character or account details.
+
+        Played a lot? Attach your saved file instead (drag it into the box below): `WTF/Account/<your account>/SavedVariables/WaypointTracker.lua` in your WoW Forever folder, with the game closed. It holds what the addon wrote down plus your settings.
+  - type: textarea
+    id: discoveries
+    attributes:
+      label: Your discoveries
+      description: The text starts with WTL1, or attach WaypointTracker.lua.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything wrong in the addon's data? (optional)
+      description: For example "Quest X is handed in to Y, not Z" or "This NPC moved to Riverglades 45, 60".

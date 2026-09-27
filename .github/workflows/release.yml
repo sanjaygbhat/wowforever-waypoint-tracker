@@ -1,0 +1,133 @@
+# Push a tag like v1.0.0 to build WaypointTracker-v1.0.0.zip, attach it to a
+# GitHub release and (optionally) upload it to CurseForge and Wago Addons.
+# Tags with "-beta" or "-alpha" in them are published as beta/alpha files.
+#
+# Repository settings (Settings > Secrets and variables > Actions):
+#   secret   CF_API_TOKEN      https://authors.curseforge.com/#/settings/api-tokens
+#   variable CF_PROJECT_ID     the Project ID from the CurseForge "About Project" box
+#   variable CF_GAME_VERSION   optional, defaults to 1.60.1 (the WoW Forever version)
+#   secret   WAGO_API_TOKEN    optional, https://addons.wago.io/account/apikeys
+#   variable WAGO_PROJECT_ID   optional, the 8-character Wago project ID
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    env:
+      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN || secrets.CF_API_KEY }}
+      WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Lua 5.1
+        run: sudo apt-get update && sudo apt-get install -y lua5.1
+
+      - name: Test before packaging
+        run: |
+          for f in WaypointTracker/*.lua WaypointTracker/Locales/*.lua WaypointTracker_Data/*.lua; do luac5.1 -p "$f"; done
+          lua5.1 tests/check_locales.lua
+          lua5.1 tests/check_api.lua
+          lua5.1 tests/run_tests.lua
+          WT_PLAIN_VECTORS=1 lua5.1 tests/run_tests.lua
+          WT_PLAIN_VECTORS=1 lua5.1 tests/run_bare.lua
+          python3 tests/test_merge_discoveries.py
+
+      - name: Build zip
+        id: build
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          [ "$GITHUB_REF_TYPE" = "tag" ] || VERSION="$(grep '^## Version:' WaypointTracker/WaypointTracker.toc | awk '{print $3}')"
+          sed -i "s/^## Version:.*/## Version: ${VERSION}/" WaypointTracker/WaypointTracker.toc WaypointTracker_Data/WaypointTracker_Data.toc
+          case "$VERSION" in
+            *alpha*) TYPE=alpha ;;
+            *beta*)  TYPE=beta ;;
+            *)       TYPE=release ;;
+          esac
+          mkdir -p dist
+          # this version's section of the changelog only
+          awk -v v="$VERSION" '$0 == "## " v {f = 1; next} /^## / {if (f) exit} f' CHANGELOG.md > dist/NOTES.md
+          if [ ! -s dist/NOTES.md ]; then
+            echo "CHANGELOG.md has no '## ${VERSION}' section"; exit 1
+          fi
+          # the GitHub release page: what the addon is, the changes, how to install
+          ZIP="WaypointTracker-v${VERSION}.zip"
+          {
+            echo "**Waypoint Tracker** is a free World of Warcraft addon for **WoW Forever**: a 3D waypoint arrow, \`/way\` coordinates, a built-in quest, NPC and item finder, and map pins you can share in chat."
+            echo
+            cat dist/NOTES.md
+            echo
+            echo "### Install"
+            echo
+            echo "- **CurseForge app:** World of Warcraft > Forever, search for **Waypoint Tracker**."
+            echo "- **By hand:** download \`${ZIP}\` below and unzip it into your WoW Forever \`Interface/AddOns\` folder. You get two folders, \`WaypointTracker\` and \`WaypointTracker_Data\`."
+          } > dist/RELEASE.md
+          # the addon's own licence ships with it
+          cp LICENSE WaypointTracker/LICENSE.txt
+          # two folders: the addon, and its load-on-demand database
+          zip -r -X "dist/${ZIP}" WaypointTracker WaypointTracker_Data -x '*.DS_Store'
+          {
+            echo "zip=dist/${ZIP}"
+            echo "name=${ZIP}"
+            echo "version=${VERSION}"
+            echo "type=${TYPE}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Keep the zip (manual runs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.name }}
+          path: ${{ steps.build.outputs.zip }}
+
+      - name: GitHub release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.build.outputs.zip }}
+          body_path: dist/RELEASE.md
+          prerelease: ${{ steps.build.outputs.type != 'release' }}
+
+      - name: Upload to CurseForge
+        if: github.ref_type == 'tag' && env.CF_API_TOKEN != '' && vars.CF_PROJECT_ID != ''
+        env:
+          PROJECT_ID: ${{ vars.CF_PROJECT_ID }}
+          GAME_VERSION: ${{ vars.CF_GAME_VERSION || '1.60.1' }}
+          VERSION: ${{ steps.build.outputs.version }}
+          TYPE: ${{ steps.build.outputs.type }}
+          ZIP: ${{ steps.build.outputs.zip }}
+        run: |
+          # 88568 is CurseForge's "Forever" flavour
+          VERSION_ID=$(curl -sS --fail-with-body -H "X-Api-Token: $CF_API_TOKEN" https://wow.curseforge.com/api/game/wow/versions \
+            | jq -r --arg v "$GAME_VERSION" '[.[] | select(.name == $v and .gameVersionTypeID == 88568)][0].id')
+          if [ -z "$VERSION_ID" ] || [ "$VERSION_ID" = "null" ]; then
+            echo "CurseForge has no Forever game version named $GAME_VERSION"; exit 1
+          fi
+          METADATA=$(jq -n --rawfile log dist/NOTES.md --arg name "Waypoint Tracker v$VERSION" \
+            --argjson gv "$VERSION_ID" --arg type "$TYPE" \
+            '{changelog: $log, changelogType: "markdown", displayName: $name, gameVersions: [$gv], releaseType: $type}')
+          curl -sS --fail-with-body -H "X-Api-Token: $CF_API_TOKEN" \
+            -F "metadata=$METADATA" -F "file=@$ZIP" \
+            "https://wow.curseforge.com/api/projects/$PROJECT_ID/upload-file"
+
+      - name: Upload to Wago Addons
+        if: github.ref_type == 'tag' && env.WAGO_API_TOKEN != '' && vars.WAGO_PROJECT_ID != ''
+        env:
+          PROJECT_ID: ${{ vars.WAGO_PROJECT_ID }}
+          GAME_VERSION: ${{ vars.CF_GAME_VERSION || '1.60.1' }}
+          VERSION: ${{ steps.build.outputs.version }}
+          TYPE: ${{ steps.build.outputs.type }}
+          ZIP: ${{ steps.build.outputs.zip }}
+        run: |
+          STABILITY=$([ "$TYPE" = "release" ] && echo stable || echo "$TYPE")
+          METADATA=$(jq -n --rawfile log dist/NOTES.md --arg label "v$VERSION" --arg s "$STABILITY" --arg gv "$GAME_VERSION" \
+            '{label: $label, stability: $s, changelog: $log, supported_forever_patches: [$gv]}')
+          curl -sS --fail-with-body -H "Authorization: Bearer $WAGO_API_TOKEN" -H "Accept: application/json" \
+            -F "metadata=$METADATA" -F "file=@$ZIP" \
+            "https://addons.wago.io/api/projects/$PROJECT_ID/version"

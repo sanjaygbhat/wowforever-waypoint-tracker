@@ -1,0 +1,23 @@
+<Bindings>
+    <Binding name="WAYPOINTTRACKER_TOGGLE" header="WAYPOINTTRACKER">
+        WaypointTracker_ToggleWindow()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_FIND">
+        WaypointTracker_ToggleFind()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_HERE">
+        WaypointTracker_AddHere()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_SHARE">
+        WaypointTracker_ShareHere()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_CLEAR">
+        WaypointTracker_ClearActive()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_CLOSEST">
+        WaypointTracker_SetClosest()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_ARROW">
+        WaypointTracker_ToggleArrow()
+    </Binding>
+</Bindings>

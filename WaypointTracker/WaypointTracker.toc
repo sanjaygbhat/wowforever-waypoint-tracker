@@ -1,0 +1,54 @@
+## Interface: 16001
+## Title: Waypoint Tracker
+## Notes: Set a waypoint and follow the 3D arrow. Simple by default, everything else one click away.
+## Notes-deDE: Setze einen Wegpunkt und folge dem 3D-Pfeil. Einfach, mit allen Extras nur einen Klick entfernt.
+## Notes-frFR: Placez un point de passage et suivez la flèche 3D. Simple, avec toutes les options à un clic.
+## Notes-esES: Pon un punto de ruta y sigue la flecha 3D. Sencillo, con todo lo demás a un clic.
+## Notes-esMX: Pon un punto de ruta y sigue la flecha 3D. Sencillo, con todo lo demás a un clic.
+## Notes-ptBR: Marque um ponto de rota e siga a seta 3D. Simples, com o resto a um clique.
+## Notes-ruRU: Поставьте путевую точку и следуйте за 3D-стрелкой. Просто, а всё остальное — в один клик.
+## Notes-zhCN: 设置路径点并跟随3D箭头前进。默认简单，其他功能一键可达。
+## Notes-zhTW: 設定路徑點並跟隨3D箭頭前進。預設簡單，其他功能一鍵可達。
+## Notes-koKR: 웨이포인트를 찍고 3D 화살표를 따라가세요. 기본은 간단하게, 나머지는 클릭 한 번으로.
+## Author: sanjaygbhat
+## Version: 1.0.0
+## Category: Map & Minimap
+## IconTexture: Interface\AddOns\WaypointTracker\Media\Icon
+## SavedVariables: WaypointTrackerDB
+## SavedVariablesPerCharacter: WaypointTrackerCharDB
+## AddonCompartmentFunc: WaypointTracker_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: WaypointTracker_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: WaypointTracker_OnAddonCompartmentLeave
+## X-License: MIT
+## X-Website: https://github.com/sanjaygbhat/wowforever-waypoint-tracker
+
+Locales\enUS.lua
+Locales\deDE.lua
+Locales\frFR.lua
+Locales\esES.lua
+Locales\ptBR.lua
+Locales\ruRU.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+Locales\koKR.lua
+
+Core.lua
+Geo.lua
+Waypoints.lua
+ForeverQuests.lua
+Learn.lua
+Database.lua
+Places.lua
+Share.lua
+Follow.lua
+Arrow.lua
+MapPins.lua
+Templates.xml
+MinimapPins.lua
+MinimapButton.lua
+CoordsBox.lua
+UI.lua
+EditMode.lua
+Find.lua
+AddonBridge.lua
+Slash.lua
