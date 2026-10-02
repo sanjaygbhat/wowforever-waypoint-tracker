@@ -1,0 +1,72 @@
+# Publishes the website (site/) to GitHub Pages:
+# https://sanjaygbhat.github.io/wowforever-waypoint-tracker/
+#
+# One-time setup: Settings > Pages > Build and deployment > Source: GitHub Actions,
+# then run this workflow (Actions > Website > Run workflow). Until Pages is set up
+# that way, the deploy job is skipped.
+name: Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "docs/images/**"
+      - "docs/screenshots/**"
+      - "docs/release/social-preview.png"
+      - "docs/release/logo-400.png"
+      - "WaypointTracker/WaypointTracker.toc"
+      - "tools/build_site.sh"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the site
+        run: sh tools/build_site.sh _site
+      - name: Is Pages set to GitHub Actions?
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TYPE=$(curl -sS -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/pages" | jq -r '.build_type // empty')
+          if [ "$TYPE" = "workflow" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Pages isn't set to GitHub Actions yet (Settings > Pages > Source: GitHub Actions); skipping the deploy."
+          fi
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.check.outputs.enabled == 'true'
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

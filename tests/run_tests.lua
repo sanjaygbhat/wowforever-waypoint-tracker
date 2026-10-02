@@ -1532,6 +1532,37 @@ M.FireEvent("PLAYER_LOGIN")
 check(TomTom == nil, "no bridge when TomTom is installed")
 check(SlashCmdList.WAYPOINTTRACKERWAY == nil, "/way left to TomTom")
 
+-- another addon already has /way: leave it (and /wayb, /cway) alone
+do
+    M.frames = {}
+    M.eventFrames = {}
+    M.tomtomInstalled = false
+    TomTom = nil
+    SlashCmdList.WAYPOINTTRACKERWAY, SlashCmdList.WAYPOINTTRACKERWAYB, SlashCmdList.WAYPOINTTRACKERCWAY = nil, nil, nil
+    local theirs = function() end
+    SLASH_SOMEOTHERWAY1, SLASH_SOMEOTHERWAY2 = "/somewhere", "/WAY"
+    SlashCmdList.SOMEOTHERWAY = theirs
+    local saved = WaypointTrackerDB
+    WaypointTrackerDB = nil
+    local ns5 = M.LoadAddon("WaypointTracker", "WaypointTracker")
+    M.FireEvent("ADDON_LOADED", "WaypointTracker")
+    M.FireEvent("PLAYER_LOGIN")
+    check(SlashCmdList.WAYPOINTTRACKERWAY == nil and SlashCmdList.WAYPOINTTRACKERWAYB == nil, "/way left to the addon that has it")
+    check(SlashCmdList.SOMEOTHERWAY == theirs and ns5.settings.wayNoticeShown == true, "the other addon keeps /way, and we say so once")
+    check(SlashCmdList.WAYPOINTTRACKER ~= nil, "/wp still works")
+    SlashCmdList.SOMEOTHERWAY, SLASH_SOMEOTHERWAY1, SLASH_SOMEOTHERWAY2 = nil, nil, nil
+    -- and when it's free again, it's ours
+    M.frames = {}
+    M.eventFrames = {}
+    TomTom = nil
+    local ns6 = M.LoadAddon("WaypointTracker", "WaypointTracker")
+    M.FireEvent("ADDON_LOADED", "WaypointTracker")
+    M.FireEvent("PLAYER_LOGIN")
+    check(SlashCmdList.WAYPOINTTRACKERWAY ~= nil and SlashCmdList.WAYPOINTTRACKERCWAY ~= nil, "/way is ours when no one else has it")
+    WaypointTrackerDB = saved
+    M.tomtomInstalled = true
+end
+
 -- settings saved by earlier builds under their old names carry over
 do
     local saved = WaypointTrackerDB

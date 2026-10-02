@@ -1,5 +1,7 @@
 # Launch pack: Waypoint Tracker 1.0.0
 
+> **Launched October 2, 2026.** CurseForge project 1722148, Wago project ZKxOb36k, GitHub release v1.0.0. The follow-up steps are in [`FOLLOW_UP.md`](FOLLOW_UP.md). This pack stays as the record of the launch and for section 11 (later releases).
+
 A step-by-step runbook for an agent with a web browser (or a person) to launch **Waypoint Tracker**, an addon for **World of Warcraft: Forever** (WoW Forever). It covers:
 
 - making the GitHub repository ready
@@ -339,7 +341,7 @@ Not for the browser agent. Listed so the whole process is in one place.
    - Check the game's interface number. If it's no longer 16001, update `## Interface:` in both `.toc` files.
    - Run the sanity checks in `docs/RELEASE_CHECKLIST.md`, then release.
    - If CurseForge adds a new Forever game version, update `CF_GAME_VERSION`.
-   - Update the README's install path: `_classic_beta_` becomes the launch game folder shown in the Battle.net app.
+   - Update the install path everywhere it appears: `_classic_beta_` becomes the launch game folder shown in the Battle.net app (README, `docs/CURSEFORGE.md`, `docs/WAGO.md`, `site/`, `docs/wiki/`). Also update the README FAQ's "in beta now".
 
 ## 12. Report back to the owner
 

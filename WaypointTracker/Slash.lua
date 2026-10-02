@@ -176,30 +176,56 @@ SlashCmdList.WAYPOINTTRACKER = ns.Safe(function(msg)
     Handle(msg, false)
 end)
 
+-- True when another addon has already registered this slash command.
+local function SlashTaken(cmd)
+    for key in pairs(SlashCmdList) do
+        if type(key) == "string" and not key:find("^WAYPOINTTRACKER") then
+            local i = 1
+            local name = _G["SLASH_" .. key .. i]
+            while name do
+                if type(name) == "string" and name:lower() == cmd then
+                    return true
+                end
+                i = i + 1
+                name = _G["SLASH_" .. key .. i]
+            end
+        end
+    end
+    return false
+end
+
+-- Registers a short command unless another addon already has it.
+local function Claim(key, cmd, fn)
+    if SlashTaken(cmd) then
+        return false
+    end
+    _G["SLASH_" .. key .. "1"] = cmd
+    SlashCmdList[key] = ns.Safe(fn)
+    return true
+end
+
 ns.On("LOGIN", function()
     -- one hello on the very first login, so new players know where to start
     if not ns.settings.welcomeShown then
         ns.settings.welcomeShown = true
         ns.Print(L.WELCOME, true)
     end
-    if ns.IsOtherArrowAddonPresent() then
-        -- tell people once why /way isn't ours
+    local ours = not ns.IsOtherArrowAddonPresent()
+        and Claim("WAYPOINTTRACKERWAY", "/way", function(msg)
+            Handle(msg, true)
+        end)
+    if not ours then
+        -- tell people once why /way isn't ours; /wayb and /cway go with it
         if not ns.settings.wayNoticeShown then
             ns.settings.wayNoticeShown = true
             ns.Print(L.WAY_IN_USE, true)
         end
         return
     end
-    SLASH_WAYPOINTTRACKERWAY1 = "/way"
-    SlashCmdList.WAYPOINTTRACKERWAY = ns.Safe(function(msg)
-        Handle(msg, true)
-    end)
-    SLASH_WAYPOINTTRACKERWAYB1 = "/wayb"
-    SlashCmdList.WAYPOINTTRACKERWAYB = ns.Safe(function(msg)
+    Claim("WAYPOINTTRACKERWAYB", "/wayb", function(msg)
         WP.AddHere(ns.Trim(msg))
     end)
-    SLASH_WAYPOINTTRACKERCWAY1 = "/cway"
-    SlashCmdList.WAYPOINTTRACKERCWAY = ns.Safe(function()
+    Claim("WAYPOINTTRACKERCWAY", "/cway", function()
         if not WP.SetClosest() then
             ns.Print(L.NO_WAYPOINT_ACTIVE, true)
         end
