@@ -113,7 +113,7 @@ jobs:
             --argjson gv "$VERSION_ID" --arg type "$TYPE" \
             '{changelog: $log, changelogType: "markdown", displayName: $name, gameVersions: [$gv], releaseType: $type}')
           curl -sS --fail-with-body -H "X-Api-Token: $CF_API_TOKEN" \
-            -F "metadata=$METADATA" -F "file=@$ZIP" \
+            --form-string "metadata=$METADATA" -F "file=@$ZIP" \
             "https://wow.curseforge.com/api/projects/$PROJECT_ID/upload-file"
 
       - name: Upload to Wago Addons
@@ -129,5 +129,5 @@ jobs:
           METADATA=$(jq -n --rawfile log dist/NOTES.md --arg label "v$VERSION" --arg s "$STABILITY" --arg gv "$GAME_VERSION" \
             '{label: $label, stability: $s, changelog: $log, supported_forever_patches: [$gv]}')
           curl -sS --fail-with-body -H "Authorization: Bearer $WAGO_API_TOKEN" -H "Accept: application/json" \
-            -F "metadata=$METADATA" -F "file=@$ZIP" \
+            --form-string "metadata=$METADATA" -F "file=@$ZIP" \
             "https://addons.wago.io/api/projects/$PROJECT_ID/version"
