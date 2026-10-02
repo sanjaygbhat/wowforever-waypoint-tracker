@@ -13,12 +13,12 @@ A short runbook for an agent with a web browser (or the owner), after the 1.0.0 
 | GitHub | Public. `main` is the default branch. Release **v1.0.0** (tag on commit `39fa4b6`) holds `WaypointTracker-v1.0.0.zip` |
 | CurseForge | Project **1722148**, file **9036099**, **Under Review** on October 2 |
 | Wago | Project **ZKxOb36k**, v1.0.0 Stable, Forever 1.60.1 |
-| Branch `claude/amazing-brahmagupta-nc13sl` | One commit ahead of `main`: the website, wiki sources, release fixes and search improvements below. **Don't delete it before step 1 is done** |
+| Branch `claude/amazing-brahmagupta-nc13sl` | Two commits ahead of `main`: the website, wiki sources, release fixes and search improvements below. **Don't delete it before step 1 is done** |
 
 ## 1. Bring the new commit into `main`
 
 1. Open https://github.com/sanjaygbhat/wowforever-waypoint-tracker/compare/main...claude/amazing-brahmagupta-nc13sl
-2. Check that it says **Able to merge**, and that the commit list holds only the one new commit.
+2. Check that it says **Able to merge**, and that the commit list holds the two new commits ("Website, wiki sources and release fixes" and "Website: classic game interface design").
 3. Press **Create pull request** with title `Website, wiki sources and release fixes`, then wait for the **Tests** check to turn green.
 4. Press **Merge pull request** → **Confirm merge**.
 5. Don't delete the branch from that page; the owner decides.
