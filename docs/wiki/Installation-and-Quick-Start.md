@@ -38,7 +38,17 @@ The [official WowUp guide](https://wowup.io/guide/get-addons/overview) documents
 
 The arrow shows your destination and distance. On arrival it can play a sound, remove the waypoint and select the next closest one; adjust these in **Show more options**.
 
-![Waypoint arrow and distance in game](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
+[![A green waypoint arrow over a flying character near Grol'dom Farm, showing Trade Rep, 932 yds and About 0:30](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
+
+*In the game: destination, distance and estimated travel time beneath the arrow. Open the image for a full-size view.*
+
+### Place a waypoint on the map
+
+Open the world map, select your zone, then hold **Ctrl** and **right-click** the destination. The map pin marks the spot and the arrow points the way.
+
+[![The Silverpine Forest world map with waypoint pins and the gold arrow pointing toward Lady Sylvanas Windrunner, 777 yds away](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/02-map.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/02-map.jpg)
+
+*In the game: waypoint pins on the Silverpine Forest world map; the arrow points toward Lady Sylvanas Windrunner, 777 yds away. Open the image for a full-size view.*
 
 ## Find a destination
 
@@ -47,5 +57,7 @@ Open **Find** with `/wp find` or the window's **Quests**, **NPCs**, **Enemies** 
 ## Share a spot
 
 Press **Share** beside a waypoint, or use `/wp share` for your current position. Choose a chat channel; the chat box opens with a clickable map pin ready for you to send. Friends can use that pin without installing the addon.
+
+Find learns from your observations during play. See [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing) for correcting a location and sharing discoveries.
 
 Next: [Commands & Options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options).

@@ -29,7 +29,9 @@ Open **Esc → Edit Mode**, select the arrow's blue box, and drag or resize it. 
 
 The text has its own size and visibility settings. Enable **Move the text separately** to position it independently. The arrow does not catch mouse clicks during normal play.
 
-![The window and options panel](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/03-window.jpg)
+[![The coordinate fields, Find buttons and saved waypoints with Share buttons, beside More Options with arrow display, text and arrival settings](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/03-window.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/03-window.jpg)
+
+*In the game: coordinate fields, Find buttons and Share buttons beside saved waypoints. More Options is open alongside the window, showing arrow display, text and arrival settings. Open the image for a full-size view.*
 
 ## Choose the settings you need
 
