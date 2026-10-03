@@ -66,7 +66,7 @@ English, Deutsch, Français, Español, Português, Русский, 한국어, �
 
 ## Install
 
-Install with the CurseForge app (World of Warcraft > **Forever**), or unzip the download into `Interface\AddOns` in your WoW Forever folder (during the beta: `World of Warcraft\_classic_beta_\Interface\AddOns`). You get two folders: `WaypointTracker` and `WaypointTracker_Data` (the Find database, which loads only when you first open Find).
+Install with the Wago app, or unzip the download into `Interface\AddOns` in your WoW Forever folder (during the beta: `World of Warcraft\_classic_beta_\Interface\AddOns`). You get two folders: `WaypointTracker` and `WaypointTracker_Data` (the Find database, which loads only when you first open Find).
 
 ## Questions
 
@@ -81,5 +81,3 @@ Install with the CurseForge app (World of Warcraft > **Forever**), or unzip the 
 Website: https://sanjaygbhat.github.io/wowforever-waypoint-tracker/
 
 Source, feedback and translations: https://github.com/sanjaygbhat/wowforever-waypoint-tracker
-
-Like it? You can support its development on GitHub Sponsors: https://github.com/sponsors/sanjaygbhat

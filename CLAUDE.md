@@ -9,7 +9,8 @@ A World of Warcraft addon for **World of Warcraft: Forever** (WoW Forever; clien
   - `Arrow.lua`, `Waypoints.lua`, `Follow.lua` (the game's map pin and pin links), `Share.lua`, `Slash.lua`, `UI.lua`, `Find.lua` (includes the correction box), `Database.lua`, `Learn.lua` (discoveries: NPCs around you via nameplates/target/mouse-over with `CheckInteractDistance` out of combat, vendor stock, quests, loot; corrections; sharing; the quest-name scan), `AddonBridge.lua` (the shared waypoint API other addons call; formerly `TomTomCompat.lua`).
   - Discoveries are local only (addons have no network access). `Learn.Compact` drops anything the database already has (`DB.AddsSomething`, against a snapshot of the shipped entry), a few seconds after it's written once Find's database is loaded, and fully after each merge. Corrections (`st.fixes`) are never compacted. What a player imports is marked `shared`: it fills gaps but never renames database entries, and isn't exported again.
 - `WaypointTracker_Data/`: load-on-demand database for Find (`Data.lua` + `Names_*.lua` classic world, `Client.lua` + `Items*.lua` from the Forever client, `Curated.lua` curated Forever data, `Forever.lua` players' shared discoveries, `THIRD-PARTY-LICENSES.txt`).
-- `tests/`: Lua 5.1 mock of the game API and play-through tests. `tools/`: data builders and art renderers. `docs/`: checklist, CurseForge text, launch pack, screenshots, images.
+- `tests/`: Lua 5.1 mock of the game API and play-through tests. `tools/`: data builders, art renderers, `build_site.sh`. `docs/`: checklist, CurseForge and Wago text (`CURSEFORGE.md`, `WAGO.md`: the same text, but Wago's has the Wago install line and no Sponsors link; keep them in step), launch pack and follow-up runbook (`docs/release/`), wiki page sources (`docs/wiki/`, pasted into the GitHub wiki by hand), screenshots, images.
+- `site/`: the GitHub Pages website (https://sanjaygbhat.github.io/wowforever-waypoint-tracker/), with `robots.txt`, `sitemap.xml` and `llms.txt`. `tools/build_site.sh` fills in `@VERSION@`/`@DATE@` and copies the images; `.github/workflows/pages.yml` deploys it from `main` (Settings → Pages → Source: GitHub Actions). Search engines don't index the wiki (GitHub only allows that from 500 stars), so what people should find goes in the README and the site. Keep the site's FAQ text and its JSON-LD `FAQPage` identical.
 
 ## Data: sources, priority and rebuilding
 
@@ -46,10 +47,16 @@ Shared text format (`WTL1`, tab-separated, one entry per line): `N id name hosti
 - Never paste API tokens into files. No model identifiers in commits or files.
 - When renaming a saved setting, add the old name to the migration table in `Core.lua` (`tomtomCompat` → `addonWaypoints`, `tomtomNoticeShown` → `wayNoticeShown` so far).
 
+## Release and listings
+
+- CurseForge project 1722148 (game flavour Forever, 88568), Wago project ZKxOb36k. Both IDs are in the `.toc` (`X-Curse-Project-ID`, `X-Wago-ID`) and the repository variables. Wago's API key for Forever is `supported_forever_patches`.
+- `.github/workflows/release.yml` sends upload metadata with `--form-string` (with `-F`, a `;` in the changelog cuts the JSON short), and attaches `release.json` (flavor `forever`) so addon managers pick the Forever zip.
+- A tag `vX.Y.Z` needs a `## X.Y.Z` section in `CHANGELOG.md`.
+
 ## Git
 
 - Work on the branch the session names; don't push elsewhere without permission.
-- The repository is kept as a single commit, "Waypoint Tracker 1.0.0": amend, force-push, then `git reflog expire --expire=now --all && git gc -q --prune=now`.
+- Since the 1.0.0 release (tag `v1.0.0` on `39fa4b6`, public), history is kept: add normal commits on top of `main`, and never rewrite `main` or tags. The owner merges the session branch into `main`.
 - Commit as `git -c user.name="sanjaygbhat" -c user.email="sanjaygbhat@gmail.com"`.
 
 ## Checks before every push

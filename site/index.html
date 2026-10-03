@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waypoint Tracker: 3D Arrow and /way Addon for WoW Forever</title>
+<meta name="description" content="Waypoint Tracker is a free WoW Forever addon: a 3D waypoint arrow, /way coordinates, a quest, NPC and item finder, and map pins you can share in chat.">
+<link rel="canonical" href="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="sanjaygbhat">
+<meta name="theme-color" content="#07080d">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Marcellus&family=Alegreya:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="icon" type="image/png" href="img/logo-400.png">
+<link rel="apple-touch-icon" href="img/logo-400.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Waypoint Tracker">
+<meta property="og:title" content="Waypoint Tracker: the 3D waypoint arrow for WoW Forever">
+<meta property="og:description" content="Set a waypoint and follow the arrow. /way coordinates, a built-in quest, NPC and item finder, and map pins you can share in chat. Free, 9 languages.">
+<meta property="og:url" content="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/">
+<meta property="og:image" content="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="Waypoint Tracker: a gold 3D arrow and the words set a waypoint, follow the arrow">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Waypoint Tracker: the 3D waypoint arrow for WoW Forever">
+<meta name="twitter:description" content="Set a waypoint and follow the arrow. /way coordinates, a quest, NPC and item finder, and shareable map pins. Free.">
+<meta name="twitter:image" content="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/social-preview.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/#app",
+      "name": "Waypoint Tracker",
+      "alternateName": ["WaypointTracker", "Waypoint Tracker for WoW Forever"],
+      "description": "A free World of Warcraft: Forever addon with a 3D waypoint arrow, /way coordinate commands, a built-in quest, NPC, enemy, object and item finder, and map pins you can share in chat.",
+      "applicationCategory": "GameApplication",
+      "applicationSubCategory": "World of Warcraft addon",
+      "operatingSystem": "Windows, macOS",
+      "softwareVersion": "@VERSION@",
+      "dateModified": "@DATE@",
+      "softwareRequirements": "World of Warcraft: Forever (client 1.60.1, interface 16001)",
+      "inLanguage": ["en", "de", "fr", "es", "pt", "ru", "ko", "zh-Hans", "zh-Hant"],
+      "isAccessibleForFree": true,
+      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+      "license": "https://opensource.org/licenses/MIT",
+      "author": {"@type": "Person", "name": "sanjaygbhat", "url": "https://github.com/sanjaygbhat"},
+      "url": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/",
+      "downloadUrl": "https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest",
+      "installUrl": "https://www.curseforge.com/wow/addons/waypoint-tracker",
+      "releaseNotes": "https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md",
+      "codeRepository": "https://github.com/sanjaygbhat/wowforever-waypoint-tracker",
+      "image": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/logo-400.png",
+      "screenshot": [
+        "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/01-arrow.jpg",
+        "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/02-map.jpg",
+        "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/03-window.jpg"
+      ],
+      "featureList": [
+        "3D waypoint arrow that turns from gold to green as you get close",
+        "Distance and time to arrive under the arrow",
+        "/way coordinates in any zone, in every client language",
+        "Ctrl + right-click the world map to add a waypoint",
+        "Find: search quests, NPCs, enemies, objects and items, then point the arrow at the closest one",
+        "Nearest mailbox, innkeeper, flight master, repair, bank and auction house",
+        "Share any spot in chat as a clickable map pin",
+        "Points to your corpse when you die",
+        "Moves with the game's Edit Mode",
+        "Learns new NPCs, vendors and quests while you play, kept on your computer",
+        "Works with quest guides and other addons that send waypoints"
+      ],
+      "sameAs": [
+        "https://github.com/sanjaygbhat/wowforever-waypoint-tracker",
+        "https://www.curseforge.com/wow/addons/waypoint-tracker",
+        "https://addons.wago.io/addons/waypoint-tracker"
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/#faq",
+      "mainEntity": [
+        {"@type": "Question", "name": "How do I set a waypoint in WoW Forever?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Install Waypoint Tracker, then type /way 42 65 in chat for your current zone, or /way Westfall 56.3 47.1 Sentinel Hill for another zone. You can also type /wp to open the window, hold Ctrl and right-click the world map, or search a quest, NPC or object by name with /wp find. A 3D arrow then points the way."}},
+        {"@type": "Question", "name": "How do I find an NPC, quest giver or vendor in WoW Forever?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Type /wp find and a name (or the title of an NPC you have seen, like blacksmith), or press NPCs in the Waypoint Tracker window. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play."}},
+        {"@type": "Question", "name": "How do I install addons for WoW Forever?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Use the CurseForge app (World of Warcraft, Forever) or Wago, or download the zip from GitHub and unzip it into Interface\\AddOns in your WoW Forever folder. During the beta that is World of Warcraft\\_classic_beta_\\Interface\\AddOns. Waypoint Tracker gives you two folders: WaypointTracker and WaypointTracker_Data."}},
+        {"@type": "Question", "name": "Is Waypoint Tracker free?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Yes. It is free and open source under the MIT licence, with readable code, no ads and nothing to buy."}},
+        {"@type": "Question", "name": "Does Waypoint Tracker send my data anywhere?",
+         "acceptedAnswer": {"@type": "Answer", "text": "No. What the addon learns while you play stays in its saved file on your computer. You share it only if you choose to: press Share discoveries in Find and paste the text into a GitHub issue."}},
+        {"@type": "Question", "name": "Which languages does Waypoint Tracker support?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Nine: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese and Traditional Chinese. It follows your game client's language, and zone names in /way work in every language."}},
+        {"@type": "Question", "name": "Can other addons send waypoints to Waypoint Tracker?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Yes. Quest guides, treasure maps and other addons that send waypoints to an arrow send them straight to Waypoint Tracker, with nothing to set up."}}
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+:root {
+  color-scheme: dark;
+  --night: #07080d;
+  --night-2: #121a2e;
+  --stone: #17140f;
+  --stone-2: #221d15;
+  --gold: #ffd100;
+  --gold-soft: #e9c46a;
+  --bronze: #a8803a;
+  --bronze-dark: #4a3818;
+  --text: #ece4d0;
+  --muted: #b9ae97;
+  --parchment: #ecdcb0;
+  --parchment-2: #d9c08a;
+  --ink: #3a2410;
+  --ink-soft: #5c3d1e;
+  --tip: rgba(6, 8, 24, 0.95);
+  --tip-line: #9aa0ad;
+  --q-poor: #9d9d9d;
+  --q-uncommon: #1eff00;
+  --q-rare: #0070dd;
+  --q-rare-text: #3d9bff;
+  --q-epic: #a335ee;
+  --q-epic-text: #c27dff;
+  --equip: #1eff00;
+  --red-1: #b3170e;
+  --red-2: #5c0703;
+  --f-title: "Cinzel", "Trajan Pro", Georgia, serif;
+  --f-ui: "Marcellus", "Palatino Linotype", Georgia, serif;
+  --f-book: "Alegreya", Georgia, "Times New Roman", serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--text);
+  background-color: var(--night);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .7 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 120% 70% at 50% -10%, #23314f 0%, var(--night-2) 35%, var(--night) 75%);
+  background-attachment: fixed;
+  font: 18px/1.6 var(--f-book);
+}
+a { color: var(--gold-soft); }
+a:hover { color: var(--gold); }
+img { max-width: 100%; height: auto; display: block; }
+code {
+  font: 0.9em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* ---------- top bar: a stone action bar ---------- */
+.bar {
+  position: sticky; top: 0; z-index: 10;
+  background: linear-gradient(#2a241a, #15120c);
+  border-bottom: 2px solid #000;
+  box-shadow: inset 0 -1px 0 var(--bronze-dark), 0 4px 18px rgba(0,0,0,.6);
+}
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--gold); font: 700 18px var(--f-title); letter-spacing: .04em; text-shadow: 0 1px 0 #000; }
+.brand img { width: 34px; height: 34px; filter: drop-shadow(0 2px 2px #000); }
+.bar nav { display: flex; gap: 6px; flex-wrap: wrap; }
+.bar nav a {
+  font: 15px var(--f-ui); color: var(--gold); text-decoration: none;
+  padding: 5px 11px; border: 1px solid #000; border-radius: 3px;
+  background: linear-gradient(#3b3225, #1c170f);
+  box-shadow: inset 0 0 0 1px #5d4a28, 0 1px 0 rgba(255,255,255,.05);
+  text-shadow: 0 1px 0 #000;
+}
+.bar nav a:hover { background: linear-gradient(#4d412e, #2a2216); color: #fff3b0; }
+
+/* ---------- buttons: the classic red UI button ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 46px; padding: 0 22px;
+  font: 17px var(--f-ui); letter-spacing: .02em; color: var(--gold);
+  text-decoration: none; text-shadow: 0 1px 1px #000;
+  background: linear-gradient(#cf2a1d 0%, var(--red-1) 45%, var(--red-2) 100%);
+  border: 1px solid #000; border-radius: 4px;
+  box-shadow: inset 0 0 0 1px #d7a74a, inset 0 2px 0 1px rgba(255,255,255,.18), 0 3px 8px rgba(0,0,0,.6);
+}
+.btn:hover { filter: brightness(1.15); color: #fff3b0; }
+.btn:active { transform: translateY(1px); }
+.btn.dark {
+  background: linear-gradient(#3f3628, #1d1810);
+  box-shadow: inset 0 0 0 1px #8a6c34, inset 0 2px 0 1px rgba(255,255,255,.08), 0 3px 8px rgba(0,0,0,.6);
+}
+
+/* ---------- ornate gold frame ---------- */
+.frame {
+  position: relative;
+  border: 2px solid #000;
+  box-shadow: 0 0 0 2px var(--bronze), 0 0 0 4px #1a140a, 0 0 0 5px #6d5426, 0 14px 40px rgba(0,0,0,.7);
+  border-radius: 3px;
+  background: #000;
+}
+.frame::before, .frame::after {
+  content: ""; position: absolute; width: 14px; height: 14px; z-index: 2;
+  background: radial-gradient(circle at 35% 35%, #fff0b3, #c9962e 45%, #5a3e10 75%);
+  border: 1px solid #000; transform: rotate(45deg);
+}
+.frame::before { top: -10px; left: -10px; }
+.frame::after { bottom: -10px; right: -10px; }
+.frame img { border-radius: 2px; width: 100%; }
+
+/* ---------- hero ---------- */
+.hero { padding: 56px 0 36px; position: relative; overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
+.kicker { font: 15px var(--f-ui); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+h1 { margin: 0 0 18px; line-height: 1; }
+h1 .name {
+  display: block;
+  font: 800 clamp(42px, 7.4vw, 76px)/1.02 var(--f-title);
+  letter-spacing: .01em;
+  background: linear-gradient(180deg, #fff6c8 0%, #ffd100 38%, #e09a12 62%, #8a4e06 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-text-stroke: 1px rgba(40, 20, 0, .55);
+  filter: drop-shadow(0 3px 0 #120a02) drop-shadow(0 0 22px rgba(255, 180, 0, .25));
+}
+h1 .tag { display: block; margin-top: 14px; font: 600 clamp(18px, 2.4vw, 24px)/1.3 var(--f-title); color: var(--text); letter-spacing: .03em; }
+.lead { color: var(--muted); font-size: 19px; margin: 0 0 26px; max-width: 34em; }
+.lead strong { color: var(--text); font-weight: 600; }
+.lead code { color: var(--gold); }
+.buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.note { font: 15px var(--f-book); color: var(--muted); margin-top: 14px; }
+
+.stage { position: relative; }
+.plate {
+  position: absolute; left: 50%; top: -18px; transform: translateX(-50%); z-index: 3;
+  font: 14px var(--f-ui); color: var(--gold); white-space: nowrap;
+  padding: 3px 14px; background: linear-gradient(#2b2418, #120e08);
+  border: 1px solid #000; box-shadow: inset 0 0 0 1px #7a5f2c; border-radius: 2px;
+  text-shadow: 0 1px 0 #000;
+}
+
+/* dotted trail in the hero background */
+.trail { position: absolute; inset: 0; pointer-events: none; opacity: .22; }
+
+/* ---------- section titles ---------- */
+section { padding: 44px 0; }
+.title {
+  display: flex; align-items: center; gap: 16px; justify-content: center;
+  margin: 0 0 26px; text-align: center;
+  font: 700 clamp(24px, 3.4vw, 32px)/1.2 var(--f-title); color: var(--gold);
+  letter-spacing: .04em; text-shadow: 0 2px 0 #000;
+}
+.title::before, .title::after {
+  content: ""; flex: 1 1 60px; max-width: 220px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--bronze) 40%, #f3d27a 50%, var(--bronze) 60%, transparent);
+}
+.sub { text-align: center; color: var(--muted); margin: -14px auto 26px; max-width: 40em; }
+
+/* ---------- parchment (quest log) ---------- */
+.parchment {
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.35), transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(120, 70, 20, .18), transparent 55%),
+    linear-gradient(180deg, var(--parchment), var(--parchment-2));
+  border: 2px solid #000;
+  box-shadow: 0 0 0 2px var(--bronze), 0 0 0 4px #1a140a, 0 0 0 5px #6d5426, inset 0 0 60px rgba(90, 50, 10, .35), 0 14px 40px rgba(0,0,0,.7);
+  border-radius: 3px;
+  padding: 30px clamp(18px, 4vw, 44px);
+}
+.parchment h3 { font: 700 26px/1.2 var(--f-title); margin: 0 0 4px; color: var(--ink); }
+.parchment h4 { font: 700 19px var(--f-title); margin: 22px 0 8px; color: var(--ink); }
+.parchment p { margin: 0 0 12px; }
+.parchment .giver { font-style: italic; color: var(--ink-soft); margin-bottom: 14px; }
+.parchment code { background: rgba(80, 45, 10, .14); color: #2a1606; padding: .05em .35em; border-radius: 3px; }
+.parchment a { color: #7a2c00; }
+.objectives { list-style: none; padding: 0; margin: 0; }
+.objectives li { padding-left: 30px; position: relative; margin-bottom: 8px; }
+.objectives li::before {
+  content: ""; position: absolute; left: 0; top: .32em; width: 16px; height: 16px;
+  border: 2px solid var(--ink-soft); border-radius: 2px; background: rgba(255,255,255,.25);
+}
+.rewards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 18px; margin-top: 6px; }
+.reward { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.reward span { font: 600 16px var(--f-ui); text-shadow: 0 1px 0 rgba(255,255,255,.4); }
+.reward:hover span { text-decoration: underline; }
+
+/* ---------- item icons and quality ---------- */
+.icon {
+  flex: none; width: 46px; height: 46px; border-radius: 4px; position: relative;
+  display: grid; place-items: center;
+  background: radial-gradient(circle at 35% 30%, #4a4a52, #15151b 70%);
+  border: 2px solid var(--q, #777);
+  box-shadow: inset 0 0 0 1px #000, inset 0 0 12px rgba(0,0,0,.8), 0 0 0 1px #000, 0 2px 5px rgba(0,0,0,.5);
+}
+.icon img { width: 36px; height: 36px; }
+.icon svg { width: 30px; height: 30px; }
+.q-epic { --q: var(--q-epic); }
+.q-rare { --q: var(--q-rare); }
+.q-uncommon { --q: var(--q-uncommon); }
+.reward.q-epic span { color: #6a1fb0; }
+.reward.q-rare span { color: #0a55a8; }
+.reward.q-uncommon span { color: #1d7a0c; }
+
+/* ---------- tooltips: the loot table ---------- */
+.loot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.tip {
+  background: var(--tip);
+  border: 1px solid var(--tip-line);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px #000, 0 0 0 1px #000, 0 10px 24px rgba(0,0,0,.6);
+  padding: 14px 16px 16px;
+  font: 16px/1.45 var(--f-ui);
+  color: #fff;
+  scroll-margin-top: 80px;
+}
+.tip header { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+.tip h3 { margin: 0; font: 18px/1.2 var(--f-ui); }
+.tip.q-epic h3 { color: var(--q-epic-text); }
+.tip.q-rare h3 { color: var(--q-rare-text); }
+.tip.q-uncommon h3 { color: var(--q-uncommon); }
+.tip .meta { display: flex; justify-content: space-between; color: #fff; margin: 0; }
+.tip .white { margin: 0; }
+.tip .equip { color: var(--equip); margin: 6px 0 0; }
+.tip .flavor { color: var(--gold); margin: 8px 0 0; }
+.tip:target { box-shadow: 0 0 0 2px var(--gold), 0 10px 24px rgba(0,0,0,.6); }
+
+/* ---------- screenshots ---------- */
+.shots { display: grid; grid-template-columns: 1.25fr 1fr; gap: 34px; align-items: start; }
+.shots figure { margin: 0; }
+.shots .stack { display: grid; gap: 34px; }
+figcaption { font: 15px var(--f-ui); color: var(--gold-soft); margin-top: 14px; text-align: center; }
+
+/* ---------- stone panels ---------- */
+.panel {
+  background: linear-gradient(180deg, var(--stone-2), var(--stone));
+  border: 2px solid #000;
+  box-shadow: 0 0 0 2px var(--bronze), 0 0 0 4px #1a140a, 0 0 0 5px #6d5426, inset 0 0 40px rgba(0,0,0,.6), 0 14px 40px rgba(0,0,0,.7);
+  border-radius: 3px;
+  padding: 26px clamp(18px, 3.5vw, 36px);
+}
+.panel p { color: var(--text); }
+.panel strong { color: var(--gold); font-weight: 600; }
+.panel code { color: var(--gold); }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center; }
+
+/* ---------- install: three paths ---------- */
+.paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.path { display: flex; flex-direction: column; gap: 12px; }
+.path h3 { margin: 0; font: 700 20px var(--f-title); color: var(--gold); }
+.path p { margin: 0; flex: 1; color: var(--text); font-size: 17px; }
+.path code { color: var(--gold); }
+.path .btn { align-self: flex-start; }
+.folder { margin-top: 22px; font: 16px var(--f-ui); color: var(--muted); text-align: center; }
+.folder code { color: var(--gold); }
+
+/* ---------- commands: the chat frame ---------- */
+.chat {
+  background: rgba(0, 0, 0, .55);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 4px;
+  padding: 16px 18px;
+  font: 16px/1.55 var(--f-ui);
+  box-shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+.chat p { margin: 0 0 9px; }
+.chat .say { color: #fff; }
+.chat .say b { color: #fff; font-weight: normal; }
+.chat .say code { color: #fff; background: rgba(255,255,255,.07); padding: .05em .35em; border-radius: 3px; }
+.chat .sys { color: var(--gold); margin: -6px 0 12px 22px; }
+.chat-input {
+  margin-top: 12px; padding: 8px 12px; border-radius: 3px;
+  background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.12);
+  font: 15px var(--f-ui); color: var(--muted);
+}
+.chat-input span { color: #fff; }
+.chat-input i { display: inline-block; width: 8px; height: 1em; background: #fff; vertical-align: -2px; animation: blink 1.1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- FAQ: quest log ---------- */
+.log details {
+  border-bottom: 1px solid rgba(90, 55, 15, .35);
+  padding: 12px 0;
+}
+.log details:last-child { border-bottom: 0; }
+.log summary {
+  cursor: pointer; list-style: none;
+  font: 600 19px var(--f-ui); color: var(--ink);
+  display: flex; gap: 10px; align-items: baseline;
+}
+.log summary::-webkit-details-marker { display: none; }
+.log summary::before {
+  content: "+"; flex: none; width: 20px; height: 20px; line-height: 17px; text-align: center;
+  font: 700 16px var(--f-ui); color: var(--gold);
+  background: linear-gradient(#5a4320, #2a1d0c); border: 1px solid #000; border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #b38c3e; transform: translateY(2px);
+}
+.log details[open] summary::before { content: "\2212"; }
+.log details p { margin: 8px 0 0 30px; color: var(--ink); }
+
+/* ---------- footer ---------- */
+footer { padding: 34px 0 48px; text-align: center; color: var(--muted); font: 16px var(--f-book); }
+footer p { margin: 0 0 6px; }
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .chat-input i { animation: none; }
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 900px) {
+  .hero .wrap, .shots, .split { grid-template-columns: 1fr; }
+  .loot, .paths, .rewards { grid-template-columns: 1fr 1fr; }
+  .stage { margin-top: 18px; }
+}
+@media (max-width: 620px) {
+  body { font-size: 17px; }
+  .loot, .paths { grid-template-columns: 1fr; }
+  .bar { position: static; }
+  .bar .wrap { padding-top: 8px; padding-bottom: 8px; }
+  .bar nav { gap: 4px; flex-wrap: nowrap; overflow-x: auto; width: 100%; padding-bottom: 2px; }
+  .bar nav a { font-size: 14px; padding: 4px 9px; flex: none; }
+  .btn { flex: 1 1 100%; }
+  .title::before, .title::after { flex-basis: 20px; }
+  .reward span { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b8"/><stop offset=".5" stop-color="#e8b23a"/><stop offset="1" stop-color="#8a5a12"/></linearGradient>
+  </defs>
+  <symbol id="i-tome" viewBox="0 0 32 32"><path d="M6 5h14a4 4 0 0 1 4 4v18H10a4 4 0 0 1-4-4z" fill="#6b2a17" stroke="#000"/><path d="M10 27a4 4 0 0 1 0-8h14" fill="none" stroke="url(#g)" stroke-width="2"/><circle cx="15" cy="12" r="3.5" fill="none" stroke="url(#g)" stroke-width="2"/><path d="m17.5 14.5 3 3" stroke="url(#g)" stroke-width="2"/></symbol>
+  <symbol id="i-scroll" viewBox="0 0 32 32"><rect x="8" y="6" width="16" height="20" rx="2" fill="#e9d6a3" stroke="#000"/><rect x="5" y="4" width="22" height="4" rx="2" fill="url(#g)" stroke="#000"/><rect x="5" y="24" width="22" height="4" rx="2" fill="url(#g)" stroke="#000"/><path d="M12 13h8M12 17h8M12 21h5" stroke="#6b4a22" stroke-width="1.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 32 32"><path d="M16 29s-8-9-8-15a8 8 0 0 1 16 0c0 6-8 15-8 15z" fill="#c8251a" stroke="#000"/><circle cx="16" cy="14" r="3.2" fill="url(#g)" stroke="#000"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 32 32"><path d="M9 22c2-2 2-6 2-9a5 5 0 0 1 10 0c0 3 0 7 2 9z" fill="url(#g)" stroke="#000"/><rect x="7" y="22" width="18" height="3" rx="1.5" fill="#8a5a12" stroke="#000"/><circle cx="16" cy="27" r="2" fill="url(#g)" stroke="#000"/></symbol>
+  <symbol id="i-cloak" viewBox="0 0 32 32"><path d="M11 5h10l2 4 4 18-5-2-3 3-3-3-3 3-3-3-5 2 4-18z" fill="#2f5a1f" stroke="#000"/><path d="M11 5h10l-2 5h-6z" fill="url(#g)" stroke="#000"/></symbol>
+</svg>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/logo-400.png" alt="" width="34" height="34">Waypoint Tracker</a>
+    <nav aria-label="Sections">
+      <a href="#quest">Quest</a>
+      <a href="#loot">Features</a>
+      <a href="#find">Find</a>
+      <a href="#install">Install</a>
+      <a href="#commands">Commands</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <svg class="trail" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-20 470 C 180 420, 260 300, 430 330 S 700 470, 820 320 S 1050 120, 1230 60" fill="none" stroke="#ffd100" stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+    </svg>
+    <div class="wrap">
+      <div>
+        <p class="kicker">A World of Warcraft: Forever addon</p>
+        <h1><span class="name">Waypoint Tracker</span><span class="tag">The 3D waypoint arrow for WoW Forever</span></h1>
+        <p class="lead"><strong>Set a waypoint. Follow the arrow. That's it.</strong> Type <code>/way 42 65</code>, click the world map or search a name, and a 3D arrow over your character points the way with the distance and time to arrive. It turns from gold to green as you get close and clears itself when you arrive.</p>
+        <div class="buttons">
+          <a class="btn" href="https://www.curseforge.com/wow/addons/waypoint-tracker">Get it on CurseForge</a>
+          <a class="btn dark" href="https://addons.wago.io/addons/waypoint-tracker">Wago</a>
+          <a class="btn dark" href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest">Download</a>
+        </div>
+        <p class="note">Free and open source · Version @VERSION@ · Client 1.60.1 · 9 languages</p>
+      </div>
+      <div class="stage">
+        <div class="plate">Follow the arrow</div>
+        <div class="frame">
+          <img src="img/arrow-demo.gif" width="480" height="270" alt="The Waypoint Tracker arrow turns to face the waypoint, goes from gold to green while walking, then shows You have arrived">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="quest" aria-labelledby="quest-h">
+    <div class="wrap">
+      <h2 class="title" id="quest-h">Quest: Find Your Way</h2>
+      <div class="parchment">
+        <p class="giver">Quest giver: every adventurer who has ever run in circles looking for a quest mob</p>
+        <p>"You there! You've got coordinates from a guide, a guildmate or a map, and no idea which way to run. Take this arrow. It points where you need to go and turns green when you're close. Nothing else to learn."</p>
+        <h4>Objectives</h4>
+        <ul class="objectives">
+          <li>Set a waypoint: open the window with <code>/wp</code>, or just type <code>/way 42 65</code></li>
+          <li>Follow the arrow until it turns green</li>
+          <li>Arrive. The waypoint clears itself and the arrow moves on to the next one.</li>
+        </ul>
+        <h4>You will receive</h4>
+        <div class="rewards">
+          <a class="reward q-epic" href="#arrow"><span class="icon q-epic"><img src="img/logo-400.png" alt="" width="36" height="36"></span><span>[Arrow of Finding]</span></a>
+          <a class="reward q-rare" href="#tome"><span class="icon q-rare"><svg><use href="#i-tome"/></svg></span><span>[Tome of Finding]</span></a>
+          <a class="reward q-rare" href="#scroll"><span class="icon q-rare"><svg><use href="#i-scroll"/></svg></span><span>[Zone Search Scroll]</span></a>
+          <a class="reward q-uncommon" href="#pin"><span class="icon q-uncommon"><svg><use href="#i-pin"/></svg></span><span>[Map Pin of Sharing]</span></a>
+          <a class="reward q-uncommon" href="#chime"><span class="icon q-uncommon"><svg><use href="#i-bell"/></svg></span><span>[Chime of Arrival]</span></a>
+          <a class="reward q-uncommon" href="#cloak"><span class="icon q-uncommon"><svg><use href="#i-cloak"/></svg></span><span>[Cloak of Fewer Settings]</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="loot" aria-labelledby="loot-h">
+    <div class="wrap">
+      <h2 class="title" id="loot-h">Features</h2>
+      <p class="sub">Everything the addon does, as loot.</p>
+      <div class="loot">
+        <article class="tip q-epic" id="arrow">
+          <header><span class="icon q-epic"><img src="img/logo-400.png" alt="" width="36" height="36"></span><h3>Arrow of Finding</h3></header>
+          <p class="white">Binds to account</p>
+          <p class="meta"><span>Trinket</span><span>Unique</span></p>
+          <p class="equip">Equip: A 3D arrow over your character points to your waypoint, with its name, distance and time to arrive underneath.</p>
+          <p class="equip">Equip: Turns from gold to green as you get close. Never catches mouse clicks, so right-click to attack always works.</p>
+          <p class="flavor">"It points where you need to go. Nothing else to learn."</p>
+        </article>
+        <article class="tip q-rare" id="tome">
+          <header><span class="icon q-rare"><svg><use href="#i-tome"/></svg></span><h3>Tome of Finding</h3></header>
+          <p class="meta"><span>Off Hand</span><span>Book</span></p>
+          <p class="equip">Equip: Search quests, NPCs, enemies, objects and items, then double-click to point the arrow at the closest one.</p>
+          <p class="equip">Use: Find the nearest mailbox, innkeeper, flight master, repair, bank or auction house.</p>
+          <p class="flavor">"Includes WoW Forever's new zones."</p>
+        </article>
+        <article class="tip q-rare" id="scroll">
+          <header><span class="icon q-rare"><svg><use href="#i-scroll"/></svg></span><h3>Zone Search Scroll</h3></header>
+          <p class="meta"><span>Consumable</span><span>Never runs out</span></p>
+          <p class="equip">Use: Set a waypoint with <code>/way</code> coordinates, a zone list that filters as you type, a quest or place name, or Ctrl + right-click on the world map.</p>
+          <p class="equip">Use: Typos, accents and capitals don't matter. Pasted coordinates like 45.2 67.8 split into X and Y.</p>
+        </article>
+        <article class="tip q-uncommon" id="pin">
+          <header><span class="icon q-uncommon"><svg><use href="#i-pin"/></svg></span><h3>Map Pin of Sharing</h3></header>
+          <p class="meta"><span>Miscellaneous</span><span></span></p>
+          <p class="equip">Use: Send any spot, or where you stand, to Party, Raid, Guild, Say or a whisper as a clickable map pin. No waypoint needed.</p>
+          <p class="flavor">"Works for friends without the addon too."</p>
+        </article>
+        <article class="tip q-uncommon" id="chime">
+          <header><span class="icon q-uncommon"><svg><use href="#i-bell"/></svg></span><h3>Chime of Arrival</h3></header>
+          <p class="meta"><span>Trinket</span><span></span></p>
+          <p class="equip">Equip: On arrival, plays a sound, clears the waypoint and points to the next closest one.</p>
+          <p class="equip">Equip: When you die, points to your corpse, then back to your waypoint once you're alive.</p>
+        </article>
+        <article class="tip q-uncommon" id="cloak">
+          <header><span class="icon q-uncommon"><svg><use href="#i-cloak"/></svg></span><h3>Cloak of Fewer Settings</h3></header>
+          <p class="meta"><span>Back</span><span>Cloth</span></p>
+          <p class="equip">Equip: Four basic settings. Colour styles, fading, hiding in combat or on flight paths, map pins, metres and more wait behind Show more options.</p>
+          <p class="equip">Equip: Moves with the game's Edit Mode, with a spot for each layout.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="shots-h">
+    <div class="wrap">
+      <h2 class="title" id="shots-h">In the game</h2>
+      <div class="shots">
+        <figure>
+          <div class="frame"><img src="img/01-arrow.jpg" width="1400" height="788" loading="lazy" alt="Waypoint Tracker in WoW Forever: a green 3D arrow over a flying character in the Barrens, with the waypoint name, 932 yds and About 0:30 under it"></div>
+          <figcaption>On the way to a waypoint in the Barrens: name, distance and time to arrive.</figcaption>
+        </figure>
+        <div class="stack">
+          <figure>
+            <div class="frame"><img src="img/02-map.jpg" width="1130" height="636" loading="lazy" alt="The world map of Silverpine Forest with a Waypoint Tracker pin, and the gold arrow pointing to Lady Sylvanas Windrunner, 777 yds away"></div>
+            <figcaption>Your waypoints on the world map.</figcaption>
+          </figure>
+          <figure>
+            <div class="frame"><img src="img/03-window.jpg" width="978" height="508" loading="lazy" alt="The Waypoint Tracker window with zone, X and Y boxes, Find buttons, a list of waypoints with Share buttons, and the More Options panel"></div>
+            <figcaption>The window: set, find, share, and every option one click away.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="find" aria-labelledby="find-h">
+    <div class="wrap">
+      <h2 class="title" id="find-h">Find quests, NPCs, enemies, objects and items</h2>
+      <div class="panel">
+        <p>Press <strong>Quests</strong>, <strong>NPCs</strong>, <strong>Enemies</strong> or <strong>Objects</strong> in the window, or type <code>/wp find hogger</code>. Search as you type, then double-click a result and the arrow points to the closest spot. Quests show who gives them, where the objectives are and where to hand them in. Items show what drops or sells them.</p>
+        <p>Find covers the classic world and WoW Forever's new zones (Mount Hyjal, Riverglades, Zephras Isle, Shen'dralas), including about 3,000 quests and 6,600 items beyond the classic world, and every item, flight path and town in the WoW Forever game files in nine languages. It learns while you play: the NPCs and enemies around you with their titles (search <strong>blacksmith</strong> to find every blacksmith you've seen), what vendors sell, quest givers and what drops from what you loot. What you see in the game always wins.</p>
+        <p style="margin:0">What it learns stays on your computer and keeps only what's new. Found a spot that's off? Press <strong>Wrong spot? Correct it</strong>. To help everyone, press <strong>Share discoveries</strong> and paste the text into a <a href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues/new?template=discoveries.yml">GitHub issue</a>; what's new goes into a coming update.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="install" aria-labelledby="install-h">
+    <div class="wrap">
+      <h2 class="title" id="install-h">How to install Waypoint Tracker</h2>
+      <div class="paths">
+        <div class="panel path">
+          <h3>CurseForge</h3>
+          <p>In the CurseForge app choose World of Warcraft, then the <strong>Forever</strong> game version, search for Waypoint Tracker and click Install.</p>
+          <a class="btn" href="https://www.curseforge.com/wow/addons/waypoint-tracker">CurseForge page</a>
+        </div>
+        <div class="panel path">
+          <h3>Wago</h3>
+          <p>Install it with the Wago app, or from its page on addons.wago.io.</p>
+          <a class="btn dark" href="https://addons.wago.io/addons/waypoint-tracker">Wago page</a>
+        </div>
+        <div class="panel path">
+          <h3>By hand</h3>
+          <p>Download <code>WaypointTracker-v@VERSION@.zip</code> and unzip it into <code>Interface\AddOns</code> in your WoW Forever folder. You get two folders, <code>WaypointTracker</code> and <code>WaypointTracker_Data</code>.</p>
+          <a class="btn dark" href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest">GitHub Releases</a>
+        </div>
+      </div>
+      <p class="folder">During the beta the folder is <code>World of Warcraft\_classic_beta_\Interface\AddOns</code>. Then start the game, or type <code>/reload</code>, and type <code>/wp</code>.</p>
+    </div>
+  </section>
+
+  <section id="commands" aria-labelledby="commands-h">
+    <div class="wrap">
+      <h2 class="title" id="commands-h">Chat commands</h2>
+      <div class="split">
+        <div class="chat">
+          <p class="say"><b>[You]:</b> <code>/way 42 65</code></p>
+          <p class="sys">Waypoint in your current zone.</p>
+          <p class="say"><b>[You]:</b> <code>/way Elwynn Forest 42 65 Goldshire</code></p>
+          <p class="sys">Waypoint in any zone, with a name. Part of a zone name is enough, in any client language.</p>
+          <p class="say"><b>[You]:</b> <code>/way hogger</code></p>
+          <p class="sys">Goes straight to something by name, or searches Find.</p>
+          <p class="say"><b>[You]:</b> <code>/wp share</code></p>
+          <p class="sys">Puts where you are in the chat box as a map pin, ready to send.</p>
+          <p class="say"><b>[You]:</b> <code>/wp find blacksmith</code></p>
+          <p class="sys">Searches quests, NPCs, enemies, objects and items.</p>
+          <div class="chat-input" aria-hidden="true">Say: <span>/wp</span><i></i></div>
+        </div>
+        <div class="chat">
+          <p class="say"><code>/wp</code></p><p class="sys">Open or close the window.</p>
+          <p class="say"><code>/wp here</code> or <code>/wayb</code></p><p class="sys">Waypoint where you're standing.</p>
+          <p class="say"><code>/way #37 42 65</code></p><p class="sys">Waypoint by map ID, for guide writers.</p>
+          <p class="say"><code>/wp closest</code> or <code>/cway</code></p><p class="sys">Point to the closest waypoint.</p>
+          <p class="say"><code>/wp clear</code> · <code>/wp clear all</code></p><p class="sys">Remove the arrow's waypoint, or all of them.</p>
+          <p class="say"><code>/wp list</code> · <code>/wp arrow</code> · <code>/wp help</code></p><p class="sys">List waypoints, show or hide the arrow, list every command.</p>
+        </div>
+      </div>
+      <p class="folder">Key bindings are under Key Bindings &gt; AddOns, and the settings under Options &gt; AddOns &gt; Waypoint Tracker.</p>
+    </div>
+  </section>
+
+  <section id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <h2 class="title" id="faq-h">Questions</h2>
+      <div class="parchment log">
+      <details open><summary>How do I set a waypoint in WoW Forever?</summary><p>Install Waypoint Tracker, then type <code>/way 42 65</code> in chat for your current zone, or <code>/way Westfall 56.3 47.1 Sentinel Hill</code> for another zone. You can also type <code>/wp</code> to open the window, hold Ctrl and right-click the world map, or search a quest, NPC or object by name with <code>/wp find</code>. A 3D arrow then points the way.</p></details>
+      <details><summary>How do I find an NPC, quest giver or vendor in WoW Forever?</summary><p>Type <code>/wp find</code> and a name (or the title of an NPC you have seen, like <strong>blacksmith</strong>), or press <strong>NPCs</strong> in the Waypoint Tracker window. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play.</p></details>
+      <details><summary>How do I install addons for WoW Forever?</summary><p>Use the CurseForge app (World of Warcraft, Forever) or Wago, or download the zip from GitHub and unzip it into <code>Interface\AddOns</code> in your WoW Forever folder. During the beta that is <code>World of Warcraft\_classic_beta_\Interface\AddOns</code>. Waypoint Tracker gives you two folders: <code>WaypointTracker</code> and <code>WaypointTracker_Data</code>.</p></details>
+      <details><summary>Is Waypoint Tracker free?</summary><p>Yes. It is free and open source under the MIT licence, with readable code, no ads and nothing to buy.</p></details>
+      <details><summary>Does Waypoint Tracker send my data anywhere?</summary><p>No. What the addon learns while you play stays in its saved file on your computer. You share it only if you choose to: press <strong>Share discoveries</strong> in Find and paste the text into a GitHub issue.</p></details>
+      <details><summary>Which languages does Waypoint Tracker support?</summary><p>Nine: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese and Traditional Chinese. It follows your game client's language, and zone names in <code>/way</code> work in every language.</p></details>
+      <details><summary>Can other addons send waypoints to Waypoint Tracker?</summary><p>Yes. Quest guides, treasure maps and other addons that send waypoints to an arrow send them straight to Waypoint Tracker, with nothing to set up.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Waypoint Tracker @VERSION@ by <a href="https://github.com/sanjaygbhat">sanjaygbhat</a> · <a href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker">Source on GitHub</a> · MIT licence · <a href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues">Questions and ideas</a></p>
+    <p>World of Warcraft is a trademark of Blizzard Entertainment. This project isn't affiliated with Blizzard.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -67,12 +67,17 @@ jobs:
             echo "### Install"
             echo
             echo "- **CurseForge app:** World of Warcraft > Forever, search for **Waypoint Tracker**."
+            echo "- **Wago:** https://addons.wago.io/addons/waypoint-tracker"
             echo "- **By hand:** download \`${ZIP}\` below and unzip it into your WoW Forever \`Interface/AddOns\` folder. You get two folders, \`WaypointTracker\` and \`WaypointTracker_Data\`."
           } > dist/RELEASE.md
           # the addon's own licence ships with it
           cp LICENSE WaypointTracker/LICENSE.txt
           # two folders: the addon, and its load-on-demand database
           zip -r -X "dist/${ZIP}" WaypointTracker WaypointTracker_Data -x '*.DS_Store'
+          # tells addon managers (WowUp and others) which game the zip is for
+          INTERFACE="$(grep '^## Interface:' WaypointTracker/WaypointTracker.toc | awk '{print $3}' | tr -d '\r')"
+          jq -n --arg v "v${VERSION}" --arg f "${ZIP}" --argjson i "$INTERFACE" \
+            '{releases: [{name: "WaypointTracker", version: $v, filename: $f, nolib: false, metadata: [{flavor: "forever", interface: $i}]}]}' > dist/release.json
           {
             echo "zip=dist/${ZIP}"
             echo "name=${ZIP}"
@@ -90,7 +95,9 @@ jobs:
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.build.outputs.zip }}
+          files: |
+            ${{ steps.build.outputs.zip }}
+            dist/release.json
           body_path: dist/RELEASE.md
           prerelease: ${{ steps.build.outputs.type != 'release' }}
 

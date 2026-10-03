@@ -27,7 +27,8 @@
 |---|---|
 | **Game** | World of Warcraft: Forever (client 1.60.1, interface 16001) |
 | **Price** | Free, MIT licence, no ads |
-| **Install** | CurseForge app (Forever), or unzip into `Interface\AddOns` |
+| **Get it** | [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker), [Wago](https://addons.wago.io/addons/waypoint-tracker) or [GitHub Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest) |
+| **Website** | [sanjaygbhat.github.io/wowforever-waypoint-tracker](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/) |
 | **Commands** | `/wp` (window), `/way` (coordinates or a name), `/wp find`, `/wp share` |
 | **Languages** | English, German, French, Spanish, Portuguese, Russian, Korean, Simplified and Traditional Chinese |
 
@@ -91,11 +92,13 @@
 
 ## 📦 Install
 
-**CurseForge app (easiest):** search for **Waypoint Tracker**, choose the **Forever** game version, click *Install*.
+**CurseForge app (easiest):** search for **Waypoint Tracker**, choose the **Forever** game version, click *Install*. Or open the [CurseForge page](https://www.curseforge.com/wow/addons/waypoint-tracker).
+
+**Wago:** install it from [addons.wago.io](https://addons.wago.io/addons/waypoint-tracker).
 
 **By hand:**
 
-1. Download the latest `WaypointTracker-vX.Y.Z.zip` from [Releases](../../releases).
+1. Download the latest `WaypointTracker-vX.Y.Z.zip` from [Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest).
 2. Unzip it into your AddOns folder. You should get **two** folders: `...\Interface\AddOns\WaypointTracker\` and `...\Interface\AddOns\WaypointTracker_Data\` (the database for the Find window).
    - WoW Forever beta: `World of Warcraft\_classic_beta_\Interface\AddOns\`
 3. Restart the game, or type `/reload` if it's already running.
@@ -164,7 +167,7 @@ Found something new? Your discoveries make Find better for everyone:
 
 1. Open **Find** and press **Share discoveries** at the bottom. The text is already selected, so press **Ctrl+C**. It holds only what the database doesn't have yet, plus your corrections, so it stays short.
 2. [Open a "Share discoveries" issue](../../issues/new?template=discoveries.yml) and paste it with **Ctrl+V**. Add a note if you like.
-3. It's merged into the next update. The newest sightings always win.
+3. What adds to the database goes into a coming update. The newest sightings always win.
 
 Played a lot? Attach your saved file to the issue instead: `WTF/Account/<your account>/SavedVariables/WaypointTracker.lua` in your WoW Forever folder (close the game first). It holds everything the addon wrote down, plus your settings.
 
@@ -339,6 +342,18 @@ With Waypoint Tracker installed, type `/way 42 65` in chat for your current zone
 </details>
 
 <details>
+<summary><b>How do I find an NPC, quest giver or vendor in WoW Forever?</b></summary>
+
+Type `/wp find` and a name (or the title of an NPC you've seen, like `blacksmith`), or press **NPCs** next to **Find:** in the window. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play.
+</details>
+
+<details>
+<summary><b>How do I install addons for WoW Forever?</b></summary>
+
+Use the CurseForge app (World of Warcraft, **Forever**) or [Wago](https://addons.wago.io/addons/waypoint-tracker), or download the zip from [GitHub Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest) and unzip it into `Interface\AddOns` in your WoW Forever folder. During the beta that's `World of Warcraft\_classic_beta_\Interface\AddOns`. You get two folders, `WaypointTracker` and `WaypointTracker_Data`.
+</details>
+
+<details>
 <summary><b>Is Waypoint Tracker free and allowed?</b></summary>
 
 Yes. It's free and open source (MIT), with readable, unobfuscated code, no ads and no donation requests in the game, as Blizzard's add-on policy asks. It only uses the game's normal add-on interface.
@@ -348,6 +363,12 @@ Yes. It's free and open source (MIT), with readable, unobfuscated code, no ads a
 <summary><b>Does Waypoint Tracker work on WoW Forever?</b></summary>
 
 Yes, it's made for World of Warcraft: Forever (interface 16001), in beta now and launching on November 4, 2026.
+</details>
+
+<details>
+<summary><b>Does Waypoint Tracker send my data anywhere?</b></summary>
+
+No. What it learns while you play stays in its saved file on your computer. You share it only if you choose to: press **Share discoveries** in Find and paste the text into a GitHub issue.
 </details>
 
 <details>
@@ -367,7 +388,7 @@ Find's database covers the classic world and Forever's new content, and what you
 <details>
 <summary><b>How does Find keep up with WoW Forever's new content?</b></summary>
 
-The database is rebuilt from its sources for every release, with Forever's new quest givers, NPCs, quests and items (this release: WoW Forever 1.60.1). On top of that, Find learns as you play: walk past an NPC, open a vendor, loot an enemy or object, or take a quest, and it's in Find right away. Loot an item and Find remembers what dropped it; open a vendor and it remembers what they sell. The names of Forever's new quests are learned from the game in the background during your first minutes in the game. [Share your discoveries](../../issues/new?template=discoveries.yml) and everyone gets them in the next update.
+The database is rebuilt from its sources for every release, with Forever's new quest givers, NPCs, quests and items (this release: WoW Forever 1.60.1). On top of that, Find learns as you play: walk past an NPC, open a vendor, loot an enemy or object, or take a quest, and it's in Find right away. Loot an item and Find remembers what dropped it; open a vendor and it remembers what they sell. The names of Forever's new quests are learned from the game in the background during your first minutes in the game. [Share your discoveries](../../issues/new?template=discoveries.yml) and they're added for everyone in a coming update.
 </details>
 
 <details>
@@ -425,7 +446,7 @@ python3 tools/merge_discoveries.py shared/*.txt WaypointTracker.lua   # players'
 python3 tests/test_merge_discoveries.py                    # checks the merge tool
 ```
 
-Push a tag like `v1.0.0` and GitHub Actions tests, builds the release zip and uploads it to CurseForge (and Wago, if set up). The full launch checklist is in [`docs/release/CURSEFORGE_AGENT_PACK.md`](docs/release/CURSEFORGE_AGENT_PACK.md), and the in-game release test (with the screenshot shoot) is [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md).
+Push a tag like `v1.0.0` and GitHub Actions tests, builds the release zip and uploads it to CurseForge and Wago. The website in `site/` is built with `sh tools/build_site.sh` and published from `main` by GitHub Pages. The full launch checklist is in [`docs/release/CURSEFORGE_AGENT_PACK.md`](docs/release/CURSEFORGE_AGENT_PACK.md), and the in-game release test (with the screenshot shoot) is [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md).
 
 ---
 

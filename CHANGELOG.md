@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- `/way`, `/wayb` and `/cway` go to whichever addon already uses them, and `/wp` does the same things.
+- Each release includes a `release.json`, so addon managers install the WoW Forever build directly.
+
 ## 1.0.0
 
 First release for WoW Forever.

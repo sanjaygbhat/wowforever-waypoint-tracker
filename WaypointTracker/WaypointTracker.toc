@@ -21,6 +21,8 @@
 ## AddonCompartmentFuncOnLeave: WaypointTracker_OnAddonCompartmentLeave
 ## X-License: MIT
 ## X-Website: https://github.com/sanjaygbhat/wowforever-waypoint-tracker
+## X-Curse-Project-ID: 1722148
+## X-Wago-ID: ZKxOb36k
 
 Locales\enUS.lua
 Locales\deDE.lua
