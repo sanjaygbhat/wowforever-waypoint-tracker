@@ -2,84 +2,80 @@
 
 **Set a waypoint. Follow the arrow. That's it.**
 
-A solid 3D arrow over your character points to where you need to go and turns from gold to green as you get closer. It never catches your mouse clicks. When you arrive it plays a sound, clears the waypoint and moves on to the next one. Built for World of Warcraft: Forever (WoW Forever).
+A 3D arrow points the way in World of Warcraft: Forever (WoW Forever). Set coordinates, find a quest, NPC or item by name, and share a spot with friends as a clickable chat pin.
 
-![Arrow demo](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/arrow-demo.gif)
+[![A green waypoint arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 
-## Ways to set a waypoint
+*In the game: flying near Grol'dom Farm with “Trade Rep”, distance and estimated travel time beneath the arrow. Open the image for a full-size view.*
 
-- **The window:** type `/wp` or click the minimap button. Search a zone, type X and Y, press **Set Waypoint**.
-- **Chat:** `/way 42 65` for your current zone, or `/way Westfall 56.3 47.1 Sentinel Hill`
-- **Search a place:** in the window's Zone box, type a quest from your log, a flight master, a dungeon or a rare and click it.
-- **The map:** hold **Ctrl** and **right-click** the world map.
+## Your first waypoint
 
-**Share without setting a waypoint:** type the coordinates and press **Share**, or leave them empty to share where you are (also `/wp share`). Every waypoint in your list has a **Share** button too. Pick Party, Raid, Guild, Say or a whisper, and your chat opens with a clickable map pin ready to send, which works even for friends without the addon.
+1. Type `/wp` to open the window.
+2. Type `/way 42 65` to set a destination in your current zone.
+3. Follow the arrow. It turns from gold to green as you get closer and never catches mouse clicks. On arrival it plays a sound, clears the waypoint and points to the next closest one.
 
-Paste coordinates like `45.2 67.8` or `45,2 67,8` straight into the X box and they fill in by themselves.
+## Set, find and share
 
-## Find anything, including WoW Forever's new content
+### Set a spot on the map
 
-Next to **Find:** in the window, press **Quests**, **NPCs**, **Enemies** or **Objects** (or type `/way hogger`) to search the database. Search, then double-click to point the arrow at the closest one. One-click **Nearest** buttons find the closest mailbox, innkeeper, flight master, repair, bank and auction house.
+Hold **Ctrl** and **right-click** the world map. Or use `/way Westfall 56.3 47.1 Sentinel Hill` to set a named waypoint in another zone. In the window, choose a zone, enter X/Y and press **Set Waypoint**. Paste `45.2 67.8` or `45,2 67,8` into X to fill both fields.
 
-The database covers the classic world and WoW Forever's new zones, quests and items, and learns while you play: the NPCs and enemies around you with their titles, what vendors sell, quest givers, hand-ins, objective areas, NPC services, mailboxes, and which enemy or object drops each item you loot. Search a title like **blacksmith** to find every blacksmith you've seen. What you see in the game always wins.
+[![Silverpine Forest world map with waypoint pins and a gold arrow pointing toward Lady Sylvanas Windrunner, 777 yds away](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/02-map.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/02-map.jpg)
 
-Only what's new is kept, on your computer. Found a spot that's off? Press **Wrong spot? Correct it** in Find and stand where it really is. When you want to help everyone, press **Share discoveries** and paste it into a GitHub issue. What's new goes into a coming update.
+*In the game: waypoint pins on the Silverpine Forest world map, with the arrow pointing toward Lady Sylvanas Windrunner, 777 yds away. Open the image for a full-size view.*
 
-## Move it in Edit Mode
+### Find your destination
 
-Press **Esc > Edit Mode** and the arrow shows up with the game's blue box, like every other HUD frame. Drag it, or click it for the size and visibility of the arrow and its text, and reset. The text can also move on its own. Each Edit Mode layout keeps its own spot.
+Press **Quests**, **NPCs**, **Enemies** or **Objects** beside **Find:**, or type `/wp find hogger`. Search quests, NPCs, enemies, objects and items, then double-click a result to point the arrow at the closest spot. **Nearest** buttons find a mailbox, innkeeper, flight master, repair vendor, bank or auction house.
 
-## Simple by default
+Find covers the classic world and WoW Forever's new zones, quests and items. It learns the NPCs you pass, their titles, vendor stock, quest givers and loot sources while you play. Search a title like **blacksmith** to find blacksmiths you've seen. What you see in the game takes precedence.
 
-Out of the box you get the arrow, its distance, and a few settings: show, move, size and visibility. Tick **Show more options** for the rest:
+### Share with your party
 
-- Colour styles: by distance, by facing, or one colour you pick
-- Time to arrive, fade when heading the right way, hide in combat or on flight paths
-- Points to your corpse when you die, then back to your waypoint once you're alive
-- Arrival distance, auto-remove, sound, move on to the next closest waypoint
-- World map and minimap pins, coordinates on the map, a coordinates box
-- Metres instead of yards, always point to the closest waypoint, and more
+Press **Share** beside a saved waypoint, or type `/wp share` to share where you stand. Choose Party, Raid, Guild, Say or a whisper; your chat opens with a clickable map pin ready to send. Friends can use the pin without installing the addon. You can also enter coordinates and press **Share** without setting a waypoint.
 
-## Works with your other addons
+[![Waypoint Tracker's coordinate fields, Find buttons and saved waypoints with Share buttons, beside the open More Options panel](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/03-window.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/03-window.jpg)
 
-Quest guides, treasure maps and other addons that send waypoints to an arrow can send them straight to this one. There's nothing to set up.
+*In the game: coordinate fields, Find buttons and Share buttons beside saved waypoints. More Options is open alongside the window, showing arrow display, text and arrival settings. Open the image for a full-size view.*
 
-## 9 languages
+## Make it yours
 
-English, Deutsch, Français, Español, Português, Русский, 한국어, 简体中文, 繁體中文. The addon follows your game client's language automatically.
+Start with a few settings for arrow visibility, movement and size. **Show more options** adds colour styles, time to arrive, fading, hiding in combat or on flight paths, arrival distance and sound, world map and minimap pins, map coordinates and metres instead of yards. The arrow can point to your corpse when you die, then return to your waypoint.
 
-## Commands
+Use **Esc → Edit Mode** to drag or resize the arrow. Its text can move separately, and each layout keeps its own placement. Quest guides and other addons that send waypoints to an arrow can send them here with nothing to set up.
 
-| Command | What it does |
-|---|---|
-| `/wp` | Open the window |
-| `/way [zone] X Y [name]` | Set a waypoint |
-| `/way [name]` | Go to the thing with that exact name, or search Find |
-| `/wp here` | Waypoint where you stand |
-| `/wp share [zone X Y]` | Share a spot, or where you are, in chat |
-| `/wp find [name]` | Search quests, NPCs, enemies, objects and items |
-| `/wp closest` | Point to the closest waypoint |
-| `/wp clear` | Remove the arrow's waypoint |
-| `/wp list` | List your waypoints |
-| `/wp arrow` | Show or hide the arrow |
-| `/wp help` | List every command |
+![Illustrated arrow demo, rendered from the addon's textures: the arrow turns, changes from gold to green and displays arrival text](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/arrow-demo.gif)
+
+*Illustrated arrow demo, rendered from the addon's textures.*
+
+The addon follows your client's language: English, Deutsch, Français, Español, Português, Русский, 한국어, 简体中文 or 繁體中文.
 
 ## Install
 
-Install with the CurseForge app (World of Warcraft > **Forever**), or unzip the download into `Interface\AddOns` in your WoW Forever folder (during the beta: `World of Warcraft\_classic_beta_\Interface\AddOns`). You get two folders: `WaypointTracker` and `WaypointTracker_Data` (the Find database, which loads only when you first open Find).
+Install with the CurseForge app (World of Warcraft → **Forever**), or unzip the download from this page into `Interface\AddOns` in your WoW Forever folder (during the beta: `World of Warcraft\_classic_beta_\Interface\AddOns`). Keep both folders: `WaypointTracker` and `WaypointTracker_Data`. The Find database loads only when you first open Find. Start or restart the game, enable both folders in the AddOns list, then type `/wp`.
+
+## Useful commands
+
+| Command | What it does |
+|---|---|
+| `/wp` | Open or close the window |
+| `/way 42 65` | Set a waypoint in your current zone |
+| `/wp find [name]` | Open Find and optionally search |
+| `/wp share` | Prepare your current location in chat |
+| `/wp clear` | Remove the current waypoint |
+
+See [Commands & Options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) for named waypoints, other zones and every setting.
 
 ## Questions
 
-**How do I set a waypoint in WoW Forever?** Type `/way 42 65` for your current zone, or `/way Westfall 56.3 47.1 Sentinel Hill` for another zone. Or type `/wp`, or hold Ctrl and right-click the world map.
+**How do I set a waypoint in another zone?** Type `/way Westfall 56.3 47.1 Sentinel Hill`, or choose the zone in `/wp` and enter its coordinates.
 
-**How do I find an NPC or quest giver?** Type `/wp find` and a name (or the title of an NPC you've seen, like `blacksmith`), then double-click a result. The arrow points to the closest spot.
+**How do I find an NPC or quest giver?** Type `/wp find` and a name (or a title like `blacksmith`), then double-click a result. The arrow points to the closest spot.
 
-**Does it send my data anywhere?** No. What it learns stays on your computer, and you share it only when you press **Share discoveries** and paste it into a GitHub issue.
+**Does it send my data anywhere?** What it learns stays on your computer. To contribute, press **Share discoveries** in Find and paste the export into a GitHub issue. See [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing), including how to correct a spot.
 
 **Does it work with my quest guide?** Yes. Addons that send waypoints to an arrow send them here, with nothing to set up.
 
-Website: https://sanjaygbhat.github.io/wowforever-waypoint-tracker/
-
-Source, feedback and translations: https://github.com/sanjaygbhat/wowforever-waypoint-tracker
+[Website](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/) · [Wiki](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Questions, feedback and translations](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues)
 
 Like it? You can support its development on GitHub Sponsors: https://github.com/sponsors/sanjaygbhat

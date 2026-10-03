@@ -4,7 +4,9 @@
 
 Waypoint Tracker adds a 3D waypoint arrow, coordinate commands, a quest/NPC/item finder and clickable map-pin sharing to World of Warcraft: Forever. This guide covers version **1.0.0**, client **1.60.1**, interface **16001**.
 
-![The arrow points toward your waypoint](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/arrow-demo.gif)
+[![A green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
+
+*In the game: flying near Grol'dom Farm with the waypoint name, distance and estimated travel time beneath the arrow. Open the image for a full-size view.*
 
 ## Start here
 

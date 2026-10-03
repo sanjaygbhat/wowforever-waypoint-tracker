@@ -247,7 +247,7 @@ h1 .tag { display: block; margin-top: 14px; font: 600 clamp(18px, 2.4vw, 24px)/1
 .trail { position: absolute; inset: 0; pointer-events: none; opacity: .22; }
 
 /* ---------- section titles ---------- */
-section { padding: 44px 0; }
+section { padding: 44px 0; scroll-margin-top: 110px; }
 .title {
   display: flex; align-items: center; gap: 16px; justify-content: center;
   margin: 0 0 26px; text-align: center;
@@ -316,7 +316,7 @@ section { padding: 44px 0; }
   padding: 14px 16px 16px;
   font: 16px/1.45 var(--f-ui);
   color: #fff;
-  scroll-margin-top: 80px;
+  scroll-margin-top: 110px;
 }
 .tip header { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
 .tip h3 { margin: 0; font: 18px/1.2 var(--f-ui); }
@@ -330,9 +330,10 @@ section { padding: 44px 0; }
 .tip:target { box-shadow: 0 0 0 2px var(--gold), 0 10px 24px rgba(0,0,0,.6); }
 
 /* ---------- screenshots ---------- */
-.shots { display: grid; grid-template-columns: 1.25fr 1fr; gap: 34px; align-items: start; }
+.shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px; align-items: start; }
 .shots figure { margin: 0; }
-.shots .stack { display: grid; gap: 34px; }
+.shots figure:first-child { grid-column: 1 / -1; }
+.shots .frame { display: block; }
 figcaption { font: 15px var(--f-ui); color: var(--gold-soft); margin-top: 14px; text-align: center; }
 
 /* ---------- stone panels ---------- */
@@ -420,7 +421,9 @@ footer p { margin: 0 0 6px; }
 }
 @media (max-width: 620px) {
   body { font-size: 17px; }
-  .loot, .paths { grid-template-columns: 1fr; }
+  .loot, .paths, .rewards { grid-template-columns: 1fr; }
+  section { padding: 30px 0; scroll-margin-top: 0; }
+  .tip { scroll-margin-top: 16px; }
   .bar { position: static; }
   .bar .wrap { padding-top: 8px; padding-bottom: 8px; }
   .bar nav { gap: 4px; flex-wrap: nowrap; overflow-x: auto; width: 100%; padding-bottom: 2px; }
@@ -449,6 +452,7 @@ footer p { margin: 0 0 6px; }
     <a class="brand" href="./"><img src="img/logo-400.png" alt="" width="34" height="34">Waypoint Tracker</a>
     <nav aria-label="Sections">
       <a href="#quest">Quest</a>
+      <a href="#in-game">In game</a>
       <a href="#loot">Features</a>
       <a href="#find">Find</a>
       <a href="#install">Install</a>
@@ -476,9 +480,9 @@ footer p { margin: 0 0 6px; }
         <p class="note">Free and open source · Version @VERSION@ · Client 1.60.1 · 9 languages</p>
       </div>
       <div class="stage">
-        <div class="plate">Follow the arrow</div>
+        <div class="plate">Illustrated arrow demo</div>
         <div class="frame">
-          <img src="img/arrow-demo.gif" width="480" height="270" alt="The Waypoint Tracker arrow turns to face the waypoint, goes from gold to green while walking, then shows You have arrived">
+          <img src="img/arrow-demo.gif" width="480" height="270" alt="Illustrated arrow demo rendered from addon textures: the arrow turns, changes from gold to green and displays arrival text">
         </div>
       </div>
     </div>
@@ -505,6 +509,27 @@ footer p { margin: 0 0 6px; }
           <a class="reward q-uncommon" href="#chime"><span class="icon q-uncommon"><svg><use href="#i-bell"/></svg></span><span>[Chime of Arrival]</span></a>
           <a class="reward q-uncommon" href="#cloak"><span class="icon q-uncommon"><svg><use href="#i-cloak"/></svg></span><span>[Cloak of Fewer Settings]</span></a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="in-game" aria-labelledby="shots-h">
+    <div class="wrap">
+      <h2 class="title" id="shots-h">In the game</h2>
+      <p class="sub">Three real screenshots from WoW Forever. Open any image at full size.</p>
+      <div class="shots">
+        <figure>
+          <a class="frame" href="img/01-arrow.jpg"><img src="img/01-arrow.jpg" width="1400" height="788" loading="lazy" alt="Open full-size screenshot: a green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it"></a>
+          <figcaption>Flying near Grol'dom Farm: “Trade Rep”, distance and estimated travel time beneath the arrow. <a href="img/01-arrow.jpg">Full-size arrow screenshot</a>.</figcaption>
+        </figure>
+        <figure>
+          <a class="frame" href="img/02-map.jpg"><img src="img/02-map.jpg" width="1130" height="636" loading="lazy" alt="Open full-size screenshot: the Silverpine Forest world map with waypoint pins and a gold arrow pointing toward Lady Sylvanas Windrunner, 777 yds away"></a>
+          <figcaption>Waypoint pins on the Silverpine Forest world map; the arrow points toward Lady Sylvanas Windrunner, 777 yds away. <a href="img/02-map.jpg">Full-size map screenshot</a>.</figcaption>
+        </figure>
+        <figure>
+          <a class="frame" href="img/03-window.jpg"><img src="img/03-window.jpg" width="978" height="508" loading="lazy" alt="Open full-size screenshot: coordinate fields, Find buttons and saved waypoints with Share buttons, beside More Options with arrow display, text and arrival settings"></a>
+          <figcaption>Coordinate fields, Find buttons and Share buttons beside saved waypoints, with display, text and arrival settings in More Options. <a href="img/03-window.jpg">Full-size window screenshot</a>.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -553,28 +578,6 @@ footer p { margin: 0 0 6px; }
           <p class="equip">Equip: Four basic settings. Colour styles, fading, hiding in combat or on flight paths, map pins, metres and more wait behind Show more options.</p>
           <p class="equip">Equip: Moves with the game's Edit Mode, with a spot for each layout.</p>
         </article>
-      </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="shots-h">
-    <div class="wrap">
-      <h2 class="title" id="shots-h">In the game</h2>
-      <div class="shots">
-        <figure>
-          <div class="frame"><img src="img/01-arrow.jpg" width="1400" height="788" loading="lazy" alt="Waypoint Tracker in WoW Forever: a green 3D arrow over a flying character in the Barrens, with the waypoint name, 932 yds and About 0:30 under it"></div>
-          <figcaption>On the way to a waypoint in the Barrens: name, distance and time to arrive.</figcaption>
-        </figure>
-        <div class="stack">
-          <figure>
-            <div class="frame"><img src="img/02-map.jpg" width="1130" height="636" loading="lazy" alt="The world map of Silverpine Forest with a Waypoint Tracker pin, and the gold arrow pointing to Lady Sylvanas Windrunner, 777 yds away"></div>
-            <figcaption>Your waypoints on the world map.</figcaption>
-          </figure>
-          <figure>
-            <div class="frame"><img src="img/03-window.jpg" width="978" height="508" loading="lazy" alt="The Waypoint Tracker window with zone, X and Y boxes, Find buttons, a list of waypoints with Share buttons, and the More Options panel"></div>
-            <figcaption>The window: set, find, share, and every option one click away.</figcaption>
-          </figure>
-        </div>
       </div>
     </div>
   </section>
