@@ -83,6 +83,12 @@ local function Parse(data)
         return base
     end
     local unitNames, objectNames, questNames, itemNames, zoneNames = names("units"), names("objects"), names("quests"), names("items"), names("zones")
+    -- the world's treasure chests, known by their English names in every language
+    local enObjects = NameTable(en.objects)
+    local function IsChest(id)
+        local f = enObjects[id]
+        return f and ns.Treasure and ns.Treasure.IsChestName(f[2]) or false
+    end
 
     DB.zoneNames = {}
     for id, f in pairs(zoneNames) do
@@ -112,6 +118,7 @@ local function Parse(data)
         if n and n[2] and n[2] ~= "" then
             local e = entry("object", id, n[2])
             e.fac, e.coords = f[2], f[3]
+            e.chest = IsChest(id) or nil
             DB.objects[id] = e
         end
     end
@@ -506,6 +513,10 @@ local function MergeStore(st, source)
             if type(l.name) == "string" and ((mine and not l.shared) or e.name == "") then
                 e.name, e.key, e.words = l.name, Geo.Squash(l.name), nil
             end
+            -- the curated database's names are English
+            if source == "curated" and ns.Treasure and ns.Treasure.IsChestName(l.name) then
+                e.chest = true
+            end
             e.extra = e.extra or {}
             Spots(l.spots, e.extra, source == "curated")
             e.points = nil
@@ -805,7 +816,7 @@ function DB.Points(e)
     for _, w in ipairs(e.world or {}) do
         local x, y = Geo.WorldToMap(w[1], w[3], w[4], w[2] ~= 0 and w[2] or nil)
         local m = w[2] ~= 0 and w[2] or select(3, Geo.WorldToMap(w[1], w[3], w[4]))
-        if x and m and x >= 0 and x <= 1 and y >= 0 and y <= 1 then
+        if x and y and m and x >= 0 and x <= 1 and y >= 0 and y <= 1 then
             pts[#pts + 1] = { m = m, x = x, y = y }
         end
     end
@@ -1064,7 +1075,7 @@ function DB.Search(text, kinds, opts, limit)
         if s and opts.zone and e.kind ~= "quest" then
             local inZone = false
             for _, p in ipairs(DB.Points(e)) do
-                if p.m == opts.zone then
+                if Geo.SameMap(p.m, opts.zone) then
                     inZone = true
                     break
                 end

@@ -38,6 +38,10 @@ Press **Share** beside a saved waypoint, or type `/wp share` to share where you 
 
 *In the game: coordinate fields, Find buttons and Share buttons beside saved waypoints. More Options is open alongside the window, showing arrow display, text and arrival settings. Open the image for a full-size view.*
 
+## Treasure hunt
+
+Tick **Treasure hunt** in the window, or type `/wp treasure`. Chests, rare spawns and other markers the game shows near you get a ping the moment they appear: a sound, a message on screen and a blinking taskbar icon. The arrow points straight at them, follows a rare that wanders, and lets go once it's taken, killed or gone. Rares someone else is already fighting are left out. Turn on **Lead me to known chest spots** to walk from one known chest spawn to the next while you wait.
+
 ## Make it yours
 
 Start with a few settings for arrow visibility, movement and size. **Show more options** adds colour styles, time to arrive, fading, hiding in combat or on flight paths, arrival distance and sound, world map and minimap pins, map coordinates and metres instead of yards. The arrow can point to your corpse when you die, then return to your waypoint.
@@ -63,6 +67,8 @@ Install with the Wago app, or unzip the download from this page into `Interface\
 | `/wp find [name]` | Open Find and optionally search |
 | `/wp share` | Prepare your current location in chat |
 | `/wp clear` | Remove the current waypoint |
+| `/wp treasure` | Turn treasure hunt on or off |
+| `/wp treasure status` | What treasure hunt sees right now and what it found recently |
 
 See [Commands & Options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) for named waypoints, other zones and every setting.
 
@@ -70,7 +76,7 @@ See [Commands & Options](https://github.com/sanjaygbhat/wowforever-waypoint-trac
 
 **How do I set a waypoint in another zone?** Type `/way Westfall 56.3 47.1 Sentinel Hill`, or choose the zone in `/wp` and enter its coordinates.
 
-**How do I find an NPC or quest giver?** Type `/wp find` and a name (or a title like `blacksmith`), then double-click a result. The arrow points to the closest spot.
+**How do I find an NPC or quest giver?** Type `/wp find` and a name (or the title of an NPC you've seen, like `blacksmith`), then double-click a result. The arrow points to the closest spot.
 
 **Does it send my data anywhere?** What it learns stays on your computer. To contribute, press **Share discoveries** in Find and paste the export into a GitHub issue. See [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing), including how to correct a spot.
 

@@ -20,4 +20,7 @@
     <Binding name="WAYPOINTTRACKER_ARROW">
         WaypointTracker_ToggleArrow()
     </Binding>
+    <Binding name="WAYPOINTTRACKER_TREASURE">
+        WaypointTracker_ToggleTreasure()
+    </Binding>
 </Bindings>

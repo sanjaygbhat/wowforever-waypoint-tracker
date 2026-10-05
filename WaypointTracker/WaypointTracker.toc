@@ -11,7 +11,7 @@
 ## Notes-zhTW: 設定路徑點並跟隨3D箭頭前進。預設簡單，其他功能一鍵可達。
 ## Notes-koKR: 웨이포인트를 찍고 3D 화살표를 따라가세요. 기본은 간단하게, 나머지는 클릭 한 번으로.
 ## Author: sanjaygbhat
-## Version: 1.0.0
+## Version: 1.1.0
 ## Category: Map & Minimap
 ## IconTexture: Interface\AddOns\WaypointTracker\Media\Icon
 ## SavedVariables: WaypointTrackerDB
@@ -40,6 +40,7 @@ Waypoints.lua
 ForeverQuests.lua
 Learn.lua
 Database.lua
+Treasure.lua
 Places.lua
 Share.lua
 Follow.lua

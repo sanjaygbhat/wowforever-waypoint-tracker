@@ -69,12 +69,41 @@ function Geo.MapToWorld(mapID, x, y)
     end
 end
 
+-- Two map IDs for the same ground: the game has a few (phased copies, and
+-- WoW Forever's Zephras Isle is both 2521 and 2665).
+local sameCache = {}
+function Geo.SameMap(a, b)
+    if a == b then
+        return a ~= nil
+    end
+    if type(a) ~= "number" or type(b) ~= "number" then
+        return false
+    end
+    local key = a < b and (a .. ":" .. b) or (b .. ":" .. a)
+    local same = sameCache[key]
+    if same == nil then
+        local ca, ax0, ay0 = Geo.MapToWorld(a, 0, 0)
+        local cb, bx0, by0 = Geo.MapToWorld(b, 0, 0)
+        local _, ax1, ay1 = Geo.MapToWorld(a, 1, 1)
+        local _, bx1, by1 = Geo.MapToWorld(b, 1, 1)
+        same = ca ~= nil and ca == cb and ax1 ~= nil and bx1 ~= nil
+            and math.abs(ax0 - bx0) < 1 and math.abs(ay0 - by0) < 1
+            and math.abs(ax1 - bx1) < 1 and math.abs(ay1 - by1) < 1
+        sameCache[key] = same
+    end
+    return same
+end
+
 -- Position of a world point on a given map (may be outside 0..1).
 function Geo.WorldToMap(cont, wx, wy, mapID)
     local ok, resultMap, pos = pcall(C_Map.GetMapPosFromWorldPos, cont, Vector(wx, wy), mapID)
     if ok and resultMap and pos then
         local x, y = ns.XY(pos)
-        return Num(x), Num(y), resultMap
+        x, y = Num(x), Num(y)
+        -- both or nothing: a half-filled spot can't be compared or drawn
+        if x and y then
+            return x, y, resultMap
+        end
     end
 end
 

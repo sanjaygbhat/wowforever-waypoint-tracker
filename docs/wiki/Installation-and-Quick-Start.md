@@ -4,7 +4,7 @@
 
 ## Install both folders
 
-Download **WaypointTracker-v1.0.0.zip** from [the GitHub release](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/tag/v1.0.0), or install it with the [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker) app (World of Warcraft > **Forever**) or from [Wago](https://addons.wago.io/addons/waypoint-tracker).
+Download the **WaypointTracker** zip from [the latest GitHub release](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest), or install it with the [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker) app (World of Warcraft > **Forever**) or from [Wago](https://addons.wago.io/addons/waypoint-tracker).
 
 1. Extract the ZIP into your Forever **Interface/AddOns** folder. During the beta this is `World of Warcraft/_classic_beta_/Interface/AddOns/`.
 2. Check that these files are directly inside the two addon folders:

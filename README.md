@@ -62,7 +62,8 @@
 
 - **Set a waypoint your way:** a small window, `/way`, a quest or place name, the Find window, or Ctrl + Right-click on the map.
 - **An arrow that tells you how close you are:** gold far away, green as you get there. It never catches mouse clicks, so right-click to attack always works.
-- **Simple by default:** four basic settings. Everything else is behind **Show more options**.
+- **Treasure hunt:** a ping the moment a chest or rare spawns near you, and the arrow points straight at it.
+- **Simple by default:** a few basic settings. Everything else is behind **Show more options**.
 - **Typing is forgiving:** pick zones from a list that filters as you type. Typos, accents and capital letters don't matter, and pasted coordinates like `45.2 67.8` or `45,2 67,8` split themselves into X and Y.
 - **Find built in:** quests, NPCs, enemies, objects, items and places, including WoW Forever's new content, plus one-click "nearest mailbox / innkeeper / repair" buttons.
 - **Share in one click:** send any spot, or where you are, to chat with a clickable map pin, without setting a waypoint first.
@@ -173,6 +174,20 @@ Played a lot? Attach your saved file to the issue instead: `WTF/Account/<your ac
 
 Friends can also swap discoveries directly: one presses **Share discoveries**, the other presses **Import** and pastes. The shared text only has names and places, nothing about your character or account.
 
+## 💎 Treasure hunt
+
+Tick **Treasure hunt** in the window (or type `/wp treasure`, or set a key binding) and Waypoint Tracker watches for loot around you:
+
+- **Chests and treasure** the game marks on your minimap, and a chest right in front of you.
+- **Rare spawns:** rare and rare elite enemies on your minimap, nameplates or target, placed at their known spawn. Ones someone else is already fighting are left out.
+- **Events and other markers** the game shows on your minimap.
+
+The moment one appears you hear a ping and see it on screen, and the taskbar icon blinks if you're in another window. The arrow points at it right away, follows a rare that wanders, and lets it go once it's taken, killed or gone, then goes back to your own waypoint. On a busy server, that's the head start you need.
+
+Turn on **Lead me to known chest spots** and, while nothing has appeared, the arrow walks you from one known chest spawn to the next. Each part has its own switch under **Show more options → Treasure Hunt**.
+
+---
+
 ## 🎨 The arrow talks in colours
 
 <p align="center">
@@ -197,6 +212,7 @@ The window shows only what most players touch:
 | Move Arrow / Reset (buttons) | Over your character. **Reset** also brings back the default size and visibility. |
 | Arrow size | 100% |
 | Arrow visibility (transparency) | 80% |
+| Treasure hunt | Off |
 
 Tick **Show more options** and a second panel opens beside the window:
 
@@ -226,6 +242,13 @@ Tick **Show more options** and a second panel opens beside the window:
 | | Ctrl + Right-click the world map to add a waypoint | On |
 | | Show a box with my coordinates | Off |
 | | Follow the game's map pins (and map pin links from chat) | On |
+| Treasure Hunt | Treasure hunt | Off |
+| | Chests and treasure | On |
+| | Rare spawns | On |
+| | Events and other markers | On |
+| | Lead me to known chest spots | Off |
+| | Ping me when something appears | On |
+| | Point the arrow at it right away | On |
 | General | Point to the quest I'm tracking | Off |
 | | Point to my corpse when I die | On |
 | | Always point to the closest waypoint | Off |
@@ -240,7 +263,7 @@ Every option has a tooltip in plain words. **Reset All Settings** puts everythin
 
 </details>
 
-You can also find the addon under **Options → AddOns → Waypoint Tracker**, in the minimap's addon list, and in **Key Bindings → AddOns** (open the window, open Find, add a waypoint where you stand, share your location, remove the current one, point to the closest one, show or hide the arrow).
+You can also find the addon under **Options → AddOns → Waypoint Tracker**, in the minimap's addon list, and in **Key Bindings → AddOns** (open the window, open Find, add a waypoint where you stand, share your location, remove the current one, point to the closest one, show or hide the arrow, turn treasure hunt on or off).
 
 ---
 
@@ -261,6 +284,8 @@ You can also find the addon under **Options → AddOns → Waypoint Tracker**, i
 | `/wp list` | List your waypoints with distances |
 | `/wp closest` or `/cway` | Point to the closest waypoint |
 | `/wp arrow` | Show or hide the arrow |
+| `/wp treasure` | Turn treasure hunt on or off |
+| `/wp treasure status` | What treasure hunt sees right now and what it found recently |
 | `/wp help` | Show this list in game |
 
 Zone names are the ones your game client shows, so they work in every language. Part of a name is enough (`/way west 56 47`), and so is typing it without spaces or accents.
@@ -410,6 +435,12 @@ Two ways. To move the text on its own, first tick **Move the text separately** (
 <summary><b>Can I use it together with another waypoint addon?</b></summary>
 
 Yes. If the other addon already uses `/way`, Waypoint Tracker leaves it alone and you use `/wp`, which does the same things. Addons that send waypoints to an arrow send them here when no other arrow addon is running (see [For addon authors](#-for-addon-authors)).
+</details>
+
+<details>
+<summary><b>Can it tell me when a chest or rare spawns near me?</b></summary>
+
+Yes. Turn on **Treasure hunt** in the window or with `/wp treasure`. When a chest, a rare or another marker the game shows appears near you, you hear a ping, the arrow points at it, and the waypoint goes away once it's taken, killed or gone.
 </details>
 
 <details>

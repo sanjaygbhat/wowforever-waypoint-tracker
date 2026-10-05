@@ -622,7 +622,7 @@ C_Timer = {
         table.insert(M.timers, { at = M.now + delay, fn = fn })
     end,
 }
-SOUNDKIT = { MAP_PING = 3175, IG_MAINMENU_OPTION_CHECKBOX_ON = 856 }
+SOUNDKIT = { MAP_PING = 3175, IG_MAINMENU_OPTION_CHECKBOX_ON = 856, RAID_WARNING = 8959 }
 Enum = { UIMapType = { Cosmic = 0, World = 1, Continent = 2, Zone = 3, Dungeon = 4, Micro = 5, Orphan = 6 } }
 Enum.TooltipDataType = { Item = 0, Spell = 1, Unit = 2, Corpse = 3, Object = 4 }
 
@@ -935,17 +935,61 @@ C_AreaPoiInfo = {
     end,
     GetAreaPOIInfo = function() end,
 }
+-- the game's map markers: M.vignettes[guid] = { info fields..., pos = { x, y } }
+M.vignettes = {
+    ["v-1"] = { name = "Mother Fang", onWorldMap = true, isDead = false, pos = { 0.61, 0.5 } },
+}
 C_VignetteInfo = {
     GetVignettes = function()
-        return { "v-1" }
+        local out = {}
+        for guid in pairs(M.vignettes) do
+            out[#out + 1] = guid
+        end
+        table.sort(out)
+        return out
     end,
-    GetVignetteInfo = function()
-        return { name = "Mother Fang", onWorldMap = true, isDead = false }
+    GetVignetteInfo = function(guid)
+        local v = M.vignettes[guid]
+        if not v then
+            return nil
+        end
+        local info = {}
+        for k, val in pairs(v) do
+            if k ~= "pos" then
+                info[k] = val
+            end
+        end
+        info.vignetteGUID = guid
+        return info
     end,
-    GetVignettePosition = function()
-        return CreateVector2D(0.61, 0.5)
+    GetVignettePosition = function(guid)
+        local v = M.vignettes[guid]
+        if v and v.pos then
+            return CreateVector2D(v.pos[1], v.pos[2])
+        end
     end,
 }
+function UnitClassification(unit)
+    local u = M.units[unit]
+    return u and u.class or "normal"
+end
+function UnitIsDead(unit)
+    local u = M.units[unit]
+    return u and u.dead or false
+end
+function UnitIsTapDenied(unit)
+    local u = M.units[unit]
+    return u and u.tapped or false
+end
+M.raidNotices, M.flashes = {}, 0
+RaidWarningFrame = {}
+ChatTypeInfo = { RAID_WARNING = { r = 1, g = 0.28, b = 0 } }
+function RaidNotice_AddMessage(_, text)
+    table.insert(M.raidNotices, text)
+end
+function FlashClientIcon()
+    M.flashes = M.flashes + 1
+end
 M.questDialog = {}
 function GetQuestID()
     return M.questDialog.id or 0

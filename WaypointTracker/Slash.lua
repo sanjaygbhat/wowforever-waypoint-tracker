@@ -7,7 +7,7 @@ local function Help()
     ns.Print(L.HELP_HEADER, true)
     -- when another addon owns /way, /wp does the same job
     local wayTaken = ns.IsOtherArrowAddonPresent()
-    for _, key in ipairs({ "HELP_OPEN", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_HELP" }) do
+    for _, key in ipairs({ "HELP_OPEN", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS", "HELP_HELP" }) do
         local line = L[key]
         if wayTaken then
             line = line:gsub("/way ", "/wp ")
@@ -160,6 +160,12 @@ local function Handle(msg, isWayCommand)
         end
     elseif cmd == "share" then
         ShareFromText(rest)
+    elseif cmd == "treasure" or cmd == "hunt" or cmd == "treasures" then
+        if rest:lower() == "status" then
+            ns.Treasure.Status()
+        else
+            ns.Treasure.Toggle()
+        end
     elseif cmd == "find" or cmd == "search" then
         ns.Find.Show(rest)
     elseif cmd == "options" or cmd == "config" or cmd == "show" then
