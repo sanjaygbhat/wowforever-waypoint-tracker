@@ -20,6 +20,7 @@
 | `/wp clear all` | Remove all waypoints |
 | `/wp arrow` | Show or hide the arrow |
 | `/wp treasure` | Turn treasure hunt on or off |
+| `/wp treasure status` | What treasure hunt sees right now and what it found recently |
 | `/wp help` | Show the command list in game |
 
 Zone names follow your game client's language. Partial zone names work. If another addon already uses `/way`, Waypoint Tracker leaves it to that addon and tells you once. `/wp` does the same things.

@@ -1075,7 +1075,7 @@ function DB.Search(text, kinds, opts, limit)
         if s and opts.zone and e.kind ~= "quest" then
             local inZone = false
             for _, p in ipairs(DB.Points(e)) do
-                if p.m == opts.zone then
+                if Geo.SameMap(p.m, opts.zone) then
                     inZone = true
                     break
                 end

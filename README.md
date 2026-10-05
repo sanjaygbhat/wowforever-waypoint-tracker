@@ -285,6 +285,7 @@ You can also find the addon under **Options → AddOns → Waypoint Tracker**, i
 | `/wp closest` or `/cway` | Point to the closest waypoint |
 | `/wp arrow` | Show or hide the arrow |
 | `/wp treasure` | Turn treasure hunt on or off |
+| `/wp treasure status` | What treasure hunt sees right now and what it found recently |
 | `/wp help` | Show this list in game |
 
 Zone names are the ones your game client shows, so they work in every language. Part of a name is enough (`/way west 56 47`), and so is typing it without spaces or accents.

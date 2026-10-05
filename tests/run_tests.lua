@@ -645,10 +645,10 @@ if M.locale == "enUS" then
     check(grund[1] and grund[1].id == 2756, "finds an NPC only the curated database names")
     local applejack = ns.DB.Search("Applejack Still", { quest = true }, {})
     check(applejack[1] and applejack[1].id == 91736, "finds a curated quest the game client's quest table lacks")
-    -- a quest started at an object no source has a name for still leads there
+    -- a quest started at an object leads there
     local wanted = ns.DB.quests[93318]
     local starts = wanted and ns.DB.QuestTargets(wanted, "start") or {}
-    check(starts[1] and starts[1].name == "" and ns.DB.Points(starts[1])[1], "nameless quest object still gives the quest's start")
+    check(starts[1] and ns.DB.Points(starts[1])[1], "a quest started at an object leads to that object")
     check(#ns.DB.Search("", { object = true }, {}) == 0, "nameless entries never show up in a search")
 end
 
@@ -1434,6 +1434,65 @@ do
     check(ns.Get("treasureHunt") == false and next(T.Targets()) == nil and WP.Count() == 0, "/wp treasure turns it off and lets everything go")
     ns.DB.objects[990002] = nil
     M.vignettes = { ["v-1"] = { name = "Mother Fang", onWorldMap = true, isDead = false, pos = { 0.61, 0.5 } } }
+end
+
+-- treasure hunt keeps going: one find after another, each with its own ping
+do
+    local T = ns.Treasure
+    WP.ClearAll(true)
+    M.vignettes, M.sounds, M.raidNotices = {}, {}, {}
+    ns.Set("treasureHunt", true)
+    M.Tick(2)
+    local pings = 0
+    for i = 1, 3 do
+        local guid = "GameObject-0-1-0-0-2843-00000001" .. i
+        M.vignettes["v" .. i] = { name = "Solid Chest", onMinimap = true, atlasName = "VignetteLoot", objectGUID = guid, pos = { 0.40 + i * 0.01, 0.6 } }
+        M.Tick(2)
+        local t = T.Targets()[guid]
+        check(t and t.wp and WP.GetActive() == t.wp and #M.sounds == pings + 1, "chest " .. i .. " in a row gets its own ping and the arrow")
+        pings = #M.sounds
+        M.vignettes["v" .. i] = nil
+        M.Tick(2)
+        check(T.Targets()[guid] == nil and WP.Count() == 0, "chest " .. i .. " taken: let go")
+    end
+    for i = 1, 2 do
+        local guid = "Creature-0-1-0-0-471-00000002" .. i
+        M.vignettes["r" .. i] = { name = "Mother Fang", onMinimap = true, atlasName = "VignetteKill", objectGUID = guid, pos = { 0.5, 0.5 + i * 0.01 } }
+        M.Tick(2)
+        check(T.Targets()[guid] and #M.sounds == pings + 1, "rare " .. i .. " in a row gets its own ping")
+        pings = #M.sounds
+        M.vignettes["r" .. i].isDead = true
+        M.Tick(2)
+        M.vignettes["r" .. i] = nil
+        M.Tick(2)
+    end
+    -- /wp treasure status says what it sees and what it found
+    M.vignettes = { now = { name = "Solid Chest", onMinimap = true, atlasName = "VignetteLoot", pos = { 0.47, 0.6 } }, far = { name = "Far Away", onWorldMap = true, pos = { 0.1, 0.1 } } }
+    M.Tick(2)
+    local before = #M.printed
+    M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, "treasure status")
+    local out = table.concat(M.printed, "\n", before + 1)
+    check(ns.Get("treasureHunt") == true and out:find(L.TREASURE_STATUS_MARKERS:format(1), 1, true) and out:find(L.TREASURE_STATUS_MAP_ONLY:format(1), 1, true)
+        and out:find(L.TREASURE_STATUS_RECENT, 1, true) and out:find(L.TREASURE_VIA_MARKER, 1, true), "/wp treasure status lists markers and recent finds without turning it off")
+    M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, "treasure")
+    check(ns.Get("treasureHunt") == false and WP.Count() == 0, "/wp treasure still turns it off")
+    M.vignettes = { ["v-1"] = { name = "Mother Fang", onWorldMap = true, isDead = false, pos = { 0.61, 0.5 } } }
+end
+
+-- the same ground under two map IDs (Zephras Isle is 2521 and 2665)
+do
+    M.maps[2665] = { mapID = 2665, name = "Zephras Isle", mapType = 3, parentMapID = 0, cont = 2800, top = 3000, left = 3000, w = 3000, h = 3000 }
+    check(ns.Geo.SameMap(2521, 2665) and ns.Geo.SameMap(2665, 2521) and not ns.Geo.SameMap(2521, 37) and not ns.Geo.SameMap(nil, nil), "two map IDs for the same ground count as one zone")
+    local e = { kind = "npc", id = 990077, name = "Skyborne Test Greeter", key = "skyborne test greeter", points = { { m = 2521, x = 0.5, y = 0.5 } } }
+    ns.DB.units[990077] = e
+    local list = ns.DB.Search("skyborne test", { npc = true, enemy = true }, { zone = 2665 })
+    local found = false
+    for _, r in ipairs(list) do
+        found = found or r == e
+    end
+    check(found, "This zone only finds Zephras Isle's NPCs on either of its maps")
+    ns.DB.units[990077] = nil
+    M.maps[2665] = nil
 end
 
 -- a world position the game maps to a half-filled spot is skipped, not an error

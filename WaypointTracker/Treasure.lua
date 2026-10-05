@@ -51,6 +51,8 @@ local targets = {} -- key (GUID, or "spot") -> { kind, name, m, x, y, wp, seen, 
 local done = {} -- key -> when it was taken, killed or let go
 local visited = {} -- known spot -> when you checked it
 local lastAlert = -100
+local history = {} -- the last few finds, newest first: { at, kind, name, via }
+local HISTORY_SIZE = 5
 local chestEntries -- database objects that are chests, once it's loaded
 
 local function Now()
@@ -155,8 +157,8 @@ local function Done(key)
 end
 
 -- Seen (again): remember it, ping the first time, and keep its waypoint
--- where it is.
-local function Seen(key, kind, name, m, x, y)
+-- where it is. via says how it was found ("marker", "unit", "front").
+local function Seen(key, kind, name, m, x, y, via)
     local now = Now()
     if done[key] and now - done[key] < DONE_MEMORY then
         return
@@ -172,6 +174,10 @@ local function Seen(key, kind, name, m, x, y)
             t.m, t.x, t.y = m, x, y
         end
         t.announced = kind ~= "spot"
+        if kind ~= "spot" then
+            table.insert(history, 1, { at = now, kind = kind, name = name, via = via })
+            history[HISTORY_SIZE + 1] = nil
+        end
         Alert(t)
     end
     t.seen = now
@@ -241,7 +247,7 @@ local function ScanVignettes()
                     x, y = nil, nil
                 end
                 if name and name ~= "" then
-                    local t = Seen(key, VignetteKind(info), name, x and m, x, y)
+                    local t = Seen(key, VignetteKind(info), name, x and m, x, y, "marker")
                     if t then
                         t.vig = true
                         seenNow[key] = true
@@ -317,7 +323,7 @@ function Treasure.LookAt(unit)
     if not (t and t.m) then
         m, x, y = KnownSpawn(guid)
     end
-    t = Seen(guid, "rare", ns.CleanText(Plain(UnitName(unit)), 60), m, x, y)
+    t = Seen(guid, "rare", ns.CleanText(Plain(UnitName(unit)), 60), m, x, y, "unit")
     if t then
         t.unitSeen = Now()
     end
@@ -346,7 +352,7 @@ function Treasure.CheckInFront()
     end
     local name = ns.CleanText(Plain(UnitName("softinteract")), 60)
     if IsChest(id, name) then
-        local t = Seen(guid, "chest", name or "?")
+        local t = Seen(guid, "chest", name or "?", nil, nil, nil, "front")
         if t then
             t.here = true
         end
@@ -467,6 +473,54 @@ local function Start()
     chestEntries = nil
     Treasure.Scan()
     KnownSpots()
+end
+
+-- What treasure hunt sees right now (/wp treasure status).
+local VIA = { marker = "TREASURE_VIA_MARKER", unit = "TREASURE_VIA_UNIT", front = "TREASURE_VIA_FRONT" }
+function Treasure.Status()
+    ns.Print(On() and L.TREASURE_ON or L.TREASURE_OFF, true)
+    local guids
+    if C_VignetteInfo and C_VignetteInfo.GetVignettes and C_VignetteInfo.GetVignetteInfo then
+        local ok, list = pcall(C_VignetteInfo.GetVignettes)
+        guids = ok and type(list) == "table" and list or nil
+    end
+    if not guids then
+        ns.Print(L.TREASURE_STATUS_NO_MARKERS, true)
+    else
+        local shown, mapOnly = {}, 0
+        for _, vguid in ipairs(guids) do
+            local ok, info = pcall(C_VignetteInfo.GetVignetteInfo, Plain(vguid))
+            if ok and type(info) == "table" then
+                if Plain(info.onMinimap) then
+                    local name = ns.CleanText(Plain(info.name), 60) or "?"
+                    shown[#shown + 1] = ("%s (%s)"):format(name, L[LABEL[VignetteKind(info)]])
+                else
+                    mapOnly = mapOnly + 1
+                end
+            end
+        end
+        ns.Print(L.TREASURE_STATUS_MARKERS:format(#shown), true)
+        for _, line in ipairs(shown) do
+            ns.Print("  " .. line, true)
+        end
+        if mapOnly > 0 then
+            ns.Print("  " .. L.TREASURE_STATUS_MAP_ONLY:format(mapOnly), true)
+        end
+    end
+    local tracking = 0
+    for _ in pairs(targets) do
+        tracking = tracking + 1
+    end
+    ns.Print(L.TREASURE_STATUS_TRACKING:format(tracking), true)
+    if not history[1] then
+        ns.Print(L.TREASURE_STATUS_NONE, true)
+        return
+    end
+    ns.Print(L.TREASURE_STATUS_RECENT, true)
+    local now = Now()
+    for _, h in ipairs(history) do
+        ns.Print(("  %s (%s, %s)"):format(Title(h), L[VIA[h.via] or "TREASURE_VIA_MARKER"], L.TREASURE_STATUS_AGO:format(math.floor((now - h.at) / 60))), true)
+    end
 end
 
 function Treasure.Toggle()

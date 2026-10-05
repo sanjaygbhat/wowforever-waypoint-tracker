@@ -68,6 +68,7 @@ Install with the CurseForge app (World of Warcraft → **Forever**), or unzip th
 | `/wp share` | Prepare your current location in chat |
 | `/wp clear` | Remove the current waypoint |
 | `/wp treasure` | Turn treasure hunt on or off |
+| `/wp treasure status` | What treasure hunt sees right now and what it found recently |
 
 See [Commands & Options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) for named waypoints, other zones and every setting.
 

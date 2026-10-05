@@ -7,10 +7,13 @@
 - The arrow points straight at it, follows a rare that wanders, and lets go once it's taken, killed or gone, then returns to your own waypoint.
 - Rares come from your minimap, nameplates and target, placed at their known spawn. Ones someone else is already fighting are left out.
 - A chest right in front of you pings too, and looting it clears it.
+- `/wp treasure status` lists the markers the game shows around you and your most recent finds, with how each was found.
 - **Lead me to known chest spots** walks you from one known chest spawn to the next while nothing has appeared.
 - Each part has its own switch under **Show more options → Treasure Hunt**.
 
 **Everything else**
+- Find's database is refreshed with the latest WoW Forever data: more of Zephras Isle, the Skyborne arrival in Mulgore, and new NPCs, quests and items across Azeroth.
+- **This zone only** recognises every map the game uses for a zone, including both of Zephras Isle's.
 - Find searches smoothly for any name, including ones it hasn't learned yet, and places every spot cleanly on the map in WoW Forever's zones.
 - `/way`, `/wayb` and `/cway` go to whichever addon already uses them, and `/wp` does the same things.
 - Each release includes a `release.json`, so addon managers install the WoW Forever build directly.
