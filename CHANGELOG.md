@@ -13,6 +13,7 @@
 
 **Everything else**
 - Find's database is refreshed with the latest WoW Forever data: more of Zephras Isle, the Skyborne arrival in Mulgore, and new NPCs, quests and items across Azeroth.
+- Players' discoveries add 372 NPCs, 166 quests and the stock and drops of 463 items across WoW Forever, like Yorn Grimtotem of the Earthen Ring in Mulgore.
 - **This zone only** recognises every map the game uses for a zone, including both of Zephras Isle's.
 - Find searches smoothly for any name, including ones it hasn't learned yet, and places every spot cleanly on the map in WoW Forever's zones.
 - `/way`, `/wayb` and `/cway` go to whichever addon already uses them, and `/wp` does the same things.

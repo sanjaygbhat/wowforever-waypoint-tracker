@@ -2,7 +2,7 @@
 
 **Set a waypoint. Follow the arrow. That's it.**
 
-Waypoint Tracker adds a 3D waypoint arrow, coordinate commands, a quest/NPC/item finder and clickable map-pin sharing to World of Warcraft: Forever. This guide covers version **1.0.0**, client **1.60.1**, interface **16001**.
+Waypoint Tracker adds a 3D waypoint arrow, coordinate commands, a quest/NPC/item finder, clickable map-pin sharing and a treasure hunt that pings you when a chest or rare appears nearby to World of Warcraft: Forever. This guide covers version **1.1.0**, client **1.60.1**, interface **16001**.
 
 [![A green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 
@@ -23,10 +23,11 @@ Waypoint Tracker adds a 3D waypoint arrow, coordinate commands, a quest/NPC/item
 2. Type `/way 42 65` to set a waypoint in your current zone, or hold **Ctrl** and **right-click** the world map.
 3. Follow the arrow. It changes from gold to green as you approach.
 4. Open **Find** to search a quest, NPC, enemy, object or item; double-click a result and the arrow points to its closest spot.
+5. Tick **Treasure hunt** (or type `/wp treasure`) to get a ping and the arrow the moment a chest or rare spawns near you.
 
 ## Downloads and help
 
-- [GitHub release v1.0.0](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/tag/v1.0.0)
+- [Latest GitHub release](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest)
 - [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker) · [Wago Addons](https://addons.wago.io/addons/waypoint-tracker)
 - [Website](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/)
 - [Questions, ideas and translations](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues)

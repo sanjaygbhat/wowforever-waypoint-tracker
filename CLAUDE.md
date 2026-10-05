@@ -1,6 +1,6 @@
 # Waypoint Tracker: notes for working on this repository
 
-A World of Warcraft addon for **World of Warcraft: Forever** (WoW Forever; client 1.60.1, `## Interface: 16001`, install folder `_classic_beta_` during the beta, launch November 4, 2026). Version **1.0.0** is the first public release.
+A World of Warcraft addon for **World of Warcraft: Forever** (WoW Forever; client 1.60.1, `## Interface: 16001`, install folder `_classic_beta_` during the beta, launch November 4, 2026). Version **1.0.0** was the first public release; **1.1.0** adds treasure hunt.
 
 ## Layout
 
