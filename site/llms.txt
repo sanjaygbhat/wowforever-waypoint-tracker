@@ -1,0 +1,27 @@
+# Waypoint Tracker
+
+> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). A 3D arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find window, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Any spot can be shared in chat as a clickable map pin.
+
+Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese, Traditional Chinese.
+
+## Get it
+
+- [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker): in the CurseForge app choose World of Warcraft > Forever and search for Waypoint Tracker
+- [Wago](https://addons.wago.io/addons/waypoint-tracker)
+- [GitHub releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest): unzip into `Interface\AddOns` in the WoW Forever folder (during the beta, `World of Warcraft\_classic_beta_\Interface\AddOns`). The zip holds two folders, `WaypointTracker` and `WaypointTracker_Data`.
+
+## Key facts
+
+- `/way 42 65` sets a waypoint in the current zone; `/way Westfall 56.3 47.1 Sentinel Hill` in another zone; `/way hogger` goes to something by name. `/wp` opens the window, `/wp find` searches, `/wp share` shares a spot in chat, `/wp here` marks where you stand, `/wp closest` points to the closest waypoint.
+- Find covers the classic world and WoW Forever's new zones (Mount Hyjal, Riverglades, Zephras Isle where the Skyborne begin, Shen'dralas), with nearest-mailbox, innkeeper, flight master, repair, bank and auction house buttons.
+- The addon learns while you play (NPCs and enemies around you with their titles, vendor stock, quest givers, loot sources) and keeps only what's new, on the player's computer. Players share discoveries only by choice: Share discoveries in Find, pasted into a GitHub issue.
+- Other addons that send waypoints to an arrow (quest guides, treasure maps) send them to Waypoint Tracker with nothing to set up.
+- Treasure hunt (`/wp treasure`, off until turned on): a ping (sound, on-screen message, blinking taskbar) the moment a chest, rare spawn or other minimap marker appears near the player; the arrow points at it, follows a wandering rare, and the waypoint goes once it's taken, killed or gone. Optionally walks the player between known chest spawn spots. `/wp treasure status` lists what it sees and recent finds.
+- The arrow moves with the game's Edit Mode and never catches mouse clicks.
+
+## Docs
+
+- [Website](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/)
+- [README](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/README.md): full feature list, options with defaults, commands, FAQ, API for addon authors
+- [Changelog](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md)
+- [Wiki](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki): install, commands and options, troubleshooting, discoveries

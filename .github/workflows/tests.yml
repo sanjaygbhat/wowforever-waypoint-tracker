@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1 (the version WoW uses)
+        run: sudo apt-get update && sudo apt-get install -y lua5.1
+      - name: Syntax check
+        run: for f in WaypointTracker/*.lua WaypointTracker/Locales/*.lua WaypointTracker_Data/*.lua; do luac5.1 -p "$f"; done
+      - name: Translations complete
+        run: lua5.1 tests/check_locales.lua
+      - name: Play-through tests in every language
+        run: |
+          for l in enUS deDE frFR esES esMX ptBR ruRU zhCN zhTW koKR; do
+            echo "== $l"
+            WT_LOCALE=$l lua5.1 tests/run_tests.lua
+          done
+      - name: Game API use
+        run: lua5.1 tests/check_api.lua
+      - name: Positions as plain tables (as in WoW Forever)
+        run: WT_PLAIN_VECTORS=1 lua5.1 tests/run_tests.lua
+      - name: Client without the optional API
+        run: |
+          lua5.1 tests/run_bare.lua
+          WT_PLAIN_VECTORS=1 lua5.1 tests/run_bare.lua
+      - name: Discoveries merge tool
