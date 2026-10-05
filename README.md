@@ -477,7 +477,7 @@ python3 tools/merge_discoveries.py shared/*.txt WaypointTracker.lua   # players'
 python3 tests/test_merge_discoveries.py                    # checks the merge tool
 ```
 
-Push a tag like `v1.0.0` and GitHub Actions tests, builds the release zip and uploads it to CurseForge and Wago. The website in `site/` is built with `sh tools/build_site.sh` and published from `main` by GitHub Pages. The full launch checklist is in [`docs/release/CURSEFORGE_AGENT_PACK.md`](docs/release/CURSEFORGE_AGENT_PACK.md), and the in-game release test (with the screenshot shoot) is [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md).
+Push a tag like `v1.0.0` and GitHub Actions tests, builds the release zip and uploads it to CurseForge and Wago. The website in `site/` is built with `sh tools/build_site.sh` and published from `main` by GitHub Pages. The in-game release test (with the screenshot shoot) is [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md).
 
 ---
 

@@ -525,7 +525,7 @@ Pick the better faction version of each shot. Aim for a mix, three Horde and thr
 - **Size:** keep the full resolution. If a PNG is over about 5 MB, save it as JPG at quality 90–95.
 - **No edits** to the UI or the world. They must stay real in-game screenshots.
 - Check each image at a quarter of its size. The arrow's distance and the window titles should still be readable.
-- `docs/screenshots/` already has `01-arrow.jpg`, `02-map.jpg` and `03-window.jpg`. Add new shots after them (`04-share.jpg`, `05-find.jpg` and so on), list them in `docs/screenshots/README.md`, and add them to the README and the CurseForge gallery (`docs/release/CURSEFORGE_AGENT_PACK.md`, section 5).
+- `docs/screenshots/` already has `01-arrow.jpg`, `02-map.jpg` and `03-window.jpg`. Add new shots after them (`04-share.jpg`, `05-find.jpg` and so on), list them in `docs/screenshots/README.md`, and add them to the README and the CurseForge gallery.
 
 ### Reporting a failure
 
