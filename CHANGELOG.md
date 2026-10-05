@@ -1,7 +1,17 @@
 # Changelog
 
-## 1.0.1
+## 1.1.0
 
+**Treasure hunt**
+- Tick **Treasure hunt** in the window, type `/wp treasure`, or set a key binding. Chests, rare spawns and other markers the game shows near you get a ping the moment they appear: a sound, a message on screen and a blinking taskbar icon if you're in another window.
+- The arrow points straight at it, follows a rare that wanders, and lets go once it's taken, killed or gone, then returns to your own waypoint.
+- Rares come from your minimap, nameplates and target, placed at their known spawn. Ones someone else is already fighting are left out.
+- A chest right in front of you pings too, and looting it clears it.
+- **Lead me to known chest spots** walks you from one known chest spawn to the next while nothing has appeared.
+- Each part has its own switch under **Show more options → Treasure Hunt**.
+
+**Everything else**
+@@FIX@@
 - `/way`, `/wayb` and `/cway` go to whichever addon already uses them, and `/wp` does the same things.
 - Each release includes a `release.json`, so addon managers install the WoW Forever build directly.
 

@@ -74,7 +74,8 @@
         "Points to your corpse when you die",
         "Moves with the game's Edit Mode",
         "Learns new NPCs, vendors and quests while you play, kept on your computer",
-        "Works with quest guides and other addons that send waypoints"
+        "Works with quest guides and other addons that send waypoints",
+        "Treasure hunt: a ping and a waypoint when a chest or rare spawns near you"
       ],
       "sameAs": [
         "https://github.com/sanjaygbhat/wowforever-waypoint-tracker",
@@ -98,6 +99,8 @@
          "acceptedAnswer": {"@type": "Answer", "text": "No. What the addon learns while you play stays in its saved file on your computer. You share it only if you choose to: press Share discoveries in Find and paste the text into a GitHub issue."}},
         {"@type": "Question", "name": "Which languages does Waypoint Tracker support?",
          "acceptedAnswer": {"@type": "Answer", "text": "Nine: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese and Traditional Chinese. It follows your game client's language, and zone names in /way work in every language."}},
+        {"@type": "Question", "name": "Can Waypoint Tracker alert me when a chest or rare spawns?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Yes. Turn on Treasure hunt in the window or type /wp treasure. When a chest, a rare or another marker the game shows appears near you, you hear a ping, the arrow points at it, and the waypoint goes away once it's taken, killed or gone."}},
         {"@type": "Question", "name": "Can other addons send waypoints to Waypoint Tracker?",
          "acceptedAnswer": {"@type": "Answer", "text": "Yes. Quest guides, treasure maps and other addons that send waypoints to an arrow send them straight to Waypoint Tracker, with nothing to set up."}}
       ]
@@ -303,6 +306,11 @@ section { padding: 44px 0; scroll-margin-top: 110px; }
 .q-epic { --q: var(--q-epic); }
 .q-rare { --q: var(--q-rare); }
 .q-uncommon { --q: var(--q-uncommon); }
+.q-legendary { --q: #ff8000; }
+.reward.q-legendary span { color: #9c4a00; }
+.tip.q-legendary h3 { color: #ff8000; }
+.tip.wide { grid-column: 1 / -1; }
+.tip .new { margin-left: auto; font: 600 13px var(--f-book); color: #1a1408; background: #ff8000; border-radius: 3px; padding: 1px 8px; }
 .reward.q-epic span { color: #6a1fb0; }
 .reward.q-rare span { color: #0a55a8; }
 .reward.q-uncommon span { color: #1d7a0c; }
@@ -445,6 +453,7 @@ footer p { margin: 0 0 6px; }
   <symbol id="i-scroll" viewBox="0 0 32 32"><rect x="8" y="6" width="16" height="20" rx="2" fill="#e9d6a3" stroke="#000"/><rect x="5" y="4" width="22" height="4" rx="2" fill="url(#g)" stroke="#000"/><rect x="5" y="24" width="22" height="4" rx="2" fill="url(#g)" stroke="#000"/><path d="M12 13h8M12 17h8M12 21h5" stroke="#6b4a22" stroke-width="1.5"/></symbol>
   <symbol id="i-pin" viewBox="0 0 32 32"><path d="M16 29s-8-9-8-15a8 8 0 0 1 16 0c0 6-8 15-8 15z" fill="#c8251a" stroke="#000"/><circle cx="16" cy="14" r="3.2" fill="url(#g)" stroke="#000"/></symbol>
   <symbol id="i-bell" viewBox="0 0 32 32"><path d="M9 22c2-2 2-6 2-9a5 5 0 0 1 10 0c0 3 0 7 2 9z" fill="url(#g)" stroke="#000"/><rect x="7" y="22" width="18" height="3" rx="1.5" fill="#8a5a12" stroke="#000"/><circle cx="16" cy="27" r="2" fill="url(#g)" stroke="#000"/></symbol>
+  <symbol id="i-chest" viewBox="0 0 32 32"><path d="M5 14h22v13H5z" fill="#7a4a1c" stroke="#000"/><path d="M5 14a11 7 0 0 1 22 0z" fill="#93592a" stroke="#000"/><path d="M5 14h22M5 20h22" stroke="url(#g)" stroke-width="2"/><rect x="14" y="16" width="4" height="6" rx="1" fill="url(#g)" stroke="#000"/></symbol>
   <symbol id="i-cloak" viewBox="0 0 32 32"><path d="M11 5h10l2 4 4 18-5-2-3 3-3-3-3 3-3-3-5 2 4-18z" fill="#2f5a1f" stroke="#000"/><path d="M11 5h10l-2 5h-6z" fill="url(#g)" stroke="#000"/></symbol>
 </svg>
 
@@ -503,6 +512,7 @@ footer p { margin: 0 0 6px; }
         </ul>
         <h4>You will receive</h4>
         <div class="rewards">
+          <a class="reward q-legendary" href="#spyglass"><span class="icon q-legendary"><svg><use href="#i-chest"/></svg></span><span>[Spyglass of Plunder]</span></a>
           <a class="reward q-epic" href="#arrow"><span class="icon q-epic"><img src="img/logo-400.png" alt="" width="36" height="36"></span><span>[Arrow of Finding]</span></a>
           <a class="reward q-rare" href="#tome"><span class="icon q-rare"><svg><use href="#i-tome"/></svg></span><span>[Tome of Finding]</span></a>
           <a class="reward q-rare" href="#scroll"><span class="icon q-rare"><svg><use href="#i-scroll"/></svg></span><span>[Zone Search Scroll]</span></a>
@@ -540,6 +550,14 @@ footer p { margin: 0 0 6px; }
       <h2 class="title" id="loot-h">Features</h2>
       <p class="sub">Everything the addon does, as loot.</p>
       <div class="loot">
+        <article class="tip q-legendary wide" id="spyglass">
+          <header><span class="icon q-legendary"><svg><use href="#i-chest"/></svg></span><h3>Spyglass of Plunder</h3><span class="new">New in 1.1</span></header>
+          <p class="meta"><span>Treasure hunt</span><span><code>/wp treasure</code></span></p>
+          <p class="equip">Equip: Pings you the moment a chest, a rare spawn or another marker the game shows appears near you: a sound, a message on screen and a blinking taskbar icon.</p>
+          <p class="equip">Equip: Points the arrow straight at it, follows a rare that wanders, and lets go once it's taken, killed or gone. Rares someone else is already fighting are left out.</p>
+          <p class="equip">Use: Walks you from one known chest spawn to the next while nothing has appeared.</p>
+          <p class="flavor">"On a busy server, the first one there gets the loot."</p>
+        </article>
         <article class="tip q-epic" id="arrow">
           <header><span class="icon q-epic"><img src="img/logo-400.png" alt="" width="36" height="36"></span><h3>Arrow of Finding</h3></header>
           <p class="white">Binds to account</p>
@@ -576,7 +594,7 @@ footer p { margin: 0 0 6px; }
         <article class="tip q-uncommon" id="cloak">
           <header><span class="icon q-uncommon"><svg><use href="#i-cloak"/></svg></span><h3>Cloak of Fewer Settings</h3></header>
           <p class="meta"><span>Back</span><span>Cloth</span></p>
-          <p class="equip">Equip: Four basic settings. Colour styles, fading, hiding in combat or on flight paths, map pins, metres and more wait behind Show more options.</p>
+          <p class="equip">Equip: A few basic settings. Colour styles, fading, hiding in combat or on flight paths, map pins, metres and more wait behind Show more options.</p>
           <p class="equip">Equip: Moves with the game's Edit Mode, with a spot for each layout.</p>
         </article>
       </div>
@@ -641,6 +659,7 @@ footer p { margin: 0 0 6px; }
           <p class="say"><code>/way #37 42 65</code></p><p class="sys">Waypoint by map ID, for guide writers.</p>
           <p class="say"><code>/wp closest</code> or <code>/cway</code></p><p class="sys">Point to the closest waypoint.</p>
           <p class="say"><code>/wp clear</code> · <code>/wp clear all</code></p><p class="sys">Remove the arrow's waypoint, or all of them.</p>
+          <p class="say"><code>/wp treasure</code></p><p class="sys">Turn treasure hunt on or off.</p>
           <p class="say"><code>/wp list</code> · <code>/wp arrow</code> · <code>/wp help</code></p><p class="sys">List waypoints, show or hide the arrow, list every command.</p>
         </div>
       </div>
@@ -658,6 +677,7 @@ footer p { margin: 0 0 6px; }
       <details><summary>Is Waypoint Tracker free?</summary><p>Yes. It is free and open source under the MIT licence, with readable code, no ads and nothing to buy.</p></details>
       <details><summary>Does Waypoint Tracker send my data anywhere?</summary><p>No. What the addon learns while you play stays in its saved file on your computer. You share it only if you choose to: press <strong>Share discoveries</strong> in Find and paste the text into a GitHub issue.</p></details>
       <details><summary>Which languages does Waypoint Tracker support?</summary><p>Nine: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese and Traditional Chinese. It follows your game client's language, and zone names in <code>/way</code> work in every language.</p></details>
+      <details><summary>Can Waypoint Tracker alert me when a chest or rare spawns?</summary><p>Yes. Turn on <strong>Treasure hunt</strong> in the window or type <code>/wp treasure</code>. When a chest, a rare or another marker the game shows appears near you, you hear a ping, the arrow points at it, and the waypoint goes away once it's taken, killed or gone.</p></details>
       <details><summary>Can other addons send waypoints to Waypoint Tracker?</summary><p>Yes. Quest guides, treasure maps and other addons that send waypoints to an arrow send them straight to Waypoint Tracker, with nothing to set up.</p></details>
       </div>
     </div>

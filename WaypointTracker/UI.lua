@@ -1000,7 +1000,8 @@ local function CreateMain()
     Slider(frame, L.ARROW_TRANSPARENCY, "arrowAlpha", 0.2, 1.0, 0.05, 220, -488, 170, Percent)
 
     -- More options toggle ---------------------------------------------------
-    local more = Check(frame, L.SHOW_MORE_OPTIONS, "showAdvanced", 22, -546, nil, 250)
+    local more = Check(frame, L.SHOW_MORE_OPTIONS, "showAdvanced", 22, -546, nil, 200)
+    UI.widgets.treasure = Check(frame, L.TREASURE_HUNT, "treasureHunt", 236, -546, L.TREASURE_HUNT_DESC, 150)
     UI.widgets.more = more
     more.label:SetFontObject("GameFontNormal")
     more.onChange = function(on)
@@ -1165,6 +1166,15 @@ local function CreateAdvanced()
     C(L.MAP_CLICK, "mapClick", L.MAP_CLICK_DESC)
     C(L.COORDS_BOX, "coordsBox", L.COORDS_BOX_DESC)
     C(L.FOLLOW_MAP_PINS, "followMapPins", L.FOLLOW_MAP_PINS_DESC)
+
+    H(L.TREASURE_HEADER)
+    C(L.TREASURE_HUNT, "treasureHunt", L.TREASURE_HUNT_DESC)
+    C(L.TREASURE_CHESTS, "treasureChests", L.TREASURE_CHESTS_DESC)
+    C(L.TREASURE_RARES, "treasureRares", L.TREASURE_RARES_DESC)
+    C(L.TREASURE_OTHER, "treasureOther", L.TREASURE_OTHER_DESC)
+    C(L.TREASURE_KNOWN, "treasureKnownSpots", L.TREASURE_KNOWN_DESC)
+    C(L.TREASURE_PING, "treasurePing", L.TREASURE_PING_DESC)
+    C(L.TREASURE_FOCUS, "treasureFocus", L.TREASURE_FOCUS_DESC)
 
     H(L.GENERAL_HEADER)
     C(L.FOLLOW_QUEST, "followQuest", L.FOLLOW_QUEST_DESC)

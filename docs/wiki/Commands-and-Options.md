@@ -19,6 +19,7 @@
 | `/wp clear` | Remove the current waypoint |
 | `/wp clear all` | Remove all waypoints |
 | `/wp arrow` | Show or hide the arrow |
+| `/wp treasure` | Turn treasure hunt on or off |
 | `/wp help` | Show the command list in game |
 
 Zone names follow your game client's language. Partial zone names work. If another addon already uses `/way`, Waypoint Tracker leaves it to that addon and tells you once. `/wp` does the same things.
@@ -43,8 +44,9 @@ The basic window has arrow visibility, size, movement and reset. **Show more opt
 | Arrow Text | Text size and visibility; show the name, distance and time to arrive; move the text separately |
 | When You Arrive | Arrival distance, remove the waypoint, play a sound, then point to the next closest waypoint |
 | Maps | World map and minimap pins, the minimap edge, coordinates on the world map, Ctrl + Right-click, a box with your coordinates, following the game's map pins |
+| Treasure Hunt | Treasure hunt; chests and treasure; rare spawns; events and other markers; lead me to known chest spots; ping me when something appears; point the arrow at it right away |
 | General | Point to the quest you're tracking, point to your corpse, always point to the closest waypoint, remember waypoints, minimap button, chat messages, metres, let other addons set waypoints, also show the game's own map pin, and **Learn NPCs, quests and objects as I play** |
 
-**Reset All Settings** restores settings while keeping your waypoints. Options also appear under **Options → AddOns → Waypoint Tracker**. In **Key Bindings → AddOns**, bind actions such as opening Find or sharing your location.
+**Reset All Settings** restores settings while keeping your waypoints. Options also appear under **Options → AddOns → Waypoint Tracker**. In **Key Bindings → AddOns**, bind actions such as opening Find, sharing your location or turning treasure hunt on or off.
 
 The addon follows your client language automatically: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese or Traditional Chinese.

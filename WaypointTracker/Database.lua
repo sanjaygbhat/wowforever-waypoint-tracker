@@ -83,6 +83,12 @@ local function Parse(data)
         return base
     end
     local unitNames, objectNames, questNames, itemNames, zoneNames = names("units"), names("objects"), names("quests"), names("items"), names("zones")
+    -- the world's treasure chests, known by their English names in every language
+    local enObjects = NameTable(en.objects)
+    local function IsChest(id)
+        local f = enObjects[id]
+        return f and ns.Treasure and ns.Treasure.IsChestName(f[2]) or false
+    end
 
     DB.zoneNames = {}
     for id, f in pairs(zoneNames) do
@@ -112,6 +118,7 @@ local function Parse(data)
         if n and n[2] and n[2] ~= "" then
             local e = entry("object", id, n[2])
             e.fac, e.coords = f[2], f[3]
+            e.chest = IsChest(id) or nil
             DB.objects[id] = e
         end
     end
@@ -505,6 +512,10 @@ local function MergeStore(st, source)
             Remember(e, created)
             if type(l.name) == "string" and ((mine and not l.shared) or e.name == "") then
                 e.name, e.key, e.words = l.name, Geo.Squash(l.name), nil
+            end
+            -- the curated database's names are English
+            if source == "curated" and ns.Treasure and ns.Treasure.IsChestName(l.name) then
+                e.chest = true
             end
             e.extra = e.extra or {}
             Spots(l.spots, e.extra, source == "curated")

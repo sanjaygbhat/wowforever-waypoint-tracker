@@ -257,6 +257,23 @@ function WP.Add(mapID, x, y, opts)
     return wp
 end
 
+-- Moves a waypoint (something that wanders, like a rare). x/y from 0 to 1.
+function WP.Move(wp, mapID, x, y)
+    mapID, x, y = ns.Int(mapID), tonumber(x), tonumber(y)
+    if not WP.IsValid(wp) or not mapID or not x or not y or not Geo.IsValidMap(mapID) then
+        return false
+    end
+    if not (x >= 0 and x <= 1 and y >= 0 and y <= 1) then
+        return false
+    end
+    wp.m, wp.x, wp.y = mapID, x, y
+    if wp == active then
+        ns.Safe(UpdateBlizzardPin)()
+    end
+    Changed()
+    return true
+end
+
 -- noAdvance: don't move the arrow on to another waypoint
 function WP.Remove(wp, silent, noAdvance)
     local i = IndexOf(wp)

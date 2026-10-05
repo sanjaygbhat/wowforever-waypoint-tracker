@@ -58,6 +58,14 @@ ns.defaults = {
     corpseWaypoint = true, -- dying points the arrow at your body
     -- write down NPCs, quests and objects met in Forever (see Learn.lua)
     learn = true,
+    -- treasure hunt (see Treasure.lua): off until you turn it on
+    treasureHunt = false,
+    treasureChests = true,
+    treasureRares = true,
+    treasureOther = true,
+    treasureKnownSpots = false,
+    treasurePing = true,
+    treasureFocus = true,
     -- Find window
     findTab = "all",
     findFaction = true,
@@ -416,3 +424,4 @@ BINDING_NAME_WAYPOINTTRACKER_ARROW = L.BINDING_ARROW
 BINDING_NAME_WAYPOINTTRACKER_CLOSEST = L.BINDING_CLOSEST
 BINDING_NAME_WAYPOINTTRACKER_FIND = L.BINDING_FIND
 BINDING_NAME_WAYPOINTTRACKER_SHARE = L.BINDING_SHARE
+BINDING_NAME_WAYPOINTTRACKER_TREASURE = L.BINDING_TREASURE

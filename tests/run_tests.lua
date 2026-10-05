@@ -313,7 +313,8 @@ row.remove:Click()
 w.more:Click()
 check(WaypointTrackerOptionsFrame and WaypointTrackerOptionsFrame:IsShown(), "more options opens")
 for _, cb in ipairs(ns.UI.allChecks) do
-    if cb.settingKey and cb.settingKey ~= "showAdvanced" then
+    -- (treasure hunt loads the database when it starts; it's tested on its own)
+    if cb.settingKey and cb.settingKey ~= "showAdvanced" and cb.settingKey ~= "treasureHunt" then
         local was = ns.Get(cb.settingKey)
         cb:Click()
         M.Tick(0.1)
@@ -1296,6 +1297,144 @@ check(text:find("I\t209850\t", 1, true) and text:find("item:", 1, true), "items 
 local back = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
 Learn.Import(text, back)
 check(back.items[209850] and back.items[209850].from.O409731 and back.quests[78148].objs[1], "shared items and objectives import")
+
+-- ---------------------------------------------------------------------------
+-- Treasure hunt: chests, rares and other markers near you
+-- ---------------------------------------------------------------------------
+do
+    local T = ns.Treasure
+    local CHEST = "GameObject-0-1-0-0-2843-0000000001"
+    local RARE = "Creature-0-1-0-0-471-0000000002"
+    WP.ClearAll(true)
+    M.vignettes, M.sounds, M.raidNotices, M.flashes = {}, {}, {}, 0
+    check(ns.Get("treasureHunt") == false, "treasure hunt is off until you turn it on")
+    ns.Set("treasureHunt", true)
+    M.Tick(1.1)
+    check(next(T.Targets()) == nil and #M.sounds == 0, "it starts quietly when nothing is around")
+    -- a chest appears on the minimap
+    M.vignettes["v-chest"] = { name = "Battered Chest", onMinimap = true, atlasName = "VignetteLoot", objectGUID = CHEST, pos = { 0.42, 0.62 } }
+    M.FireEvent("VIGNETTE_MINIMAP_UPDATED", "v-chest", true)
+    M.Tick(0.2)
+    local t = T.Targets()[CHEST]
+    check(t and t.kind == "chest" and t.wp and WP.GetActive() == t.wp, "a chest on the minimap gets a waypoint and the arrow")
+    check(M.sounds[#M.sounds] == 8959 and #M.raidNotices == 1 and M.flashes == 1, "with a ping: a sound, a message on screen and the taskbar")
+    check(t.wp.persistent == false and t.wp.title:find("Battered Chest", 1, true) ~= nil, "treasure waypoints say what they are and aren't saved")
+    -- someone takes it: the marker goes
+    M.vignettes["v-chest"] = nil
+    M.FireEvent("VIGNETTE_MINIMAP_UPDATED", "v-chest", false)
+    M.Tick(0.2)
+    check(T.Targets()[CHEST] == nil and WP.Count() == 0, "taken: the waypoint is let go")
+    -- a rare on the minimap that wanders
+    M.vignettes["v-rare"] = { name = "Mother Fang", onMinimap = true, atlasName = "VignetteKill", objectGUID = RARE, pos = { 0.5, 0.5 } }
+    M.Tick(1.1)
+    local r = T.Targets()[RARE]
+    check(r and r.kind == "rare" and r.wp, "a rare on the minimap gets a waypoint")
+    M.vignettes["v-rare"].pos = { 0.52, 0.5 }
+    local pings = #M.sounds
+    M.Tick(2.2)
+    check(r.wp and math.abs(r.wp.x - 0.52) < 1e-6, "the waypoint follows a rare that moves")
+    check(#M.sounds == pings, "one ping per find")
+    M.vignettes["v-rare"].isDead = true
+    M.Tick(1.1)
+    check(T.Targets()[RARE] == nil and WP.Count() == 0, "killed: let go")
+    M.vignettes["v-rare"].isDead = false
+    M.Tick(1.1)
+    check(T.Targets()[RARE] == nil and #M.sounds == pings, "a rare that was killed isn't announced again")
+    -- markers only on the world map are too far away; other markers count as events
+    M.vignettes = { far = { name = "Far Away", onWorldMap = true, pos = { 0.1, 0.1 } }, ev = { name = "Gathering", onMinimap = true, atlasName = "VignetteEvent", pos = { 0.45, 0.6 } } }
+    M.Tick(1.1)
+    local kinds = {}
+    for _, x in pairs(T.Targets()) do
+        kinds[x.name] = x.kind
+    end
+    check(kinds["Far Away"] == nil and kinds.Gathering == "other", "only what's on the minimap, and events too")
+    ns.Set("treasureOther", false)
+    check(next(T.Targets()) == nil, "turning a kind off lets those go")
+    ns.Set("treasureOther", true)
+    M.vignettes = {}
+    M.Tick(1.1)
+
+    -- a rare on a nameplate (no minimap marker): placed at its known spawn
+    local here, hx, hy = ns.Geo.GetPlayerMapPosition()
+    ns.DB.units[990001] = { kind = "npc", id = 990001, name = "Test Rare", key = "testrare", fac = "", points = { { m = here, x = hx + 0.01, y = hy } } }
+    M.units.nameplate3 = { guid = "Creature-0-1-0-0-990001-0000000003", name = "Test Rare", class = "rareelite", reaction = 2, level = 30 }
+    M.FireEvent("NAME_PLATE_UNIT_ADDED", "nameplate3")
+    local nr = T.Targets()["Creature-0-1-0-0-990001-0000000003"]
+    check(nr and nr.wp and nr.wp.m == here and math.abs(nr.wp.x - (hx + 0.01)) < 1e-6, "a rare on a nameplate gets a waypoint at its known spawn")
+    -- you remove the waypoint yourself: it stays gone
+    WP.Remove(nr.wp, true)
+    M.Tick(1.1)
+    check(WP.Count() == 0 and nr.dismissed, "a treasure waypoint you remove stays removed")
+    M.units.nameplate3.dead = true
+    M.Tick(1.1)
+    check(T.Targets()["Creature-0-1-0-0-990001-0000000003"] == nil, "a dead rare is let go")
+    M.units.nameplate3 = nil
+    -- someone else is fighting it: not yours to loot
+    M.units.nameplate4 = { guid = "Creature-0-1-0-0-990001-0000000004", name = "Test Rare", class = "rare", reaction = 2, tapped = true }
+    M.Tick(1.1)
+    check(T.Targets()["Creature-0-1-0-0-990001-0000000004"] == nil, "rares someone else is fighting are left out")
+    M.units.nameplate4 = { guid = "Creature-0-1-0-0-6-0000000005", name = "Kobold Vermin", class = "normal", reaction = 2 }
+    M.Tick(1.1)
+    check(next(T.Targets()) == nil, "ordinary enemies are left out")
+    M.units.nameplate4 = nil
+    ns.DB.units[990001] = nil
+
+    -- "point the arrow at it" off: your own waypoint keeps the arrow
+    ns.Set("treasureFocus", false)
+    local mine = WP.Add(here, 0.3, 0.3, { title = "Mine", silent = true })
+    M.vignettes["v-chest"] = { name = "Solid Chest", onMinimap = true, atlasName = "VignetteLoot", objectGUID = CHEST, pos = { 0.42, 0.62 } }
+    M.Tick(1.1)
+    check(WP.GetActive() == mine and WP.Count() == 2, "with focus off the chest is added and the arrow stays")
+    ns.Set("treasureFocus", true)
+    M.vignettes = {}
+    M.Tick(1.1)
+    check(WP.GetActive() == mine and WP.Count() == 1, "and the arrow is back on your own waypoint once it's gone")
+
+    -- the chest right in front of you, looted
+    local chestId
+    for id, e in pairs(ns.DB.objects) do
+        if e.chest and id > 0 then
+            chestId = id
+            break
+        end
+    end
+    check(chestId ~= nil, "the database knows which objects are treasure chests")
+    local front = "GameObject-0-1-0-0-" .. tostring(chestId) .. "-0000000006"
+    M.units.softinteract = { guid = front, name = ns.DB.objects[chestId].name }
+    local before = #M.sounds
+    M.FireEvent("PLAYER_SOFT_INTERACT_CHANGED")
+    check(T.Targets()[front] and T.Targets()[front].here and #M.sounds == before + 1, "a chest in front of you pings")
+    M.loot = { front }
+    M.FireEvent("LOOT_OPENED")
+    M.loot = {}
+    check(T.Targets()[front] == nil, "looting it lets it go")
+    M.FireEvent("PLAYER_SOFT_INTERACT_CHANGED")
+    check(T.Targets()[front] == nil, "and it isn't announced again")
+    M.units.softinteract = nil
+
+    -- known chest spots, nearest first, once you've checked one the next
+    WP.Remove(mine, true)
+    ns.DB.objects[990002] = { kind = "object", id = 990002, name = "Battered Chest", key = "batteredchest", fac = "", chest = true, points = { { m = here, x = hx + 0.012, y = hy }, { m = here, x = hx + 0.03, y = hy } } }
+    ns.Set("treasureKnownSpots", true)
+    local spot = T.Targets().spot
+    check(spot and spot.wp and math.abs(spot.x - (hx + 0.012)) < 1e-6 and #M.sounds == before + 1, "known chest spots: the nearest, without a ping")
+    WP.Remove(spot.wp, true) -- arrived
+    M.Tick(5.1)
+    spot = T.Targets().spot
+    check(spot and math.abs(spot.x - (hx + 0.03)) < 1e-6, "then the next one")
+    -- something live comes first
+    M.vignettes["v-chest"] = { name = "Solid Chest", onMinimap = true, atlasName = "VignetteLoot", objectGUID = CHEST, pos = { 0.42, 0.62 } }
+    M.Tick(1.1)
+    check(WP.GetActive() == T.Targets()[CHEST].wp, "a chest that appears takes over from known spots")
+    M.vignettes = {}
+
+    -- off: everything is let go
+    ns.Set("treasureKnownSpots", false)
+    M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, "treasure")
+    check(ns.Get("treasureHunt") == false and next(T.Targets()) == nil and WP.Count() == 0, "/wp treasure turns it off and lets everything go")
+    ns.DB.objects[990002] = nil
+    M.vignettes = { ["v-1"] = { name = "Mother Fang", onWorldMap = true, isDead = false, pos = { 0.61, 0.5 } } }
+end
 
 -- "/way <name>": an exact name goes straight there, anything else searches
 ns.Find.Toggle()
