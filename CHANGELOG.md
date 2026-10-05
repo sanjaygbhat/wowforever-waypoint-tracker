@@ -11,7 +11,7 @@
 - Each part has its own switch under **Show more options → Treasure Hunt**.
 
 **Everything else**
-@@FIX@@
+- Find searches smoothly for any name, including ones it hasn't learned yet, and places every spot cleanly on the map in WoW Forever's zones.
 - `/way`, `/wayb` and `/cway` go to whichever addon already uses them, and `/wp` does the same things.
 - Each release includes a `release.json`, so addon managers install the WoW Forever build directly.
 

@@ -816,7 +816,7 @@ function DB.Points(e)
     for _, w in ipairs(e.world or {}) do
         local x, y = Geo.WorldToMap(w[1], w[3], w[4], w[2] ~= 0 and w[2] or nil)
         local m = w[2] ~= 0 and w[2] or select(3, Geo.WorldToMap(w[1], w[3], w[4]))
-        if x and m and x >= 0 and x <= 1 and y >= 0 and y <= 1 then
+        if x and y and m and x >= 0 and x <= 1 and y >= 0 and y <= 1 then
             pts[#pts + 1] = { m = m, x = x, y = y }
         end
     end

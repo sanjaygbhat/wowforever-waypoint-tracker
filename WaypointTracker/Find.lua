@@ -380,7 +380,7 @@ local function CurrentTab()
     return TABS[1]
 end
 
-local function RunSearch()
+local function DoSearch()
     local ok, why = DB.Load()
     if not ok then
         results, total = {}, 0
@@ -418,6 +418,11 @@ local function RunSearch()
     RefreshRows()
 end
 
+-- every search goes through here, so a problem is reported once, not on each key
+local function RunSearch()
+    ns.Call(DoSearch)
+end
+
 -- typing: search a moment after you stop, so it stays smooth
 local pendingSearch = false
 local function ScheduleSearch()
@@ -428,7 +433,7 @@ local function ScheduleSearch()
     C_Timer.After(0.25, function()
         pendingSearch = false
         if frame and frame:IsShown() then
-            ns.Call(RunSearch)
+            RunSearch()
         end
     end)
 end
@@ -622,13 +627,13 @@ local function Create()
         row.text:SetPoint("RIGHT", row.right, "LEFT", -8, 0)
         row.text:SetJustifyH("LEFT")
         row.text:SetWordWrap(false)
-        row:SetScript("OnClick", function(self)
+        row:SetScript("OnClick", ns.Safe(function(self)
             ShowDetail(self.entry)
             RefreshRows()
-        end)
-        row:SetScript("OnDoubleClick", function(self)
+        end))
+        row:SetScript("OnDoubleClick", ns.Safe(function(self)
             Activate(self.entry)
-        end)
+        end))
         rows[i] = row
     end
     emptyText = listBg:CreateFontString(nil, "ARTWORK", "GameFontDisable")

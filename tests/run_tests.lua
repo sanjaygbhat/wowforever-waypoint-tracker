@@ -1436,6 +1436,32 @@ do
     M.vignettes = { ["v-1"] = { name = "Mother Fang", onWorldMap = true, isDead = false, pos = { 0.61, 0.5 } } }
 end
 
+-- a world position the game maps to a half-filled spot is skipped, not an error
+do
+    local real = C_Map.GetMapPosFromWorldPos
+    C_Map.GetMapPosFromWorldPos = function(_, _, override)
+        return override or 1429, CreateVector2D(0.5, 0 / 0)
+    end
+    local e = { kind = "place", id = 0, name = "Test Place", world = { { 0, 1429, -9000, 400 } } }
+    local ok, pts = pcall(ns.DB.Points, e)
+    check(ok and #pts == 0, "a spot without a usable y is skipped")
+    local before, wasShown = #M.errors, WaypointTrackerFindFrame and WaypointTrackerFindFrame:IsShown()
+    ns.Find.Show("goldsh")
+    M.Tick(1)
+    ns.Find.Show("zzqqxv")
+    M.Tick(1)
+    check(#M.errors == before, "Find searches without errors when the game gives no usable map spot")
+    C_Map.GetMapPosFromWorldPos = real
+    for _, tbl in ipairs({ "units", "objects", "quests", "places", "items" }) do
+        for _, p in pairs(ns.DB[tbl] or {}) do
+            p.points = nil
+        end
+    end
+    if not wasShown then
+        ns.Find.Toggle()
+    end
+end
+
 -- "/way <name>": an exact name goes straight there, anything else searches
 ns.Find.Toggle()
 M.player.inst, M.player.wx, M.player.wy = 0, -1200, -1200 -- Elwynn Forest 40, 60

@@ -74,7 +74,11 @@ function Geo.WorldToMap(cont, wx, wy, mapID)
     local ok, resultMap, pos = pcall(C_Map.GetMapPosFromWorldPos, cont, Vector(wx, wy), mapID)
     if ok and resultMap and pos then
         local x, y = ns.XY(pos)
-        return Num(x), Num(y), resultMap
+        x, y = Num(x), Num(y)
+        -- both or nothing: a half-filled spot can't be compared or drawn
+        if x and y then
+            return x, y, resultMap
+        end
     end
 end
 
