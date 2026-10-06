@@ -3,7 +3,7 @@
 ## Notes: NPCs, quests, objects and items for Waypoint Tracker's Find window. Loads only when you open Find.
 ## Notes-deDE: NPCs, Quests, Objekte und Gegenstände für das Suchfenster von Waypoint Tracker. Wird erst beim Öffnen geladen.
 ## Author: sanjaygbhat
-## Version: 1.1.0
+## Version: 1.1.1
 ## Category: Map & Minimap
 ## Group: WaypointTracker
 ## IconTexture: Interface\AddOns\WaypointTracker\Media\Icon

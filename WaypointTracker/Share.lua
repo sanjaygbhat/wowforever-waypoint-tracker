@@ -46,13 +46,19 @@ function Share.MapPinLink(wp)
     end
 end
 
--- "Sentinel Hill: [Map Pin] Westfall (56.3, 47.1)"
+-- What shared spots start with (the addon's name, the same in every language).
+Share.PREFIX = "[Waypoint Tracker]"
+
+-- "[Waypoint Tracker] Sentinel Hill: [Map Pin] Westfall (56.3, 47.1)"
 function Share.Message(wp)
     local where = ("%s (%s)"):format(Geo.GetMapName(wp.m), Geo.FormatCoords(wp.x, wp.y))
     local link = Share.MapPinLink(wp)
     local text = link and (link .. " " .. where) or where
     if wp.title and wp.title ~= "" then
         text = wp.title .. ": " .. text
+    end
+    if ns.Get("sharePrefix") then
+        text = Share.PREFIX .. " " .. text
     end
     return text
 end

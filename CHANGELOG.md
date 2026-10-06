@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- Spots you share in chat now start with **[Waypoint Tracker]**, followed by the map pin and coordinates. Turn it off under **Show more options → General → Start shared spots with [Waypoint Tracker]**.
+- Stability fixes and improvements.
+
 ## 1.1.0
 
 **Treasure hunt**

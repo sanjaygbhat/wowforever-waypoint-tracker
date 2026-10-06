@@ -154,7 +154,7 @@ Turn on **Lead me to known chest spots** and, while nothing has appeared, the ar
 - Paste `45.2 67.8` into the **X** box and it splits into X and Y by itself.
 - Click a waypoint in the list to point the arrow at it.
 - **Share without setting a waypoint:** type a zone and X/Y and press **Share** under the boxes. Leave X and Y empty and it shares **where you are**. `/wp share` (or a key binding) does the same from chat.
-- **Share** on any waypoint in the list works too. Both open a small menu (Party, Raid, Guild, Say, whisper your target). Your chat opens with the message ready, so just press Enter. It includes the game's own clickable map pin, so friends without this addon can use it too.
+- **Share** on any waypoint in the list works too. Both open a small menu (Party, Raid, Guild, Say, whisper your target). Your chat opens with the message ready, so just press Enter. It starts with **[Waypoint Tracker]** (you can turn that off in **Show more options**) and includes the game's own clickable map pin, so friends without this addon can use it too.
 - The arrow never gets in the way of your mouse. Move it in the game's **Edit Mode** (Esc > Edit Mode, with a spot per layout), or with **Move Arrow** in the window. **Reset** puts it back over your character, at the default size and visibility.
 - The name, distance and time under the arrow have their own size and visibility. Tick **Move the text separately** to put the text anywhere on screen, apart from the arrow.
 - **Died?** The arrow points to your corpse, and goes back to your waypoint once you're alive again.
@@ -272,6 +272,7 @@ Tick **Show more options** and a second panel opens beside the window:
 | | Remember waypoints after logging out (per character) | On |
 | | Minimap button | On |
 | | Chat messages | On |
+| | Start shared spots with [Waypoint Tracker] | On |
 | | Use metres instead of yards | Off |
 | | Let other addons set waypoints (quest guides and similar) | On |
 | | Also show the game's own map pin (adds a marker floating in the world) | Off |

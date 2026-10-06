@@ -2,7 +2,7 @@
 
 **Set a waypoint. Follow the arrow. That's it.**
 
-Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever: a TomTom-style arrow with `/way` coordinates, a quest, NPC and item finder, clickable map-pin sharing, and a new treasure hunt (beta) that pings you when a chest or rare appears nearby. This guide covers version **1.1.0**, client **1.60.1**, interface **16001**.
+Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever: a TomTom-style arrow with `/way` coordinates, a quest, NPC and item finder, clickable map-pin sharing, and a new treasure hunt (beta) that pings you when a chest or rare appears nearby. This guide covers version **1.1.1**, client **1.60.1**, interface **16001**.
 
 [![A green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 

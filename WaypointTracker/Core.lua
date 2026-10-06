@@ -50,6 +50,7 @@ ns.defaults = {
     minimapButton = true,
     minimapAngle = 200,
     chatMessages = true,
+    sharePrefix = true, -- shared spots start with "[Waypoint Tracker]"
     useMetres = false,
     addonWaypoints = true,
     blizzardPin = false,

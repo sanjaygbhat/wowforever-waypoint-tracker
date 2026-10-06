@@ -46,7 +46,7 @@ The basic window has arrow visibility, size, movement and reset. **Show more opt
 | When You Arrive | Arrival distance, remove the waypoint, play a sound, then point to the next closest waypoint |
 | Maps | World map and minimap pins, the minimap edge, coordinates on the world map, Ctrl + Right-click, a box with your coordinates, following the game's map pins |
 | Treasure Hunt | Treasure hunt; chests and treasure; rare spawns; events and other markers; lead me to known chest spots; ping me when something appears; point the arrow at it right away |
-| General | Point to the quest you're tracking, point to your corpse, always point to the closest waypoint, remember waypoints, minimap button, chat messages, metres, let other addons set waypoints, also show the game's own map pin, and **Learn NPCs, quests and objects as I play** |
+| General | Point to the quest you're tracking, point to your corpse, always point to the closest waypoint, remember waypoints, minimap button, chat messages, start shared spots with [Waypoint Tracker], metres, let other addons set waypoints, also show the game's own map pin, and **Learn NPCs, quests and objects as I play** |
 
 **Reset All Settings** restores settings while keeping your waypoints. Options also appear under **Options → AddOns → Waypoint Tracker**. In **Key Bindings → AddOns**, bind actions such as opening Find, sharing your location or turning treasure hunt on or off.
 

@@ -56,7 +56,7 @@ Open **Find** with `/wp find` or the window's **Quests**, **NPCs**, **Enemies** 
 
 ## Share a spot
 
-Press **Share** beside a waypoint, or use `/wp share` for your current position. Choose a chat channel; the chat box opens with a clickable map pin ready for you to send. Friends can use that pin without installing the addon.
+Press **Share** beside a waypoint, or use `/wp share` for your current position. Choose a chat channel; the chat box opens with a message starting with **[Waypoint Tracker]**, then a clickable map pin and the coordinates, ready for you to send. Turn the prefix off under **Show more options → General**. Friends can use that pin without installing the addon.
 
 Find learns from your observations during play. See [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing) for correcting a location and sharing discoveries.
 
