@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="google-site-verification" content="WAT3mbdfYZRN_M0q6h8GyjmDxl-dVsgswT252T7NoPU">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Waypoint Tracker: 3D Arrow and /way Addon for WoW Forever</title>
-<meta name="description" content="Waypoint Tracker is a free WoW Forever addon: a 3D waypoint arrow, /way coordinates, a quest, NPC and item finder, and map pins you can share in chat.">
+<title>Waypoint Tracker: 3D Waypoint Arrow, /way and Quest Finder for WoW Forever</title>
+<meta name="description" content="Free WoW Forever addon: a 3D waypoint arrow with /way coordinates, a quest, NPC and item finder, shareable map pins, and new treasure and rare alerts. Works with TomTom-style addons.">
 <link rel="canonical" href="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="sanjaygbhat">
@@ -19,16 +19,16 @@
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Waypoint Tracker">
-<meta property="og:title" content="Waypoint Tracker: the 3D waypoint arrow for WoW Forever">
-<meta property="og:description" content="Set a waypoint and follow the arrow. /way coordinates, a built-in quest, NPC and item finder, and map pins you can share in chat. Free, 9 languages.">
+<meta property="og:title" content="Waypoint Tracker: the 3D waypoint arrow and quest finder for WoW Forever">
+<meta property="og:description" content="Set a waypoint and follow the arrow. /way coordinates, a quest, NPC and item finder, shareable map pins, and new treasure alerts. Free, 9 languages.">
 <meta property="og:url" content="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/">
 <meta property="og:image" content="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/social-preview.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="640">
-<meta property="og:image:alt" content="Waypoint Tracker: a gold 3D arrow and the words set a waypoint, follow the arrow">
+<meta property="og:image:alt" content="Waypoint Tracker for WoW Forever: 3D waypoint arrow, quest and NPC finder, find anything, rare and treasure alerts">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Waypoint Tracker: the 3D waypoint arrow for WoW Forever">
-<meta name="twitter:description" content="Set a waypoint and follow the arrow. /way coordinates, a quest, NPC and item finder, and shareable map pins. Free.">
+<meta name="twitter:title" content="Waypoint Tracker: the 3D waypoint arrow and quest finder for WoW Forever">
+<meta name="twitter:description" content="A 3D waypoint arrow, /way coordinates, a quest, NPC and item finder, and shareable map pins. Free.">
 <meta name="twitter:image" content="https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/social-preview.png">
 
 <script type="application/ld+json">
@@ -39,8 +39,9 @@
       "@type": "SoftwareApplication",
       "@id": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/#app",
       "name": "Waypoint Tracker",
-      "alternateName": ["WaypointTracker", "Waypoint Tracker for WoW Forever"],
-      "description": "A free World of Warcraft: Forever addon with a 3D waypoint arrow, /way coordinate commands, a built-in quest, NPC, enemy, object and item finder, and map pins you can share in chat.",
+      "alternateName": ["WaypointTracker", "Waypoint Tracker for WoW Forever", "WoW Forever waypoint arrow", "TomTom alternative for WoW Forever"],
+      "description": "A free World of Warcraft: Forever addon with a 3D waypoint arrow, /way coordinate commands, a built-in quest, NPC, enemy, object and item finder, map pins you can share in chat, and treasure and rare alerts (new, beta). Compatible with addons that send TomTom waypoints.",
+      "keywords": "WoW Forever addon, World of Warcraft Forever, waypoint arrow, /way command, TomTom, quest helper, NPC finder, item finder, rare tracker, treasure finder, Classic+",
       "applicationCategory": "GameApplication",
       "applicationSubCategory": "World of Warcraft addon",
       "operatingSystem": "Windows, macOS",
@@ -58,10 +59,12 @@
       "releaseNotes": "https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md",
       "codeRepository": "https://github.com/sanjaygbhat/wowforever-waypoint-tracker",
       "image": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/logo-400.png",
+      "video": {"@type": "VideoObject", "name": "Treasure hunt (illustration)", "description": "Illustration of Waypoint Tracker's treasure hunt: a chest appears, the addon pings and the arrow points to it.", "contentUrl": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/treasure-hunt.gif", "thumbnailUrl": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/treasure-hunt.png", "uploadDate": "2026-10-05"},
       "screenshot": [
         "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/01-arrow.jpg",
         "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/02-map.jpg",
-        "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/03-window.jpg"
+        "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/03-window.jpg",
+        "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/img/treasure-hunt.png"
       ],
       "featureList": [
         "3D waypoint arrow that turns from gold to green as you get close",
@@ -75,7 +78,10 @@
         "Moves with the game's Edit Mode",
         "Learns new NPCs, vendors and quests while you play, kept on your computer",
         "Works with quest guides and other addons that send waypoints",
-        "Treasure hunt: a ping and a waypoint when a chest or rare spawns near you"
+        "Treasure hunt (new, beta): a ping (sound, on-screen message, blinking taskbar icon) and the arrow when a chest, rare or event appears near you",
+        "Skips rares someone else is already fighting; follows rares that wander",
+        "Lead me to known chest spots: walks you between known chest spawns",
+        "Accepts TomTom-style waypoints from quest guides and other addons"
       ],
       "sameAs": [
         "https://github.com/sanjaygbhat/wowforever-waypoint-tracker",
@@ -101,6 +107,10 @@
          "acceptedAnswer": {"@type": "Answer", "text": "Nine: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese and Traditional Chinese. It follows your game client's language, and zone names in /way work in every language."}},
         {"@type": "Question", "name": "Can Waypoint Tracker alert me when a chest or rare spawns?",
          "acceptedAnswer": {"@type": "Answer", "text": "Yes. Turn on Treasure hunt in the window or type /wp treasure. When a chest, a rare or another marker the game shows appears near you, you hear a ping, the arrow points at it, and the waypoint goes away once it's taken, killed or gone."}},
+        {"@type": "Question", "name": "Is there a TomTom for WoW Forever?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Waypoint Tracker fills that role in WoW Forever: the same /way commands and a 3D arrow with distance and time to arrive, plus a quest, NPC and item finder. Addons written for TomTom, including Send to TomTom buttons, send their waypoints to its arrow with no changes. If TomTom itself is installed, Waypoint Tracker leaves /way to it and /wp keeps working."}},
+        {"@type": "Question", "name": "Is there a rare scanner or treasure finder for WoW Forever?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Waypoint Tracker has one built in, new in version 1.1 and still in beta. Treasure hunt (/wp treasure) pings you when a chest, rare or rare elite, or event marker appears near you, points the arrow straight at it, follows rares that wander and skips rares someone else is already fighting. It can also walk you between known chest spawn spots."}},
         {"@type": "Question", "name": "Can other addons send waypoints to Waypoint Tracker?",
          "acceptedAnswer": {"@type": "Answer", "text": "Yes. Quest guides, treasure maps and other addons that send waypoints to an arrow send them straight to Waypoint Tracker, with nothing to set up."}}
       ]
@@ -236,7 +246,21 @@ h1 .tag { display: block; margin-top: 14px; font: 600 clamp(18px, 2.4vw, 24px)/1
 .lead strong { color: var(--text); font-weight: 600; }
 .lead code { color: var(--gold); }
 .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
-.note { font: 15px var(--f-book); color: var(--muted); margin-top: 14px; }
+.note { font: 15px var(--f-book); color: var(--muted); margin-top: 12px; }
+.trust { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.trust li {
+  font: 14px var(--f-ui); color: var(--gold-soft); padding: 3px 10px 3px 8px;
+  border: 1px solid #000; border-radius: 3px; background: rgba(6, 8, 24, .7);
+  box-shadow: inset 0 0 0 1px #5d4a28; text-shadow: 0 1px 0 #000;
+}
+.trust li::before { content: "\2713"; color: var(--q-uncommon); margin-right: 6px; font-weight: 700; }
+
+/* ---------- beta pill ---------- */
+.beta {
+  display: inline-block; vertical-align: middle; font: 600 13px/1 var(--f-book); letter-spacing: .08em; text-transform: uppercase;
+  color: #1a1408; background: #ff8000; border-radius: 3px; padding: 4px 8px 3px; margin-left: 8px;
+  box-shadow: 0 1px 0 #000, 0 0 0 1px rgba(0,0,0,.6); text-shadow: none; position: relative; top: -2px;
+}
 
 .stage { position: relative; }
 .plate {
@@ -358,6 +382,19 @@ figcaption { font: 15px var(--f-ui); color: var(--gold-soft); margin-top: 14px; 
 .panel code { color: var(--gold); }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center; }
 
+/* ---------- treasure hunt showcase ---------- */
+.treasure { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px; }
+.treasure figure { margin: 0; }
+.treasure .plate { color: #ff8000; }
+.treasure-copy h3 { font: 700 clamp(22px, 2.6vw, 26px)/1.2 var(--f-title); color: var(--gold); margin: 0 0 12px; text-shadow: 0 2px 0 #000; }
+.treasure-copy p { margin: 0 0 12px; color: var(--text); }
+.treasure-copy strong { color: var(--gold); font-weight: 600; }
+.treasure-copy code { color: var(--gold); }
+.treasure-copy .beta-note {
+  margin: 16px 0 0; padding: 10px 14px; font: 16px/1.5 var(--f-book); color: var(--muted);
+  border-left: 3px solid #ff8000; background: rgba(255, 128, 0, .07); border-radius: 0 3px 3px 0;
+}
+
 /* ---------- install: three paths ---------- */
 .paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .path { display: flex; flex-direction: column; gap: 12px; }
@@ -424,7 +461,8 @@ footer p { margin: 0 0 6px; }
 
 /* ---------- small screens ---------- */
 @media (max-width: 900px) {
-  .hero .wrap, .shots, .split { grid-template-columns: 1fr; }
+  .hero .wrap, .shots, .split, .treasure { grid-template-columns: 1fr; }
+  .treasure .stage { margin-top: 18px; }
   .loot, .paths, .rewards { grid-template-columns: 1fr 1fr; }
   .stage { margin-top: 18px; }
 }
@@ -464,6 +502,7 @@ footer p { margin: 0 0 6px; }
       <a href="#quest">Quest</a>
       <a href="#in-game">In game</a>
       <a href="#loot">Features</a>
+      <a href="#treasure">Treasure</a>
       <a href="#find">Find</a>
       <a href="#install">Install</a>
       <a href="#commands">Commands</a>
@@ -480,14 +519,19 @@ footer p { margin: 0 0 6px; }
     <div class="wrap">
       <div>
         <p class="kicker">A World of Warcraft: Forever addon</p>
-        <h1><span class="name">Waypoint Tracker</span><span class="tag">The 3D waypoint arrow for WoW Forever</span></h1>
-        <p class="lead"><strong>Set a waypoint. Follow the arrow. That's it.</strong> Type <code>/way 42 65</code>, click the world map or search a name, and a 3D arrow over your character points the way with the distance and time to arrive. It turns from gold to green as you get close and clears itself when you arrive.</p>
+        <h1><span class="name">Waypoint Tracker</span><span class="tag">The 3D waypoint arrow and quest finder for WoW Forever</span></h1>
+        <p class="lead"><strong>Set a waypoint. Follow the arrow. That's it.</strong> Type <code>/way 42 65</code>, click the world map or search any quest, NPC or item by name, and a 3D arrow over your character points the way with the distance and time to arrive. It turns from gold to green as you close in, and clears itself when you arrive.</p>
         <div class="buttons">
-          <a class="btn" href="https://www.curseforge.com/wow/addons/waypoint-tracker">Get it on CurseForge</a>
+          <a class="btn" href="https://www.curseforge.com/wow/addons/waypoint-tracker">Free on CurseForge</a>
           <a class="btn dark" href="https://addons.wago.io/addons/waypoint-tracker">Wago</a>
           <a class="btn dark" href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest">Download</a>
         </div>
-        <p class="note">Free and open source · Version @VERSION@ · Client 1.60.1 · 9 languages</p>
+        <ul class="trust" aria-label="Good to know">
+          <li>No ads</li>
+          <li>Nothing leaves your computer</li>
+          <li>MIT licence</li>
+        </ul>
+        <p class="note">Free and open source · Version @VERSION@ · Client 1.60.1 · 9 languages · Works with TomTom-style addons</p>
       </div>
       <div class="stage">
         <div class="plate">Illustrated arrow demo</div>
@@ -512,13 +556,13 @@ footer p { margin: 0 0 6px; }
         </ul>
         <h4>You will receive</h4>
         <div class="rewards">
-          <a class="reward q-legendary" href="#spyglass"><span class="icon q-legendary"><svg><use href="#i-chest"/></svg></span><span>[Spyglass of Plunder]</span></a>
           <a class="reward q-epic" href="#arrow"><span class="icon q-epic"><img src="img/logo-400.png" alt="" width="36" height="36"></span><span>[Arrow of Finding]</span></a>
           <a class="reward q-rare" href="#tome"><span class="icon q-rare"><svg><use href="#i-tome"/></svg></span><span>[Tome of Finding]</span></a>
           <a class="reward q-rare" href="#scroll"><span class="icon q-rare"><svg><use href="#i-scroll"/></svg></span><span>[Zone Search Scroll]</span></a>
           <a class="reward q-uncommon" href="#pin"><span class="icon q-uncommon"><svg><use href="#i-pin"/></svg></span><span>[Map Pin of Sharing]</span></a>
           <a class="reward q-uncommon" href="#chime"><span class="icon q-uncommon"><svg><use href="#i-bell"/></svg></span><span>[Chime of Arrival]</span></a>
           <a class="reward q-uncommon" href="#cloak"><span class="icon q-uncommon"><svg><use href="#i-cloak"/></svg></span><span>[Cloak of Fewer Settings]</span></a>
+          <a class="reward q-legendary" href="#spyglass"><span class="icon q-legendary"><svg><use href="#i-chest"/></svg></span><span>[Spyglass of Plunder]</span></a>
         </div>
       </div>
     </div>
@@ -550,14 +594,6 @@ footer p { margin: 0 0 6px; }
       <h2 class="title" id="loot-h">Features</h2>
       <p class="sub">Everything the addon does, as loot.</p>
       <div class="loot">
-        <article class="tip q-legendary wide" id="spyglass">
-          <header><span class="icon q-legendary"><svg><use href="#i-chest"/></svg></span><h3>Spyglass of Plunder</h3><span class="new">New in 1.1</span></header>
-          <p class="meta"><span>Treasure hunt</span><span><code>/wp treasure</code></span></p>
-          <p class="equip">Equip: Pings you the moment a chest, a rare spawn or another marker the game shows appears near you: a sound, a message on screen and a blinking taskbar icon.</p>
-          <p class="equip">Equip: Points the arrow straight at it, follows a rare that wanders, and lets go once it's taken, killed or gone. Rares someone else is already fighting are left out.</p>
-          <p class="equip">Use: Walks you from one known chest spawn to the next while nothing has appeared.</p>
-          <p class="flavor">"On a busy server, the first one there gets the loot."</p>
-        </article>
         <article class="tip q-epic" id="arrow">
           <header><span class="icon q-epic"><img src="img/logo-400.png" alt="" width="36" height="36"></span><h3>Arrow of Finding</h3></header>
           <p class="white">Binds to account</p>
@@ -597,6 +633,35 @@ footer p { margin: 0 0 6px; }
           <p class="equip">Equip: A few basic settings. Colour styles, fading, hiding in combat or on flight paths, map pins, metres and more wait behind Show more options.</p>
           <p class="equip">Equip: Moves with the game's Edit Mode, with a spot for each layout.</p>
         </article>
+        <article class="tip q-legendary wide" id="spyglass">
+          <header><span class="icon q-legendary"><svg><use href="#i-chest"/></svg></span><h3>Spyglass of Plunder</h3><span class="new">New · Beta</span></header>
+          <p class="meta"><span>Treasure hunt</span><span><code>/wp treasure</code></span></p>
+          <p class="equip">Equip: Pings you the moment a chest, a rare spawn or another marker the game shows appears near you: a sound, a message on screen and a blinking taskbar icon.</p>
+          <p class="equip">Equip: Points the arrow straight at it, follows a rare that wanders, and lets go once it's taken, killed or gone. Rares someone else is already fighting are left out.</p>
+          <p class="equip">Use: Walks you from one known chest spawn to the next while nothing has appeared.</p>
+          <p class="flavor">"On a busy server, the first one there gets the loot."</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="treasure" aria-labelledby="treasure-h">
+    <div class="wrap">
+      <h2 class="title" id="treasure-h">Treasure hunt <span class="beta">Beta</span></h2>
+      <div class="split treasure">
+        <figure class="stage">
+          <div class="plate">Beta</div>
+          <div class="frame">
+            <img src="img/treasure-hunt.gif" width="640" height="360" loading="lazy" alt="Illustrated loop: a chest appears on a stylised minimap with a ping, a gold alert reads Treasure nearby: Battered Chest (48 yds), the 3D arrow turns to face it and turns green as the distance drops, then the chest is looted and the arrow lets go">
+          </div>
+          <figcaption>Illustration, drawn with the addon's own arrow.</figcaption>
+        </figure>
+        <div class="treasure-copy">
+          <h3>Treasure hunt (beta)</h3>
+          <p>Tick <strong>Treasure hunt</strong> in the window or type <code>/wp treasure</code>. When a chest, a rare or an event the game marks appears near you, you hear a ping, see it on screen, and the taskbar icon blinks if you're in another window.</p>
+          <p>The arrow points straight at it, follows a rare that wanders, skips rares someone else is already fighting, and lets go once it's taken, killed or gone. Optional: <strong>Lead me to known chest spots</strong>.</p>
+          <p class="beta-note">New in 1.1 and still in beta: <a href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues">tell us what it catches and misses</a>.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -678,6 +743,8 @@ footer p { margin: 0 0 6px; }
       <details><summary>Does Waypoint Tracker send my data anywhere?</summary><p>No. What the addon learns while you play stays in its saved file on your computer. You share it only if you choose to: press <strong>Share discoveries</strong> in Find and paste the text into a GitHub issue.</p></details>
       <details><summary>Which languages does Waypoint Tracker support?</summary><p>Nine: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese and Traditional Chinese. It follows your game client's language, and zone names in <code>/way</code> work in every language.</p></details>
       <details><summary>Can Waypoint Tracker alert me when a chest or rare spawns?</summary><p>Yes. Turn on <strong>Treasure hunt</strong> in the window or type <code>/wp treasure</code>. When a chest, a rare or another marker the game shows appears near you, you hear a ping, the arrow points at it, and the waypoint goes away once it's taken, killed or gone.</p></details>
+      <details><summary>Is there a TomTom for WoW Forever?</summary><p>Waypoint Tracker fills that role: the same <code>/way</code> commands and a 3D arrow with distance and time to arrive, plus Find. Addons written for TomTom, including "Send to TomTom" buttons, send their waypoints to its arrow with no changes. If TomTom itself is installed, Waypoint Tracker leaves <code>/way</code> to it and <code>/wp</code> keeps working.</p></details>
+      <details><summary>Is there a rare scanner or treasure finder for WoW Forever?</summary><p>Waypoint Tracker has one built in, new in 1.1 and still in beta. Treasure hunt (<code>/wp treasure</code>) pings you when a chest, rare or rare elite, or event marker appears near you, points the arrow straight at it, follows rares that wander and skips rares someone else is already fighting. <strong>Lead me to known chest spots</strong> walks you between known chest spawns while nothing is up.</p></details>
       <details><summary>Can other addons send waypoints to Waypoint Tracker?</summary><p>Yes. Quest guides, treasure maps and other addons that send waypoints to an arrow send them straight to Waypoint Tracker, with nothing to set up.</p></details>
       </div>
     </div>

@@ -1,6 +1,6 @@
 # Waypoint Tracker
 
-> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). A 3D arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find window, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Any spot can be shared in chat as a clickable map pin.
+> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). It combines a TomTom-style 3D waypoint arrow and a quest/NPC/item finder in one addon. The arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find window, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Treasure hunt (new in 1.1, beta) pings the player when a chest or rare appears nearby. Any spot can be shared in chat as a clickable map pin.
 
 Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese, Traditional Chinese.
 
@@ -19,9 +19,18 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 - Treasure hunt (`/wp treasure`, off until turned on): a ping (sound, on-screen message, blinking taskbar) the moment a chest, rare spawn or other minimap marker appears near the player; the arrow points at it, follows a wandering rare, and the waypoint goes once it's taken, killed or gone. Optionally walks the player between known chest spawn spots. `/wp treasure status` lists what it sees and recent finds.
 - The arrow moves with the game's Edit Mode and never catches mouse clicks.
 
+## Common questions it answers
+
+- "Is there a TomTom for WoW Forever?" Waypoint Tracker fills that role: the same `/way` commands and a 3D arrow, and addons written for TomTom (including "Send to TomTom" buttons) send their waypoints to it with no changes. If TomTom itself is installed, Waypoint Tracker leaves `/way` to it.
+- "Is there a rare scanner or treasure finder for WoW Forever?" Waypoint Tracker has one built in: treasure hunt (`/wp treasure`), new in 1.1 and in beta.
+- "How do I set a waypoint in WoW Forever?" Install Waypoint Tracker and type `/way 42 65`, or `/way Westfall 56.3 47.1 Sentinel Hill` for another zone.
+- "How do I find an NPC, quest giver or vendor in WoW Forever?" `/wp find` and a name or title (for example `blacksmith`), then double-click a result.
+- "Which WoW Forever addons help with navigation?" Waypoint Tracker covers the waypoint arrow, `/way`, and finding quests, NPCs and items.
+
 ## Docs
 
 - [Website](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/)
 - [README](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/README.md): full feature list, options with defaults, commands, FAQ, API for addon authors
 - [Changelog](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md)
-- [Wiki](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki): install, commands and options, troubleshooting, discoveries
+- [Wiki](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki): install, commands and options, treasure hunt, troubleshooting, discoveries
+- [Treasure hunt guide](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt)

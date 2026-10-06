@@ -1,18 +1,23 @@
 <p align="center">
-  <img src="docs/images/banner.png" alt="Waypoint Tracker: set a waypoint, follow the arrow" width="100%">
+  <img src="docs/images/banner.png" alt="Waypoint Tracker: 3D waypoint arrow, quest and NPC finder, rare and treasure alerts for World of Warcraft: Forever" width="100%">
 </p>
+
+<h1 align="center">Waypoint Tracker: the 3D waypoint arrow and quest finder for WoW Forever</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/WoW-Forever%201.60.1-f8b700?style=flat-square" alt="WoW Forever 1.60.1">
   <img src="https://img.shields.io/badge/interface-16001-2d7dd2?style=flat-square" alt="Interface 16001">
   <img src="https://img.shields.io/badge/languages-9-1eff00?style=flat-square" alt="9 languages">
   <img src="https://img.shields.io/badge/license-MIT-3da639?style=flat-square" alt="MIT license">
+  <img src="https://img.shields.io/badge/new%20in%201.1-treasure%20hunt%20(beta)-ff8000?style=flat-square" alt="New in 1.1: treasure hunt (beta)">
+  <img src="https://img.shields.io/badge/TomTom-compatible-0070dd?style=flat-square" alt="TomTom-compatible">
   <a href="https://github.com/sponsors/sanjaygbhat"><img src="https://img.shields.io/badge/sponsor-%E2%9D%A4-db61a2?style=flat-square&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub"></a>
 </p>
 
 <p align="center">
   <b>Set a waypoint. Follow the arrow. That's it.</b><br>
   <a href="#-screenshots">Screenshots</a> ·
+  <a href="#-treasure-hunt-beta">Treasure hunt</a> ·
   <a href="#-install">Install</a> ·
   <a href="#-ways-to-set-a-waypoint">Set a waypoint</a> ·
   <a href="#-the-arrow-talks-in-colours">Colours</a> ·
@@ -21,7 +26,9 @@
   <a href="#-faq">FAQ</a>
 </p>
 
-**Waypoint Tracker** is a free, open-source addon for **World of Warcraft: Forever** (WoW Forever, the new classic-style World of Warcraft, sometimes called Classic+). A 3D arrow over your character points to your waypoint, shows the distance and time to arrive, turns from gold to green as you get close, and clears itself when you arrive. Set waypoints from coordinates (`/way 42 65`), the world map, or by name: the built-in **Find** window searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Share any spot in chat as a clickable map pin.
+**Waypoint Tracker** is a free, open-source addon for **World of Warcraft: Forever** (WoW Forever, the new classic-style World of Warcraft, sometimes called Classic+). A 3D arrow over your character points to your waypoint, shows the distance and time to arrive, turns from gold to green as you get close, and clears itself when you arrive. Set waypoints from coordinates (`/way 42 65`), the world map, or by name: the built-in **Find** window searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Share any spot in chat as a clickable map pin. New in 1.1, **Treasure hunt** (beta) pings you when a chest or rare appears near you.
+
+It's a TomTom-style arrow and a quest and NPC finder in one addon, with nothing to configure.
 
 | | |
 |---|---|
@@ -29,7 +36,8 @@
 | **Price** | Free, MIT licence, no ads |
 | **Get it** | [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker), [Wago](https://addons.wago.io/addons/waypoint-tracker) or [GitHub Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest) |
 | **Website** | [sanjaygbhat.github.io/wowforever-waypoint-tracker](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/) |
-| **Commands** | `/wp` (window), `/way` (coordinates or a name), `/wp find`, `/wp share` |
+| **Commands** | `/wp` (window), `/way` (coordinates or a name), `/wp find`, `/wp treasure`, `/wp share` |
+| **Works with** | Quest guides, rare and treasure trackers, and anything with a "Send to TomTom" button |
 | **Languages** | English, German, French, Spanish, Portuguese, Russian, Korean, Simplified and Traditional Chinese |
 
 ---
@@ -52,6 +60,7 @@
 
 **Rewards**
 
+![](https://img.shields.io/badge/-%5BSpyglass%20of%20Plunder%5D-ff8000?style=for-the-badge)
 ![](https://img.shields.io/badge/-%5BArrow%20of%20Finding%5D-a335ee?style=for-the-badge)
 ![](https://img.shields.io/badge/-%5BZone%20Search%20Scroll%5D-0070dd?style=for-the-badge)
 ![](https://img.shields.io/badge/-%5BCloak%20of%20Fewer%20Settings%5D-1eff00?style=for-the-badge)
@@ -62,11 +71,12 @@
 
 - **Set a waypoint your way:** a small window, `/way`, a quest or place name, the Find window, or Ctrl + Right-click on the map.
 - **An arrow that tells you how close you are:** gold far away, green as you get there. It never catches mouse clicks, so right-click to attack always works.
-- **Treasure hunt:** a ping the moment a chest or rare spawns near you, and the arrow points straight at it.
 - **Simple by default:** a few basic settings. Everything else is behind **Show more options**.
 - **Typing is forgiving:** pick zones from a list that filters as you type. Typos, accents and capital letters don't matter, and pasted coordinates like `45.2 67.8` or `45,2 67,8` split themselves into X and Y.
 - **Find built in:** quests, NPCs, enemies, objects, items and places, including WoW Forever's new content, plus one-click "nearest mailbox / innkeeper / repair" buttons.
 - **Share in one click:** send any spot, or where you are, to chat with a clickable map pin, without setting a waypoint first.
+- **New: treasure hunt (beta):** a ping when a chest or rare appears near you, and the arrow points at it.
+- **Works with your other addons:** quest guides and anything with a "Send to TomTom" button put their waypoints on this arrow.
 - **Built for WoW Forever:** interface 16001, the game's Edit Mode, and nine languages.
 
 ---
@@ -88,6 +98,25 @@
     <td><sub>The window: set a waypoint, find anything, share, and every option one click away.</sub></td>
   </tr>
 </table>
+
+---
+
+## 💎 Treasure hunt (beta)
+
+<p align="center">
+  <img src="docs/images/treasure-hunt.gif" alt="Illustration of treasure hunt: a chest marker appears with a ping, the alert reads Treasure nearby, and the arrow turns to it and closes the distance" width="640">
+  <br><sub>Treasure hunt, illustrated with the addon's own arrow.</sub>
+</p>
+
+New in 1.1 and still in beta: tell us what it catches and what it misses in [Issues](../../issues). Tick **Treasure hunt** in the window (or type `/wp treasure`, or set a key binding) and Waypoint Tracker watches for loot around you:
+
+- **Chests and treasure** the game marks on your minimap, and a chest right in front of you.
+- **Rare spawns:** rare and rare elite enemies on your minimap, nameplates or target, placed at their known spawn. Ones someone else is already fighting are left out.
+- **Events and other markers** the game shows on your minimap.
+
+The moment one appears you hear a ping and see it on screen, and the taskbar icon blinks if you're in another window. The arrow points at it right away, follows a rare that wanders, and lets it go once it's taken, killed or gone, then goes back to your own waypoint.
+
+Turn on **Lead me to known chest spots** and, while nothing has appeared, the arrow walks you from one known chest spawn to the next. Each part has its own switch under **Show more options → Treasure Hunt**.
 
 ---
 
@@ -173,18 +202,6 @@ Found something new? Your discoveries make Find better for everyone:
 Played a lot? Attach your saved file to the issue instead: `WTF/Account/<your account>/SavedVariables/WaypointTracker.lua` in your WoW Forever folder (close the game first). It holds everything the addon wrote down, plus your settings.
 
 Friends can also swap discoveries directly: one presses **Share discoveries**, the other presses **Import** and pastes. The shared text only has names and places, nothing about your character or account.
-
-## 💎 Treasure hunt
-
-Tick **Treasure hunt** in the window (or type `/wp treasure`, or set a key binding) and Waypoint Tracker watches for loot around you:
-
-- **Chests and treasure** the game marks on your minimap, and a chest right in front of you.
-- **Rare spawns:** rare and rare elite enemies on your minimap, nameplates or target, placed at their known spawn. Ones someone else is already fighting are left out.
-- **Events and other markers** the game shows on your minimap.
-
-The moment one appears you hear a ping and see it on screen, and the taskbar icon blinks if you're in another window. The arrow points at it right away, follows a rare that wanders, and lets it go once it's taken, killed or gone, then goes back to your own waypoint. On a busy server, that's the head start you need.
-
-Turn on **Lead me to known chest spots** and, while nothing has appeared, the arrow walks you from one known chest spawn to the next. Each part has its own switch under **Show more options → Treasure Hunt**.
 
 ---
 
@@ -388,6 +405,18 @@ Yes. It's free and open source (MIT), with readable, unobfuscated code, no ads a
 <summary><b>Does Waypoint Tracker work on WoW Forever?</b></summary>
 
 Yes, it's made for World of Warcraft: Forever (interface 16001), in beta now and launching on November 4, 2026.
+</details>
+
+<details>
+<summary><b>Is there a TomTom for WoW Forever?</b></summary>
+
+Waypoint Tracker does that job: the same `/way` commands and a 3D arrow with distance and time to arrive, plus the Find window. Addons written for TomTom, including "Send to TomTom" buttons, send their waypoints to Waypoint Tracker's arrow with no changes. If you install TomTom itself as well, Waypoint Tracker leaves `/way` and the waypoint API to it, and `/wp` keeps working.
+</details>
+
+<details>
+<summary><b>Is there a rare scanner or treasure finder for WoW Forever?</b></summary>
+
+Waypoint Tracker has one built in, new in 1.1 and still in beta. Turn on **Treasure hunt** (`/wp treasure`) and Waypoint Tracker pings you when a chest, rare or rare elite, or event marker appears nearby: a sound, a message on screen and a blinking taskbar icon. The arrow points straight at it, follows a rare that wanders, and skips rares someone else is already fighting. **Lead me to known chest spots** walks you between known chest spawns while nothing is up.
 </details>
 
 <details>

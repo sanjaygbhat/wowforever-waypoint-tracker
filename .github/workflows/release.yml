@@ -59,7 +59,7 @@ jobs:
           # the GitHub release page: what the addon is, the changes, how to install
           ZIP="WaypointTracker-v${VERSION}.zip"
           {
-            echo "**Waypoint Tracker** is a free World of Warcraft addon for **WoW Forever**: a 3D waypoint arrow, \`/way\` coordinates, a built-in quest, NPC and item finder, and map pins you can share in chat."
+            echo "**Waypoint Tracker** is a free World of Warcraft addon for **WoW Forever**: a 3D waypoint arrow with \`/way\` coordinates, a built-in quest, NPC and item finder, map pins you can share in chat, and new treasure alerts (beta). Addons that send TomTom waypoints work with it out of the box."
             echo
             cat dist/NOTES.md
             echo

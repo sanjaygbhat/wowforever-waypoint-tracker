@@ -7,7 +7,7 @@ version=$(sed -n 's/^## Version: *//p' WaypointTracker/WaypointTracker.toc | tr 
 date=$(git log -1 --format=%cs 2>/dev/null || date -u +%F)
 rm -rf "$out"
 mkdir -p "$out/img"
-cp docs/images/arrow-demo.gif docs/screenshots/*.jpg docs/release/social-preview.png docs/release/logo-400.png "$out/img/"
+cp docs/images/arrow-demo.gif docs/images/treasure-hunt.gif docs/images/treasure-hunt.png docs/images/feature-grid.png docs/screenshots/*.jpg docs/release/social-preview.png docs/release/logo-400.png "$out/img/"
 for f in site/*; do
   sed -e "s/@VERSION@/$version/g" -e "s/@DATE@/$date/g" "$f" > "$out/$(basename "$f")"
 done
