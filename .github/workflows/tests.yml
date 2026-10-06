@@ -29,4 +29,3 @@ jobs:
         run: |
           lua5.1 tests/run_bare.lua
           WT_PLAIN_VECTORS=1 lua5.1 tests/run_bare.lua
-      - name: Discoveries merge tool
