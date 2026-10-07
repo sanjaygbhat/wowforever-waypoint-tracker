@@ -1140,6 +1140,7 @@ local function CreateAdvanced()
     C(L.FADE_ON_COURSE, "fadeOnCourse", L.FADE_ON_COURSE_DESC)
     C(L.HIDE_IN_COMBAT, "hideInCombat", L.HIDE_IN_COMBAT_DESC)
     C(L.HIDE_ON_TAXI, "hideOnTaxi", L.HIDE_ON_TAXI_DESC)
+    C(L.FIND_BUTTON, "findButton", L.FIND_BUTTON_DESC)
 
     H(L.TEXT_HEADER)
     Slider(content, L.TEXT_SIZE, "textScale", 0.5, 2.0, 0.05, 10, y, 250, Percent, L.TEXT_SIZE_DESC)

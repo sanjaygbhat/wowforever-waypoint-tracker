@@ -25,7 +25,7 @@ Nothing to configure. Free, open source, in 9 languages. Made for World of Warcr
 
 *Real in-game screenshot: the waypoint name, distance and time to arrive under the arrow.*
 
-1. Type `/way 42 65` (or open the window with `/wp`).
+1. Type `/way 42 65` (or type `/wp` and pick something near you).
 2. Follow the arrow. It turns from gold to green as you get closer.
 3. Arrive. It plays a sound, clears the waypoint and points to the next closest one.
 
@@ -92,7 +92,8 @@ The ping comes the moment one appears, and the taskbar icon blinks if you're in 
 | `/way 42 65` | Waypoint in your current zone |
 | `/way Westfall 56.3 47.1 Sentinel Hill` | Named waypoint in any zone |
 | `/way hogger` | Go straight to something by name |
-| `/wp` | Open or close the window |
+| `/wp` | What's near you, nearest first, with search (again: close) |
+| `/wp options` | Open the window: your waypoints and settings |
 | `/wp find [name]` | Search quests, NPCs, enemies, objects and items |
 | `/wp treasure` | Turn treasure hunt on or off |
 | `/wp treasure status` | What treasure hunt sees now and found recently |

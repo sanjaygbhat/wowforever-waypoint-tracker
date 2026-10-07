@@ -20,7 +20,7 @@ Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft
 
 ## The first minute
 
-1. Type `/wp` to open the window.
+1. Type `/wp` to see what's near you, nearest first. Double-click one and the arrow points the way.
 2. Type `/way 42 65` to set a waypoint in your current zone, or hold **Ctrl** and **right-click** the world map.
 3. Follow the arrow. It changes from gold to green as you approach.
 4. Open **Find** to search a quest, NPC, enemy, object or item; double-click a result and the arrow points to its closest spot.

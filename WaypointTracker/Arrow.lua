@@ -119,6 +119,50 @@ distText:SetPoint("TOP", title, "BOTTOM", 0, -1)
 local etaText = Text(10, 0.8, 0.8, 0.8)
 etaText:SetPoint("TOP", distText, "BOTTOM", 0, -1)
 
+-- The Find button by the arrow: one click to what's near you and search
+-- (right-click: your waypoints and settings). It stays where the arrow is
+-- when there's no waypoint, so Find is always a click away.
+local findButton = CreateFrame("Button", "WaypointTrackerArrowFind", UIParent)
+findButton:SetSize(24, 24)
+findButton:SetFrameStrata("LOW")
+findButton:SetPoint("LEFT", frame, "RIGHT", 0, 0)
+findButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+do
+    local bg = findButton:CreateTexture(nil, "BACKGROUND")
+    bg:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
+    bg:SetSize(18, 18)
+    bg:SetPoint("CENTER")
+    local icon = findButton:CreateTexture(nil, "ARTWORK")
+    icon:SetTexture(ns.MEDIA .. "Icon")
+    icon:SetSize(16, 16)
+    icon:SetPoint("CENTER")
+    local border = findButton:CreateTexture(nil, "OVERLAY")
+    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    border:SetSize(42, 42)
+    border:SetPoint("TOPLEFT")
+    findButton:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
+end
+findButton:SetScript("OnClick", function(_, mouse)
+    if mouse == "RightButton" then
+        WaypointTracker_ToggleWindow()
+    else
+        ns.Find.ToggleNearby()
+    end
+end)
+findButton:SetScript("OnEnter", function(self)
+    self:SetAlpha(1)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:AddLine(L.FIND_TITLE)
+    GameTooltip:AddLine(L.MINIMAP_TOOLTIP_LEFT, 0.8, 0.8, 0.8)
+    GameTooltip:AddLine(L.MINIMAP_TOOLTIP_RIGHT, 0.8, 0.8, 0.8)
+    GameTooltip:Show()
+end)
+findButton:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+findButton:Hide()
+Arrow.findButton = findButton
+
 -- Move mode: a soft highlight around each part so you can see what you drag.
 local moveParts = {}
 local function MoveBox(f, pad)
@@ -424,6 +468,17 @@ local function Update(dt)
     local now = GetTime()
     local wp = WP.GetActive()
     local show = ShouldShow()
+
+    -- the Find button: wherever the arrow is shown or would be, softer
+    -- without a waypoint (full again under the mouse)
+    if show and ns.Get("findButton") then
+        if not findButton:IsMouseOver() then
+            findButton:SetAlpha(wp and 0.9 or 0.6)
+        end
+        findButton:Show()
+    else
+        findButton:Hide()
+    end
 
     -- "You have arrived!" moment
     if not Arrow.moving and (now < arrivedUntil or (wp and wp.arrivedAt)) then

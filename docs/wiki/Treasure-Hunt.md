@@ -12,7 +12,7 @@ Treasure hunt turns Waypoint Tracker into a rare scanner and treasure finder. Th
 
 Any of these:
 
-- Tick **Treasure hunt** in the window (`/wp`).
+- Tick **Treasure hunt** in the window (`/wp options`).
 - Type `/wp treasure`.
 - Bind a key under **Key Bindings → AddOns → Turn treasure hunt on or off**.
 

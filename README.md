@@ -36,7 +36,7 @@ It's a TomTom-style arrow and a quest and NPC finder in one addon, with nothing 
 | **Price** | Free, MIT licence, no ads |
 | **Get it** | [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker), [Wago](https://addons.wago.io/addons/waypoint-tracker) or [GitHub Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest) |
 | **Website** | [sanjaygbhat.github.io/wowforever-waypoint-tracker](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/) |
-| **Commands** | `/wp` (window), `/way` (coordinates or a name), `/wp find`, `/wp treasure`, `/wp share` |
+| **Commands** | `/wp` (what's near you), `/way` (coordinates or a name), `/wp find`, `/wp treasure`, `/wp share` |
 | **Works with** | Quest guides, rare and treasure trackers, and anything with a "Send to TomTom" button |
 | **Languages** | English, German, French, Spanish, Portuguese, Russian, Korean, Simplified and Traditional Chinese |
 
@@ -50,7 +50,7 @@ It's a TomTom-style arrow and a quest and NPC finder in one addon, with nothing 
 
 **Objectives**
 
-- [ ] Set a waypoint: open the window with `/wp`, or just type `/way 42 65`
+- [ ] Set a waypoint: pick something near you with `/wp`, or just type `/way 42 65`
 - [ ] Follow the arrow until it turns **green**
 - [ ] Arrive. The waypoint clears itself and the arrow moves on to the next one.
 
@@ -142,7 +142,7 @@ Turn on **Lead me to known chest spots** and, while nothing has appeared, the ar
 
 | | How | Good for |
 |---|---|---|
-| 🪟 **The window** | Type `/wp` (or click the minimap button). Search a zone, type X and Y, press **Set Waypoint**. | Copying coordinates from a website |
+| 🪟 **The window** | Type `/wp options` (or right-click the minimap button). Search a zone, type X and Y, press **Set Waypoint**. | Copying coordinates from a website |
 | 📖 **Find** | Press **Quests**, **NPCs**, **Enemies** or **Objects** in the window (or `/wp find hogger`), search, and double-click. Or click **Nearest: Mailbox / Innkeeper / Flight Master / Repair / Bank / Auction House**. | Quests, mobs to farm, herbs and chests, trainers, vendors, anything with a name |
 | 🔎 **Search a place** | In the window's **Zone** box, type a quest from your log, a flight master, a dungeon or a rare, then click it. The waypoint is set right away. | Going somewhere without knowing the coordinates |
 | 💬 **Chat** | `/way 42 65` for your current zone, `/way Westfall 56.3 47.1 Sentinel Hill`, or a name like `/way hogger` (goes straight there when the name is exact, otherwise opens Find) | Quick one-offs, macros, sharing with friends |
@@ -289,7 +289,8 @@ You can also find the addon under **Options → AddOns → Waypoint Tracker**, i
 
 | Command | What it does |
 |---|---|
-| `/wp` | Open or close the window |
+| `/wp` | What's near you, nearest first, with search (again: close) |
+| `/wp options` | Open the window: your waypoints and settings |
 | `/wp find [name]` | Open the Find window (and search) |
 | `/way hogger` | No coordinates? If exactly one thing has that name, the arrow goes there. Otherwise Find opens with that search |
 | `/way 42 65` | Waypoint in your current zone |
@@ -381,7 +382,7 @@ TomTom:WaypointExists(uiMapID, x, y, title)
 <details>
 <summary><b>How do I set a waypoint in WoW Forever?</b></summary>
 
-With Waypoint Tracker installed, type `/way 42 65` in chat for your current zone, or `/way Westfall 56.3 47.1 Sentinel Hill` for another zone. You can also type `/wp` to open the window, hold **Ctrl** and right-click the world map, or search a quest, NPC or object by name with `/wp find`. A 3D arrow then points the way.
+With Waypoint Tracker installed, type `/way 42 65` in chat for your current zone, or `/way Westfall 56.3 47.1 Sentinel Hill` for another zone. You can also type `/wp` to pick something near you, hold **Ctrl** and right-click the world map, or search a quest, NPC or object by name with `/wp find`. A 3D arrow then points the way.
 </details>
 
 <details>
@@ -458,7 +459,7 @@ The list comes straight from the game: every map with its own coordinates, inclu
 Two ways. To move the text on its own, first tick **Move the text separately** (in **Show more options**, or in the arrow's Edit Mode panel); the text then gets its own box to drag.
 
 - **Edit Mode**, like the game's own frames: press **Esc > Edit Mode**. The arrow shows up with the same blue box. Drag it, or click it for the size and visibility of the arrow and of its text, and **Reset**. Changes apply right away. Each Edit Mode layout keeps its own spot, so switching layouts moves the arrow too.
-- **The window**: open it (`/wp`), press **Move Arrow**, drag it and press **Done**. **Reset** puts it back over your character, at the default size and visibility. The arrow never reacts to clicks otherwise, so it can't get in the way of right-click to attack. While the window is open and you have no waypoint, a slowly turning preview arrow shows up so you can size it.
+- **The window**: open it (`/wp options`), press **Move Arrow**, drag it and press **Done**. **Reset** puts it back over your character, at the default size and visibility. The arrow never reacts to clicks otherwise, so it can't get in the way of right-click to attack. While the window is open and you have no waypoint, a slowly turning preview arrow shows up so you can size it.
 </details>
 
 <details>

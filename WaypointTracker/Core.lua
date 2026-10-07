@@ -14,6 +14,7 @@ ns.version = (GetAddOnMetadata and GetAddOnMetadata(ADDON_NAME, "Version")) or "
 ns.defaults = {
     -- arrow
     arrowShown = true,
+    findButton = true, -- the Find button by the arrow
     arrowScale = 1.0,
     arrowAlpha = 0.8, -- a little see-through, so it feels part of the world
     arrowPos = nil, -- { point, relativePoint, x, y }; nil = over your character

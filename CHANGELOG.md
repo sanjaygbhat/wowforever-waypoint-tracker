@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+**What's near you, in one step**
+- `/wp` opens Find on what's near you, nearest first: NPCs, enemies, objects, places and the quests you can pick up around you, with distances that update as you walk. Double-click one and the arrow points the way. Start typing to search everything.
+- A small Find button sits next to the arrow, and stays there when you have no waypoint. Click it for what's near you; right-click it for your waypoints and settings. Turn it off under **Show more options → Arrow Display**.
+- The minimap button does the same: left-click for what's near you, right-click for the window. `/wp options` and Find's **Waypoints** button open the window too.
+
+**Treasure hunt**
+- Rares and bosses on your own side, like Varimathras next to Sylvanas, are left out: only what you can fight is announced.
+
 ## 1.1.1
 
 - Spots you share in chat now start with **[Waypoint Tracker]**, followed by the map pin and coordinates. Turn it off under **Show more options → General → Start shared spots with [Waypoint Tracker]**.

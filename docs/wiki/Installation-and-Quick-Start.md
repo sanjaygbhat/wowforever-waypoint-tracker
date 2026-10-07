@@ -32,7 +32,7 @@ The [official WowUp guide](https://wowup.io/guide/get-addons/overview) documents
 ## Set your first waypoint
 
 - **Coordinates:** `/way 42 65` uses your current zone. For another zone: `/way Westfall 56.3 47.1 Sentinel Hill`.
-- **Window:** type `/wp`, choose a zone, enter X/Y and press **Set Waypoint**. Pasting `45.2 67.8` into X fills both boxes.
+- **Window:** type `/wp options`, choose a zone, enter X/Y and press **Set Waypoint**. Pasting `45.2 67.8` into X fills both boxes.
 - **Map:** hold **Ctrl** and **right-click** the world map.
 - **Where you stand:** `/wp here`.
 

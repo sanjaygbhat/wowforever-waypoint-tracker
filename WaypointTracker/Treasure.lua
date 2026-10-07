@@ -49,6 +49,7 @@ local RARE_CLASS = { rare = true, rareelite = true, worldboss = true }
 
 local targets = {} -- key (GUID, or "spot") -> { kind, name, m, x, y, wp, seen, vig, here, dismissed }
 local done = {} -- key -> when it was taken, killed or let go
+local friendly = {} -- GUID -> true: an NPC you can't attack (your own side's rares and bosses)
 local visited = {} -- known spot -> when you checked it
 local lastAlert = -100
 local history = {} -- the last few finds, newest first: { at, kind, name, via }
@@ -212,6 +213,23 @@ local function VignetteKind(info)
     return "other"
 end
 
+-- An NPC the database knows is on your side (or never hostile): not yours to hunt.
+local function FriendlyNPC(guid)
+    local DB = ns.DB
+    if not (DB and DB.ready and ns.Learn) then
+        return false
+    end
+    local kind, id = ns.Learn.ParseGUID(guid)
+    local e = kind == "npc" and DB.units[id]
+    if not e then
+        return false
+    end
+    if (e.fac or "") ~= "" then
+        return not e.hostile and DB.ForMyFaction(e)
+    end
+    return e.hostile == false
+end
+
 local function ScanVignettes()
     if not (C_VignetteInfo and C_VignetteInfo.GetVignettes and C_VignetteInfo.GetVignetteInfo) then
         return
@@ -233,6 +251,8 @@ local function ScanVignettes()
                 if targets[key] then
                     Done(key)
                 end
+            elseif friendly[key] or FriendlyNPC(key) then
+                Forget(key, true)
             else
                 local name = ns.CleanText(Plain(info.name), 60)
                 local x, y
@@ -306,6 +326,12 @@ function Treasure.LookAt(unit)
     end
     local guid = Plain(UnitGUID(unit))
     if type(guid) ~= "string" then
+        return
+    end
+    -- your own side's rares and bosses (Varimathras next to Sylvanas): you can't fight them
+    if UnitCanAttack and not Plain(UnitCanAttack("player", unit)) then
+        friendly[guid] = true
+        Forget(guid, true)
         return
     end
     if Plain(UnitIsDead(unit)) then

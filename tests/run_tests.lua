@@ -20,7 +20,7 @@ end
 -- someone updating from an early test build with its old defaults saved
 WaypointTrackerDB = { version = 1, settings = { arrowAlpha = 1.0, fadeOnCourse = false, arrowLocked = true, arrowPos = { "CENTER", "CENTER", 0, 230 } } }
 
-searchTime, searchSpeed = nil, nil
+searchTime, searchSpeed, nearbyTime = nil, nil, nil
 local ns = M.LoadAddon("WaypointTracker", "WaypointTracker")
 M.FireEvent("ADDON_LOADED", "WaypointTracker")
 M.FireEvent("PLAYER_LOGIN")
@@ -723,6 +723,105 @@ SlashCmdList.WAYPOINTTRACKER("find mine")
 check(WaypointTrackerFindFrame:IsShown() and fw.search:GetText() == "mine", "/wp find opens it with the text")
 ns.Find.Toggle()
 
+-- /wp alone: what's near you, nearest first, before typing anything
+SlashCmdList.WAYPOINTTRACKER("")
+check(WaypointTrackerFindFrame:IsShown() and fw.search:GetText() == "" and ns.Find.IsNearby(), "/wp opens Find on what's near you")
+local function NearbyHas(id, kinds)
+    for _, e in ipairs((ns.DB.Nearby(kinds, { faction = true }))) do
+        if e.id == id then
+            return e
+        end
+    end
+end
+local function NearbySorted(kinds)
+    local list, n, dist = ns.DB.Nearby(kinds, { faction = true })
+    local last, onMap = -1, true
+    for _, e in ipairs(list) do
+        if dist[e] < last then
+            return false, n
+        end
+        last = dist[e]
+        if e.kind ~= "quest" then
+            local here = false
+            for _, p in ipairs(ns.DB.Points(e)) do
+                here = here or Geo.SameMap(p.m, 37)
+            end
+            onMap = onMap and here
+        end
+    end
+    return onMap and n > 0, n
+end
+check(fw.rows[1]:IsShown() and fw.count:GetText() ~= "", "the list fills with what's around, and says how many")
+t1 = os.clock()
+local okAll = NearbySorted({ quest = true, npc = true, enemy = true, object = true, place = true })
+nearbyTime = os.clock() - t1
+check(okAll, "everything listed is on your map, nearest first")
+ns.Set("findTab", "npc")
+SlashCmdList.WAYPOINTTRACKER("")
+SlashCmdList.WAYPOINTTRACKER("")
+check(ns.Find.IsShown(), "/wp twice: closed and open again")
+ns.Set("findTab", "npc")
+fw.tabs[3]:Click()
+check(NearbyHas(FARLEY, { npc = true }) and not NearbyHas(HOGGER, { npc = true }), "Goldshire's innkeeper is near you in the NPCs tab")
+check(NearbyHas(HOGGER, { enemy = true }) and not NearbyHas(THRALL, { npc = true }), "Hogger in the Enemies tab, nothing from another continent")
+local firstNear = fw.rows[1].entry
+fw.rows[1]:RunScript("OnDoubleClick")
+check(firstNear and WP.GetActive().title == firstNear.name, "a double-click sends the arrow there")
+fw.tabs[4]:Click()
+local onlyEnemies = fw.rows[1].entry ~= nil
+for _, r in ipairs(fw.rows) do
+    if r:IsShown() and r.entry and not ns.DB.IsEnemy(r.entry) then
+        onlyEnemies = false
+    end
+end
+check(onlyEnemies, "the Enemies tab lists enemies near you")
+fw.tabs[2]:Click()
+local questsOk = fw.rows[1].entry ~= nil
+for _, r in ipairs(fw.rows) do
+    if r:IsShown() and r.entry and (r.entry.kind ~= "quest" or ns.DB.QuestState(r.entry) == "done") then
+        questsOk = false
+    end
+end
+check(questsOk and NearbySorted({ quest = true }), "the Quests tab lists quests to pick up near you")
+fw.tabs[6]:Click()
+check(not ns.Find.IsNearby() and fw.empty:IsShown(), "items have no spot: their tab asks for a name")
+fw.tabs[1]:Click()
+fw.search:Type(Name("units", HOGGER))
+M.Tick(0.3)
+check(not ns.Find.IsNearby() and fw.rows[1].entry and fw.rows[1].entry.id == HOGGER, "typing searches everywhere again")
+fw.search:SetText("")
+fw.search:Type("")
+M.Tick(0.3)
+check(ns.Find.IsNearby(), "and clearing the box brings back what's near you")
+check(fw.waypoints:IsShown(), "a Waypoints button opens the main window from here")
+fw.waypoints:Click()
+check(WaypointTrackerFrame:IsShown(), "it does")
+WaypointTracker_ToggleWindow()
+ns.Find.Toggle()
+check(not ns.Find.IsShown(), "closed")
+
+-- the Find button by the arrow: there even without a waypoint
+WP.ClearAll()
+M.Tick(0.2)
+local fbtn = WaypointTrackerArrowFind
+check(fbtn:IsShown(), "the Find button stays where the arrow is without a waypoint")
+fbtn:Click("LeftButton")
+check(ns.Find.IsShown() and ns.Find.IsNearby(), "one click: what's near you")
+fbtn:Click("LeftButton")
+check(not ns.Find.IsShown(), "another click closes it")
+fbtn:Click("RightButton")
+check(WaypointTrackerFrame:IsShown(), "right-click: waypoints and settings")
+WaypointTracker_ToggleWindow()
+ns.Set("findButton", false)
+M.Tick(0.2)
+check(not fbtn:IsShown(), "and it can be turned off")
+ns.Set("findButton", true)
+ns.Set("arrowShown", false)
+M.Tick(0.2)
+check(not fbtn:IsShown(), "hidden with the arrow")
+ns.Set("arrowShown", true)
+M.Tick(0.2)
+
 -- ---------------------------------------------------------------------------
 -- Learning WoW Forever content as you play
 -- ---------------------------------------------------------------------------
@@ -949,8 +1048,13 @@ ns.DB.MergeLearned()
 -- in play: seen once Find's database is loaded, it's dropped a moment later
 M.units.nameplate13 = { guid = Guid("Creature", 60), name = "Ruklar the Trapper", reaction = 2, level = 10, dist = 5 }
 M.player.inst, M.player.wx, M.player.wy = Geo.MapToWorld(37, 0.646, 0.567) -- where the database has it
-M.Tick(1.1)
-check(st.npcs[60] ~= nil, "a sighting is written down first")
+-- (watched closely: the save every few seconds may come right after it)
+local written = false
+for _ = 1, 22 do
+    M.Tick(0.05)
+    written = written or st.npcs[60] ~= nil
+end
+check(written, "a sighting is written down first")
 M.units.nameplate13 = nil
 M.Tick(5.1)
 check(st.npcs[60] == nil, "and dropped within seconds once it turns out the database has it")
@@ -1378,6 +1482,27 @@ do
     M.units.nameplate4 = { guid = "Creature-0-1-0-0-990001-0000000004", name = "Test Rare", class = "rare", reaction = 2, tapped = true }
     M.Tick(1.1)
     check(T.Targets()["Creature-0-1-0-0-990001-0000000004"] == nil, "rares someone else is fighting are left out")
+    -- your own side's boss (a dreadlord next to the queen): you can't attack it, so it isn't a find
+    pings = #M.sounds
+    M.units.nameplate4 = { guid = "Creature-0-1-0-0-990002-0000000007", name = "Friendly Boss", class = "worldboss", reaction = 5, faction = "Alliance" }
+    M.Tick(1.1)
+    check(T.Targets()["Creature-0-1-0-0-990002-0000000007"] == nil and #M.sounds == pings, "rares and bosses you can't attack are left out")
+    M.vignettes["v-friend"] = { name = "Friendly Boss", onMinimap = true, atlasName = "VignetteKill", objectGUID = "Creature-0-1-0-0-990002-0000000007", pos = { 0.5, 0.5 } }
+    M.Tick(1.1)
+    check(T.Targets()["Creature-0-1-0-0-990002-0000000007"] == nil, "and its minimap marker doesn't bring it back")
+    ns.DB.units[990003] = { kind = "npc", id = 990003, name = "Guard Captain", key = "guardcaptain", fac = "A", hostile = false, points = {} }
+    ns.DB.units[990004] = { kind = "npc", id = 990004, name = "Enemy Captain", key = "enemycaptain", fac = "H", hostile = false, points = {} }
+    M.vignettes = {
+        own = { name = "Guard Captain", onMinimap = true, atlasName = "VignetteKill", objectGUID = "Creature-0-1-0-0-990003-0000000008", pos = { 0.5, 0.5 } },
+        foe = { name = "Enemy Captain", onMinimap = true, atlasName = "VignetteKill", objectGUID = "Creature-0-1-0-0-990004-0000000009", pos = { 0.5, 0.5 } },
+    }
+    M.Tick(1.1)
+    check(T.Targets()["Creature-0-1-0-0-990003-0000000008"] == nil and T.Targets()["Creature-0-1-0-0-990004-0000000009"] ~= nil,
+        "a marker for your own side's NPC is left out, the other side's is found")
+    M.vignettes = {}
+    M.Tick(2)
+    ns.DB.units[990003], ns.DB.units[990004] = nil, nil
+    pings = #M.sounds
     M.units.nameplate4 = { guid = "Creature-0-1-0-0-6-0000000005", name = "Kobold Vermin", class = "normal", reaction = 2 }
     M.Tick(1.1)
     check(next(T.Targets()) == nil, "ordinary enemies are left out")
@@ -1857,7 +1982,7 @@ do
 end
 
 -- ---------------------------------------------------------------------------
-print(("first Find search incl. loading the database: %.2fs, later searches: %.3fs"):format(searchTime or 0, searchSpeed or 0))
+print(("first Find search incl. loading the database: %.2fs, later searches: %.3fs, what's near you: %.3fs"):format(searchTime or 0, searchSpeed or 0, nearbyTime or 0))
 if #M.errors > 0 then
     print("Lua errors reported:")
     for _, e in ipairs(M.errors) do

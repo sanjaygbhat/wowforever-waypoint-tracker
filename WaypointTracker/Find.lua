@@ -16,6 +16,9 @@ local MAX_IMPORT = 4 * 1024 * 1024
 
 local frame, searchBox, countText, emptyText, rows, detail, tabs
 local results, total = {}, 0
+-- with nothing typed, the list shows what's near you: nearby is true then,
+-- nearDist has each entry's distance and nearMap the map it was made for
+local nearby, nearDist, nearMap = false, {}, nil
 local offset = 0
 local selected
 
@@ -335,6 +338,10 @@ local function RowInfo(e)
         local lvl = e.level and ("[" .. e.level .. "] ") or ""
         local state = DB.QuestState(e)
         local tag = state == "done" and L.QUEST_TAG_DONE or state == "ready" and L.QUEST_TAG_READY or (state ~= "new" and L.QUEST_TAG_ACTIVE) or ""
+        if nearby and nearDist[e] then
+            local d = Geo.FormatDistance(nearDist[e])
+            tag = tag ~= "" and (tag .. "  " .. d) or d
+        end
         return lvl .. e.name, tag
     elseif e.kind == "item" then
         return e.name, L.TYPE_ITEM
@@ -397,9 +404,22 @@ local function DoSearch()
     if ns.Get("findThisZone") then
         opts.zone = C_Map.GetBestMapForUnit("player")
     end
-    results, total = DB.Search(text, CurrentTab().kinds, opts)
+    local kinds = CurrentTab().kinds
+    nearby = Geo.Squash(text) == "" and (kinds.quest or kinds.npc or kinds.enemy or kinds.object or kinds.place) and true or false
+    if nearby then
+        -- nothing typed: what's near you, nearest first
+        results, total, nearDist = DB.Nearby(kinds, opts)
+        nearMap = C_Map.GetBestMapForUnit("player")
+    else
+        results, total = DB.Search(text, kinds, opts)
+        nearDist, nearMap = {}, nil
+    end
     offset = 0
-    if Geo.Squash(text) == "" then
+    if nearby then
+        emptyText:SetText(missing and L.DB_MISSING or L.NEARBY_NONE)
+        emptyText:SetShown(#results == 0)
+        countText:SetText(#results > 0 and L.NEARBY_COUNT:format(total or #results) or "")
+    elseif Geo.Squash(text) == "" then
         emptyText:SetText(missing and L.DB_MISSING or L.FIND_START)
         emptyText:Show()
         countText:SetText("")
@@ -493,6 +513,13 @@ local function Create()
     title:SetText(L.FIND_TITLE)
     local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", -5, -5)
+    -- the main window: your waypoints, coordinates and settings
+    local waypointsBtn = w.Button(frame, L.OPEN_WAYPOINTS, 130, 22)
+    waypointsBtn:SetPoint("RIGHT", close, "LEFT", -6, 0)
+    waypointsBtn:SetScript("OnClick", function()
+        ns.UI.Show()
+    end)
+    w.AddTooltip(waypointsBtn, L.OPEN_WAYPOINTS, L.OPEN_WAYPOINTS_DESC)
 
     -- nearest services ----------------------------------------------------
     local nearLabel = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -718,6 +745,14 @@ local function Create()
         if scanAcc >= 1 then
             scanAcc = 0
             ns.Call(UpdateScanNote)
+            -- near you: distances as you walk, and a new list on a new map
+            if nearby then
+                if C_Map.GetBestMapForUnit("player") ~= nearMap then
+                    RunSearch()
+                else
+                    ns.Call(RefreshRows)
+                end
+            end
         end
     end)
 
@@ -752,7 +787,7 @@ local function Create()
         RunSearch()
     end)
 
-    Find.widgets = { search = searchBox.edit, rows = rows, detail = detail, tabs = tabs, faction = faction, zoneOnly = zoneOnly, share = shareBtn, import = importBtn, empty = emptyText, note = frame.note }
+    Find.widgets = { search = searchBox.edit, rows = rows, detail = detail, tabs = tabs, faction = faction, zoneOnly = zoneOnly, share = shareBtn, import = importBtn, empty = emptyText, note = frame.note, waypoints = waypointsBtn, count = countText }
 end
 
 -- ---------------------------------------------------------------------------
@@ -1038,6 +1073,27 @@ function Find.Toggle()
     else
         Find.Show()
     end
+end
+
+-- /wp, the minimap button and the button by the arrow: what's near you,
+-- with the search box ready for typing. Open already: closes it.
+function Find.ToggleNearby()
+    if frame and frame:IsShown() then
+        frame:Hide()
+        return
+    end
+    if frame then
+        searchBox.edit:SetText("")
+    end
+    Find.Show()
+end
+
+function Find.IsShown()
+    return frame and frame:IsShown() or false
+end
+
+function Find.IsNearby()
+    return nearby
 end
 
 function Find.Activate(e)

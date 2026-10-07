@@ -10,7 +10,7 @@ Make sure both **WaypointTracker** and **WaypointTracker_Data** are enabled, and
 
 ## Showing the arrow
 
-1. Set a destination with `/way 42 65` or **Set Waypoint** in `/wp`.
+1. Set a destination with `/way 42 65` or **Set Waypoint** in `/wp options`.
 2. Check **Show the arrow**. Review **Hide during combat** and **Hide on flight paths** if it disappears only in those situations.
 3. Use **Reset** or **Esc → Edit Mode** if the arrow has moved off screen.
 4. Arriving removes the waypoint by default. Set another destination, or change **When You Arrive** in the options.

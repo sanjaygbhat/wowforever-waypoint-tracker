@@ -94,7 +94,7 @@
       "@id": "https://sanjaygbhat.github.io/wowforever-waypoint-tracker/#faq",
       "mainEntity": [
         {"@type": "Question", "name": "How do I set a waypoint in WoW Forever?",
-         "acceptedAnswer": {"@type": "Answer", "text": "Install Waypoint Tracker, then type /way 42 65 in chat for your current zone, or /way Westfall 56.3 47.1 Sentinel Hill for another zone. You can also type /wp to open the window, hold Ctrl and right-click the world map, or search a quest, NPC or object by name with /wp find. A 3D arrow then points the way."}},
+         "acceptedAnswer": {"@type": "Answer", "text": "Install Waypoint Tracker, then type /way 42 65 in chat for your current zone, or /way Westfall 56.3 47.1 Sentinel Hill for another zone. You can also type /wp to pick something near you, hold Ctrl and right-click the world map, or search a quest, NPC or object by name with /wp find. A 3D arrow then points the way."}},
         {"@type": "Question", "name": "How do I find an NPC, quest giver or vendor in WoW Forever?",
          "acceptedAnswer": {"@type": "Answer", "text": "Type /wp find and a name (or the title of an NPC you have seen, like blacksmith), or press NPCs in the Waypoint Tracker window. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play."}},
         {"@type": "Question", "name": "How do I install addons for WoW Forever?",
@@ -550,7 +550,7 @@ footer p { margin: 0 0 6px; }
         <p>"You there! You've got coordinates from a guide, a guildmate or a map, and no idea which way to run. Take this arrow. It points where you need to go and turns green when you're close. Nothing else to learn."</p>
         <h4>Objectives</h4>
         <ul class="objectives">
-          <li>Set a waypoint: open the window with <code>/wp</code>, or just type <code>/way 42 65</code></li>
+          <li>Set a waypoint: pick something near you with <code>/wp</code>, or just type <code>/way 42 65</code></li>
           <li>Follow the arrow until it turns green</li>
           <li>Arrive. The waypoint clears itself and the arrow moves on to the next one.</li>
         </ul>
@@ -719,7 +719,8 @@ footer p { margin: 0 0 6px; }
           <div class="chat-input" aria-hidden="true">Say: <span>/wp</span><i></i></div>
         </div>
         <div class="chat">
-          <p class="say"><code>/wp</code></p><p class="sys">Open or close the window.</p>
+          <p class="say"><code>/wp</code></p><p class="sys">What's near you, nearest first, with search.</p>
+          <p class="say"><code>/wp options</code></p><p class="sys">Your waypoints and settings.</p>
           <p class="say"><code>/wp here</code> or <code>/wayb</code></p><p class="sys">Waypoint where you're standing.</p>
           <p class="say"><code>/way #37 42 65</code></p><p class="sys">Waypoint by map ID, for guide writers.</p>
           <p class="say"><code>/wp closest</code> or <code>/cway</code></p><p class="sys">Point to the closest waypoint.</p>
@@ -736,7 +737,7 @@ footer p { margin: 0 0 6px; }
     <div class="wrap">
       <h2 class="title" id="faq-h">Questions</h2>
       <div class="parchment log">
-      <details open><summary>How do I set a waypoint in WoW Forever?</summary><p>Install Waypoint Tracker, then type <code>/way 42 65</code> in chat for your current zone, or <code>/way Westfall 56.3 47.1 Sentinel Hill</code> for another zone. You can also type <code>/wp</code> to open the window, hold Ctrl and right-click the world map, or search a quest, NPC or object by name with <code>/wp find</code>. A 3D arrow then points the way.</p></details>
+      <details open><summary>How do I set a waypoint in WoW Forever?</summary><p>Install Waypoint Tracker, then type <code>/way 42 65</code> in chat for your current zone, or <code>/way Westfall 56.3 47.1 Sentinel Hill</code> for another zone. You can also type <code>/wp</code> to pick something near you, hold Ctrl and right-click the world map, or search a quest, NPC or object by name with <code>/wp find</code>. A 3D arrow then points the way.</p></details>
       <details><summary>How do I find an NPC, quest giver or vendor in WoW Forever?</summary><p>Type <code>/wp find</code> and a name (or the title of an NPC you have seen, like <strong>blacksmith</strong>), or press <strong>NPCs</strong> in the Waypoint Tracker window. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play.</p></details>
       <details><summary>How do I install addons for WoW Forever?</summary><p>Use the CurseForge app (World of Warcraft, Forever) or Wago, or download the zip from GitHub and unzip it into <code>Interface\AddOns</code> in your WoW Forever folder. During the beta that is <code>World of Warcraft\_classic_beta_\Interface\AddOns</code>. Waypoint Tracker gives you two folders: <code>WaypointTracker</code> and <code>WaypointTracker_Data</code>.</p></details>
       <details><summary>Is Waypoint Tracker free?</summary><p>Yes. It is free and open source under the MIT licence, with readable code, no ads and nothing to buy.</p></details>

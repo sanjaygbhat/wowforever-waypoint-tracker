@@ -6,7 +6,8 @@
 
 | Command | Action |
 |---|---|
-| `/wp` | Open or close the window |
+| `/wp` | What's near you, nearest first, with search (again: close) |
+| `/wp options` | Open the window: your waypoints and settings |
 | `/way 42 65` | Set a waypoint in your current zone |
 | `/way Westfall 56 47 Sentinel Hill` | Set a named waypoint in another zone |
 | `/way hogger` | Go to a unique exact-name match, or open Find with that search |
@@ -27,7 +28,7 @@ Zone names follow your game client's language. Partial zone names work. If anoth
 
 ## Move and resize the arrow
 
-Open **Esc → Edit Mode**, select the arrow's blue box, and drag or resize it. Each Edit Mode layout keeps its own placement. You can also use **Move Arrow** in `/wp`. **Reset** restores the arrow's default position, size and visibility.
+Open **Esc → Edit Mode**, select the arrow's blue box, and drag or resize it. Each Edit Mode layout keeps its own placement. You can also use **Move Arrow** in `/wp options`. **Reset** restores the arrow's default position, size and visibility.
 
 The text has its own size and visibility settings. Enable **Move the text separately** to position it independently. The arrow does not catch mouse clicks during normal play.
 

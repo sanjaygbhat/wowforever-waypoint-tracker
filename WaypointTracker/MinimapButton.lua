@@ -71,9 +71,9 @@ local function Create()
 
     button:SetScript("OnClick", function(self, mouse)
         if mouse == "RightButton" then
-            WaypointTracker_ToggleArrow()
-        else
             WaypointTracker_ToggleWindow()
+        else
+            ns.Find.ToggleNearby()
         end
     end)
 
@@ -110,9 +110,9 @@ end)
 -- Addon compartment (the addon list button on the minimap)
 function WaypointTracker_OnAddonCompartmentClick(_, mouse)
     if mouse == "RightButton" then
-        WaypointTracker_ToggleArrow()
-    else
         WaypointTracker_ToggleWindow()
+    else
+        ns.Find.ToggleNearby()
     end
 end
 
