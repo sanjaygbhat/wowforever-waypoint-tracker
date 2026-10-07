@@ -520,6 +520,12 @@ local function Create()
         ns.UI.Show()
     end)
     w.AddTooltip(waypointsBtn, L.OPEN_WAYPOINTS, L.OPEN_WAYPOINTS_DESC)
+    local routesBtn = w.Button(frame, L.ROUTES_TITLE, 100, 22)
+    routesBtn:SetPoint("RIGHT", waypointsBtn, "LEFT", -4, 0)
+    routesBtn:SetScript("OnClick", function()
+        ns.RoutesUI.Show()
+    end)
+    w.AddTooltip(routesBtn, L.ROUTES_TITLE, L.ROUTES_DESC)
 
     -- nearest services ----------------------------------------------------
     local nearLabel = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -787,7 +793,7 @@ local function Create()
         RunSearch()
     end)
 
-    Find.widgets = { search = searchBox.edit, rows = rows, detail = detail, tabs = tabs, faction = faction, zoneOnly = zoneOnly, share = shareBtn, import = importBtn, empty = emptyText, note = frame.note, waypoints = waypointsBtn, count = countText }
+    Find.widgets = { search = searchBox.edit, rows = rows, detail = detail, tabs = tabs, faction = faction, zoneOnly = zoneOnly, share = shareBtn, import = importBtn, empty = emptyText, note = frame.note, waypoints = waypointsBtn, routes = routesBtn, count = countText }
 end
 
 -- ---------------------------------------------------------------------------

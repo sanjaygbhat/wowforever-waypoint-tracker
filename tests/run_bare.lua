@@ -13,7 +13,9 @@ for _, name in ipairs({
     "EventRegistry", "EventUtil", "EditModeManagerFrame", "TooltipDataProcessor", "Settings", "SettingsPanel",
     "ColorPickerFrame", "UiMapPoint", "UnitIsGhost", "UnitIsDeadOrGhost", "issecretvalue", "GetMinimapShape",
     "GetItemClassInfo", "GetItemSubClassInfo", "GetLootSourceInfo", "CanMerchantRepair", "WorldMapFrame",
-    "MapCanvasDataProviderMixin", "MapCanvasMixin", "MapCanvasPinMixin",
+    "MapCanvasDataProviderMixin", "MapCanvasMixin", "MapCanvasPinMixin", "C_ChatInfo", "JoinTemporaryChannel",
+    "LeaveChannelByName", "GetChannelName", "ChatFrame_RemoveChannel", "GetNormalizedRealmName", "IsInGuild", "IsInGroup",
+    "IsInRaid",
 }) do
     _G[name] = nil
 end
@@ -131,6 +133,31 @@ step("find", function()
     ns.Find.Show()
     ns.Find.Show("quests")
     M.Tick(0.5)
+end)
+-- routes: make one, follow it, vote, share, the window
+step("routes", function()
+    for _, msg in ipairs({ "routes", "routes", "routes status", "routes test", "routes next", "routes stop", "routes fast" }) do
+        slash(msg)
+        M.Tick(0.5)
+    end
+    local R = ns.Routes
+    local draft = R.Parse("/way 40 50 a\n/way 41 51 b")
+    local r = draft and R.SaveMine(draft)
+    if r then
+        R.Start(r.id)
+        M.Tick(1)
+        R.Skip()
+        R.Stop()
+    end
+    for _, s in ipairs(R.Suggested(C_Map.GetBestMapForUnit("player"))) do
+        R.Vote(s.id, 1)
+        break
+    end
+    ns.RoutesUI.Show()
+    M.Tick(3)
+    M.FireEvent("CHAT_MSG_ADDON", "WPTR", "A^abcdefgh12^1^X-Y^mining^2^Test", "CHANNEL", "X-Y")
+    M.Tick(16)
+    ns.RoutesUI.Toggle()
 end)
 step("share menu", function()
     local wp = ns.WP.Add(52, 0.3, 0.3, { title = "Share me" })

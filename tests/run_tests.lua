@@ -1849,6 +1849,478 @@ ns.Set("findTab", "all")
 M.player.inst, M.player.wx, M.player.wy = 0, -1200, -1200
 
 -- ---------------------------------------------------------------------------
+-- Routes: making, following, feedback, votes, sharing
+-- ---------------------------------------------------------------------------
+;(function()
+    local R, Net = ns.Routes, ns.RoutesNet
+    local function StandAt(m, x, y)
+        M.player.inst, M.player.wx, M.player.wy = Geo.MapToWorld(m, x, y)
+    end
+    local function Said(text)
+        for i = #M.printed, math.max(1, #M.printed - 30), -1 do
+            if M.printed[i]:find(text, 1, true) then
+                return true
+            end
+        end
+        return false
+    end
+    local function Sent(pattern, chat, target)
+        for _, s in ipairs(M.addonSent) do
+            if s.msg:find(pattern) and (not chat or s.chat == chat) and (not target or s.target == target) then
+                return s
+            end
+        end
+    end
+    local function Shown(name)
+        return _G[name] ~= nil and _G[name]:IsShown()
+    end
+    WP.ClearAll(true)
+    StandAt(37, 0.40, 0.60)
+    M.Tick(20) -- the shared channel is joined a little after logging in
+    check(M.addonPrefixes.WPTR and GetChannelName(Net.CHANNEL) > 0, "the shared channel is joined after logging in")
+
+    -- pasting /way lines makes a draft
+    local draft, skipped = R.Parse("/way Elwynn Forest 41 61 1\n/way 42 61 2\n/way #37 43 61 3\nnonsense here\n44 61 4")
+    check(draft and #draft.pts == 4 and skipped == 1, "/way lines become a route, junk lines are skipped")
+    check(draft.pts[1].m == 37 and near(draft.pts[1].x, 0.41) and draft.pts[2].t == "2" and draft.id == nil, "with their zone, coordinates and names")
+    draft.name, draft.cat, draft.mode = "Test run", "mining", "order"
+    M.addonSent = {}
+    local mine = R.SaveMine(draft)
+    check(mine and mine.id and mine.src == "mine" and mine.author == R.Me() and mine.public and mine.v == 1, "saved as yours, shared by default")
+    M.Tick(0.2)
+    check(Sent("^A%^" .. mine.id .. "%^1%^", "CHANNEL"), "a shared route is announced on the channel")
+    check(Sent("^A%^" .. mine.id, "GUILD") and Sent("^A%^" .. mine.id, "PARTY"), "and to your guild and group")
+    local edited = R.SaveMine({ id = mine.id, name = "Test run", cat = "mining", mode = "order", pts = mine.pts })
+    check(edited.id == mine.id and edited.v == 2, "editing keeps the id and raises the version")
+    mine = edited
+
+    -- the text format
+    local back = R.Parse(R.Serialize(mine))
+    check(back and back.id == mine.id and back.v == 2 and back.name == "Test run" and back.cat == "mining" and #back.pts == 4
+        and near(back.pts[3].x, 0.43, 1e-4) and back.pts[4].t == "4", "copied text reads back the same")
+    local nasty = R.SaveMine({ name = "A^B|cffff0000x|r\tC", note = "x^y", pts = { { m = 37, x = 0.5, y = 0.5, t = "a,b;c^d" } } })
+    local nastyText = R.Serialize(nasty)
+    check(select(2, nastyText:gsub("%^", "")) == 9 and not nastyText:find("|c", 1, true) and #R.Parse(nastyText).pts == 1, "names can't break the text format")
+    R.Delete(nasty.id)
+    check(R.Parse("WTR1^broken") == nil and R.Parse("hello") == nil, "broken text is refused")
+
+    -- following it in order
+    R.Start(mine.id)
+    local run = R.Run()
+    check(run and run.id == mine.id and WP.Count() == 4, "no waypoints set: the route starts right away")
+    check(WP.GetActive().routeIndex == 1 and WP.GetActive().title:find("^1/4"), "the arrow points at the first point, numbered")
+    check(WaypointTrackerCharDB.waypoints[1].routeID == mine.id, "route points remember their route when saved")
+    M.Tick(0.3) -- the arrow looks at the first point from where you stand
+    StandAt(37, 0.41, 0.61)
+    M.Tick(0.5)
+    check(WP.Count() == 3 and WP.GetActive().routeIndex == 2, "arriving moves on to the next point")
+    R.Skip()
+    check(WP.Count() == 2 and WP.GetActive().routeIndex == 3, "skip goes to the route's next point, not the closest")
+    M.Tick(3.5) -- (walking there)
+    StandAt(37, 0.43, 0.61)
+    M.Tick(0.5)
+    check(WP.GetActive() and WP.GetActive().routeIndex == 4, "on to the last one")
+    M.Tick(3.5)
+    StandAt(37, 0.44, 0.61)
+    M.Tick(0.5)
+    check(R.Run() == nil and WP.Count() == 0 and Said(L.ROUTE_COMPLETE:format("Test run")), "the route is done at its last point")
+    check(not Shown("WaypointTrackerRouteFeedback"), "no question about your own route")
+
+    -- other waypoints: replace or add?
+    StandAt(37, 0.40, 0.60)
+    WP.Add(37, 0.30, 0.30, { title = "Mine", silent = true })
+    R.Start(mine.id)
+    check(Shown("WaypointTrackerRouteAsk") and not R.Run(), "with waypoints set, starting asks first")
+    local F = ns.RoutesUI.Frames()
+    F.ask.add:Click()
+    check(R.Run() and WP.Count() == 5, "Add keeps your waypoint and adds the route")
+    R.Stop()
+    check(not R.Run() and WP.Count() == 1 and WP.List()[1].title == "Mine", "Stop removes the route's points, yours stay")
+    R.Start(mine.id)
+    F.ask.remember:Click()
+    F.ask.replace:Click()
+    check(R.Run() and WP.Count() == 4 and not ns.Get("routeAsk") and ns.Get("routeApply") == "replace", "Replace, and the choice is remembered")
+    WP.Add(37, 0.30, 0.30, { title = "Mine", silent = true })
+    R.Start(mine.id)
+    check(not Shown("WaypointTrackerRouteAsk") and WP.Count() == 4, "a remembered choice doesn't ask again")
+    ns.Set("routeAsk", true)
+    R.Stop()
+
+    -- someone else's loop: laps, and the question after five minutes
+    local pts3 = { { m = 37, x = 0.41, y = 0.61 }, { m = 37, x = 0.42, y = 0.61 }, { m = 37, x = 0.43, y = 0.61 } }
+    local theirs = R.Keep({ id = "abc123xyz0", v = 1, name = "Their loop", cat = "herbs", mode = "loop", author = "Friend-Forever", made = time(), pts = pts3 }, "Friend-Forever", true)
+    check(theirs and theirs.src == "shared" and theirs.fromAuthor, "a route from another player is kept")
+    M.Tick(3.5) -- (the last "you have arrived" fades)
+    R.Start(theirs.id)
+    check(R.Run().mode == "loop" and WP.Count() == 3 and WP.GetActive().routeIndex == 1, "a loop starts at the closest point")
+    M.Tick(0.3)
+    for i = 1, 3 do
+        StandAt(37, pts3[i].x, pts3[i].y)
+        M.Tick(0.5)
+        StandAt(37, 0.40, 0.60) -- (walking on)
+        M.Tick(3.5)
+    end
+    check(WP.Count() == 3 and R.Run().lap == 1 and WP.GetActive().routeIndex == 1, "a loop keeps its points and goes round again")
+    check(not Shown("WaypointTrackerRouteFeedback"), "no question before five minutes")
+    R.Stop()
+    check(not Shown("WaypointTrackerRouteFeedback"), "stopping early doesn't ask either")
+    R.Start(theirs.id)
+    M.Tick(301, 1)
+    M.addonSent = {}
+    R.Stop()
+    check(Shown("WaypointTrackerRouteFeedback"), "stopped after five minutes: it asks how it was")
+    F = ns.RoutesUI.Frames()
+    check(F.feedback.title:GetText():find("Their loop", 1, true) and F.feedback.text:GetText():find("5", 1, true), "naming the route and how long")
+    F.feedback.good:Click()
+    M.Tick(0.2)
+    check(R.MyVote(theirs.id) == 1 and select(1, R.Score(theirs.id)) == 1, "Good votes it up")
+    check(Sent("^V%^abc123xyz0%^1$", "CHANNEL"), "and the vote goes out to other players")
+    -- finishing a route in order after five minutes asks too; Not now doesn't vote
+    local order = R.Keep({ id = "abc123xyz1", v = 1, name = "Their tour", cat = "quests", mode = "order", author = "Friend-Forever", made = time(), pts = { pts3[1] } }, "Friend-Forever", true)
+    R.Start(order.id)
+    M.Tick(301, 1)
+    StandAt(37, 0.41, 0.61)
+    M.Tick(0.5)
+    check(not R.Run() and Shown("WaypointTrackerRouteFeedback"), "finishing after five minutes asks how it was")
+    F.feedback.later:Click()
+    check(R.MyVote(order.id) == 0 and not Shown("WaypointTrackerRouteFeedback"), "Not now doesn't vote")
+    -- asking again later shows the earlier vote
+    R.Start(theirs.id)
+    M.Tick(301, 1)
+    R.Stop()
+    check(F.feedback.text:GetText():find(L.ROUTE_FEEDBACK_WAS_UP, 1, true), "asked again, it says how you voted before")
+    F.feedback.bad:Click()
+    check(R.MyVote(theirs.id) == -1, "and the vote can change")
+    StandAt(37, 0.40, 0.60)
+
+    -- votes: one per character
+    R.Vote(theirs.id, 1)
+    R.HeardVote(theirs.id, "A-Forever", 1)
+    R.HeardVote(theirs.id, "A-Forever", 1)
+    R.HeardVote(theirs.id, "B-Forever", -1)
+    local up, down = R.Score(theirs.id)
+    check(up == 2 and down == 1, "one vote per character (got +" .. up .. " -" .. down .. ")")
+    M.AddonMessage("WPTR", "V^abc123xyz0^-1", "CHANNEL", "C-Forever")
+    M.AddonMessage("WPTR", "W^abc123xyz0:1,zzz999:1", "GUILD", "D")
+    M.AddonMessage("WPTR", "V^abc123xyz0^1", "CHANNEL", "A-Forever")
+    up, down = R.Score(theirs.id)
+    check(up == 3 and down == 2, "votes from messages count, names get their realm (got +" .. up .. " -" .. down .. ")")
+    M.AddonMessage("WPTR", "V^abc123xyz0^-1", "CHANNEL", R.Me())
+    M.AddonMessage("WPTR", "V^abc123xyz0^7", "CHANNEL", "E-Forever")
+    M.AddonMessage("WPTR", "V^abc123xyz0^-1", "CHANNEL", "")
+    check(select(2, R.Score(theirs.id)) == 2, "messages in your name, odd values and nameless ones are ignored")
+    M.AddonMessage("WPTR", "V^abc123xyz0^0", "CHANNEL", "C-Forever")
+    check(select(2, R.Score(theirs.id)) == 1, "a vote taken back is taken off")
+    check(R.Vote(mine.id, 1) == false, "you can't vote on your own route")
+    -- clearly disliked routes are hidden while browsing
+    for i = 1, 4 do
+        R.HeardVote(order.id, "Hater" .. i .. "-Forever", -1)
+    end
+    check(R.IsLowRated(R.Score(order.id)), "four down and none up is low-rated")
+    check(R.Rating(40, 2) > R.Rating(3, 0), "40 up 2 down ranks above 3 up 0 down")
+
+    -- a route from another player: announce, ask, pieces, kept
+    local pts30 = {}
+    for i = 1, 30 do
+        pts30[i] = { m = 37, x = 0.3 + i * 0.01, y = 0.5, t = "Iron " .. i }
+    end
+    local other = R.Validate({ id = "zzzother01", v = 2, name = "Iron run", cat = "mining", mode = "loop", author = "Miner-Forever", made = time() + 5, pts = pts30 })
+    M.addonSent = {}
+    M.AddonMessage("WPTR", "A^zzzother01^2^Miner-Forever^mining^30^Iron run", "CHANNEL", "Miner-Forever")
+    M.Tick(0.2)
+    check(Sent("^Q%^zzzother01%^2$", "WHISPER", "Miner-Forever"), "an announced route is asked for")
+    M.addonSent = {}
+    M.AddonMessage("WPTR", "A^zzzother01^2^Miner-Forever^mining^30^Iron run", "GUILD", "Miner-Forever")
+    M.Tick(0.2)
+    check(not Sent("^Q%^"), "heard again (guild and channel): not asked twice")
+    local body = R.Serialize(other)
+    local n = math.ceil(#body / 200)
+    check(n >= 2, "a 30-point route takes several messages (" .. n .. ")")
+    for i = n, 1, -1 do -- arriving out of order
+        M.AddonMessage("WPTR", ("R^zzzother01^2^%d^%d^%s"):format(i, n, body:sub((i - 1) * 200 + 1, i * 200)), "WHISPER", "Miner-Forever")
+    end
+    local got = R.Get("zzzother01")
+    check(got and got.src == "shared" and #got.pts == 30 and got.fromAuthor and got.pts[30].t == "Iron 30", "the pieces make the route, kept as shared")
+    -- an older version doesn't replace it; a relayed copy doesn't beat the author's
+    check(select(2, R.Keep(R.Validate({ id = "zzzother01", v = 1, name = "Old", author = "Miner-Forever", pts = pts3 }), "X-Forever")) == false and R.Get("zzzother01").v == 2, "an older version is ignored")
+    check(select(2, R.Keep(R.Validate({ id = "zzzother01", v = 2, name = "Fake", author = "Miner-Forever", pts = pts3 }), "X-Forever")) == false and R.Get("zzzother01").name == "Iron run", "a relayed copy doesn't replace the author's")
+    -- refused: suggested-looking routes, your own name, broken pieces
+    check(R.Keep(R.Validate({ id = "g1731-37", v = 1, name = "Fake", author = "Someone", pts = pts3 })) == nil, "routes with a suggested route's id aren't taken from others")
+    check(R.Keep(R.Validate({ id = "abcdefgh12", v = 1, name = "Fake", author = R.SUGGESTED_AUTHOR, pts = pts3 })) == nil, "nobody can pass a route off as suggested")
+    M.AddonMessage("WPTR", "R^zzzbroke01^1^1^1^WTR1^garbage", "WHISPER", "Miner-Forever")
+    M.AddonMessage("WPTR", "R^zzzbroke01^1^5^3^x", "WHISPER", "Miner-Forever")
+    check(R.Get("zzzbroke01") == nil, "broken pieces are ignored")
+
+    -- answering others: your shared route, never a private one
+    M.addonSent = {}
+    M.AddonMessage("WPTR", "Q^" .. mine.id .. "^" .. mine.v, "WHISPER", "Friend-Forever")
+    M.Tick(1)
+    local parts = {}
+    for _, s in ipairs(M.addonSent) do
+        local seq, text = s.msg:match("^R%^" .. mine.id .. "%^%d+%^(%d+)%^%d+%^(.*)$")
+        if seq and s.target == "Friend-Forever" then
+            parts[tonumber(seq)] = text
+        end
+    end
+    check(table.concat(parts) == R.Serialize(mine), "a request is answered with the whole route")
+    local private = R.SaveMine({ name = "Secret", public = false, pts = pts3 })
+    M.addonSent = {}
+    M.AddonMessage("WPTR", "Q^" .. private.id .. "^1", "WHISPER", "Friend-Forever")
+    M.Tick(1)
+    check(not Sent("^R%^" .. private.id) and not Sent("^A%^" .. private.id), "a private route is never sent or announced")
+
+    -- someone comes online: your routes and votes, a moment later
+    M.addonSent = {}
+    M.AddonMessage("WPTR", "H", "CHANNEL", "New-Forever")
+    M.Tick(13)
+    check(Sent("^A%^" .. mine.id) and Sent("^W%^.*abc123xyz0:1"), "a newcomer hears your routes and votes")
+
+    -- never too many messages at once
+    M.addonSent = {}
+    for _ = 1, 3 do
+        Net.SendTo("zzzother01", "Friend-Forever")
+    end
+    M.Tick(0.05)
+    local burst = #M.addonSent
+    M.Tick(30)
+    check(burst <= 8 and #M.addonSent == 3 * n, "messages go out a few at a time (" .. burst .. " at once, " .. #M.addonSent .. " in all)")
+    M.addonResult = 3 -- the game says: too fast
+    M.addonSent = {}
+    Net.SendTo(mine.id, "Friend-Forever")
+    M.Tick(2)
+    M.addonResult = nil
+    M.Tick(10)
+    check(#M.addonSent == math.ceil(#R.Serialize(mine) / 200), "held back by the game, they're sent a moment later")
+
+    -- the self-test: whispers and the channel come back to you
+    M.addonSent = {}
+    Net.SelfTest()
+    M.Tick(5)
+    for _, s in ipairs(M.addonSent) do
+        if (s.chat == "WHISPER" and s.target == UnitName("player")) or s.chat == "CHANNEL" then
+            M.AddonMessage(s.prefix, s.msg, s.chat, R.Me())
+        end
+    end
+    M.Tick(11)
+    check(Said(L.ROUTE_TEST_WHISPER_OK:sub(1, 20)) and Said(L.ROUTE_TEST_CHANNEL_OK:sub(1, 15)), "the self-test reports that sending works")
+    local testRoute
+    for _, r in ipairs(R.All()) do
+        if r.name == L.ROUTE_TEST_NAME then
+            testRoute = r
+        end
+    end
+    check(testRoute and testRoute.src == "shared" and #testRoute.pts == 40, "and keeps the test route under Shared")
+    R.Delete(testRoute.id)
+    M.addonSent = {}
+    Net.SelfTest()
+    M.Tick(16)
+    check(Said(L.ROUTE_TEST_WHISPER_FAIL:sub(1, 20)), "nothing back: it says so")
+
+    -- suggested routes from Find's database
+    ns.DB.Load()
+    local sug = R.Suggested(37)
+    local kinds, allOnMap, okIDs = {}, true, true
+    for _, r in ipairs(sug) do
+        kinds[r.cat] = true
+        okIDs = okIDs and r.id:match("^[gc][%w]*%-37$") ~= nil and r.mode == "loop" and r.src == "suggested"
+        for _, p in ipairs(r.pts) do
+            allOnMap = allOnMap and Geo.SameMap(p.m, 37)
+        end
+    end
+    check(#sug > 0 and (kinds.mining or kinds.herbs) and allOnMap and okIDs, "suggested gathering loops for the zone (" .. #sug .. ")")
+    local copper
+    for _, r in ipairs(sug) do
+        if r.id == "g1731-37" then
+            copper = r
+        end
+    end
+    check(copper and #copper.pts >= 4 and copper.cat == "mining", "Copper Vein in Elwynn Forest has a loop")
+    if copper then
+        -- the loop is no longer than visiting the spots west to east
+        local function Len(pts)
+            local d = 0
+            for i = 1, #pts do
+                local a, b = pts[i], pts[i % #pts + 1]
+                local _, ax, ay = Geo.MapToWorld(a.m, a.x, a.y)
+                local _, bx, by = Geo.MapToWorld(b.m, b.x, b.y)
+                d = d + math.sqrt((ax - bx) ^ 2 + (ay - by) ^ 2)
+            end
+            return d
+        end
+        local sorted = {}
+        for i, p in ipairs(copper.pts) do
+            sorted[i] = p
+        end
+        table.sort(sorted, function(a, b)
+            return a.x < b.x
+        end)
+        check(Len(copper.pts) <= Len(sorted) + 1, "the loop is a short way round")
+        check(R.Vote(copper.id, 1) and R.Store().list[copper.id], "a suggested route can be voted on, and is kept then")
+    end
+
+    -- the window
+    ns.RoutesUI.SetTab("all")
+    ns.RoutesUI.Show()
+    local w = ns.RoutesUI.widgets
+    check(WaypointTrackerRoutesFrame:IsShown() and w.rows[1]:IsShown(), "the Routes window lists routes")
+    local function RowNames()
+        local out = {}
+        for _, row in ipairs(w.rows) do
+            if row:IsShown() and row.route then
+                out[#out + 1] = row.route
+            end
+        end
+        return out
+    end
+    local hidden = true
+    for _, r in ipairs(RowNames()) do
+        hidden = hidden and r.id ~= order.id
+    end
+    check(hidden, "low-rated routes are hidden")
+    w.low:Click()
+    M.Tick(0.3)
+    local seen = false
+    for _, r in ipairs(RowNames()) do
+        seen = seen or r.id == order.id
+    end
+    check(seen, "and shown when asked")
+    w.low:Click()
+    w.tabs[2]:Click()
+    local onlyMine = #RowNames() > 0
+    for _, r in ipairs(RowNames()) do
+        onlyMine = onlyMine and r.src == "mine"
+    end
+    check(onlyMine, "the Mine tab shows only your routes")
+    w.tabs[4]:Click()
+    local onlySug = #RowNames() > 0
+    for _, r in ipairs(RowNames()) do
+        onlySug = onlySug and r.src == "suggested"
+    end
+    check(onlySug, "the Suggested tab shows suggested routes")
+    w.tabs[1]:Click()
+    w.search:Type("iron run")
+    check(RowNames()[1] and RowNames()[1].id == "zzzother01", "searching finds a route by name")
+    w.search:Type("")
+    -- category: step to Herbs
+    for _ = 1, 2 do
+        w.cat.next:Click()
+    end
+    local herbsOnly = true
+    for _, r in ipairs(RowNames()) do
+        herbsOnly = herbsOnly and r.cat == "herbs"
+    end
+    check(herbsOnly, "the category picker filters (Herbs)")
+    for _ = 1, 7 do
+        w.cat.next:Click()
+    end
+    -- newest first
+    w.sort.next:Click()
+    check(RowNames()[1] and RowNames()[1].id == "zzzother01", "sorted by newest")
+    w.sort.prev:Click()
+    -- picking a route and voting from the detail pane
+    for _, row in ipairs(w.rows) do
+        if row.route and row.route.id == "zzzother01" then
+            row:Click()
+        end
+    end
+    check(w.detail.route and w.detail.route.id == "zzzother01" and w.detail.up:IsShown(), "a route's details show with vote buttons")
+    w.detail.up:Click()
+    check(R.MyVote("zzzother01") == 1, "Upvote votes")
+    w.detail.up:Click()
+    check(R.MyVote("zzzother01") == 0, "clicking it again takes it back")
+    w.detail.down:Click()
+    check(R.MyVote("zzzother01") == -1, "Downvote votes")
+    -- buttons: Start, Copy text, Send to target, Remove, Hide this author
+    local function Button(text)
+        for _, b in ipairs(w.detail.buttons) do
+            if b:IsShown() and b:GetText() == text then
+                return b
+            end
+        end
+    end
+    Button(L.ROUTE_COPY):Click()
+    check(Shown("WaypointTrackerRouteText") and ns.RoutesUI.Frames().text.edit:GetText() == R.Serialize(R.Get("zzzother01")), "Copy text shows the route's text")
+    ns.RoutesUI.Frames().text:Hide()
+    M.units.target = { name = "Friend", player = true }
+    M.addonSent = {}
+    Button(L.ROUTE_SEND_TARGET):Click()
+    M.Tick(15)
+    check(Sent("^R%^zzzother01", "WHISPER", "Friend"), "Send to target whispers it to your target")
+    M.units.target = nil
+    Button(L.ROUTE_START):Click()
+    check(R.Run() and R.Run().id == "zzzother01" and Button(L.ROUTE_STOP), "Start route starts it; the button turns into Stop")
+    Button(L.ROUTE_STOP):Click()
+    check(not R.Run(), "Stop route stops it")
+    -- new from your waypoints, then edit and save
+    WP.ClearAll(true)
+    w.new:Click()
+    check(w.status:GetText() == L.ROUTE_NEW_NONE, "no waypoints: it says how to make one")
+    WP.Add(37, 0.5, 0.5, { title = "A", silent = true })
+    WP.Add(37, 0.6, 0.6, { title = "B", silent = true })
+    w.new:Click()
+    local ed = ns.RoutesUI.Frames().editor
+    check(Shown("WaypointTrackerRouteEditor") and ed.info:GetText():find("2", 1, true), "New from my waypoints opens the editor with them")
+    ed.name.edit:SetText("From my list")
+    ed.cat.next:Click()
+    ed.mode.next:Click()
+    ed.save:Click()
+    local made
+    for _, r in ipairs(R.All()) do
+        if r.name == "From my list" then
+            made = r
+        end
+    end
+    check(made and made.src == "mine" and made.cat == "mining" and made.mode == "loop" and #made.pts == 2 and made.pts[2].t == "B", "saved with its name, category and mode")
+    -- import box: pasted /way lines open the editor; a copied route is kept as shared
+    w.import:Click()
+    local tb = ns.RoutesUI.Frames().text
+    tb.edit:SetText("/way 41 61 one\n/way 42 62 two")
+    tb.action:Click()
+    check(Shown("WaypointTrackerRouteEditor") and ed.info:GetText():find("2", 1, true), "importing /way lines opens the editor")
+    ed:Hide()
+    local friendRoute = R.Validate({ id = "pastedrt01", v = 1, name = "Pasted", cat = "travel", mode = "order", author = "Pal-Forever", pts = pts3 })
+    w.import:Click()
+    tb.edit:SetText(R.Serialize(friendRoute))
+    tb.action:Click()
+    check(R.Get("pastedrt01") and R.Get("pastedrt01").src == "shared", "importing a copied route keeps it as theirs")
+    w.import:Click()
+    tb.edit:SetText("nothing useful")
+    tb.action:Click()
+    check(tb.result:GetText() == L.ROUTE_IMPORT_NOTHING, "text without a route is refused")
+    tb:Hide()
+    -- hide an author
+    R.Block("Pal-Forever")
+    check(R.Get("pastedrt01") == nil, "hiding an author removes their routes")
+    M.AddonMessage("WPTR", "A^pastedrt02^1^Pal-Forever^travel^3^More", "CHANNEL", "Pal-Forever")
+    M.addonSent = {}
+    M.Tick(0.2)
+    check(not Sent("^Q%^pastedrt02"), "and their new ones aren't fetched")
+    WaypointTrackerRoutesFrame:Hide()
+    -- the Routes button in Find and /wp routes
+    SlashCmdList.WAYPOINTTRACKER("routes")
+    check(WaypointTrackerRoutesFrame:IsShown(), "/wp routes opens the window")
+    SlashCmdList.WAYPOINTTRACKER("routes")
+    check(not WaypointTrackerRoutesFrame:IsShown(), "and closes it")
+    ns.Find.Show()
+    ns.Find.widgets.routes:Click()
+    check(WaypointTrackerRoutesFrame:IsShown(), "Find's Routes button opens it")
+    WaypointTrackerRoutesFrame:Hide()
+    ns.Find.Toggle()
+
+    -- sharing off: the channel is left and nothing is sent
+    ns.Set("routeSharing", false)
+    check(GetChannelName(Net.CHANNEL) == 0, "sharing off leaves the channel")
+    M.addonSent = {}
+    R.Vote("zzzother01", 1)
+    M.Tick(1)
+    check(#M.addonSent == 0, "and sends nothing")
+    ns.Set("routeSharing", true)
+    M.Tick(3)
+    check(GetChannelName(Net.CHANNEL) > 0, "turned back on, it joins again")
+    WP.ClearAll(true)
+end)()
+
+-- ---------------------------------------------------------------------------
 -- Saving and loading again
 -- ---------------------------------------------------------------------------
 WP.ClearAll(true)

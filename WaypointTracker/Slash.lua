@@ -7,7 +7,7 @@ local function Help()
     ns.Print(L.HELP_HEADER, true)
     -- when another addon owns /way, /wp does the same job
     local wayTaken = ns.IsOtherArrowAddonPresent()
-    for _, key in ipairs({ "HELP_OPEN", "HELP_OPTIONS", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS", "HELP_HELP" }) do
+    for _, key in ipairs({ "HELP_OPEN", "HELP_OPTIONS", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS", "HELP_ROUTES", "HELP_ROUTES_MORE", "HELP_HELP" }) do
         local line = L[key]
         if wayTaken then
             line = line:gsub("/way ", "/wp ")
@@ -166,6 +166,25 @@ local function Handle(msg, isWayCommand)
             ns.Treasure.Status()
         else
             ns.Treasure.Toggle()
+        end
+    elseif cmd == "routes" or cmd == "route" or cmd == "lists" then
+        local sub = Geo.Lower(ns.Trim(rest))
+        if sub == "next" or sub == "skip" then
+            ns.Routes.Skip()
+        elseif sub == "stop" then
+            ns.Routes.Stop()
+        elseif sub == "test" then
+            ns.RoutesNet.SelfTest()
+        elseif sub == "fast" then
+            -- for trying the "how was it?" question without waiting 5 minutes
+            ns.Routes.feedbackAfter = ns.Routes.feedbackAfter == 20 and 300 or 20
+            ns.Print(L.ROUTE_FAST:format(ns.Routes.feedbackAfter), true)
+        elseif sub == "status" then
+            local s = ns.RoutesNet.Status()
+            ns.Print(L.ROUTE_STATUS:format(s.sharing and (s.channel and ("#" .. s.channel) or L.ROUTES_NET_JOINING) or L.ROUTES_NET_OFF,
+                s.guild and L.YES or L.NO, s.group or "-", s.peers, s.sent, s.got, s.routes, s.votes), true)
+        else
+            ns.RoutesUI.Toggle()
         end
     elseif cmd == "find" or cmd == "search" then
         ns.Find.Show(rest)

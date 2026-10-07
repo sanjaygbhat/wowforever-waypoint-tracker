@@ -1275,4 +1275,56 @@ function M.LoadAddon(dir, name)
     return ns
 end
 
+-- Addon messages and chat channels: what's sent is kept in M.addonSent;
+-- M.channels holds the joined custom channels (name -> number).
+M.addonSent = {}
+M.channels = {}
+M.addonPrefixes = {}
+M.realm = "Forever"
+C_ChatInfo = {
+    RegisterAddonMessagePrefix = function(prefix)
+        M.addonPrefixes[prefix] = true
+        return true
+    end,
+    SendAddonMessage = function(prefix, msg, chat, target)
+        assert(M.addonPrefixes[prefix], "prefix not registered")
+        assert(type(msg) == "string" and #msg <= 255, "addon message too long")
+        if M.addonResult then
+            return M.addonResult
+        end
+        table.insert(M.addonSent, { prefix = prefix, msg = msg, chat = chat, target = target })
+        return 0
+    end,
+}
+function JoinTemporaryChannel(name)
+    if not M.channels[name] then
+        local n = 4
+        for _, v in pairs(M.channels) do
+            n = math.max(n, v)
+        end
+        M.channels[name] = n + 1
+    end
+end
+function LeaveChannelByName(name)
+    M.channels[name] = nil
+end
+function GetChannelName(name)
+    local n = M.channels[name]
+    if n then
+        return n, name
+    end
+    return 0
+end
+function ChatFrame_RemoveChannel() end
+function GetNormalizedRealmName()
+    return M.realm
+end
+function GetRealmName()
+    return M.realm
+end
+-- a message from another player arriving
+function M.AddonMessage(prefix, msg, chat, sender)
+    M.FireEvent("CHAT_MSG_ADDON", prefix, msg, chat, sender)
+end
+
 return M

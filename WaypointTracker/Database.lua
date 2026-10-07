@@ -120,6 +120,9 @@ local function Parse(data)
             local e = entry("object", id, n[2])
             e.fac, e.coords = f[2], f[3]
             e.chest = IsChest(id) or nil
+            -- ore and herbs, for the suggested gathering routes
+            local en = enObjects[id]
+            e.gather = en and ns.Routes and ns.Routes.GatherKind(en[2]) or nil
             DB.objects[id] = e
         end
     end

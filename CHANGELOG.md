@@ -7,6 +7,14 @@
 - A small Find button sits next to the arrow, and stays there when you have no waypoint. Click it for what's near you; right-click it for your waypoints and settings. Turn it off under **Show more options → Arrow Display**.
 - The minimap button does the same: left-click for what's near you, right-click for the window. `/wp options` and Find's **Waypoints** button open the window too.
 
+**Routes**
+- Lists of waypoints the arrow follows one after another: in order, in a loop for gathering, or always the nearest point next. Type `/wp routes`, or press **Routes** in Find.
+- Make one from your waypoints, or paste as many `/way` lines as you like with **Import**. Give it a name, a category and a note.
+- Browse yours, ones other players shared and suggested gathering loops for the zone you're in (every known ore, herb and treasure chest spot), by category, zone, rating, newest or nearest.
+- Upvote or downvote any route. After following someone's route for 5 minutes, finishing or stopping it asks how it was.
+- Shared routes and votes travel between players of Waypoint Tracker in the game: a hidden chat channel, your guild and your group. **Send to target** whispers a route to a friend, and **Copy text** gives a line to paste anywhere.
+- `/wp routes next` skips a point, `/wp routes stop` ends the route, `/wp routes test` checks that sharing works, and both have key bindings.
+
 **Treasure hunt**
 - Rares and bosses on your own side, like Varimathras next to Sylvanas, are left out: only what you can fight is announced.
 
