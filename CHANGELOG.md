@@ -5,6 +5,9 @@
 ### 1.2.0
 
 - One window for Waypoints, Find and Routes. Editors, imports and help open as pages inside the tabs, with Back to return.
+- Ready-made route names describe what you get or do; levels and faction restrictions move into the details and tooltips. Two-line rows show the map and category, and For my level sorting puts suitable routes first.
+- Click a route for an area, continent or world map preview with stop pins and route lines. Click the preview to open it on the world map, with Set This Route and Back to Routes. Set uses your existing replace-or-add choice; closing the map clears the preview.
+- Route details include a scrolling numbered stop list. Start/Stop, Share/Skip and More keep the actions in one row, with editing, copying and removal in More.
 - Settings live in Blizzard Settings. Move the arrow, its text, the coordinates box and the route recorder in Edit Mode, with positions saved per layout.
 - Left-click the minimap button to open the window; right-click for the quick menu; Shift + left-click to add a waypoint here. The Addon Compartment and world-map button offer quick access too.
 - Feedback appears below the title. Clicks in the window keep chat quiet; the Real routes notice offers a button to turn it on. World-map coordinates respect Blizzard's saved settings.

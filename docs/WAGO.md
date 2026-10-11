@@ -59,7 +59,11 @@ TODO: replace the old window screenshot with the three tabs, Blizzard Settings a
 
 ## Routes
 
-Follow, create, record, import and share lists of stops in the **Routes** tab. **Real routes (beta)** is new in this release: the arrow guides you through passes and gates and uses flight paths, boats, zeppelins, the tram, hearthstone or teleports when quicker. Turn it on in the Routes notice, quick menu or **Settings → Routes**. Open a flight master's map to learn your available flights.
+Follow, create, record, import and share lists of stops in the **Routes** tab. Ready-made names say what you get or do; the map and category sit beneath the name, with levels and faction restrictions in the details and tooltips. **For my level** puts suitable routes first.
+
+Click a route for a preview on the right: area, continent or world map, with stop pins and route lines. Click the preview to open it on the normal world map, outside combat. **Set This Route** starts it, asking whether to replace or add to existing waypoints unless you chose a preference in Settings. **Back to Routes** returns to your selection. Closing the map ends the preview. Details include a numbered stop list; **More...** holds editing, copying and removal actions.
+
+**Real routes (beta)** is new in this release: the arrow guides you through passes and gates and uses flight paths, boats, zeppelins, the tram, hearthstone or teleports when quicker. Turn it on in the Routes notice, quick menu or **Settings → Routes**. Open a flight master's map to learn your available flights.
 
 ![Treasure hunt](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/h-treasure.png)
 

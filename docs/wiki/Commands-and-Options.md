@@ -60,6 +60,14 @@ Open **Esc → Edit Mode**, the quick menu's **Edit Mode**, **Open Edit Mode** i
 
 Follow, create, record, import and share routes from the **Routes** tab. Editors and copy/import pages have a **Back** button. Recording hides the window and shows the recorder strip.
 
+Ready-made names describe what you get or do, with the map and category on a second line. Levels and faction restrictions appear in the details and row tooltip; **For my level** sorts suitable routes first. Ready-made names and notes are in English; generated gathering names use your client language.
+
+Click a row to select it and see a map preview on the right. It picks an area, continent or world map to show the stops, with a green start pin and lines in route order. Hover a pin for its name and coordinates; scroll the details for the numbered stop list. Stops that cannot project onto the map, such as dungeon floors, are reported beneath it. Missing map art uses a dark grid with pins.
+
+Click the preview or a pin to open the route on the normal world map, outside combat. **Set This Route** starts following it. If you have waypoints already, the Replace / Add / Cancel question appears unless you set a preference in Settings. **Back to Routes** returns to the selected route. If you browse to a map with no stops, **Show Them** returns to the route's map. The close button ends the preview and leaves the map open; closing the map ends the preview without reopening Routes.
+
+**Start Route** or a row double-click also starts the route. While running, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** contains Copy text, Edit and Delete for your routes, or Copy text, Remove and Hide This Author for shared routes. Ready-made routes offer Copy text.
+
 **Real routes (beta)** is new in this release. The arrow guides you through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone or teleports when quicker. Turn it on from the Routes tab notice, the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
 
-TODO: capture the three tabs, Blizzard Settings and all four Edit Mode selection boxes.
+TODO: capture the three tabs, area/continent/world route previews, the world-map preview bar, Blizzard Settings and all four Edit Mode selection boxes.

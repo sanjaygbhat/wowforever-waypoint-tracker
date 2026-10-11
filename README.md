@@ -93,7 +93,7 @@ TODO: refresh the screenshots for this release:
 
 - Waypoints tab with the Add row and feedback below the title.
 - Find tab with the kind dropdown and Nearest menu.
-- Routes tab and an editor page with Back.
+- Routes tab with zone, continent and world previews; world-map preview with Set This Route; an editor page with Back.
 - Blizzard Settings and Edit Mode with all four HUD elements.
 
 The existing map screenshot is in [docs/screenshots](docs/screenshots/README.md). The old window capture needs replacing.
@@ -237,6 +237,14 @@ Press **Settings** in the window, use `/wp settings`, or open **Settings → Add
 ### Routes
 
 Use the **Routes** tab to follow, create, record, import or share a list of stops. Editing, copying and importing use pages inside the tab. The recorder's **Add Stop Here**, **Finish** and **Cancel** buttons stay on screen while you record.
+
+Ready-made names describe what you get or do, such as **Boars for Light Leather** or **Flight paths of Eastern Kingdoms**. The map and category appear beneath each name; levels and faction restrictions appear in the details and row tooltip. Choose **For my level** to put suitable routes first. Ready-made names and notes are in English; generated gathering names use your client language.
+
+Click a route to see its map on the right, with stop pins and lines in route order. The preview picks the smallest map that shows the stops: an area, a continent or the world. Hover a pin for its stop name and coordinates; scroll the details for the numbered stop list. If a dungeon stop cannot appear on that map, a message tells you which stops are elsewhere. When map pictures are unavailable, the pins appear on a dark grid.
+
+Click the preview or one of its pins to open the same route on the normal world map, outside combat. The bar offers **Set This Route**, which starts following it, and **Back to Routes**, which returns to the selected route. With existing waypoints, Set asks whether to replace them or add the route, unless you already chose a preference in Settings. Browse away from the stops and **Show Them** takes you back. Closing the preview leaves the map open; closing the map ends the preview.
+
+You can also press **Start Route** or double-click a row to begin. While following it, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** holds copying, editing and removal actions where available.
 
 **Real routes (beta)** is new in this release. The arrow guides you through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone or teleports when quicker. Turn it on from the Routes tab notice, the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
 
@@ -449,8 +457,14 @@ The addon is plain Lua with no libraries. Everything outside the game can be che
 
 ```sh
 lua5.1 tests/check_locales.lua                    # every translation complete, placeholders intact
+lua5.1 tests/check_api.lua                        # compatible game-data reads
+lua5.1 tests/check_seeds.lua                      # route names, metadata and stop format
 lua5.1 tests/run_tests.lua                        # plays through the addon against a fake WoW API
 WT_LOCALE=deDE lua5.1 tests/run_tests.lua         # ...in another client language
+for f in tests/run_*.lua; do lua5.1 "$f" || exit; done
+lua5.1 tests/run_routemap.lua --bare              # grid and pins without optional drawing APIs
+lua5.1 tests/run_routepreview.lua --bare          # world-map pins without line drawing
+WT_PLAIN_VECTORS=1 lua5.1 tests/run_bare.lua      # absent optional APIs and plain positions
 ```
 
 The tests load the real addon files and act out what a player does: typing `/way`, walking to a waypoint, arriving, clicking the map, using the window, reloading, and running next to another waypoint addon. They run on every push.

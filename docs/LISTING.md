@@ -26,7 +26,7 @@ Wago: Map & Minimap, Quests & Leveling.
 1. `docs/screenshots/01-arrow.jpg`: the arrow in the Barrens
 2. `docs/images/feature-grid.png`: features at a glance
 3. `docs/screenshots/02-map.jpg`: pins on the Silverpine Forest map
-4. TODO: replace `docs/screenshots/03-window.jpg` with the Waypoints, Find and Routes tabs; capture Blizzard Settings and Edit Mode too.
+4. TODO: replace `docs/screenshots/03-window.jpg` with the Waypoints, Find and Routes tabs; capture Routes with area, continent and world previews and the world-map Set This Route bar, plus Blizzard Settings and Edit Mode. Planned captures are listed in [screenshots/README.md](screenshots/README.md).
 5. `docs/images/treasure-hunt.png`: treasure hunt, beta (illustration)
 6. `docs/images/colours.png`: the arrow's colours
 7. `docs/images/banner.png`: banner
