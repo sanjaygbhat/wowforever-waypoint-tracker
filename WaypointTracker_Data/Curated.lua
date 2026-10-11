@@ -132,7 +132,7 @@ N	739	Brother Nimetz				1434:378,36
 N	763	Lost One Chieftain				1435:600,202,626,218,632,252,646,158	
 N	770	Corporal Kaleb				1434:377,33	
 N	771	Commander Felstrom				1431:180,380	
-N	773	Krazek				1434:270,772,270,772,270,772,270,772,270,772,270,772,516,268	
+N	773	Krazek				1434:516,268,270,772,270,772,270,772,270,772,270,772,270,772	
 N	777	Amy Davenport				1433:240,473	A
 N	786	Grelin Whitebeard				1426:250,758	
 N	793	Kara Adams				1433:255,465	A
@@ -321,7 +321,7 @@ N	1469	Vrok Blunderblast				1432:253,425	A
 N	1470	Ghak Healtouch				1432:371,494	
 N	1471	Jannos Ironwill				1417:460,477	A
 N	1474	Rann Flamespinner				1432:360,460	A
-N	1480	Caitlin Grassman				1437:118,586	
+N	1480	Caitlin Grassman				1437:119,588	
 N	1495	Deathguard Linnea				1420:654,602	
 N	1496	Deathguard Dillinger				1420:582,515	
 N	1497	Gunther Arcanus				1420:682,420	
@@ -496,11 +496,11 @@ N	2491	Whiskey Slim				1434:271,775
 N	2493	Dizzy One-Eye				1434:286,759	
 N	2494	Privateer Bloads				1434:274,768	
 N	2495	Drizzlik				1434:282,776	
-N	2496	Baron Revilgaz				1434:272,768	
+N	2496	Baron Revilgaz				1434:272,769	
 N	2497	Nimboya				1434:322,278	
 N	2498	Crank Fizzlebub				1434:271,772	
 N	2500	Captain Hecklebury Smotts				1434:267,736	
-N	2501	"Sea Wolf" MacKinley				1434:278,771	
+N	2501	"Sea Wolf" MacKinley				1434:278,770	
 N	2502	"Shaky" Phillipe				1434:269,736	
 N	2504	Donyal Tovald				1453:752,302,846,242	
 N	2519	Kin'weelay				1434:322,278	
@@ -595,6 +595,7 @@ N	2848	Glyx Brewright				1434:280,780
 N	2849	Qixdi Goodstitch				1434:282,776	
 N	2850	Broken Tooth				1418:454,368,540,166,620,328	
 N	2851	Urda			flight	1417:730,326	H
+N	2857	Thund				1454:758,246	H
 N	2858	Gringer			flight	1434:268,770	H
 N	2859	Gyll			flight	1434:274,776	A
 N	2860	Sigrun Ironhew				1418:538,434	
@@ -706,7 +707,7 @@ N	3294	Ophek				1411:542,412
 N	3295	Sludge Beast				1413:562,96,566,74	
 N	3304	Master Vornal				1411:558,744	
 N	3305	Grisha			flight	1427:348,306	H
-N	3310	Doras			flight	1454:452,636	H
+N	3310	Doras			flight	1454:452,638	H
 N	3314	Urtharo				1454:474,686	H
 N	3315	Tor'phan				1454:626,506	H
 N	3316	Handor				1454:628,448	H
@@ -744,8 +745,8 @@ N	3365	Karolek				1454:628,446	H
 N	3366	Tamar				1454:630,452	H
 N	3367	Felika				1454:465,366,508,587	H
 N	3368	Borstan				1454:574,534	
-N	3373	Arnok				1454:340,846	H
-N	3387	Jorn Skyseer				1413:449,591	
+N	3373	Arnok				1454:340,844	H
+N	3387	Jorn Skyseer				1413:448,590	
 N	3388	Mahren Skyseer				1413:658,439	
 N	3389	Regthar Deathgate				1413:453,284	
 N	3390	Apothecary Helbrim				1413:514,302	
@@ -761,7 +762,7 @@ N	3407	Sian'dur				1454:678,178
 N	3408	Zel'mak				1454:802,296	
 N	3409	Zendo'jian				1454:750,366	H
 N	3410	Jin'sora				1454:778,386	H
-N	3412	Nogg				1454:758,252	
+N	3412	Nogg				1454:758,252	H
 N	3413	Sovik				1454:756,252	H
 N	3418	Kirge Sternhorn				1413:448,586	
 N	3419	Apothecary Zamah				1456:229,209,236,214	
@@ -830,7 +831,7 @@ N	3599	Jannok Breezesong				1438:564,601
 N	3600	Laurna Morninglight				1438:556,568	
 N	3601	Dazalar				1438:566,596	
 N	3602	Kal				1438:560,616	
-N	3615	Devrak			flight	1413:514,302	H
+N	3615	Devrak			flight	1413:515,303	H
 N	3616	Onu				1439:435,763	
 N	3639	Sentinel Tysha Moonblade				1439:403,597	
 N	3644	Cerellean Whiteclaw				1439:358,437	
@@ -1112,7 +1113,7 @@ N	5164	Grumnus Steelshaper				1455:502,426	A
 N	5165	Hulfdan Blackbeard				1455:516,148	
 N	5170	Hjoldir Stoneblade				1455:458,70	A
 N	5172	Briarthorn				1455:502,60	
-N	5174	Springspindle Fizzlegear				1455:688,452	
+N	5174	Springspindle Fizzlegear				1455:688,452	A
 N	5175	Gearcutter Cogspinner				1455:678,430	A
 N	5178	Soolie Berryfizz				1455:666,546	A
 N	5188	Garyl				1454:476,756	H
@@ -1199,7 +1200,7 @@ N	5758	Leo Sarn				1421:540,822	H
 N	5765	Ruzan				1411:426,690	
 N	5767	Nalpak				1413:460,357	
 N	5768	Ebru				1413:460,357	
-N	5769	Arch Druid Hamuul Runetotem				1456:786,286,747,302	
+N	5769	Arch Druid Hamuul Runetotem				1456:784,284,747,302	
 N	5770	Nara Wildmane				1456:756,312	
 N	5783	Kalldan Felmoon				1413:459,357	
 N	5785	Sister Hatelash				1412:306,216,376,228,556,120	
@@ -1241,7 +1242,7 @@ N	5863	Geopriest Gukk'rok				1413:412,456,426,472,436,522,438,484,456,524
 N	5864	Swinegart Spearhide				1413:414,456,422,480,452,490	
 N	5865	Dishu				1413:496,158,498,276,510,206,516,268	
 N	5875	Gan'rul Bloodeye				1454:482,456	
-N	5878	Thun'grim Firegaze				1413:572,302	
+N	5878	Thun'grim Firegaze				1413:572,303	
 N	5880	Un'Thuwa				1411:562,750	
 N	5884	Mai'ah				1411:424,690	
 N	5885	Deino				1454:386,860	
@@ -1310,7 +1311,7 @@ N	6254	Acolyte Wytula				1413:625,355
 N	6266	Menara Voidrender				1413:624,354	
 N	6286	Zarrin				1438:570,612	
 N	6293	Jorah Annison				1458:766,368	
-N	6294	Krom Stoutarm				1455:742,94	
+N	6294	Krom Stoutarm				1455:744,94	
 N	6301	Gorbold Steelhand				1439:381,412	
 N	6306	Helene Peltskinner				1429:462,622	
 N	6367	Donni Anthania				1429:442,532	A
@@ -1320,7 +1321,7 @@ N	6408	Ula'elek				1411:562,744
 N	6410	Orm Stonehoof				1456:390,558	
 N	6411	Velora Nitely				1458:624,392	
 N	6446	Therzok				1454:427,535	
-N	6467	Mennet Carkad				1458:836,676,832,690	
+N	6467	Mennet Carkad				1458:832,690,836,676	
 N	6522	Andron Gant				1458:546,756	
 N	6546	Tabetha				1445:460,570	
 N	6548	Magus Tirth				1441:782,758,478,758	
@@ -1366,7 +1367,7 @@ N	6786	Ukor				1411:520,682
 N	6826	Talvash del Kissel				1455:360,40,362,38	
 N	6868	Jarkal Mossmeld				1418:26,460	
 N	6886	Onin MacHammer				1426:252,444	
-N	6929	Innkeeper Gryshka				1454:541,684	
+N	6929	Innkeeper Gryshka				1454:542,684	
 N	6946	Renzik "The Shiv"				1453:788,708	
 N	6966	Lucius				1433:230,520	
 N	6986	Dran Droffers				1454:594,368	
@@ -1391,7 +1392,7 @@ N	7316	Sister Aquinne				1457:290,454
 N	7317	Oben Rageclaw				1438:450,614	
 N	7363	Kum'isha the Collector				1419:518,356	
 N	7406	Oglethorpe Obnoticus				1434:282,762	
-N	7407	Chief Engineer Bildewhizzle				1446:524,284,519,270,668,223	
+N	7407	Chief Engineer Bilgewhizzle				1446:524,284,519,270,668,223	
 N	7408	Spigot Operator Luglunket				1446:524,284	
 N	7505	Bloodmage Drazial				1419:506,142	
 N	7506	Bloodmage Lynnore				1419:506,143	
@@ -1481,7 +1482,7 @@ N	8117	Wizbang Booms				1455:318,634	A
 N	8118	Lillian Singh				1453:626,700	A
 N	8122	Kizzak Sparks				1454:578,566	H
 N	8125	Dirge Quikcleave				1446:526,281	
-N	8126	Nixx Sprocketspring				1446:522,282,544,272	
+N	8126	Nixx Sprocketspring				1446:524,272,544,272	
 N	8131	Blizrik Buckshot				1446:508,276	
 N	8137	Gikkix				1446:666,221	
 N	8139	Jabbey				1446:670,220	
@@ -1579,7 +1580,7 @@ N	8666	Lil Timmy				1453:640,380	A
 N	8678	Jubie Gadgetspring				1447:452,908	
 N	8679	Knaz Blunderflame				1434:510,352	
 N	8681	Outfitter Eric				1455:430,292	A
-N	8736	Buzzek Bracketswing				1446:516,302	
+N	8736	Buzzek Bracketswing				1446:522,276	
 N	8737	Linken				1449:446,82	
 N	8738	Vazario Linkgrease				1413:626,362	
 N	8878	Muuran				1443:556,566	H
@@ -1636,7 +1637,7 @@ N	9553	Nadia Vernon				1421:450,394	H
 N	9555	Mu'uta				1417:726,336	H
 N	9560	Marshal Maxwell				1428:847,690,846,688	
 N	9561	Jalinda Sprig				1428:854,701	
-N	9562	Hellendis Riverhorn				1428:858,690	
+N	9562	Helendis Riverhorn				1428:858,690	
 N	9563	Ragged John				1428:650,236	
 N	9565	Mayara Brightwing				1428:848,690	
 N	9584	Jalane Ayrole				1453:406,838	A
@@ -1739,7 +1740,7 @@ N	10856	Argent Quartermaster Hasana				1420:832,682
 N	10857	Argent Quartermaster Lightspark				1422:428,838	
 N	10877	Courier Hammerfall				1455:316,670	
 N	10878	Herald Moonstalker				1457:364,398	
-N	10879	Harbinger Balthazad				1458:640,440,688,484	
+N	10879	Harbinger Balthazad				1458:688,484,640,440	
 N	10880	Warcaller Gorlach				1454:466,646	
 N	10881	Bluff Runner Windstrider				1456:414,542	
 N	10897	Sindrayl			flight	1450:480,672	A
@@ -1753,12 +1754,12 @@ N	10929	Haleh				1452:546,512
 N	10941	Wizlo Bearingshiner				1441:214,324	
 N	10976	Jeziba				1422:394,668	
 N	11016	Captured Arko'narin				1448:362,554	
-N	11017	Roxxik				1454:568,564	H
+N	11017	Roxxik				1454:760,250	H
 N	11019	Jessir Moonbow				1448:513,820	
 N	11020	Remains of Trey Lightforge				1448:384,504	
 N	11022	Alexi Barov				1420:831,716	
 N	11023	Weldon Barov				1422:435,837	
-N	11026	Sprite Jumpsprocket				1453:618,308	
+N	11026	Sprite Jumpsprocket				1453:620,306,618,308	A
 N	11028	Jemma Quikswitch				1455:677,442	
 N	11033	Smokey LaRue				1423:709,484,718,484	
 N	11034	Lord Maxwell Tyrosus				1423:718,484	
@@ -1790,7 +1791,6 @@ N	11178	Borgosh Corebender				1454:796,236	H
 N	11184	Wixxrak				1452:616,380	
 N	11185	Xizzer Fizzbolt				1452:608,386	
 N	11187	Himmik				1452:612,390	
-N	11188	Evie Whirlbrew				1452:608,378	
 N	11189	Qia				1452:612,372	
 N	11191	Lilith the Lithe				1452:612,372	
 N	11192	Kilram				1452:612,370	
@@ -1850,7 +1850,7 @@ N	11863	Azore Aldamort				1443:388,272
 N	11864	Tammra Windfield				1442:474,585	
 N	11865	Buliwyf Stonehand				1455:612,895	A
 N	11866	Ilyenia Moonfire				1457:575,468	A
-N	11867	Woo Ping				1453:639,691	A
+N	11867	Woo Ping				1453:638,690	A
 N	11868	Sayoc				1454:816,194	H
 N	11869	Ansekhwa				1456:412,614	H
 N	11870	Archibald				1458:572,324	H
@@ -2017,7 +2017,7 @@ N	14279	Creepthess				1424:258,546,284,634,352,604,392,516
 N	14280	Big Samras				1424:726,290,758,316,850,476,866,396	
 N	14281	Jimmy the Bleeder				1416:486,828,586,702	
 N	14301	Brinna Valanaar				1447:120,784	A
-N	14305	Human Orphan				1453:632,662	
+N	14305	Human Orphan				1453:563,540	
 N	14339	Death Howl				1448:482,790,498,772,568,900	
 N	14340	Alshirr Banebreath				1448:390,830,402,860,430,880	
 N	14342	Ragepaw				1448:476,936,484,912,490,928	
@@ -2213,7 +2213,7 @@ N	15603	Elder Nightwind				1448:377,530
 N	15604	Elder Morningdew				1441:792,771	
 N	15605	Elder Riversong				1440:355,489	
 N	15606	Elder Brightspear				1452:556,437	
-N	15607	Elder Farwhisper				1423:416,159	
+N	15607	Elder Farwhisper				1423:481,219	
 N	15612	Krug Skullsplit				1451:522,684	
 N	15703	Senior Sergeant Grimsford				1458:628,492	
 N	15704	Senior Sergeant Kai'jin				1454:303,676	
@@ -2286,7 +2286,7 @@ N	205729	Boarton Shadetotem				1456:396,656
 N	210845	Jixo Madrocket				1442:592,624	
 N	210995	Alonso				1440:434,704	
 N	211022	Owen Thadd				1458:736,330	H
-N	211033	Garion Wendell				1453:489,865	A
+N	211033	Garion Wendell				1453:490,864	A
 N	211188	Maethra Slagheart				1457:382,892	
 N	211225	Baj'ura				1458:472,196	
 N	211229	Dietrich Praice				1454:356,878	
@@ -2302,7 +2302,7 @@ N	215643	Tokal				1434:270,772
 N	217300	Skonk				1417:576,746,200,674	
 N	218160	Aeonas the Vindicated				1453:488,489	
 N	218237	Wirdal Wondergear				1444:842,438	
-N	218920	Agent Keanna				1430:520,342	
+N	218920	Dalaran Agent				1430:520,342	
 N	220984	Fizbuz Mithril				1446:516,276	
 N	221400	Kajind				1447:254,662	
 N	221471	Field Captain Palandar				1431:456,512	
@@ -2334,6 +2334,7 @@ N	247226	Kelsey Fargo				1429:472,322
 N	248196	Apothecary Durelle				1413:498,296	
 N	248197	Gor'mak				1413:498,296	
 N	248199	Beneris				1413:496,298	
+N	248200	Fizzlefuse				1413:498,296	
 N	248242	Hamish Bergwort				1429:650,698	
 N	248248	Blixie Fitzwink				1429:632,726	
 N	248265	Ormin Pelford				1429:766,720	
@@ -2345,14 +2346,14 @@ N	250686	Tabitha Heartweaver				1421:444,430
 N	250929	Malfunctioning Cyclone Construct				2521:486,782	
 N	251001	Deathguard Kristof				1420:652,602	
 N	251166	Minor Manifestation of Earth				2521:496,240	
-N	251361	Rorian the Dayseeker				2521:420,234	
+N	251361	Rorian the Dayseeker				2521:421,235	
 N	251362	Ailee Farheart				2521:428,234	
-N	251363	Dalia the Collector				2521:432,240	
+N	251363	Dalia the Collector				2521:434,240	
 N	251364	Destin Thriceforged				2521:435,236	
 N	251365	Jolee Brightmeadows				2521:435,237	
-N	251366	Aetheen of the Gales				2521:426,236	
+N	251366	Aetheen of the Gales				2521:428,237	
 N	251368	Elatrell Featherlight				2521:434,248	
-N	251371	Falorne Fallwind				2521:432,248	
+N	251371	Falorne Fallwind				2521:433,249	
 N	251374	Windshaper Boro				2521:428,236	
 N	251487	Ventaari Brightwish				2521:426,244	
 N	251523	Constable Aonda				2521:456,454	
@@ -2360,7 +2361,7 @@ N	251684	Strange Hermit				2521:540,390
 N	251902	Illaya Amberwind				2521:436,448	
 N	251903	Rathiril Sunlance				2521:450,464	
 N	251904	Sania Silverstream				2521:448,454	
-N	251905	Fimbo Greasemitz				2521:438,438	
+N	251905	Zerril Softbreeze				2521:438,438	
 N	251906	Teeri Wellwind				2521:444,450	
 N	251965	Fevrath Skyhammer				2521:434,235	
 N	251968	Ayessa Dawnsinger				2521:590,796	
@@ -2374,7 +2375,7 @@ N	252373	Anathamaas Aetherwind				2521:658,804
 N	252377	Seena Skybreaker				2521:598,728	
 N	252378	Yorana Windyreed				2521:696,670	
 N	252382	Sessaria Skystride				2521:582,784	
-N	252383	Valennia Stormfist				2521:662,766,652,504,612,710	
+N	252383	Valennia Stormfist				2521:662,766,652,504	
 N	252389	Quel'ana Quickgale				2521:596,726	
 N	252448	Alvarion Windfield				2521:620,732	
 N	252475	Elaadrin Evengale				2521:666,798	
@@ -2417,7 +2418,7 @@ N	257087	Gretchen Mayberry			flight	2548:606,816	A
 N	257421	Tephri Thriceforged				2521:448,442	
 N	257422	Railee Thriceforged				2521:590,755	
 N	257446	Teo Hammerstorm				1426:288,662	
-N	257551	Valreaa Valewind				2521:424,250	
+N	257551	Valreaa Valewind				2521:424,252	
 N	257554	Halaan Hawk-Eye				2521:438,240	
 N	257944	Elegael Thornpaw				2521:616,392	
 N	258306	Granny Finespindle				1455:393,337	A
@@ -2425,6 +2426,7 @@ N	258568	Antonio Bolero				1453:535,818	A
 N	259012	Ealaane Nimbuswalker				2521:658,744	
 N	259084	Denaaris Stargale				1416:123,564	
 N	259119	Alaana Stormwalker				1412:334,224	
+N	259398	Galemender Delanea				2521:632,619	
 N	259860	Martha Wellsworth				2548:642,840	A
 N	259861	Paige Armstrong				2548:643,820	A
 N	259962	Fimbo Greasemitz				2548:790,542	
@@ -2453,12 +2455,15 @@ N	265813	Eric Brighthammer				1426:467,539
 N	266484	Morbin Lightbane				1458:578,898	
 N	266901	Pexmit				2482:588,418	
 N	267118	Gilbert Gray				1453:262,470	
+N	268238	Nordun Steadysight				1429:421,666	A
 N	268511	Manifest Clerk Philmor				1453:304,290	
 N	268568	Roy Lewells				1453:386,620	
 N	268592	Olariaan Swiftburn				2521:512,860	
 N	269153	Mountaineer Ylva				1432:318,862	
 N	269452	Excitable Slime				1458:532,294,576,634,646,650,746,232,834,454	
 N	270459	Alfina Nightgaze				1416:118,566	
+N	270637	Howin Kindfeather				1437:493,421	
+N	270844	Sylessa Duskwhisper				1437:80,559	
 N	271465	Falfaan Halfwind				2521:594,758	
 N	271478	Elaria Anvilwind				2521:595,761	
 N	271480	Taliaa Brightsky				2521:593,762	
@@ -2741,13 +2746,20 @@ O	424012	Mound of Dirt	1442:396,499
 O	462236	Mysterious Chest	1423:230,735
 O	509510	the Bulletin Board	1423:715,492
 O	562131	Applejack Still	1429:246,580
-O	581822	Bloodstained Satchel	2521:506,654
-O	610954	Bounty Available: Vulgara the Insatiable!	2521:452,452
-O	649051	Wanted: Insinerator Gar'im	1433:192,462
+O	581822	Bloodstained Satchel	2521:533,721
+O	610954	Bounty Available: Vulgara the Insatiable!	2521:434,459
+O	617674	Arvensus Shadowsong	2521:410,641
+O	617675	Raani Windgazer	2521:410,641
+O	617704	Bloody Note	2521:424,621
+O	626718	Dented Chest	2521:378,246
+O	626752	Dented Chest	2521:560,587,661,653
+O	649051	Wanted: Insinerator Gar'im	1433:243,462
 O	654846	Lost Journal	1438:591,395
 O	654925	Lost Journal	1411:428,691
 O	660964	Misplaced Packages	1455:726,485
 O	665289	Discarded Fishing Toolbox	1432:506,534
+O	671518	Tattered Spellbook	1437:535,545
+O	672330	Dragonmaw Armaments	1437:588,451
 Q	2					1440:758,696			I16305	H
 Q	5			U288						A
 Q	6			U823		1429:574,486			I182,U103	A
@@ -2829,7 +2841,7 @@ Q	86			U247					I769	A
 Q	87			U247		1429:416,788			I981,U327	A
 Q	88			U244		1429:698,794			I1006,U330	A
 Q	89			U341					I2856,U426,U430,U446,U580,U14271,I1013	A
-Q	90			U272					I2665,I1015	A
+Q	90			U272					I1015	A
 Q	91			U900					I1075,U429,U431,U432,U433,U434,U568,U579,U703,U947	A
 Q	92			U343					I1081,I1080,I2296	A
 Q	93			U272					I2251	A
@@ -3378,9 +3390,9 @@ Q	661			U2712						A
 Q	662			U2767		1417:230,845			I4487,O2707,I4489,O2709,I4488,O2708,I4490,O2710	
 Q	663			U2766						
 Q	664			U2769					U2595,U2596	
-Q	665			U2768						
-Q	666			U2774		1417:236,874			I4491,I4492,O2712	
-Q	667			U2610						
+Q	665			U2768					U2768	
+Q	666			U2774		1417:236,874			I4492,O2712	
+Q	667			U2610					U2610,U2775	
 Q	668			U2774					I4493	
 Q	669			U2610					I4502	
 Q	670			U2487					I4494	
@@ -4981,7 +4993,7 @@ Q	4811			U2930						A
 Q	4812			U2930		1439:370,430			I14339,I14338	A
 Q	4813			O175524						A
 Q	4821			U10539		1441:377,561			I12467,O175565	H
-Q	4822			U14305		1453:675,826			I18598,I7228,U14481	A
+Q	4822			U14305		1453:618,752			I18598,I7228,U14481	A
 Q	4841			U10537					U4094,U4093,U4096	H
 Q	4842			U9298						
 Q	4861			U10301						A
@@ -6839,7 +6851,7 @@ Q	79229			O417353
 Q	79235			U11438						
 Q	79236			U215643					I4600,U2832	
 Q	79242			U215643		1417:938,716			U215655,I212347,O423569	
-Q	79536	Greater Friend of the Library		U211033						A
+Q	79536	Greater Friend of the Library		U211033,U211022	U211033,U211022					
 Q	79624			U217300					I213422	
 Q	79626			O422483					I213427	
 Q	79677			U217300		1424:830,360			I213526,U2347,I213527,O422911,I213528,O422919,I213529,U769	
@@ -7014,6 +7026,7 @@ Q	82113			U6176					I20606,I20607,I20608	H
 Q	82114			U8379					I20085,U221942	
 Q	82115			U14470					I20606,I20607,I20608	
 Q	82135			U221587					I221519,U7149	A
+Q	82208	Greater Friend of the Library		U211033,U211022	U211033,U211022					
 Q	82662			U11146					I7945,I7941,I3855,I217281	A
 Q	82665			U11178					I7945,I7941,I3855,I217281	H
 Q	83808			U227672		1422:457,539			I226201,O455812	
@@ -7163,6 +7176,7 @@ Q	88744			U16361					I22484
 Q	88745			U16361					U16143	
 Q	88748			U16431					I22949	A
 Q	88749			U16531					I22950	H
+Q	88756	Bring Back a Bang		U1073		1437:625,282			I280806,O673206	A
 Q	89232			U241334						
 Q	89237			U16365					I12811,I12364,I6037,I234003,I12360	
 Q	89301			U241334						
@@ -7222,7 +7236,7 @@ Q	92462	Infestation Investigation		U251368					U251169
 Q	92463	The Cirrusfly Queen		U251368		2521:476,289			U251404	
 Q	92464	Elemental Unrest		U251361						
 Q	92465	Agitators		U249363					U251160,U251143	
-Q	92466	Call of Earth		U251374						
+Q	92466	Call of Earth		U251374						H
 Q	92467	Call of Earth		U251374						H
 Q	92468	Call of Earth		U251166						H
 Q	92469	Return to Rorian		U249363						
@@ -7231,23 +7245,24 @@ Q	92471	Aetheen of the Gales		U251361
 Q	92472	The Next Step		U251366						
 Q	92473	Aggressive Encroachment		U257551		2521:404,270			I251918,U250926	
 Q	92474	Falling With Style		U263113						
-Q	92481	A Student of the Arcane		U251361						
+Q	92481	A Student of the Arcane		U251361						A
 Q	92482	The Way of the Hunter		U251361						
 Q	92483	At Home in the Shadows		U251361						
-Q	92484	Embracing the Elements		U251361						
+Q	92484	Embracing the Elements		U251361						H
 Q	92485	A Student of Nature		U251361					I282420	
+Q	92489	Power Overwhelming		U5694					U246016	A
 Q	92514	Welcome to Shen'dar Village		U251523						H
-Q	92515	The Problem With Prideclaws		U251993						
+Q	92515	The Problem With Prideclaws		U251993					I252670	
 Q	92516	Hippogryph Harrassment		U251906						
 Q	92517	The Criminal Element		U251523		2521:494,360			U251918,U255534	
 Q	92528	Among the Faithful		U257065						
 Q	92529	Falaath Village		U251904						
 Q	92532	The Warrior's Path		U251361						
 Q	92544	Al'Aketh Thugs		U252095		2521:356,332			U251145,U251448,U256935	
-Q	92550	Havoc in the Highlands		U251523						
+Q	92550	Havoc in the Highlands		U251523					I252661	
 Q	92551	Stolen Supplies		U252172						
 Q	92553	Restocking the Larders		U251905						
-Q	92579	To Valanaar		U251523						H
+Q	92579	To Valanaar		U251523					I253152	H
 Q	92595	The Windshapers		U251902						H
 Q	92596	The High Order		U251903						A
 Q	92597	Reading the Ley Lines		U251371						
@@ -7255,19 +7270,19 @@ Q	92598	The Gift of Skysight		U251487
 Q	92640	Desperate Times		U252476						
 Q	92642	Disrupting Logistics		U252378		2521:655,670			U254596,U270201	
 Q	92643	The Turncoat		U252476						
-Q	92644	Unfortunate News		U253372						
+Q	92644	Unfortunate News		U253372					I273852	
 Q	92645	Breaking the Breaker		U252378		2521:656,655			U252666	
 Q	92646	Confront Lorthuna		U252383						H
 Q	92679	Blood Tithe		U252448		2521:473,796			U252800,U252448	
 Q	92682	Make Yourself Useful		U252800		2521:476,827			I253591,O578937,U252802	
-Q	92683	Flutterfly Dust		U252800		2521:519,834			I253595,O578959	
+Q	92683	Flutterfly Dust		U252800		2521:519,834			I253666,I253595,O578959,U251622	
 Q	92684	Ornery Ornery Galestriders		U252800		2521:533,722			I253597,U251707	
 Q	92685	The Hills Have Eyes		U252800		2521:476,761			I253596,U252820	
 Q	92693	Standing Our Ground		U252800		2521:473,796			U252800	
 Q	92698	What Is My Purpose?		U250929						
 Q	92699	The Supreme Magister		U252383						A
 Q	92700	The Grand Skyseer		U252383						H
-Q	92701	To Valanaar		U251523		2521:662,766			U252383	A
+Q	92701	To Valanaar		U251523		2521:662,766			I253152,U252383	A
 Q	92703	Deliver the News		U252800						
 Q	92708	A Grand Adventure		U251968						H
 Q	92709	A Grand Adventure		U252475		2521:665,798			U252475	A
@@ -7285,7 +7300,7 @@ Q	92752	Explosive Consultation		U11026					I254553	A
 Q	92753	Destruction in Deadmines		U253092					I254553	A
 Q	92819	Destruction in Deadmines		U253279						A
 Q	92834	Avenged Tenfold		U252475		2521:646,627			I255658,U253195,U253511	A
-Q	92840	Catching Wind		U252475					I254584	A
+Q	92840	Catching Wind		U252475		2521:479,689			I254584,O697118	A
 Q	92849	The Missing Scholar		O581822		2521:520,694			U253284	A
 Q	92850	The Missing Scholar		U253284		2521:523,656			I257107,U253283	A
 Q	92860	In Service of Zephras		U252475						A
@@ -7295,41 +7310,41 @@ Q	92881	The High Elder's Request		U252383
 Q	92909	Harvesting the Harvesters		U253395					I255007,I255010	A
 Q	92910	Harvesting the Harvesters							I255155	A
 Q	92911	Harvesting the Harvesters		U253395					I4405,I4363,I255007	A
-Q	92947	Making Our Move		U252383						
+Q	92947	Making Our Move		U252383,U253844		2521:612,710				
 Q	93036	Infiltrating the Cult		U251523						
 Q	93065	Prepare for Battle		U252383						
 Q	93089	What Comes Next		U252476						A
 Q	93090	What Comes Next		U252476						H
 Q	93159	The Strange Hermit		U251684						
 Q	93160	The Forest's Bounty		U251684						
-Q	93165	Mercy Falls on Deaf Ears		U254151						
+Q	93165	Mercy Falls on Deaf Ears		U254151					I258771	
 Q	93172	Free the Hollows		U251684						
 Q	93317	Crab Season		U257006		2521:641,615			I257941,U254588	
-Q	93318	WANTED: Vulgara the Insatiable		O610954						
-Q	93319	Pilfered Windstones		U251906						
+Q	93318	WANTED: Vulgara the Insatiable		O610954					I257942	
+Q	93319	Pilfered Windstones		U251906					I257945	
 Q	93320	Tower Defense		U252383						
-Q	93459	More Al'Aketh Ears		U254151						
+Q	93459	More Al'Aketh Ears		U254151					I258771	
 Q	93461	Welcome to Shen'dar Village		U251523						A
 Q	93552	Harvesting Windstones		U251363		2521:486,782			I258772,O613286	
 Q	93735	The Broken Construct		U251968						H
 Q	93736	Unwelcome Spirits		U254344						H
 Q	93737	The Broken Construct		U256083						H
 Q	93738	The Broken Construct		U256083						H
-Q	93739	Exploring the Horde		U4949						
+Q	93739	Exploring the Horde		U4949					I285357	
 Q	93740	Blood for Blood		U251968						H
 Q	93746	A Firm Response		U251968						H
 Q	93791	Speak with Belann		U252373						A
 Q	93797	Boughs in the Wind		U256507						A
-Q	93835	Confront Lorthuna		U252383						A
+Q	93835	Confront Lorthuna		U252383,U253590		2521:652,504				A
 Q	93836	The Fate of Zephras		U251968						H
 Q	93926	The Western Watch		U251523						
 Q	93927	A Last Request		U252155						
-Q	93948	Deliver the Signet		U251523		2521:662,766			U252476	
-Q	93949	Bugged		U252383		2521:617,758			U251314	
+Q	93948	Deliver the Signet		U251523		2521:662,766			I263491,U252476	
+Q	93949	Bugged		U252383		2521:617,758			U251727	
 Q	93951	A Little Beauty		U251991						
 Q	93958	The Inner Sanctum		U253576						
-Q	93963	Exploring the Alliance		U1748		1453:808,591			U275491,U7937,U2784,U7999	A
-Q	94003	The Skybreaker Bulwark		U252377						
+Q	93963	Exploring the Alliance		U1748		1453:790,448			I285356,U275491,U7937,U2784,U7999	
+Q	94003	The Skybreaker Bulwark		U252377					I263993	
 Q	94006	The Great Ursera Spirit		U252359						
 Q	94007	Taming the Beast		U254084						
 Q	94013	Taming the Beast		U252389						
@@ -7343,20 +7358,20 @@ Q	94413	A Magical Affront		U251903					U257532	A
 Q	94414	The Anchors of Zephras		U257554						
 Q	94484	Unnerving Silence		U252359						
 Q	94485	Tears of the Lady		U257944						
-Q	94486	Feathers for Binding		U257944						
-Q	94487	Unwanted and Unworthy		U257944						
-Q	94488	The Ties That Bind		U257944						
+Q	94486	Feathers for Binding		U257944					I265140	
+Q	94487	Unwanted and Unworthy		U257944					I265141	
+Q	94488	The Ties That Bind		U257944					I265475	
 Q	94489	The Wounds of Betrayal		U257944						
 Q	94490	Ripped Missive				2521:654,362			I265476	
-Q	94491	The Fate of the Den		U257944						
+Q	94491	The Fate of the Den		U257944					I265782	
 Q	94493	A Sacrifice in Vain		U257944						
 Q	94568	The Cult's True Plans		U252476						
 Q	94638	Strength and Mercy		U255853		2521:539,653			U258443	
 Q	94896	Aid For The Refugees		U259012		2521:580,319			I266433,O623295	
 Q	94897	The Fate of a Loved One		U259012		2521:570,295			I266434,U259013	
 Q	94912	Child of Nature		U270459						A
-Q	94946	The Magical City of Dalaran		U259084						A
-Q	94947	Welcome to Azeroth		U259084						A
+Q	94946	The Magical City of Dalaran		U252475						A
+Q	94947	Welcome to Azeroth		U259084						
 Q	94978	Taming the Beast		U252389						
 Q	94979	Taming the Beast		U252389						
 Q	95041	Data Hoaders		U11028		1426:263,412			I267413,O629596	A
@@ -7381,11 +7396,11 @@ Q	95682	Open the Maw		U13155					U275045,U275044,I284844,U275046	H
 Q	95697	Changing Tastes		U3368					I271100,U260325,U260800,U260801,U271732	H
 Q	95772	Songblade Search		U956						A
 Q	95795	Fallen in the Fen		U262465						A
-Q	95805	Grace of An'she and Mu'sha		U2982		1412:543,872			I277199,O660739	H
+Q	95805	Grace of An'she and Mu'sha		U2982		1412:566,887			I277199,O660739	H
 Q	95809	Heartwoven		U262681					I270901	A
 Q	95810	Lost Relic Carry							I270865	A
 Q	95998	The Great Outdoors		U263399						A
-Q	95999	Wanted: Insinerator Gar'im		O649051		1433:727,866			I271872,U214519	A
+Q	95999	Wanted: Insinerator Gar'im		O649051		1433:778,866			I271872,U214519	A
 Q	96031	Camping 101: Leatherworking		U265813						A
 Q	96044	Camping 101: Blacksmithing		U265813						A
 Q	96045	Camping 101: Alchemy		U265813						A
@@ -7399,7 +7414,7 @@ Q	96058	Camping 101: Engineering		U265813						A
 Q	96059	Camping 101: Enchanting		U265813						A
 Q	96101	The Great Outdoors		U263664						
 Q	96102	Camping 101: Tailoring		U265809						H
-Q	96130	Chakuyak		U3065		1412:391,658			I270302,U268558	H
+Q	96130	Chakuyak		U3065		1412:385,631			I270302,U268558	H
 Q	96390	Nip 'Em in the Bud		U264936					U6123	A
 Q	96391	Underground Map				1426:774,614			I274268	A
 Q	96392	Farsen's Watch		U264936						A
@@ -7428,10 +7443,10 @@ Q	96658	Camping 101: Cooking		U265812		1420:618,515			U265944	H
 Q	96659	The Adventurer		U2981					I275019	H
 Q	96661	Camping 101: Cooking		U265810						H
 Q	97220	Philmor's Favor		U268511					I277119	A
-Q	97222	Gatehouse Goods		U483		1453:711,823			I277198	A
+Q	97222	Gatehouse Goods		U483		1453:664,748			I277198	A
 Q	97234	Reading Room		U268568					I277158	A
 Q	97236	Fang of Githyiss							I277190	A
-Q	97237	Shelf Picked		U2504		1453:786,484			I277196,O660731,I277194,O660730,I277195,O660729,I277197,O660732	A
+Q	97237	Shelf Picked		U2504		1453:761,310			I277196,O660731,I277194,O660730,I277195,O660729,I277197,O660732	A
 Q	97243	Call of Fire		U252382						
 Q	97244	Call of Fire		U268592						
 Q	97245	Call of Fire		U268592						
@@ -7513,18 +7528,39 @@ Q	97977	Nature's Call		U1992					I279082,O668482,O668493	A
 Q	97979	The Goddess Provides		U3595						
 Q	98021	Journey to Sentinel Hill		U1748						
 Q	98067	Eyes of the Sentinels		U8396		1457:337,162			I279378	A
+Q	98072	Crocs of the Sky		U2094		1437:618,312			I279385,U1042,U1043,U1044,U1069	A
+Q	98189	Return the Statuette		U1242					I279589	A
+Q	98190	A Friend of the Family		U2104					I279595	A
+Q	98191	A Friend of the Family		U1748					I269598	A
+Q	98197	Spoils of War		U2086		1437:61,618			I279821,O670771,I279822,O670774	A
+Q	98208	Bloom of the Heavens		U270844		1437:122,638			I279915,O670962	
+Q	98209	Bloom of the Heavens		U270844					I279924	
+Q	98216	Understanding Our Present		U1077		1437:353,470			I279996,I279993,U270892	A
+Q	98219	The Shamed Lieutenant		U928						A
+Q	98221	From the Ashes		U2104		1437:454,427			O671481,O671486,O671483,O671487	A
+Q	98223	Old Habits		O671518					I280042	A
+Q	98230	This Land Was Their Land		U2104						A
+Q	98245	Razormaw Needling		U270637		1437:696,335			I280103,U1018,U1019	A
+Q	98246	Trying Times		U270637		1437:355,202			I280132,O671892,O671931	A
 Q	98247	Shipping Label		U256390					I280179	A
 Q	98248	Shipping Label		U256386					I280180	H
+Q	98282	Alchemical Hazards		U1480		1437:485,603			I280319,U1111,U4040	A
 Q	98284	Camping 101: Enchanting		U263664						H
 Q	98285	Camping 101: Engineering		U263664						
 Q	98286	Camping 101: Enchanting		U263664						A
+Q	98291	Death to the Dragonmaw		U270637		1437:597,449			U271351,U271348,U271346	A
+Q	98293	Forced Disarmament		O672330		1437:648,462			I280369,O672334,O672336,O672337	A
+Q	98297	Stopping the Cycle		U270637		1437:772,466			U271373	A
+Q	98300	Word to Ironforge		U270637					I280392	A
+Q	98310	Gleaning Our Future		U1077		1437:772,474			I280394,I280395,U271338,I280396,U271460,I280397,U271462,I280398,U271458	A
+Q	98313	For Further Study		U1077					I280403	A
 Q	98319	Secure the Mountain		U271546						A
 Q	98321	Flintfire's Shipment		U1241					I280413,O672508	A
 Q	98322	Secure the Mountain		U1252						A
 Q	98323	Secure the Mountain		U271546						A
 Q	98326	Frosthowl		U8508		1426:400,484			I280426,U271587	A
 Q	98386	Alther's Mill		U341		1433:475,412			U505,U271898,U271988,O673085,O673101	A
-Q	98387	Blackrock Blockade		U382		1433:610,736			I280839,O673384,O673385,O673399,I280841,O673390	A
+Q	98387	Blackrock Blockade		U382		1433:661,736			I280839,O673384,O673385,O673399,I280841,O673390	A
 Q	98389	A Light in the Darkness		U244808						H
 Q	98407	Show of Force		U1070		1433:109,614			I280911,U712	A
 Q	98423	The Treaty of Understanding				1455:393,560			I281030,U2784	A
@@ -7534,8 +7570,8 @@ Q	98601	A Difficult Path		U1569					I282423
 Q	98815	Highland Hides		U2094					I284845,U260325,U260800,U260801,U271732	A
 Q	98823	Earthen Echo		U9087					I270866	H
 Q	98824	Prehistoric Prism		U1077					I270865	A
-Q	99079	Longwalker Malah		U3222		1412:551,659			U275789	H
-Q	99080	Drive Them Out		U2993		1412:565,610			U2967,U2968,I286075,U275767	H
+Q	99079	Longwalker Malah		U3222		1412:576,632			U275789	H
+Q	99080	Drive Them Out		U2993		1412:593,573			U2967,U2968,I286075,U275767	H
 Q	99081	Grim Tidings		U275789					I286104	H
 Q	99082	The High Chieftain		U2993						H
 Q	99101	Our Ancient Enemy		U3222		1412:466,634			I286104,U2993	H
@@ -8014,7 +8050,6 @@ I	2622		U2606
 I	2623		U2780,U2781,U2782	
 I	2624		U2718	
 I	2633		U940,U941,U942	
-I	2665		U1303	
 I	2672		U118,U1922,U2958,U2959,U2960,U3056,U525	
 I	2673		U833,U834	
 I	2677		U157,U454	
@@ -9127,7 +9162,6 @@ I	13476		U7027
 I	13477		U4226,U4610	
 I	13478		U3348,U5178	
 I	13479		U9449,U9450,U9451,U9452	
-I	13480		U11188	
 I	13482		U11536	
 I	13483		U9499	
 I	13484		U11557	
@@ -9876,7 +9910,6 @@ I	19436		U12463,U12464,U12465,U12467
 I	19437		U12463,U12464,U12465,U12467	
 I	19438		U12460	
 I	19439		U12460	
-I	19442		U11536	
 I	19445		U11557	
 I	19505		U14754	
 I	19506		U14753	
@@ -10747,6 +10780,7 @@ I	203755		O386759
 I	208860		O408014	
 I	209845		O409562	
 I	209846		O409692	
+I	210178		U643	
 I	247826		U248278	
 I	247834		U6	
 I	247862		U248299	
@@ -10755,7 +10789,7 @@ I	248819		U263384
 I	248820		U263384	
 I	248822		U263384	
 I	249274		U263384	
-I	249391		U263384	
+I	249391		O1731,U263384	
 I	249399		U263384	
 I	249424		U263384	
 I	249425		U263384	
@@ -10805,6 +10839,7 @@ I	249887			U256731
 I	249888			U256731
 I	249889			U256731
 I	249890			U256731
+I	250187		U1020,U3255	
 I	250188		U428	
 I	250364			U248196,U256729
 I	250365			U248196,U256729
@@ -10905,6 +10940,7 @@ I	251469		U11557
 I	251470		U11557	
 I	251471			U248197,U256730
 I	251932		U251402	
+I	252760		O576179	
 I	252761		U258306	
 I	252762		U258306	
 I	252763		U258306	
@@ -11069,39 +11105,51 @@ I	254114			U256735
 I	254116			U256735
 I	254118			U256735
 I	254124		U266901	
+I	254871		O617704	
 I	255007		U114,U115,U276061,U36,U480	
 I	255010		U114,U115,U36	
 I	255155		U114,U36,U480	
+I	255663		O616907	
+I	255723		U2589	
+I	255724		U910	
+I	255728		U760	
 I	255729		U266901	
+I	257128		O613238	
 I	262765			U256389
-I	264201			U256733
-I	264202			U256733
-I	264203			U256733
-I	264204			U256733
-I	264205			U256733
-I	264206			U256733
-I	264209			U256733
-I	264211			U256733
-I	264216			U256733
-I	264217			U256733
-I	264220			U256733
-I	264221			U256733
-I	264222			U256733
-I	264232			U256733
+I	263415		O617675	
+I	263418		O617674	
+I	263493		O617839	
+I	264201			U248200,U256733
+I	264202			U248200,U256733
+I	264203			U248200,U256733
+I	264204			U248200,U256733
+I	264205			U248200,U256733
+I	264206			U248200,U256733
+I	264209			U248200,U256733
+I	264211			U248200,U256733
+I	264216			U248200,U256733
+I	264217			U248200,U256733
+I	264220			U248200,U256733
+I	264221			U248200,U256733
+I	264222			U248200,U256733
+I	264232			U248200,U256733
 I	264233		U266901	
-I	264234			U256733
-I	264235			U256733
-I	264237			U256733
+I	264234			U248200,U256733
+I	264235			U248200,U256733
+I	264237			U248200,U256733
+I	265105		O619450	
 I	268548		U1116,U1118	
 I	269671		U265756	
 I	269678		U265756	
 I	269681		U265756	
 I	269683		U265756	
+I	269901		U253139,U253140	
+I	269903		U253139,U253140	
 I	270888			U256389
 I	271621			U248196,U256729
 I	271622			U248197,U256730
 I	271624			U248199,U256732
-I	271625			U256733
+I	271625			U248200,U256733
 I	271626			U256734
 I	271627			U256735
 I	271654		U260560	
@@ -11158,13 +11206,18 @@ I	273647		U3927
 I	273804		U1696	
 I	273805		U1696	
 I	273806		U1696	
+I	273807		U1666	
 I	273808		U1666	
 I	273809		U1717	
 I	273810		U1717	
+I	273811		U1717	
 I	273812		U271480	
 I	273813		U271480	
 I	273814		U271480	
-I	273820		U1696	
+I	273815		U252664,U252665,U252762,U252763,U252764,U252765,U252767,U256966,U270201	
+I	273817		U1663	
+I	273819		U1663	
+I	273820		U1663	
 I	273824		U1716	
 I	273825		U1716	
 I	273827		U1716	
@@ -11357,17 +11410,18 @@ I	277108		U271465
 I	277109		U271465	
 I	277110		U271465	
 I	277111		U271465	
+I	277470		U276061	
 I	278157			U12782
 I	278158			U12782
 I	278265		U4612	
 I	278468			U12782
-I	280321			U256733
-I	280322			U256733
-I	280323			U256733
-I	280325			U256733
-I	280326			U256733
-I	280327			U256733
-I	280328			U256733
+I	280321			U248200,U256733
+I	280322			U248200,U256733
+I	280323			U248200,U256733
+I	280325			U248200,U256733
+I	280326			U248200,U256733
+I	280327			U248200,U256733
+I	280328			U248200,U256733
 I	280347		U254151	
 I	280363		U254151	
 I	280797		U1263	
@@ -11375,10 +11429,12 @@ I	280801		U1263
 I	282047		U3581	
 I	284664			U256389
 I	284715		U646	
-I	285285			U256733
-I	285286			U256733
-I	285287			U256733
-I	285288			U256733
+I	285254		U259398	
+I	285255		U259398	
+I	285285			U248200,U256733
+I	285286			U248200,U256733
+I	285287			U248200,U256733
+I	285288			U248200,U256733
 I	285292		U642	
 I	285327		U32287	
 I	285346		U5798	
