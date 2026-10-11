@@ -23,4 +23,13 @@
     <Binding name="WAYPOINTTRACKER_TREASURE">
         WaypointTracker_ToggleTreasure()
     </Binding>
+    <Binding name="WAYPOINTTRACKER_ROUTES">
+        WaypointTracker_ToggleRoutes()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_ROUTE_NEXT">
+        WaypointTracker_RouteNext()
+    </Binding>
+    <Binding name="WAYPOINTTRACKER_ROUTE_RECORD_ADD">
+        WaypointTracker_RouteRecordAdd()
+    </Binding>
 </Bindings>

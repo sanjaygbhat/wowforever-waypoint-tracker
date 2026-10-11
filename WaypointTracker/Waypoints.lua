@@ -82,6 +82,8 @@ local function Save()
                     startDist = wp.startDist,
                     source = wp.source ~= "user" and wp.source or nil,
                     active = (wp == active) or nil,
+                    routeID = wp.routeID,
+                    routeIndex = wp.routeIndex,
                 }
             end
         end
@@ -90,10 +92,29 @@ local function Save()
 end
 WP.Save = Save
 
+-- Many waypoints at once (a route): saved and announced once at the end.
+local batching = false
 local function Changed()
+    if batching then
+        return
+    end
     Save()
     ns.Fire("WAYPOINTS_CHANGED")
 end
+
+function WP.Batch(fn)
+    batching = true
+    local ok, err = pcall(fn)
+    batching = false
+    Changed()
+    if not ok then
+        error(err, 0)
+    end
+end
+
+-- Who picks the next waypoint when the arrow's one goes: a route wants the
+-- next of its points, not the closest one. Returns a waypoint or nil.
+WP.nextHook = nil
 
 -- ---------------------------------------------------------------------------
 -- Blizzard map pin (optional): mirrors the arrow's waypoint
@@ -296,9 +317,10 @@ function WP.Remove(wp, silent, noAdvance)
     end
     if wp == active then
         active = nil
-        -- move on to the closest remaining waypoint, if there is one
+        -- move on to the next of a route's points, or the closest remaining
+        -- waypoint, if there is one
         if #list > 0 and not noAdvance then
-            active = WP.Closest()
+            active = (WP.nextHook and WP.nextHook(wp)) or WP.Closest()
         end
         ns.Safe(UpdateBlizzardPin)()
         ns.Fire("ACTIVE_CHANGED", active)
@@ -423,6 +445,10 @@ function WP.CheckArrival(wp, dist)
     if wp.callbacks and type(wp.callbacks.arrived) == "function" then
         pcall(wp.callbacks.arrived, "arrived", wp, dist)
     end
+    -- a route's point: the route says where to go next
+    if wp.routeID and ns.Routes and ns.Routes.Arrived(wp) then
+        return true
+    end
     if ns.Get("autoClear") then
         WP.Remove(wp, true, not ns.Get("autoNext"))
     end
@@ -458,6 +484,8 @@ local function Load()
                 startDist = type(s.startDist) == "number" and s.startDist or nil,
                 persistent = true,
                 source = type(s.source) == "string" and s.source or "user",
+                routeID = type(s.routeID) == "string" and s.routeID or nil,
+                routeIndex = ns.Int(s.routeIndex),
             }
             nextId = nextId + 1
             list[#list + 1] = wp

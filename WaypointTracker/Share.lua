@@ -84,6 +84,8 @@ function Share.ToChatBox(wp)
     OpenChat(text)
 end
 
+Share.OpenChat = OpenChat
+
 function Share.ToChannel(wp, command)
     OpenChat(command .. " " .. Share.Message(wp))
 end

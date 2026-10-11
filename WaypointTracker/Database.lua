@@ -25,6 +25,7 @@ end
 
 DB.units, DB.objects, DB.quests, DB.items, DB.services = {}, {}, {}, {}, {}
 DB.places, DB.marks = {}, {}
+DB.generation = 0 -- goes up with every merge, so lists worked out before it are redone
 DB.loaded = false
 
 -- ---------------------------------------------------------------------------
@@ -119,6 +120,9 @@ local function Parse(data)
             local e = entry("object", id, n[2])
             e.fac, e.coords = f[2], f[3]
             e.chest = IsChest(id) or nil
+            -- ore and herbs, for the suggested gathering routes
+            local en = enObjects[id]
+            e.gather = en and ns.Routes and ns.Routes.GatherKind(en[2]) or nil
             DB.objects[id] = e
         end
     end
@@ -198,6 +202,10 @@ function DB.Load()
     if WaypointTrackerData and WaypointTrackerData.clientItems then
         ns.Call(DB.ParseClientItems, WaypointTrackerData)
         WaypointTrackerData.clientItems, WaypointTrackerData.clientItemNames = nil, nil
+    end
+    if WaypointTrackerData and WaypointTrackerData.sources then
+        ns.Call(DB.ParseSources, WaypointTrackerData)
+        WaypointTrackerData.sources, WaypointTrackerData.sourceNames = nil, nil
     end
     if WaypointTrackerData and type(WaypointTrackerData.client) == "table" then
         ns.Call(DB.ParseClient, WaypointTrackerData.client)
@@ -341,6 +349,54 @@ function DB.ParseClientItems(data)
     end)
 end
 
+local function AddUnique(list, value)
+    for _, have in ipairs(list) do
+        if have == value then
+            return
+        end
+    end
+    list[#list + 1] = value
+end
+
+-- Who sells, drops or holds every item (Sources.lua), with the names of the
+-- items nothing else names. Adds to what the classic database knows.
+function DB.ParseSources(data)
+    local loc = GetLocale and GetLocale() or "enUS"
+    if loc == "esMX" then
+        loc = "esES"
+    end
+    local names = data.sourceNames or {}
+    local named = NameTable(names.enUS)
+    if loc ~= "enUS" then
+        for id, n in pairs(NameTable(names[loc])) do
+            named[id] = n
+        end
+    end
+    Lines(data.sources, function(f)
+        local id = tonumber(f[1])
+        if not id then
+            return
+        end
+        local e = DB.items[id]
+        if not e and named[id] then
+            e = { kind = "item", id = id, name = named[id], key = Geo.Squash(named[id]), dropU = {}, dropO = {}, soldBy = {} }
+            DB.items[id] = e
+        end
+        if e then
+            e.dropU, e.dropO, e.soldBy = e.dropU or {}, e.dropO or {}, e.soldBy or {}
+            for _, u in ipairs(NumList(f[2])) do
+                AddUnique(e.dropU, u)
+            end
+            for _, o in ipairs(NumList(f[3])) do
+                AddUnique(e.dropO, o)
+            end
+            for _, u in ipairs(NumList(f[4])) do
+                AddUnique(e.soldBy, u)
+            end
+        end
+    end)
+end
+
 -- Quests that need this item.
 function DB.QuestsNeeding(item)
     local out = {}
@@ -379,15 +435,6 @@ end
 local function MyLetter()
     local f = UnitFactionGroup and UnitFactionGroup("player")
     return (f == "Horde" and "H") or (f == "Alliance" and "A") or ""
-end
-
-local function AddUnique(list, value)
-    for _, have in ipairs(list) do
-        if have == value then
-            return
-        end
-    end
-    list[#list + 1] = value
 end
 
 local function Richness(e)
@@ -694,7 +741,7 @@ function DB.MergeLearned()
         for i = (before[service] or 0) + 1, #list do
             list[i].learned = true
         end
-    end
+    end    DB.generation = DB.generation + 1
 end
 
 -- Merging is a big job (tens of milliseconds), and learning happens all the
@@ -1129,6 +1176,208 @@ function DB.Search(text, kinds, opts, limit)
         out[i] = scored[i].e
     end
     return out, #scored
+end
+
+-- ---------------------------------------------------------------------------
+-- Near you: what /wp opens to before you type anything
+-- ---------------------------------------------------------------------------
+-- The classic database's area IDs on the same ground as map m.
+local areasOn = {}
+local function AreasOn(m)
+    local set = areasOn[m]
+    if set then
+        return set
+    end
+    set = {}
+    for area in pairs(DB.zoneNames or {}) do
+        local am = DB.MapForArea(area)
+        if am and Geo.SameMap(am, m) then
+            set[area] = true
+        end
+    end
+    -- kept once found (a new WoW Forever map has none: looked up again, it's quick)
+    if next(set) then
+        areasOn[m] = set
+    end
+    return set
+end
+
+-- Could it have a spot on map m? A quick look before working its spots out.
+local function MaybeOn(e, m, areas)
+    if e.points then
+        for _, p in ipairs(e.points) do
+            if Geo.SameMap(p.m, m) then
+                return true
+            end
+        end
+        return false
+    end
+    for _, w in ipairs(e.world or {}) do
+        if w[2] == 0 or Geo.SameMap(w[2], m) then
+            return true
+        end
+    end
+    for _, p in ipairs(e.extra or {}) do
+        if Geo.SameMap(p.m, m) then
+            return true
+        end
+    end
+    local c = e.coords
+    if c and c ~= "" then
+        for area in c:gmatch("(%d+):") do
+            if areas[tonumber(area)] then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+-- How far its closest spot on map m is, in yards.
+local function DistanceOn(e, m)
+    local best
+    for _, p in ipairs(DB.Points(e)) do
+        if Geo.SameMap(p.m, m) then
+            local d = Geo.GetVector(p)
+            if d and (not best or d < best) then
+                best = d
+            end
+        end
+    end
+    return best
+end
+
+-- What's on the map you're on, nearest first: NPCs, enemies, objects and
+-- places by their closest spot, quests by who gives them (new ones you're
+-- old enough for) or where the game shows them (the ones in your log).
+-- kinds and opts as in DB.Search. Returns entries, how many there were,
+-- and each entry's distance in yards.
+local nearbyCache = {}
+function DB.Nearby(kinds, opts, limit)
+    opts = opts or {}
+    limit = limit or 300
+    local m = C_Map.GetBestMapForUnit("player")
+    if not m then
+        return {}, 0, {}
+    end
+    -- the entries on this map (slow: kept until the next merge); distances every time
+    local cacheKey = table.concat({ m, opts.faction and "f" or "", kinds.quest and "q" or "", kinds.npc and "n" or "",
+        kinds.enemy and "e" or "", kinds.object and "o" or "", kinds.place and "p" or "" }, ":")
+    local cached = nearbyCache[cacheKey]
+    if not (cached and cached.gen == DB.generation) then
+        local areas = AreasOn(m)
+        local list = {}
+        local function look(tbl, want)
+            for _, e in pairs(tbl or {}) do
+                if want(e) and (not opts.faction or DB.ForMyFaction(e)) and MaybeOn(e, m, areas) then
+                    list[#list + 1] = e
+                end
+            end
+        end
+        if kinds.npc or kinds.enemy or kinds.quest then
+            look(DB.units, function(e)
+                if e.name == "" then
+                    return false
+                end
+                local enemy = DB.IsEnemy(e)
+                -- quest givers are looked at for the quests they give
+                return (enemy and kinds.enemy) or (not enemy and (kinds.npc or kinds.quest))
+            end)
+        end
+        if kinds.object or kinds.quest then
+            look(DB.objects, function(e)
+                return e.name ~= ""
+            end)
+        end
+        if kinds.place then
+            look(DB.places, function()
+                return true
+            end)
+        end
+        cached = { gen = DB.generation, list = list }
+        nearbyCache[cacheKey] = cached
+    end
+
+    local dist, out = {}, {}
+    local here = {} -- NPC/object -> distance, for the quests they give
+    for _, e in ipairs(cached.list) do
+        local d = DistanceOn(e, m)
+        if d then
+            here[e] = d
+            local wanted
+            if e.kind == "npc" then
+                local enemy = DB.IsEnemy(e)
+                wanted = (enemy and kinds.enemy) or (not enemy and kinds.npc)
+            elseif e.kind == "object" then
+                wanted = kinds.object
+            else
+                wanted = kinds.place
+            end
+            if wanted then
+                dist[e] = d
+                out[#out + 1] = e
+            end
+        end
+    end
+
+    if kinds.quest then
+        local level = UnitLevel and tonumber(UnitLevel("player")) or 1
+        local function closest(ids, tbl)
+            local best
+            for _, id in ipairs(ids or {}) do
+                local d = tbl[id] and here[tbl[id]]
+                if d and (not best or d < best) then
+                    best = d
+                end
+            end
+            return best
+        end
+        -- new quests from who's around you
+        for _, q in pairs(DB.quests) do
+            if (q.startU or q.startO) and (not q.min or q.min <= level) and (not opts.faction or DB.ForMyFaction(q)) then
+                local du, dobj = closest(q.startU, DB.units), closest(q.startO, DB.objects)
+                local d = du and dobj and math.min(du, dobj) or du or dobj
+                if d and DB.QuestState(q) == "new" then
+                    dist[q] = d
+                    out[#out + 1] = q
+                end
+            end
+        end
+        -- quests in your log: where to go next, when that's on this map
+        if C_QuestLog and C_QuestLog.GetNumQuestLogEntries and C_QuestLog.GetQuestIDForLogIndex then
+            local ok, num = pcall(C_QuestLog.GetNumQuestLogEntries)
+            for i = 1, (ok and tonumber(num) or 0) do
+                local okID, id = pcall(C_QuestLog.GetQuestIDForLogIndex, i)
+                local q = okID and id and DB.quests[id]
+                if q and not dist[q] then
+                    local best
+                    for _, t in ipairs(DB.QuestTargets(q, DB.DefaultQuestStep(q))) do
+                        local d = DistanceOn(t, m)
+                        if d and (not best or d < best) then
+                            best = d
+                        end
+                    end
+                    if best then
+                        dist[q] = best
+                        out[#out + 1] = q
+                    end
+                end
+            end
+        end
+    end
+
+    table.sort(out, function(a, b)
+        if dist[a] ~= dist[b] then
+            return dist[a] < dist[b]
+        end
+        return a.id < b.id
+    end)
+    local total = #out
+    for i = total, limit + 1, -1 do
+        dist[out[i]] = nil
+        out[i] = nil
+    end
+    return out, total, dist
 end
 
 -- ---------------------------------------------------------------------------

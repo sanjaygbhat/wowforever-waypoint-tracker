@@ -1,6 +1,6 @@
 ## Interface: 16001
 ## Title: Waypoint Tracker |cff999999(database)|r
-## Notes: NPCs, quests, objects and items for Waypoint Tracker's Find window. Loads only when you open Find.
+## Notes: NPCs, quests, objects, items and routes for Waypoint Tracker's Find window. Loads only when you open Find.
 ## Notes-deDE: NPCs, Quests, Objekte und Gegenstände für das Suchfenster von Waypoint Tracker. Wird erst beim Öffnen geladen.
 ## Author: sanjaygbhat
 ## Version: 1.1.1
@@ -26,6 +26,16 @@ Items_koKR.lua
 Items_zhCN.lua
 Items_zhTW.lua
 Forever.lua
+Sources.lua
+Sources_deDE.lua
+Sources_esES.lua
+Sources_frFR.lua
+Sources_koKR.lua
+Sources_ptBR.lua
+Sources_ruRU.lua
+Sources_zhCN.lua
+Sources_zhTW.lua
+RouteSeeds.lua
 Names_enUS.lua
 Names_deDE.lua
 Names_frFR.lua

@@ -784,6 +784,12 @@ local function CreateMain()
     title:SetText(L.ADDON_TITLE)
     local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", -5, -5)
+    local routesBtn = Button(frame, L.ROUTES_TITLE, 80, 22)
+    routesBtn:SetPoint("RIGHT", close, "LEFT", -4, 0)
+    routesBtn:SetScript("OnClick", function()
+        ns.RoutesUI.Show()
+    end)
+    AddTooltip(routesBtn, L.ROUTES_TITLE, L.ROUTES_DESC)
 
     -- Set a waypoint -------------------------------------------------------
     Header(frame, L.SET_WAYPOINT_HEADER, 24, -54)
@@ -860,7 +866,7 @@ local function CreateMain()
         b:SetScript("OnClick", function()
             ns.Find.Show(nil, tab)
         end)
-        AddTooltip(b, L.FIND_TITLE, L.FIND_BUTTON_DESC)
+        AddTooltip(b, L.FIND_TITLE, L.FIND_TAB_DESC)
         b.tab = tab
         findButtons[#findButtons + 1] = b
         prevFind = b
@@ -1183,6 +1189,8 @@ local function CreateAdvanced()
     C(L.AUTO_CLOSEST, "autoClosest", L.AUTO_CLOSEST_DESC)
     C(L.PERSIST, "persist", L.PERSIST_DESC)
     C(L.MINIMAP_BUTTON, "minimapButton", L.MINIMAP_BUTTON_DESC)
+    C(L.ROUTES_SHARING, "routeSharing", L.ROUTES_SHARING_DESC)
+    C(L.ROUTE_ASK_OPTION, "routeAsk", L.ROUTE_ASK_OPTION_DESC)
     C(L.CHAT_MESSAGES, "chatMessages", L.CHAT_MESSAGES_DESC)
     C(L.SHARE_PREFIX, "sharePrefix", L.SHARE_PREFIX_DESC)
     C(L.USE_METRES, "useMetres", L.USE_METRES_DESC)
@@ -1261,6 +1269,20 @@ function UI.Show()
     Ensure()
     frame:Show()
     frame:Raise()
+end
+
+function UI.IsShown()
+    return frame and frame:IsShown() or false
+end
+
+UI.WIDTH = WIDTH
+
+-- Places the window (from the centre of the screen) without remembering it.
+function UI.MoveTo(x, y)
+    if frame then
+        frame:ClearAllPoints()
+        frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+    end
 end
 
 function UI.Hide()

@@ -14,6 +14,12 @@ ns.version = (GetAddOnMetadata and GetAddOnMetadata(ADDON_NAME, "Version")) or "
 ns.defaults = {
     -- arrow
     arrowShown = true,
+    -- routes
+    routeSharing = true, -- share routes and votes with other players of the addon
+    routeAsk = true, -- ask whether to replace or add to your waypoints when starting a route
+    routeApply = "replace", -- what to do when not asking
+    routeThisZone = false,
+    routeLowRated = false, -- show routes most players voted down
     arrowScale = 1.0,
     arrowAlpha = 0.8, -- a little see-through, so it feels part of the world
     arrowPos = nil, -- { point, relativePoint, x, y }; nil = over your character
@@ -425,4 +431,7 @@ BINDING_NAME_WAYPOINTTRACKER_ARROW = L.BINDING_ARROW
 BINDING_NAME_WAYPOINTTRACKER_CLOSEST = L.BINDING_CLOSEST
 BINDING_NAME_WAYPOINTTRACKER_FIND = L.BINDING_FIND
 BINDING_NAME_WAYPOINTTRACKER_SHARE = L.BINDING_SHARE
+BINDING_NAME_WAYPOINTTRACKER_ROUTES = L.BINDING_ROUTES
+BINDING_NAME_WAYPOINTTRACKER_ROUTE_NEXT = L.BINDING_ROUTE_NEXT
+BINDING_NAME_WAYPOINTTRACKER_ROUTE_RECORD_ADD = L.BINDING_ROUTE_RECORD_ADD
 BINDING_NAME_WAYPOINTTRACKER_TREASURE = L.BINDING_TREASURE

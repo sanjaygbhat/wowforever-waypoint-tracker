@@ -53,5 +53,8 @@ CoordsBox.lua
 UI.lua
 EditMode.lua
 Find.lua
+Routes.lua
+RoutesNet.lua
+RoutesUI.lua
 AddonBridge.lua
 Slash.lua
