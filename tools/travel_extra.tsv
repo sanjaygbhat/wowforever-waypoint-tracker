@@ -1,0 +1,213 @@
+# Real routes: crossings, passes, sub-areas, lifts and zone levels added to
+# Mapzeroth's data (see tools/build_travel.py for the row types). Drafted by
+# research agents from wowhead, warcraft.wiki.gg, Mapzeroth's notes and the
+# addon's own NPC positions, then reviewed. Positions marked approximate need
+# checking in game; players' walked crossings (Trails.lua) correct the rest.
+
+# --- Northern Eastern Kingdoms
+move	BORDER_HILLSBRAD_FOOTHILLS_TO_SILVERPINE_FOREST	1424	14.25	46.54
+move	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS	1416	51.25	68.19
+move	BORDER_WESTERN_PLAGUELANDS_TO_ALTERAC_MOUNTAINS	1422	43.7	85.24
+move	BORDER_WESTERN_PLAGUELANDS_TO_TIRISFAL_GLADES	1422	28.58	56.93
+move	BORDER_WESTERN_PLAGUELANDS_TO_EASTERN_PLAGUELANDS	1422	69.7	50.3
+move	BORDER_EASTERN_PLAGUELANDS_TO_WESTERN_PLAGUELANDS	1423	7.54	61.64
+move	BORDER_HILLSBRAD_FOOTHILLS_TO_HINTERLANDS	1424	89.41	22.79
+move	BORDER_WESTERN_PLAGUELANDS_TO_HINTERLANDS	1422	67.45	89.74
+region	1426	easternkingdoms.dun_morogh.north_gate	85	35	11
+node	PASS_DUN_MOROGH_NORTH_GATE_OUTER	pass	easternkingdoms.dun_morogh	1426	83.2	46	Southern approach to the North Gate Outpost tunnel
+node	PASS_DUN_MOROGH_NORTH_GATE_INNER	pass	easternkingdoms.dun_morogh.north_gate	1426	83.9	39.2	North Gate Outpost; Mountaineer Thalos anchor
+link	PASS_DUN_MOROGH_NORTH_GATE_OUTER	PASS_DUN_MOROGH_NORTH_GATE_INNER	walk	35
+node	BORDER_DUN_MOROGH_TO_LOCH_MODAN_NORTH_GATE	border	easternkingdoms.dun_morogh.north_gate	1426	87.15	27.56	North Gate east tunnel; projected from Loch Modan mouth
+node	BORDER_LOCH_MODAN_TO_DUN_MOROGH_NORTH_GATE	border	easternkingdoms.loch_modan	1432	18	16	North Gate Pass tunnel; second road to Dun Morogh
+link	BORDER_DUN_MOROGH_TO_LOCH_MODAN_NORTH_GATE	BORDER_LOCH_MODAN_TO_DUN_MOROGH_NORTH_GATE	walk	0
+drop	BORDER_LOCH_MODAN_TO_WETLANDS
+drop	BORDER_WETLANDS_TO_LOCH_MODAN
+region	1432	easternkingdoms.loch_modan.algaz	25.5	4	6.5
+region	1437	easternkingdoms.wetlands.algaz	56	84	14
+node	PASS_LOCH_MODAN_ALGAZ_OUTER	pass	easternkingdoms.loch_modan	1432	25.57	10.7	Algaz Station approach just south of the upper tunnel
+node	PASS_LOCH_MODAN_ALGAZ_INNER	pass	easternkingdoms.loch_modan.algaz	1432	25.57	10.39	Original upper tunnel southern mouth
+link	PASS_LOCH_MODAN_ALGAZ_OUTER	PASS_LOCH_MODAN_ALGAZ_INNER	walk	0
+node	BORDER_LOCH_MODAN_TO_WETLANDS_ALGAZ	border	easternkingdoms.loch_modan.algaz	1432	25.29	0.12	Zone transition at north end of upper Dun Algaz tunnel
+node	BORDER_WETLANDS_TO_LOCH_MODAN_ALGAZ	border	easternkingdoms.wetlands.algaz	1437	55.66	84.96	Same physical upper-tunnel boundary on Wetlands map
+link	BORDER_LOCH_MODAN_TO_WETLANDS_ALGAZ	BORDER_WETLANDS_TO_LOCH_MODAN_ALGAZ	walk	0
+node	PASS_WETLANDS_ALGAZ_INNER	pass	easternkingdoms.wetlands.algaz	1437	56	70.2	Lower Dun Algaz road approach at the foot of the pass
+node	PASS_WETLANDS_ALGAZ_OUTER	pass	easternkingdoms.wetlands	1437	56	69.8	Open Wetlands road north of the Dun Algaz tunnel chain
+link	PASS_WETLANDS_ALGAZ_INNER	PASS_WETLANDS_ALGAZ_OUTER	walk	0
+node	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS_DALARAN	border	easternkingdoms.hillsbrad_foothills	1424	28.02	20.89	Western Dalaran approach; projected from original city entrance anchor
+node	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS_DALARAN	border	easternkingdoms.alterac_mountains	1416	21.9	82.8	Existing Dalaran southern road entrance; approximate area boundary
+link	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS_DALARAN	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS_DALARAN	walk	0
+region	1416	easternkingdoms.alterac_mountains.ravenholdt	85	79	7.5
+node	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS_RAVENHOLDT	border	easternkingdoms.hillsbrad_foothills	1424	77.2	20.1	Ravenholdt mountain path near the cave and guard
+node	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS_RAVENHOLDT	border	easternkingdoms.alterac_mountains.ravenholdt	1416	78.11	81.9	Same Ravenholdt path point on the Alterac map
+link	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS_RAVENHOLDT	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS_RAVENHOLDT	walk	0
+region	1426	easternkingdoms.dun_morogh.ironforge_approach	53.4	35	8.2
+drop	ENTRANCE_C1426_534_350
+node	ENTRANCE_IRONFORGE_DUN_MOROGH_APPROACH	entrance	easternkingdoms.dun_morogh.ironforge_approach	1426	53.43	34.96	Original exterior Ironforge gate position, new approach area
+link	ENTRANCE_IRONFORGE_DUN_MOROGH_APPROACH	ENTRANCE_C1455_152_857	gate	0
+node	PASS_IRONFORGE_ROAD_OUTER	pass	easternkingdoms.dun_morogh	1426	48.5	41.9	Ironforge Guard road anchor on the southern approach
+node	PASS_IRONFORGE_ROAD_INNER	pass	easternkingdoms.dun_morogh.ironforge_approach	1426	48.7	41.7	Road into the Gates of Ironforge slope
+link	PASS_IRONFORGE_ROAD_OUTER	PASS_IRONFORGE_ROAD_INNER	walk	0
+region	1458	easternkingdoms.tirisfal_glades.sewers	20	30	27
+node	ENTRANCE_UNDERCITY_SEWERS_TIRISFAL	entrance	easternkingdoms.tirisfal_glades	1420	50.5	71.1	Western sewer mouth below the Scarlet Watchtower
+node	ENTRANCE_UNDERCITY_SEWERS_INNER	entrance	easternkingdoms.tirisfal_glades.sewers	1458	12.7	28.48	Same mouth on Undercity map; tunnel side
+link	ENTRANCE_UNDERCITY_SEWERS_TIRISFAL	ENTRANCE_UNDERCITY_SEWERS_INNER	gate	0
+node	PASS_UNDERCITY_SEWERS_TUNNEL	pass	easternkingdoms.tirisfal_glades.sewers	1458	46.5	35	Sewer passage approaching western city ring
+node	PASS_UNDERCITY_SEWERS_CITY	pass	easternkingdoms.tirisfal_glades	1458	47	35	City-ring side of the sewer passage
+link	PASS_UNDERCITY_SEWERS_TUNNEL	PASS_UNDERCITY_SEWERS_CITY	walk	0
+level	1420	1	10
+level	1421	10	20
+level	1424	20	30
+level	1416	30	40
+level	1417	30	40
+level	1425	40	50
+level	1422	51	58
+level	1423	53	60
+level	1437	20	30
+level	1426	1	10
+level	1432	10	20
+level	1458	1	63
+level	1455	1	63
+
+# --- Southern Eastern Kingdoms
+drop	BORDER_BURNING_STEPPES_TO_SEARING_GORGE
+drop	BORDER_SEARING_GORGE_TO_BURNING_STEPPES
+node	BORDER_BURNING_STEPPES_TO_BLACKROCK_MOUNTAIN	border	easternkingdoms.burning_steppes	1428	29.4	38.85	South ramp immediately outside the captured Blackrock door
+node	BORDER_BLACKROCK_MOUNTAIN_TO_BURNING_STEPPES	border	easternkingdoms.blackrock_mountain	1428	29.4	38.5	Captured southern Blackrock Mountain door
+node	BORDER_SEARING_GORGE_TO_BLACKROCK_MOUNTAIN	border	easternkingdoms.searing_gorge	1427	34.9	87	Captured northern Blackrock Mountain door on Searing Gorge
+node	BORDER_BLACKROCK_MOUNTAIN_TO_SEARING_GORGE	border	easternkingdoms.blackrock_mountain	1428	28.5	19.1	Captured northern Blackrock Mountain door on Burning Steppes
+link	BORDER_BURNING_STEPPES_TO_BLACKROCK_MOUNTAIN	BORDER_BLACKROCK_MOUNTAIN_TO_BURNING_STEPPES	walk	0
+link	BORDER_SEARING_GORGE_TO_BLACKROCK_MOUNTAIN	BORDER_BLACKROCK_MOUNTAIN_TO_SEARING_GORGE	walk	0
+region	1428	easternkingdoms.blackrock_mountain	28.95	28.8	9.9
+region	1427	easternkingdoms.blackrock_mountain	35.48	99.9	12.65
+drop	BORDER_REDRIDGE_MOUNTAINS_TO_RIVERGLADES
+node	BORDER_REDRIDGE_NORTH_ROAD_TO_RIVERGLADES	border	easternkingdoms.redridge_mountains.north_road	1433	52.3	7.6	Retained Forever crossing coordinate; northern road area
+link	BORDER_REDRIDGE_NORTH_ROAD_TO_RIVERGLADES	BORDER_RIVERGLADES_TO_REDRIDGE_MOUNTAINS	walk	0
+node	PASS_REDRIDGE_NORTH_ROAD_OUTER	pass	easternkingdoms.redridge_mountains	1433	34.8	26.8	South side of northern canyon road approach; approximate
+node	PASS_REDRIDGE_NORTH_ROAD_INNER	pass	easternkingdoms.redridge_mountains.north_road	1433	35.2	26.4	North side of northern canyon road approach; approximate
+link	PASS_REDRIDGE_NORTH_ROAD_OUTER	PASS_REDRIDGE_NORTH_ROAD_INNER	walk	0
+region	1433	easternkingdoms.redridge_mountains.north_road	48	9	22
+move	DOCK_BOOTYBAY	1434	26	73.2
+level	1429	1	11
+level	1453	1	63
+level	1436	9	26
+level	1433	14	27
+level	1431	9	63
+level	1434	30	51
+level	1430	55	60
+level	1435	34	62
+level	1419	42	63
+level	1428	46	60
+level	1427	43	52
+level	1418	35	55
+level	2548	36	44
+
+# --- Northern Kalimdor
+region	1438	kalimdor.teldrassil.ruttheran	56	93	7
+move	BORDER_ASHENVALE_TO_STONETALON_MOUNTAINS	1440	42.3	71.1
+move	BORDER_STONETALON_MOUNTAINS_TO_ASHENVALE	1442	78.14	42.84
+move	BORDER_DARKSHORE_TO_ASHENVALE	1439	43.61	95.09
+move	BORDER_FELWOOD_TO_ASHENVALE	1448	55.05	91.06
+move	BORDER_AZSHARA_TO_ASHENVALE	1447	9.32	73.66
+move	BORDER_THE_BARRENS_TO_ASHENVALE	1413	47.81	5.05
+move	BORDER_THE_BARRENS_TO_DUROTAR	1413	63.46	19.74
+move	BORDER_STONETALON_MOUNTAINS_TO_THE_BARRENS	1442	87.87	97.73
+node	BORDER_ASHENVALE_TO_DARKSHORE_TWILIGHT_VALE	border	kalimdor.ashenvale	1440	20.5	16.4	Western forest path toward Twilight Vale; approximate crossing anchor
+node	BORDER_DARKSHORE_TO_ASHENVALE_TWILIGHT_VALE	border	kalimdor.darkshore	1439	37.01	98.26	Twilight Vale; world-matched to the Ashenvale anchor
+link	BORDER_ASHENVALE_TO_DARKSHORE_TWILIGHT_VALE	BORDER_DARKSHORE_TO_ASHENVALE_TWILIGHT_VALE	walk	0
+node	BORDER_ASHENVALE_TO_DARKSHORE_TWILIGHT_SHORE	border	kalimdor.ashenvale	1440	9.5	10.7	Zoram Strand north to Twilight Shore; shoreline foot route
+node	BORDER_DARKSHORE_TO_ASHENVALE_TWILIGHT_SHORE	border	kalimdor.darkshore	1439	27.32	93.24	Twilight Shore; world-matched to the Ashenvale anchor
+link	BORDER_ASHENVALE_TO_DARKSHORE_TWILIGHT_SHORE	BORDER_DARKSHORE_TO_ASHENVALE_TWILIGHT_SHORE	walk	0
+node	BORDER_THE_BARRENS_TO_DUROTAR_ORGRIMMAR_WEST	border	kalimdor.the_barrens	1413	64	3	Northern bridge approach to Orgrimmar west gate; approximate road anchor
+node	BORDER_DUROTAR_TO_THE_BARRENS_ORGRIMMAR_WEST	border	kalimdor.durotar	1411	35.93	11.3	Northern Southfury approach; world-matched Barrens anchor
+link	BORDER_THE_BARRENS_TO_DUROTAR_ORGRIMMAR_WEST	BORDER_DUROTAR_TO_THE_BARRENS_ORGRIMMAR_WEST	walk	0
+region	1442	kalimdor.stonetalon_mountains.charred_vale	34	52	13.5
+region	1442	kalimdor.stonetalon_mountains.charred_vale	28	64	16
+region	1442	kalimdor.stonetalon_mountains.charred_vale	30	75	13
+drop	BORDER_STONETALON_MOUNTAINS_TO_DESOLACE
+node	BORDER_STONETALON_CHARRED_VALE_TO_DESOLACE	border	kalimdor.stonetalon_mountains.charred_vale	1442	29	80.9	Retained Stonetalon-Desolace crossing; relabeled to Charred Vale
+link	BORDER_STONETALON_CHARRED_VALE_TO_DESOLACE	BORDER_DESOLACE_TO_STONETALON_MOUNTAINS	walk	0
+node	PASS_STONETALON_CHARRED_VALE_N_OUTSIDE	pass	kalimdor.stonetalon_mountains	1442	43.2	41.8	Mirkfallon approach to Charred Vale at approximately 43,42
+node	PASS_STONETALON_CHARRED_VALE_N_INSIDE	pass	kalimdor.stonetalon_mountains.charred_vale	1442	43	42	Northern path into Charred Vale
+link	PASS_STONETALON_CHARRED_VALE_N_OUTSIDE	PASS_STONETALON_CHARRED_VALE_N_INSIDE	walk	0
+node	PASS_STONETALON_CHARRED_VALE_SUN_ROCK_OUTSIDE	pass	kalimdor.stonetalon_mountains	1442	44.2	64	Sun Rock Retreat shortcut approach; Horde guards may be hostile to Alliance
+node	PASS_STONETALON_CHARRED_VALE_SUN_ROCK_INSIDE	pass	kalimdor.stonetalon_mountains.charred_vale	1442	43.8	64	Western end of Sun Rock Retreat shortcut into Charred Vale
+link	PASS_STONETALON_CHARRED_VALE_SUN_ROCK_OUTSIDE	PASS_STONETALON_CHARRED_VALE_SUN_ROCK_INSIDE	walk	0
+region	1452	kalimdor.winterspring.darkwhisper_gorge	55	85	12.5
+node	PASS_WINTERSPRING_DARKWHISPER_N_OUTSIDE	pass	kalimdor.winterspring	1452	59	73	South road after the Frostwhisper bridge; north approach to Darkwhisper
+node	PASS_WINTERSPRING_DARKWHISPER_N_INSIDE	pass	kalimdor.winterspring.darkwhisper_gorge	1452	59	73.2	Darkwhisper Gorge entrance; high-level elite demons
+link	PASS_WINTERSPRING_DARKWHISPER_N_OUTSIDE	PASS_WINTERSPRING_DARKWHISPER_N_INSIDE	walk	0
+drop	BORDER_WINTERSPRING_TO_MOUNT_HYJAL
+node	BORDER_WINTERSPRING_DARKWHISPER_TO_MOUNT_HYJAL	border	kalimdor.winterspring.darkwhisper_gorge	1452	51	91.3	Retained Forever Hyjal approach; relabeled to Darkwhisper Gorge
+move	BORDER_MOUNT_HYJAL_TO_WINTERSPRING	2482	86.81	90.4
+link	BORDER_WINTERSPRING_DARKWHISPER_TO_MOUNT_HYJAL	BORDER_MOUNT_HYJAL_TO_WINTERSPRING	walk	0
+level	1438	1	13
+level	1457	1	63
+level	1439	9	31
+level	1440	17	63
+level	1447	45	63
+level	1448	47	59
+level	1452	52	62
+level	1450	1	62
+level	2482	55	63
+level	1442	14	30
+level	1411	1	14
+level	1454	1	63
+
+# --- Southern Kalimdor
+drop	BORDER_THE_BARRENS_TO_THOUSAND_NEEDLES
+drop	BORDER_THOUSAND_NEEDLES_TO_THE_BARRENS
+node	LIFT_GREAT_LIFT_BARRENS_TOP	border	kalimdor.the_barrens	1413	44.00	92.90	Great Lift upper landing; object 11898/11899
+node	LIFT_GREAT_LIFT_NEEDLES_BOTTOM	border	kalimdor.thousand_needles	1441	31.87	23.77	Great Lift lower landing; projected from upper landing
+link	LIFT_GREAT_LIFT_BARRENS_TOP	LIFT_GREAT_LIFT_NEEDLES_BOTTOM	lift	25
+move	DOCK_RATCHET	1413	63.70	38.60
+move	BORDER_THE_BARRENS_TO_MULGORE	1413	41.20	58.60
+move	BORDER_MULGORE_TO_THE_BARRENS	1412	65.50	63.71
+move	BORDER_DUSTWALLOW_MARSH_TO_THE_BARRENS	1445	30.00	47.10
+move	BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH	1413	51.05	78.36
+move	BORDER_FERALAS_TO_DESOLACE	1444	44.90	2.50
+move	BORDER_DESOLACE_TO_FERALAS	1443	42.53	97.89
+move	BORDER_FERALAS_TO_THOUSAND_NEEDLES	1444	88.71	43.08
+move	BORDER_TANARIS_TO_THOUSAND_NEEDLES	1446	50.94	19.60
+move	BORDER_UNGORO_CRATER_TO_SILITHUS	1449	22.37	15.20
+region	1444	kalimdor.feralas.sardor_isle	29.00	49.00	12.50
+move	DOCK_FORGOTTENCOAST	1444	43.30	42.80
+region	1445	kalimdor.dustwallow_marsh.theramore_isle	67.00	51.00	9.40
+node	PASS_THERAMORE_BRIDGE_MAINLAND	pass	kalimdor.dustwallow_marsh	1445	64.00	42.09	Northern bridge approach outside island circle
+node	PASS_THERAMORE_BRIDGE_ISLAND	pass	kalimdor.dustwallow_marsh.theramore_isle	1445	64.00	42.10	Northern bridge approach inside island circle
+link	PASS_THERAMORE_BRIDGE_MAINLAND	PASS_THERAMORE_BRIDGE_ISLAND	walk	0
+region	1443	kalimdor.desolace.nijels_point	66.00	9.00	7.00
+node	PASS_NIJELS_POINT_RAMP_LOW	pass	kalimdor.desolace	1443	67.00	15.94	Ramp foot; Nijel's Point guard anchor near 67,16
+node	PASS_NIJELS_POINT_RAMP_HIGH	pass	kalimdor.desolace.nijels_point	1443	67.00	15.92	Ramp boundary inside cliff settlement circle
+link	PASS_NIJELS_POINT_RAMP_LOW	PASS_NIJELS_POINT_RAMP_HIGH	walk	0
+region	1441	kalimdor.thousand_needles.freewind_post	46.00	51.00	2.80
+node	LIFT_FREEWIND_POST_BOTTOM	pass	kalimdor.thousand_needles	1441	46.70	48.28	Ground approach to Freewind elevator; approximate footprint
+node	LIFT_FREEWIND_POST_TOP	pass	kalimdor.thousand_needles.freewind_post	1441	46.70	48.30	Upper walkway near Mesa Elevator object 11899
+link	LIFT_FREEWIND_POST_BOTTOM	LIFT_FREEWIND_POST_TOP	lift	25
+level	1413	1	60
+level	1412	1	63
+level	1456	1	63
+level	1443	1	62
+level	1444	1	63
+level	1441	1	60
+level	1445	1	63
+level	1446	1	63
+level	1449	1	61
+level	1451	1	63
+area	DOCK_FEATHERMOON	kalimdor.feralas.sardor_isle
+move	DOCK_FEATHERMOON	1444	31	39.8
+area	INN_7736	kalimdor.feralas.sardor_isle
+area	DOCK_THERAMORE	kalimdor.dustwallow_marsh.theramore_isle
+move	DOCK_THERAMORE	1445	71.5	56.35
+area	INN_6272	kalimdor.dustwallow_marsh.theramore_isle
+area	INN_11103	kalimdor.desolace.nijels_point
+area	INN_11116	kalimdor.thousand_needles.freewind_post
+
+# --- Cities and Zephras Isle levels
+level	1453	22	60
+level	1454	55	60
+level	1455	55	55
+level	1456	55	60
+level	1457	55	60
+level	1458	55	60
+level	2521	1	13
+

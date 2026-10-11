@@ -44,6 +44,15 @@ local function Sharing()
     return ns.Get("routeSharing") and true or false
 end
 
+-- Real routes shares the paths players walk and when boats leave (Trails.lua)
+local function TravelSharing()
+    return (ns.Get("realRoutes") and ns.Get("travelShare")) and true or false
+end
+
+local function WantChannel()
+    return Sharing() or TravelSharing()
+end
+
 -- ---------------------------------------------------------------------------
 -- Sending
 -- ---------------------------------------------------------------------------
@@ -197,6 +206,22 @@ end
 
 local helloAnswered = 0
 local handlers = {}
+local listeners = {} -- other parts of the addon: tag -> fn(fields, sender)
+
+-- Lets another part of the addon (Trails.lua) send and hear its own messages
+-- on the same channel. Its messages wait behind the routes' ones and are
+-- dropped when the queue is long: they're repeated later anyway.
+function Net.Listen(tag, fn)
+    listeners[tag] = fn
+end
+
+function Net.Share(msg)
+    if not TravelSharing() or #queue > 6 then
+        return false
+    end
+    Broadcast(msg)
+    return true
+end
 
 handlers.A = function(f, sender)
     local R = Routes()
@@ -316,7 +341,13 @@ function Net.OnMessage(prefix, msg, chat, sender)
         return
     end
     local f = Split(msg)
-    local fn = handlers[f[1]]
+    -- each kind of message only while its sharing is on
+    local fn
+    if handlers[f[1]] then
+        fn = Sharing() and handlers[f[1]]
+    else
+        fn = TravelSharing() and listeners[f[1]]
+    end
     if not fn then
         return
     end
@@ -365,7 +396,7 @@ end
 
 local joinedOnce = false
 local function Join()
-    if not Sharing() then
+    if not WantChannel() then
         return
     end
     if not ChannelNumber() and JoinTemporaryChannel then
@@ -374,7 +405,7 @@ local function Join()
     C_Timer.After(2, function()
         if ChannelNumber() then
             HideChannel()
-            if not joinedOnce then
+            if not joinedOnce and Sharing() then
                 joinedOnce = true
                 Broadcast("H")
                 AnnounceMine()
@@ -509,8 +540,8 @@ ns.On("ROUTE_SAVED", function(id)
 end)
 
 ns.On("SETTING_CHANGED", function(key)
-    if key == "routeSharing" then
-        if Sharing() then
+    if key == "routeSharing" or key == "realRoutes" or key == "travelShare" then
+        if WantChannel() then
             Join()
         else
             Leave()
