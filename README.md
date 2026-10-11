@@ -9,7 +9,6 @@
   <img src="https://img.shields.io/badge/interface-16001-2d7dd2?style=flat-square" alt="Interface 16001">
   <img src="https://img.shields.io/badge/languages-9-1eff00?style=flat-square" alt="9 languages">
   <img src="https://img.shields.io/badge/license-MIT-3da639?style=flat-square" alt="MIT license">
-  <img src="https://img.shields.io/badge/new%20in%201.1-treasure%20hunt%20(beta)-ff8000?style=flat-square" alt="New in 1.1: treasure hunt (beta)">
   <img src="https://img.shields.io/badge/TomTom-compatible-0070dd?style=flat-square" alt="TomTom-compatible">
   <a href="https://github.com/sponsors/sanjaygbhat"><img src="https://img.shields.io/badge/sponsor-%E2%9D%A4-db61a2?style=flat-square&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub"></a>
 </p>
@@ -21,14 +20,16 @@
   <a href="#-install">Install</a> ·
   <a href="#-ways-to-set-a-waypoint">Set a waypoint</a> ·
   <a href="#-the-arrow-talks-in-colours">Colours</a> ·
-  <a href="#%EF%B8%8F-options">Options</a> ·
+  <a href="#%EF%B8%8F-settings">Settings</a> ·
   <a href="#-chat-commands">Commands</a> ·
   <a href="#-faq">FAQ</a>
 </p>
 
-**Waypoint Tracker** is a free, open-source addon for **World of Warcraft: Forever** (WoW Forever, the new classic-style World of Warcraft, sometimes called Classic+). A 3D arrow over your character points to your waypoint, shows the distance and time to arrive, turns from gold to green as you get close, and clears itself when you arrive. Set waypoints from coordinates (`/way 42 65`), the world map, or by name: the built-in **Find** window searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Share any spot in chat as a clickable map pin. New in 1.1, **Treasure hunt** (beta) pings you when a chest or rare appears near you.
+**Waypoint Tracker** is a free, open-source addon for **World of Warcraft: Forever** (WoW Forever, the new classic-style World of Warcraft, sometimes called Classic+). A 3D arrow over your character points to your waypoint, shows the distance and time to arrive, turns from gold to green as you get close, and clears itself when you arrive. Set waypoints from coordinates (`/way 42 65`), the world map, or by name: the built-in **Find** tab searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Share any spot in chat as a clickable map pin.
 
 It's a TomTom-style arrow and a quest and NPC finder in one addon, with nothing to configure.
+
+Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find** and **Routes** tabs. Editors, imports and help stay inside the tabs; **Back** returns to the previous page. Feedback appears below the title, above the tab content. Right-click the minimap button for the quick menu; Shift + left-click adds a waypoint where you stand. The Addon Compartment also opens the window or quick menu.
 
 | | |
 |---|---|
@@ -69,13 +70,13 @@ It's a TomTom-style arrow and a quest and NPC finder in one addon, with nothing 
 
 ## ✨ Why players like it
 
-- **Set a waypoint your way:** a small window, `/way`, a quest or place name, the Find window, or Ctrl + Right-click on the map.
+- **Set a waypoint your way:** a small window, `/way`, a quest or place name, the Find tab, or Ctrl + Right-click on the map.
 - **An arrow that tells you how close you are:** gold far away, green as you get there. It never catches mouse clicks, so right-click to attack always works.
-- **Simple by default:** a few basic settings. Everything else is behind **Show more options**.
-- **Typing is forgiving:** pick zones from a list that filters as you type. Typos, accents and capital letters don't matter, and pasted coordinates like `45.2 67.8` or `45,2 67,8` split themselves into X and Y.
-- **Find built in:** quests, NPCs, enemies, objects, items and places, including WoW Forever's new content, plus one-click "nearest mailbox / innkeeper / repair" buttons.
+- **One window:** Waypoints, Find and Routes tabs, with settings in Blizzard Settings and placement in Edit Mode.
+- **Typing is forgiving:** pick zones from a list that filters as you type. Typos, accents and capital letters don't matter, and pasted coordinates like `45.2 67.8` or `45,2 67,8` work in the Add box.
+- **Find built in:** quests, NPCs, enemies, objects, items and places, including WoW Forever's new content, plus a Nearest menu for services.
 - **Share in one click:** send any spot, or where you are, to chat with a clickable map pin, without setting a waypoint first.
-- **New: treasure hunt (beta):** a ping when a chest or rare appears near you, and the arrow points at it.
+- **Treasure hunt (beta):** a ping when a chest or rare appears near you, and the arrow points at it.
 - **Works with your other addons:** quest guides and anything with a "Send to TomTom" button put their waypoints on this arrow.
 - **Built for WoW Forever:** interface 16001, the game's Edit Mode, and nine languages.
 
@@ -88,16 +89,14 @@ It's a TomTom-style arrow and a quest and NPC finder in one addon, with nothing 
   <br><sub>The arrow on the way to a waypoint in the Barrens, with its name, distance and time to arrive.</sub>
 </p>
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/screenshots/02-map.jpg" alt="The world map of Silverpine Forest with a Waypoint Tracker pin, and the gold arrow pointing left to Lady Sylvanas Windrunner, 777 yds away"></td>
-    <td width="50%"><img src="docs/screenshots/03-window.jpg" alt="The Waypoint Tracker window with zone, X and Y boxes, Find buttons, a list of waypoints with Share buttons, and the More Options panel"></td>
-  </tr>
-  <tr>
-    <td><sub>Your waypoints on the world map, while the arrow points the way.</sub></td>
-    <td><sub>The window: set a waypoint, find anything, share, and every option one click away.</sub></td>
-  </tr>
-</table>
+TODO: refresh the screenshots for this release:
+
+- Waypoints tab with the Add row and feedback below the title.
+- Find tab with the kind dropdown and Nearest menu.
+- Routes tab and an editor page with Back.
+- Blizzard Settings and Edit Mode with all four HUD elements.
+
+The existing map screenshot is in [docs/screenshots](docs/screenshots/README.md). The old window capture needs replacing.
 
 ---
 
@@ -108,7 +107,7 @@ It's a TomTom-style arrow and a quest and NPC finder in one addon, with nothing 
   <br><sub>Treasure hunt, illustrated with the addon's own arrow.</sub>
 </p>
 
-New in 1.1 and still in beta: tell us what it catches and what it misses in [Issues](../../issues). Tick **Treasure hunt** in the window (or type `/wp treasure`, or set a key binding) and Waypoint Tracker watches for loot around you:
+New in 1.1 and still in beta: tell us what it catches and what it misses in [Issues](../../issues). Turn on **Treasure hunt (beta)** in Settings or the quick menu (or type `/wp treasure`, or set a key binding) and Waypoint Tracker watches for loot around you:
 
 - **Chests and treasure** the game marks on your minimap, and a chest right in front of you.
 - **Rare spawns:** rare and rare elite enemies on your minimap, nameplates or target, placed at their known spawn. Ones someone else is already fighting are left out.
@@ -116,7 +115,7 @@ New in 1.1 and still in beta: tell us what it catches and what it misses in [Iss
 
 The moment one appears you hear a ping and see it on screen, and the taskbar icon blinks if you're in another window. The arrow points at it right away, follows a rare that wanders, and lets it go once it's taken, killed or gone, then goes back to your own waypoint.
 
-Turn on **Lead me to known chest spots** and, while nothing has appeared, the arrow walks you from one known chest spawn to the next. Each part has its own switch under **Show more options → Treasure Hunt**.
+Turn on **Lead me to known chest spots** and, while nothing has appeared, the arrow walks you from one known chest spawn to the next. Each part has its own switch under **Settings → Treasure Hunt (beta)**.
 
 ---
 
@@ -129,7 +128,7 @@ Turn on **Lead me to known chest spots** and, while nothing has appeared, the ar
 **By hand:**
 
 1. Download the latest `WaypointTracker-vX.Y.Z.zip` from [Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest).
-2. Unzip it into your AddOns folder. You should get **two** folders: `...\Interface\AddOns\WaypointTracker\` and `...\Interface\AddOns\WaypointTracker_Data\` (the database for the Find window).
+2. Unzip it into your AddOns folder. You should get **two** folders: `...\Interface\AddOns\WaypointTracker\` and `...\Interface\AddOns\WaypointTracker_Data\` (the database for the Find tab).
    - WoW Forever beta: `World of Warcraft\_classic_beta_\Interface\AddOns\`
 3. Restart the game, or type `/reload` if it's already running.
 
@@ -140,38 +139,33 @@ Turn on **Lead me to known chest spots** and, while nothing has appeared, the ar
 
 ## 🧭 Ways to set a waypoint
 
-| | How | Good for |
-|---|---|---|
-| 🪟 **The window** | Type `/wp` (or click the minimap button). Search a zone, type X and Y, press **Set Waypoint**. | Copying coordinates from a website |
-| 📖 **Find** | Press **Quests**, **NPCs**, **Enemies** or **Objects** in the window (or `/wp find hogger`), search, and double-click. Or click **Nearest: Mailbox / Innkeeper / Flight Master / Repair / Bank / Auction House**. | Quests, mobs to farm, herbs and chests, trainers, vendors, anything with a name |
-| 🔎 **Search a place** | In the window's **Zone** box, type a quest from your log, a flight master, a dungeon or a rare, then click it. The waypoint is set right away. | Going somewhere without knowing the coordinates |
-| 💬 **Chat** | `/way 42 65` for your current zone, `/way Westfall 56.3 47.1 Sentinel Hill`, or a name like `/way hogger` (goes straight there when the name is exact, otherwise opens Find) | Quick one-offs, macros, sharing with friends |
-| 🗺️ **The map** | Hold **Ctrl** and **right-click** anywhere on the world map | Spotting something on the map |
+| How | Good for |
+|---|---|
+| **Waypoints tab:** type a zone, place or coordinates like `42 65` in the Add box; add an optional name and press **Set**. Pick a zone first for coordinates in another zone. | Coordinates from a guide or a place name |
+| **Find tab:** search, filter by kind and double-click a result or press **Take Me There**. The **Nearest** menu finds services. | Quests, NPCs, enemies, objects and items |
+| **Chat:** `/way 42 65`, `/way Westfall 56.3 47.1 Sentinel Hill`, or `/way hogger`. | Quick waypoints and macros |
+| **World map:** hold Ctrl and right-click a spot. Click a waypoint pin to point the arrow there; Alt-click removes it. | A destination you can see on the map |
+| **Here:** press **Here** in Waypoints, Shift + left-click the minimap button, or use **Add waypoint here** in the quick menu. | Marking where you stand |
 
-**Handy extras**
+Click a waypoint row to point the arrow there. Right-click it to share or remove it. To share typed coordinates without setting a waypoint, right-click **Set**; `/wp share` shares where you stand. Pick a chat channel and press Enter to send the clickable map pin. The **[Waypoint Tracker]** prefix can be turned off in **Settings → Find & Sharing**.
 
-- **Use My Position** (next to X and Y) fills in where you're standing. Great for marking a rare spawn.
-- Paste `45.2 67.8` into the **X** box and it splits into X and Y by itself.
-- Click a waypoint in the list to point the arrow at it.
-- **Share without setting a waypoint:** type a zone and X/Y and press **Share** under the boxes. Leave X and Y empty and it shares **where you are**. `/wp share` (or a key binding) does the same from chat.
-- **Share** on any waypoint in the list works too. Both open a small menu (Party, Raid, Guild, Say, whisper your target). Your chat opens with the message ready, so just press Enter. It starts with **[Waypoint Tracker]** (you can turn that off in **Show more options**) and includes the game's own clickable map pin, so friends without this addon can use it too.
-- The arrow never gets in the way of your mouse. Move it in the game's **Edit Mode** (Esc > Edit Mode, with a spot per layout), or with **Move Arrow** in the window. **Reset** puts it back over your character, at the default size and visibility.
-- The name, distance and time under the arrow have their own size and visibility. Tick **Move the text separately** to put the text anywhere on screen, apart from the arrow.
-- **Died?** The arrow points to your corpse, and goes back to your waypoint once you're alive again.
-- A waypoint set where you stand (like **Use My Position**) waits until you've walked away before it can be reached, so it isn't removed the moment you make it.
-- Clicked a map pin link in chat, or placed the game's own pin on the map? The arrow picks it up automatically.
+Move the arrow, its text, the coordinates box and the route recorder in **Esc → Edit Mode**. Each layout keeps its own positions. **Reset to Default** restores the selected element. Enable **Move the text separately** to place the text independently. The arrow ignores mouse clicks during play.
+
+When you die, the arrow can point to your corpse and return to your waypoint when you're alive. A waypoint set where you stand waits until you've walked away before it counts as reached. The arrow can also follow the game's map pins and pin links clicked in chat.
 
 ---
 
 ## 🔍 Find any quest, NPC, enemy or object
 
-In the window, next to **Find:**, press **Quests**, **NPCs**, **Enemies** or **Objects** (or type `/wp find`, or set a key binding):
+Open the **Find** tab (or type `/wp find`, or set a key binding):
 
 - **Search** thousands of NPCs, quests, objects and quest items as you type. Small typos are fine.
-- **Tabs** narrow it down: All, Quests, NPCs, Enemies, Objects, Items. **NPCs** are the friendly ones (vendors, trainers, quest givers); **Enemies** are the mobs you fight, with level and elite/rare/boss; **Objects** are herbs, ore, chests and quest objects. **All** also finds flight paths and towns. **Only my faction** and **Only this zone** filter the list.
-- **Click** a result to see where it is. **Double-click** it (or press **Take me there**) and the arrow points to the **closest** spawn.
-- **Quests** show whether you have them, who gives them and who you hand them in to, with buttons for **Go to quest giver**, **Go to objective** and **Go to hand in**. For quest items it knows who drops or sells them.
-- **Nearest:** one click finds the closest **Mailbox**, **Innkeeper**, **Flight Master**, **Repair**, **Bank** or **Auction House** for your faction.
+- The **kind dropdown** narrows it down: All, Quests, NPCs, Enemies, Objects, Items. **NPCs** are the friendly ones (vendors, trainers, quest givers); **Enemies** are the mobs you fight, with level and elite/rare/boss; **Objects** are herbs, ore, chests and quest objects. **All** also finds flight paths and towns. **Only my faction** and **Only this zone** filter the list.
+- **Click** a result to see where it is. **Double-click** it (or press **Take Me There**) and the arrow points to the **closest** spawn.
+- **Quests** show whether you have them, who gives them and who you hand them in to, with buttons for **Go to Quest Giver**, **Go to Objective** and **Go to Hand In**. For quest items it knows who drops or sells them.
+- The **Nearest** menu finds the closest **Mailbox**, **Innkeeper**, **Flight Master**, **Repair**, **Bank** or **Auction House** for your faction.
+
+Find shows its double-click tip once per session below the title. The footer shows quest-name scan progress only while that scan runs.
 
 The database is a separate folder, `WaypointTracker_Data`, and only loads the first time you open Find, so it costs nothing while you play.
 
@@ -185,23 +179,23 @@ WoW Forever adds new zones (Mount Hyjal, Riverglades, Zephras Isle, Shen'dralas.
 | 2️⃣ | **Other players' discoveries** | Shared by players (see below) and shipped with each update. |
 | 3️⃣ | **The shipped database** | Quest givers and where they stand, NPCs, enemies, objects, flight masters and what drops or sells what, from a curated WoW Forever database, with Season of Discovery data for the quests WoW Forever kept, on top of the classic world. Plus every item, flight path, town and quest map marker in the WoW Forever game files, in all nine languages. The addon learns the names of Forever's new quests from the game a few at a time while you play, and after about ten minutes they're all searchable in your language. WoW Forever reshaped four maps (Stormwind with its harbour, Mulgore, Redridge Mountains and the Eastern Plaguelands), and spots there are placed on Forever's maps. |
 
-What you and other players found that the database didn't have is marked in blue in the details pane ("Discovered by you", "Shared by other players"). Search an NPC's title too: **blacksmith** finds the blacksmiths you've seen. Learning runs once a second outside combat and takes a handful of quick checks. Your discoveries keep only what's new or different from the database, so they stay small, and they stay on your computer: nothing is ever sent anywhere unless you choose to share it. You can turn learning off in **Show more options**.
+What you and other players found that the database didn't have is marked in blue in the details pane ("Discovered by you", "Shared by other players"). Search an NPC's title too: **blacksmith** finds the blacksmiths you've seen. Learning runs once a second outside combat and takes a handful of quick checks. Your discoveries keep only what's new or different from the database, so they stay small, and they stay on your computer: nothing is ever sent anywhere unless you choose to share it. You can turn learning off in **Settings → Find & Sharing**.
 
 ### ✏️ Correct a spot
 
-Found an NPC or object somewhere other than where Find says? Select it in Find and press **Wrong spot? Correct it**. Stand where it really is and press **Use My Position** (or type its coordinates), then **Save correction**. Find uses your spot right away. **It's not there** removes a spot that's wrong, and **Remove my correction** undoes it. Something with no spot at all shows **Add where it is** instead. Corrections are saved on your computer and included when you share your discoveries.
+Found an NPC or object somewhere other than where Find says? Select it in Find and press **Wrong Spot? Correct It**. Stand where it really is and press **Use My Position** (or type its coordinates), then **Save Correction**. Find uses your spot right away. **It's Not There** removes a spot that's wrong, and **Remove My Correction** undoes it. Something with no spot at all shows **Add Where It Is** instead. Corrections are saved on your computer and included when you share your discoveries.
 
 ### 🤝 Share what you find
 
 Found something new? Your discoveries make Find better for everyone:
 
-1. Open **Find** and press **Share discoveries** at the bottom. The text is already selected, so press **Ctrl+C**. It holds only what the database doesn't have yet, plus your corrections, so it stays short.
+1. Open **Find** and choose **Share discoveries** from the **Discoveries** menu. The text is already selected, so press **Ctrl+C**. It holds only what the database doesn't have yet, plus your corrections, so it stays short.
 2. [Open a "Share discoveries" issue](../../issues/new?template=discoveries.yml) and paste it with **Ctrl+V**. Add a note if you like.
 3. What adds to the database goes into a coming update. The newest sightings always win.
 
 Played a lot? Attach your saved file to the issue instead: `WTF/Account/<your account>/SavedVariables/WaypointTracker.lua` in your WoW Forever folder (close the game first). It holds everything the addon wrote down, plus your settings.
 
-Friends can also swap discoveries directly: one presses **Share discoveries**, the other presses **Import** and pastes. The shared text only has names and places, nothing about your character or account.
+Friends can also swap discoveries directly: one presses **Share discoveries**, the other chooses **Import discoveries** and pastes. The shared text only has names and places, nothing about your character or account.
 
 ---
 
@@ -215,73 +209,36 @@ The arrow is a solid 3D block arrow. It sits just below the middle of your scree
 
 The colour is based on how far you've come since you set the waypoint, so a short trip and a cross-zone ride both go from gold to green.
 
-Would you rather it showed which way you're facing (green when you're heading straight at it), or stayed one colour you pick yourself? Open **Show more options → Colour**.
+Would you rather it showed which way you're facing (green when you're heading straight at it), or stayed one colour you pick yourself? Open **Settings → Arrow → Colour**.
 
 ---
 
-## ⚙️ Options
+## ⚙️ Settings
 
-The window shows only what most players touch:
+Press **Settings** in the window, use `/wp settings`, or open **Settings → AddOns → Waypoint Tracker**. The root has short action names; descriptions and the addon version are in tooltips.
 
-| Basic setting | Default |
+| Settings page | Controls |
 |---|---|
-| Show the arrow | On |
-| Move Arrow / Reset (buttons) | Over your character. **Reset** also brings back the default size and visibility. |
-| Arrow size | 100% |
-| Arrow visibility (transparency) | 80% |
-| Treasure hunt | Off |
+| Waypoint Tracker (root) | Open Waypoint Tracker, Open Edit Mode, Key Bindings, Reset All Settings; show the arrow, always point to the closest waypoint, corpse waypoint, remember waypoints, minimap button, chat messages, metres, other addons' waypoints, also show the game's own map pin |
+| Arrow — Arrow Display | Arrow size (50–200%), visibility (20–100%), colour style and colour picker, fade when heading the right way, hide during combat or on flight paths |
+| Arrow — Arrow Text | Text size and visibility, name, distance, time to arrive, move the text separately |
+| Arrow — When You Arrive | Arrival distance (3–50 yards), remove the waypoint, play a sound, point to the next closest waypoint |
+| Maps — World map | Pins, coordinates, Ctrl + right-click to add, follow the game's map pins, point to the tracked quest |
+| Maps — Minimap | Pins and keeping the arrow's waypoint on the minimap edge |
+| Maps — Coordinates box | Show a box with your coordinates; move it in Edit Mode |
+| Routes | When starting a route: ask, replace existing waypoints or add to them; share routes and votes; show low-rated routes |
+| Routes — Real routes (beta) | Enable Real routes; flight paths; boats, zeppelins and the tram; hearthstone and teleports; map route line; learn walked paths; share paths |
+| Treasure Hunt (beta) | Enable treasure hunt; chests, rares and other markers; known chest spots; pings; point the arrow at finds |
+| Find & Sharing — Find | Learn NPCs, quests and objects as you play; only your faction; only this zone |
+| Find & Sharing — Sharing | Start shared spots with [Waypoint Tracker] |
 
-Tick **Show more options** and a second panel opens beside the window:
+**Reset All Settings** asks before restoring defaults and keeps your waypoints and routes. World-map coordinates use the game's own coordinates panel and remember Blizzard's coordinate settings. **Key Bindings** opens the game's binding page. Settings and Edit Mode open outside combat.
 
-<details>
-<summary><b>Everything in "More Options"</b> (click to open)</summary>
+### Routes
 
-| Section | Option | Default |
-|---|---|---|
-| Arrow | Colour: gold far away / green when facing it / one colour (with colour picker) | Gold far away |
-| | Fade when you're heading the right way | On |
-| | Hide during combat | Off |
-| | Hide on flight paths | Off |
-| Arrow Text | Text size | 100% |
-| | Text visibility | 90% |
-| | Show the waypoint name | On |
-| | Show the distance | On |
-| | Show time to arrive | Off |
-| | Move the text separately (off: it stays under the arrow and moves with it) | Off |
-| When you arrive | Arrival distance (3 to 50 yards) | 10 yards |
-| | Remove the waypoint | On |
-| | Play a sound | On |
-| | Then point to the next closest waypoint | On |
-| Maps | Show pins on the world map | On |
-| | Show pins on the minimap | On |
-| | Keep the arrow's waypoint on the minimap edge | On |
-| | Show coordinates on the world map | On |
-| | Ctrl + Right-click the world map to add a waypoint | On |
-| | Show a box with my coordinates | Off |
-| | Follow the game's map pins (and map pin links from chat) | On |
-| Treasure Hunt | Treasure hunt | Off |
-| | Chests and treasure | On |
-| | Rare spawns | On |
-| | Events and other markers | On |
-| | Lead me to known chest spots | Off |
-| | Ping me when something appears | On |
-| | Point the arrow at it right away | On |
-| General | Point to the quest I'm tracking | Off |
-| | Point to my corpse when I die | On |
-| | Always point to the closest waypoint | Off |
-| | Remember waypoints after logging out (per character) | On |
-| | Minimap button | On |
-| | Chat messages | On |
-| | Start shared spots with [Waypoint Tracker] | On |
-| | Use metres instead of yards | Off |
-| | Let other addons set waypoints (quest guides and similar) | On |
-| | Also show the game's own map pin (adds a marker floating in the world) | Off |
+Use the **Routes** tab to follow, create, record, import or share a list of stops. Editing, copying and importing use pages inside the tab. The recorder's **Add Stop Here**, **Finish** and **Cancel** buttons stay on screen while you record.
 
-Every option has a tooltip in plain words. **Reset All Settings** puts everything back and keeps your waypoints.
-
-</details>
-
-You can also find the addon under **Options → AddOns → Waypoint Tracker**, in the minimap's addon list, and in **Key Bindings → AddOns** (open the window, open Find, add a waypoint where you stand, share your location, remove the current one, point to the closest one, show or hide the arrow, turn treasure hunt on or off).
+**Real routes (beta)** is new in this release. The arrow guides you through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone or teleports when quicker. Turn it on from the Routes tab notice, the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
 
 ---
 
@@ -289,22 +246,28 @@ You can also find the addon under **Options → AddOns → Waypoint Tracker**, i
 
 | Command | What it does |
 |---|---|
-| `/wp` | Open or close the window |
-| `/wp find [name]` | Open the Find window (and search) |
-| `/way hogger` | No coordinates? If exactly one thing has that name, the arrow goes there. Otherwise Find opens with that search |
-| `/way 42 65` | Waypoint in your current zone |
-| `/way Elwynn Forest 42 65 Goldshire` | Waypoint in a zone, with a name |
-| `/way #37 42 65` | Waypoint by map ID (for guide writers) |
-| `/wp here [name]` or `/wayb [name]` | Waypoint where you're standing |
-| `/wp share` | Put where you are in the chat box, ready to send (no waypoint needed) |
-| `/wp share Westfall 56 47 [name]` | Put any spot in the chat box without setting a waypoint |
-| `/wp clear` | Remove the arrow's waypoint (`/wp clear all` removes all of them) |
-| `/wp list` | List your waypoints with distances |
-| `/wp closest` or `/cway` | Point to the closest waypoint |
+| `/wp` | Open or close the window on its last tab |
+| `/wp find [text]` · `/wp search [text]` | Open the Find tab and optionally search |
+| `/wp routes` · `/wp route` · `/wp lists` | Open the Routes tab; close the window if already on Routes |
+| `/wp routes next` · `/wp routes skip` | Skip the current route stop |
+| `/wp routes record` · `/wp routes new` · `/wp routes create` | Start recording, or finish recording and open the editor |
+| `/wp routes add` · `/wp routes stop` | Add a recording stop here, or stop following a route |
+| `/wp routes test` · `/wp routes fast` · `/wp routes status` | Test route sharing, toggle the shorter feedback delay, or show sharing status |
+| `/wp settings` · `/wp options` · `/wp config` | Open Blizzard Settings for Waypoint Tracker |
+| `/wp editmode` | Enter the game's Edit Mode |
+| `/way [zone] x y [name]` | Set a waypoint; leave the zone out to use your current zone |
+| `/way hogger` | Go to an exact name match, or open Find with that search |
+| `/wp here [name]` · `/wayb [name]` | Add a waypoint where you stand |
+| `/wp share [zone x y] [name]` | Prepare a map pin in chat; without coordinates, share where you stand |
+| `/wp clear` · `/wp reset` · `/wp remove` | Remove the arrow's waypoint; add `all` to remove every waypoint |
+| `/wp list` | List waypoints and distances in chat |
 | `/wp arrow` | Show or hide the arrow |
-| `/wp treasure` | Turn treasure hunt on or off |
-| `/wp treasure status` | What treasure hunt sees right now and what it found recently |
-| `/wp help` | Show this list in game |
+| `/wp closest` · `/cway` | Point to the closest waypoint |
+| `/wp treasure [status]` · `/wp hunt` | Toggle treasure hunt (beta), or show what it sees with `status` |
+| `/wp travel [on\|off\|steps\|status]` · `/wp realroutes` · `/wp rr` | Toggle Real routes (beta), set it on/off, list travel steps or show status |
+| `/wp help` · `/wp ?` · `/way` | Show the command list |
+
+`/waypoint` and `/waypointtracker` are aliases for `/wp`. Coordinates or a name also work directly after `/wp`.
 
 Zone names are the ones your game client shows, so they work in every language. Part of a name is enough (`/way west 56 47`), and so is typing it without spaces or accents.
 
@@ -387,7 +350,7 @@ With Waypoint Tracker installed, type `/way 42 65` in chat for your current zone
 <details>
 <summary><b>How do I find an NPC, quest giver or vendor in WoW Forever?</b></summary>
 
-Type `/wp find` and a name (or the title of an NPC you've seen, like `blacksmith`), or press **NPCs** next to **Find:** in the window. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play.
+Type `/wp find` and a name (or the title of an NPC you've seen, like `blacksmith`), or choose **NPCs** in the Find tab's kind dropdown. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play.
 </details>
 
 <details>
@@ -411,7 +374,7 @@ Yes, it's made for World of Warcraft: Forever (interface 16001), in beta now and
 <details>
 <summary><b>Is there a TomTom for WoW Forever?</b></summary>
 
-Waypoint Tracker does that job: the same `/way` commands and a 3D arrow with distance and time to arrive, plus the Find window. Addons written for TomTom, including "Send to TomTom" buttons, send their waypoints to Waypoint Tracker's arrow with no changes. If you install TomTom itself as well, Waypoint Tracker leaves `/way` and the waypoint API to it, and `/wp` keeps working.
+Waypoint Tracker does that job: the same `/way` commands and a 3D arrow with distance and time to arrive, plus the Find tab. Addons written for TomTom, including "Send to TomTom" buttons, send their waypoints to Waypoint Tracker's arrow with no changes. If you install TomTom itself as well, Waypoint Tracker leaves `/way` and the waypoint API to it, and `/wp` keeps working.
 </details>
 
 <details>
@@ -423,7 +386,7 @@ Waypoint Tracker has one built in, new in 1.1 and still in beta. Turn on **Treas
 <details>
 <summary><b>Does Waypoint Tracker send my data anywhere?</b></summary>
 
-No. What it learns while you play stays in its saved file on your computer. You share it only if you choose to: press **Share discoveries** in Find and paste the text into a GitHub issue.
+Discovery exports are manual: choose **Discoveries → Share discoveries** in Find and paste the text into a GitHub issue. Routes, votes and learned travel paths can be shared in game; their switches are in **Settings → Routes**.
 </details>
 
 <details>
@@ -435,7 +398,7 @@ The game's map pin marks one spot. Waypoint Tracker adds an arrow on your screen
 <details>
 <summary><b>Can the arrow take me to an NPC or an object?</b></summary>
 
-Yes. In the window press **NPCs**, **Enemies** or **Objects** next to **Find:**, search for it and double-click: the arrow goes to the closest spawn.
+Yes. In the **Find** tab choose **NPCs**, **Enemies** or **Objects** from the kind dropdown, search for it and double-click: the arrow goes to the closest spawn.
 
 Find's database covers the classic world and Forever's new content, and what you discover while playing and what other players shared is added on top. For quests in your log, the main window's search uses the game's live data, so those are always right. Tick **Point to the quest I'm tracking** and the arrow follows whichever quest you track.
 </details>
@@ -455,10 +418,9 @@ The list comes straight from the game: every map with its own coordinates, inclu
 <details>
 <summary><b>How do I move the arrow (or just its text)?</b></summary>
 
-Two ways. To move the text on its own, first tick **Move the text separately** (in **Show more options**, or in the arrow's Edit Mode panel); the text then gets its own box to drag.
+Open **Esc → Edit Mode** or **Open Edit Mode** in Settings. Select the arrow, its text, the coordinates box or route recorder, then drag its selection box. Each layout keeps its own placement. **Reset to Default** restores the selected element's defaults.
 
-- **Edit Mode**, like the game's own frames: press **Esc > Edit Mode**. The arrow shows up with the same blue box. Drag it, or click it for the size and visibility of the arrow and of its text, and **Reset**. Changes apply right away. Each Edit Mode layout keeps its own spot, so switching layouts moves the arrow too.
-- **The window**: open it (`/wp`), press **Move Arrow**, drag it and press **Done**. **Reset** puts it back over your character, at the default size and visibility. The arrow never reacts to clicks otherwise, so it can't get in the way of right-click to attack. While the window is open and you have no waypoint, a slowly turning preview arrow shows up so you can size it.
+To move the text on its own, tick **Move the text separately** in **Settings → Arrow** or the arrow's Edit Mode dialog. The text then gets its own selection box. The arrow ignores mouse clicks during play.
 </details>
 
 <details>
@@ -470,7 +432,7 @@ Yes. If the other addon already uses `/way`, Waypoint Tracker leaves it alone an
 <details>
 <summary><b>Can it tell me when a chest or rare spawns near me?</b></summary>
 
-Yes. Turn on **Treasure hunt** in the window or with `/wp treasure`. When a chest, a rare or another marker the game shows appears near you, you hear a ping, the arrow points at it, and the waypoint goes away once it's taken, killed or gone.
+Yes. Turn on **Treasure hunt (beta)** in Settings or the quick menu or with `/wp treasure`. When a chest, a rare or another marker the game shows appears near you, you hear a ping, the arrow points at it, and the waypoint goes away once it's taken, killed or gone.
 </details>
 
 <details>

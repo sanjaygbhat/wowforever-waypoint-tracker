@@ -6,8 +6,8 @@ Real in-game screenshots from WoW Forever, used in the README and the CurseForge
 |---|---|
 | `01-arrow.jpg` | The arrow on the way to a waypoint in the Barrens, with its name, distance and time to arrive |
 | `02-map.jpg` | A waypoint pin on the Silverpine Forest world map, with the arrow pointing the way |
-| `03-window.jpg` | The window (set a waypoint, Find, the waypoint list with Share) and the More Options panel |
+| `03-window.jpg` | Old UI capture; TODO replace before release |
 
-More to come. Suggested next files: `04-share.jpg` (the Share menu with a map pin in chat), `05-find.jpg` (Find with a quest selected), `06-learn.jpg` (Find showing an NPC with its title, or the correction box). The green arrow at a landmark and the arrow in Edit Mode make good extras.
+TODO: capture the Waypoints, Find and Routes tabs, an in-tab page with Back, Blizzard Settings and Edit Mode with all four HUD elements. Suggested extras: `04-share.jpg` (the Share menu with a map pin in chat), `05-find.jpg` (Find tab with a quest selected), `06-learn.jpg` (Find showing an NPC with its title, or the correction page). The green arrow at a landmark and the arrow in Edit Mode make good extras.
 
 Crop only, and no edits to the UI or the world.

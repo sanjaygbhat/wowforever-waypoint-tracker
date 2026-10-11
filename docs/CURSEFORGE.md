@@ -6,6 +6,8 @@
 
 Nothing to configure. Free, open source, in 9 languages. Made for World of Warcraft: Forever, and addons with "Send to TomTom" buttons work with it as-is.
 
+Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find** and **Routes** tabs. Right-click for the quick menu; Shift + left-click adds a waypoint where you stand. Editors and imports stay inside the tabs, with **Back** to return. Use **Settings** for Blizzard Settings and **Esc → Edit Mode** to place the arrow, text, coordinates box and route recorder.
+
 ![Features](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/h-features.png)
 
 ## Why players install it
@@ -14,7 +16,7 @@ Nothing to configure. Free, open source, in 9 languages. Made for World of Warcr
 - **Find anything by name.** Quests, NPCs, enemies, objects and items, including WoW Forever's new zones and quests. Double-click a result and the arrow points to the closest spot.
 - **The `/way` you already know.** `/way 42 65`, `/way Westfall 56.3 47.1 Sentinel Hill`, or Ctrl + right-click the world map. Coordinates from any guide just work.
 - **Works with your other addons.** Quest guides, treasure maps and anything with a "Send to TomTom" button send their waypoints to this arrow, with nothing to set up.
-- **New: treasure hunt (beta).** A ping when a chest or rare appears near you, and the arrow points at it.
+- **Treasure hunt (beta).** A ping when a chest or rare appears near you, and the arrow points at it.
 - **Stays out of your way.** The arrow never catches mouse clicks, moves with Edit Mode, and can hide in combat or on flight paths.
 
 ![Six features at a glance: 3D arrow, treasure hunt, Find, /way, share map pins, nearest services](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/feature-grid.png)
@@ -35,11 +37,11 @@ When you die, the arrow points to your corpse, then back to your waypoint. Drag 
 
 ## Find any quest, NPC, enemy or item
 
-Press **Quests**, **NPCs**, **Enemies** or **Objects** in the window, or type `/wp find hogger`. Search as you type (typos are fine), then double-click a result and the arrow points to the closest spawn.
+Open the **Find** tab and pick a kind from the dropdown, or type `/wp find hogger`. Search as you type (typos are fine), then double-click a result and the arrow points to the closest spawn.
 
-- **Quests** show who gives them, where the objectives are and where to hand in, with **Go to quest giver / objective / hand in** buttons.
+- **Quests** show who gives them, where the objectives are and where to hand in, with **Go to Quest Giver / Objective / Hand In** buttons.
 - **Items** show what drops or sells them and which quests need them.
-- **Nearest** buttons find the closest mailbox, innkeeper, flight master, repair vendor, bank or auction house.
+- The **Nearest** menu finds the closest mailbox, innkeeper, flight master, repair vendor, bank or auction house.
 
 Find covers the classic world and WoW Forever's new content: Mount Hyjal, Riverglades, Zephras Isle, Shen'dralas and thousands of new quests and items. It also learns while you play: the NPCs you pass and their titles (search **blacksmith**), vendor stock, quest givers and loot sources. What you see in the game always wins.
 
@@ -51,15 +53,17 @@ Find covers the classic world and WoW Forever's new content: Mount Hyjal, Riverg
 
 ## Share a spot with your group
 
-Press **Share** beside any waypoint, or type `/wp share` to share where you stand. Pick Party, Raid, Guild, Say or a whisper, and your chat opens with a clickable map pin ready to send. Friends don't need the addon to use it.
+Right-click any waypoint and choose **Share**, or type `/wp share` to share where you stand. Pick Party, Raid, Guild, Say or a whisper, and your chat opens with a clickable map pin ready to send. Friends don't need the addon to use it.
 
-[![Waypoint Tracker's window: coordinate fields, Find buttons and saved waypoints with Share buttons, beside More Options](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/03-window.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/03-window.jpg)
+TODO: replace the old window screenshot with the three tabs, Blizzard Settings and Edit Mode.
 
-*Real in-game screenshot: the window, with More Options open beside it.*
+## Routes
+
+Follow, create, record, import and share lists of stops in the **Routes** tab. **Real routes (beta)** is new in this release: the arrow guides you through passes and gates and uses flight paths, boats, zeppelins, the tram, hearthstone or teleports when quicker. Turn it on in the Routes notice, quick menu or **Settings → Routes**. Open a flight master's map to learn your available flights.
 
 ![Treasure hunt](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/h-treasure.png)
 
-## New in 1.1: Treasure hunt (beta)
+## Treasure hunt (beta)
 
 ![Treasure hunt: a chest marker appears, the addon pings, and the arrow turns to it and closes the distance (illustration)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/treasure-hunt.gif)
 
@@ -67,7 +71,7 @@ Press **Share** beside any waypoint, or type `/wp share` to share where you stan
 
 Treasure hunt is new and still in beta. Tell us what it catches and what it misses on [GitHub Issues](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues).
 
-Tick **Treasure hunt** in the window, type `/wp treasure`, or set a key binding.
+Turn on **Treasure hunt (beta)** in Settings or the quick menu, type `/wp treasure`, or set a key binding.
 
 - **Chests and treasure** the game marks on your minimap, plus a chest right in front of you.
 - **Rare and rare elite spawns** from your minimap, nameplates and target, placed at their known spawn. A rare that's already being fought is left out.
@@ -93,6 +97,10 @@ The ping comes the moment one appears, and the taskbar icon blinks if you're in 
 | `/way Westfall 56.3 47.1 Sentinel Hill` | Named waypoint in any zone |
 | `/way hogger` | Go straight to something by name |
 | `/wp` | Open or close the window |
+| `/wp routes` | Open the Routes tab |
+| `/wp settings` | Open Blizzard Settings |
+| `/wp editmode` | Enter Edit Mode |
+| `/wp travel` | Toggle Real routes (beta) |
 | `/wp find [name]` | Search quests, NPCs, enemies, objects and items |
 | `/wp treasure` | Turn treasure hunt on or off |
 | `/wp treasure status` | What treasure hunt sees now and found recently |
@@ -113,7 +121,7 @@ Every command and setting: [Commands & Options](https://github.com/sanjaygbhat/w
 
 **How do I find an NPC or quest giver?** Type `/wp find` and a name, or an NPC title like `blacksmith`, then double-click a result.
 
-**Does it send my data anywhere?** No. What it learns stays on your computer. You can share discoveries by choice to improve Find for everyone ([how](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)).
+**Does it send my data anywhere?** Discovery exports are manual. Routes, votes and learned travel paths can be shared in game; control that in **Settings → Routes**. Share discoveries to improve Find for everyone ([how](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)).
 
 **Which languages?** English, Deutsch, Français, Español, Português, Русский, 한국어, 简体中文 and 繁體中文, following your game client.
 

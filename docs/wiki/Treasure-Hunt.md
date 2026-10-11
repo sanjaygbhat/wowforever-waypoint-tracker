@@ -12,7 +12,7 @@ Treasure hunt turns Waypoint Tracker into a rare scanner and treasure finder. Th
 
 Any of these:
 
-- Tick **Treasure hunt** in the window (`/wp`).
+- Turn on **Treasure hunt (beta)** in Settings or the quick menu (`/wp`).
 - Type `/wp treasure`.
 - Bind a key under **Key Bindings → AddOns → Turn treasure hunt on or off**.
 
@@ -52,7 +52,7 @@ Some places share no minimap markers. There, rares are still found on nameplates
 
 ## Settings
 
-Under **Show more options → Treasure Hunt**:
+Under **Settings → Treasure Hunt (beta)**:
 
 | Option | Default |
 |---|---|
