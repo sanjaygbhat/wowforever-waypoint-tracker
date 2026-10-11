@@ -1704,6 +1704,114 @@ ns.Set("findTab", "all")
 M.player.inst, M.player.wx, M.player.wy = 0, -1200, -1200
 
 -- ---------------------------------------------------------------------------
+-- Routes: exercise the merged pane and world-map modules through real clicks.
+-- Fixtures use the mock's maps; no preview contracts or UI callbacks are spies.
+-- ---------------------------------------------------------------------------
+do
+    local R, UI, P, W = ns.Routes, ns.RoutesUI, ns.RoutePreview, ns.Window
+    local apply, zoneOnly = ns.Get("routeApply"), ns.Get("routeThisZone")
+    local accept, alt, cancel = M.autoAcceptPopup, M.autoAltPopup, M.autoCancelPopup
+    M.autoAcceptPopup, M.autoAltPopup, M.autoCancelPopup = nil, nil, nil
+    WP.ClearAll(true)
+    ns.Set("routeApply", "ask")
+    ns.Set("routeThisZone", false)
+    ns.Set("routesHelpShown", true)
+    local area = assert(R.SaveMine({ name = "Forest circuit", cat = "skinning", mode = "loop", pts = {
+        { m = 37, x = 0.2, y = 0.3, t = "Clearing" },
+        { m = 37, x = 0.5, y = 0.5, t = "Camp" },
+        { m = 37, x = 0.8, y = 0.7, t = "Trail" },
+    } }))
+    local continent = assert(R.SaveMine({ name = "Flight master tour", cat = "travel", mode = "order", pts = {
+        { m = 37, x = 0.2, y = 0.3, t = "Forest" },
+        { m = 52, x = 0.5, y = 0.5, t = "Coast" },
+    } }))
+    local world = assert(R.SaveMine({ name = "Library tour", cat = "quests", mode = "nearest", pts = {
+        { m = 37, x = 0.2, y = 0.3, t = "Eastern book" },
+        { m = 1, x = 0.5, y = 0.5, t = "Western book" },
+    } }))
+    local function PinCount(template)
+        local count = 0
+        for _, pin in ipairs(WorldMapFrame.pins) do
+            if pin.template == template then count = count + 1 end
+        end
+        return count
+    end
+    local function SelectRoute(r, mapID)
+        UI.Show()
+        -- The mock does not resolve opposing anchors into a list height.
+        if UI.widgets.list:GetHeight() < 36 then UI.widgets.list:SetHeight(264) end
+        UI.SetTab("mine")
+        UI.widgets.search:SetText(r.name)
+        local row = UI.widgets.list.rows[1]
+        check(row and row.item and row.item.id == r.id, "Routes search finds " .. r.name)
+        local before = WP.Count()
+        row:Click()
+        check(UI.widgets.detail.route.id == r.id, "row selects " .. r.name)
+        check(UI.widgets.map:GetMapID() == mapID, "pane chooses common map for " .. r.name)
+        check(#UI.widgets.map.pins == #r.pts, "pane shows all stops for " .. r.name)
+        check(WP.Count() == before and P.Current() == nil, "selection does not start or open world preview")
+    end
+    local function OpenPreview(r, mapID)
+        UI.widgets.map:Click()
+        check(P.Current() == r.id and WorldMapFrame:GetMapID() == mapID, "pane click opens matching world preview")
+        check(not W.IsShown() and WorldMapFrame:IsShown(), "preview swaps the window for the map")
+        check(PinCount("WaypointTrackerRoutePinTemplate") == #r.pts, "world preview shows every stop")
+        check(P.bar.text:GetText() == L.ROUTE_PREVIEW_BAR:format(r.name, #r.pts), "world preview bar identifies selection")
+    end
+    for _, item in ipairs({ { area, 37 }, { continent, 13 }, { world, 947 } }) do
+        local r, mapID = item[1], item[2]
+        SelectRoute(r, mapID)
+        OpenPreview(r, mapID)
+        P.bar.back:Click()
+        check(W.IsShown() and W.GetTab() == "routes" and not WorldMapFrame:IsShown(), "Back returns to Routes")
+        check(UI.widgets.detail.route.id == r.id and #UI.widgets.map.pins == #r.pts, "Back restores selected pane and pins")
+        check(P.Current() == nil and WP.Count() == 0, "Back clears preview without waypoints")
+    end
+    -- Set must wait for the actual question, then preserve or replace the
+    -- existing waypoint and leave normal map pins after preview cleanup.
+    for _, choice in ipairs({ "add", "replace" }) do
+        WP.ClearAll(true)
+        local keep = assert(WP.Add(37, 0.1, 0.1, { title = "Existing destination", silent = true }))
+        SelectRoute(area, 37)
+        OpenPreview(area, 37)
+        P.bar.set:Click()
+        check(M.lastPopup == "WAYPOINTTRACKER_ROUTE_ASK", "Set asks about existing waypoints")
+        check(R.Run() == nil and WP.Count() == 1, "Set waits for waypoint choice")
+        check(P.Current() == area.id and PinCount("WaypointTrackerRoutePinTemplate") == #area.pts, "the preview stays while the question is open")
+        local dialog = M.popups.WAYPOINTTRACKER_ROUTE_ASK
+        local question = StaticPopupDialogs.WAYPOINTTRACKER_ROUTE_ASK
+        local answer = choice == "add" and question.OnAlt or question.OnAccept
+        answer(dialog, dialog.data)
+        dialog:Hide()
+        check(R.Run() and R.Run().id == area.id, "answer starts selected route")
+        check(WP.Count() == #area.pts + (choice == "add" and 1 or 0), "Set applies " .. choice .. " choice")
+        local kept = false
+        for _, p in ipairs(WP.List()) do if p == keep then kept = true end end
+        check(kept == (choice == "add"), "existing waypoint follows choice")
+        check(WorldMapFrame:IsShown() and not P.bar:IsShown(), "Set leaves map open without preview bar")
+        check(PinCount("WaypointTrackerMapPinTemplate") == WP.Count(), "normal waypoint pins replace area preview")
+        WorldMapFrame:Hide()
+    end
+    WP.ClearAll(true)
+    SelectRoute(area, 37)
+    local blocked, shows, hides = M.actionBlocked or 0, M.uiPanelCalls.show, M.uiPanelCalls.hide
+    M.player.combat = true
+    UI.widgets.map:Click()
+    check(W.IsShown() and P.Current() == nil, "combat preview click keeps Routes open")
+    check(W.frame.status:GetText() == L.IN_COMBAT_NO_PANELS, "combat pane click reports status")
+    check((M.actionBlocked or 0) == blocked and M.uiPanelCalls.show == shows and M.uiPanelCalls.hide == hides,
+        "combat pane click avoids protected panels")
+    M.player.combat = false
+    W.Hide()
+    UI.widgets.search:SetText("")
+    UI.SetTab("all")
+    for _, r in ipairs({ area, continent, world }) do R.Delete(r.id) end
+    ns.Set("routeApply", apply)
+    ns.Set("routeThisZone", zoneOnly)
+    M.autoAcceptPopup, M.autoAltPopup, M.autoCancelPopup = accept, alt, cancel
+end
+
+-- ---------------------------------------------------------------------------
 -- Saving and loading again
 -- ---------------------------------------------------------------------------
 WP.ClearAll(true)

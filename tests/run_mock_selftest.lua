@@ -305,6 +305,163 @@ check(not EditModeManagerFrame:IsEditModeActive(), "edit mode exits")
 M.units.target = { dead = true }
 check(UnitIsDead("target") and not UnitIsDead("missing"), "existing UnitIsDead API")
 check(GetAppropriateTooltip() == GameTooltip, "appropriate tooltip")
+
+-- Route previews need recorded line geometry and region rendering properties.
+local line = panel:CreateLine(nil, "OVERLAY", nil, 1)
+check(line:IsObjectType("Line") and type(line.SetStartPoint) == "function"
+    and line:GetParent() == panel, "CreateLine creates a Line region")
+line:SetStartPoint("TOPLEFT", panel, 10, -20)
+line:SetEndPoint("TOPLEFT", panel, 30, -40)
+check(line._start[1] == "TOPLEFT" and line._start[2] == panel and line._start[3] == 10
+    and line._start[4] == -20 and line._end[1] == "TOPLEFT" and line._end[2] == panel
+    and line._end[3] == 30 and line._end[4] == -40, "line endpoints recorded")
+line:SetThickness(2)
+check(line:GetThickness() == 2, "line thickness")
+line:SetColorTexture(1, 0.82, 0, 0.4)
+check(line._colorTexture[1] == 1 and line._colorTexture[2] == 0.82
+    and line._colorTexture[3] == 0 and line._colorTexture[4] == 0.4, "line colour and alpha")
+line:Hide()
+check(not line:IsShown(), "line hides")
+line:Show()
+check(line:IsShown(), "line shows")
+check(line._drawLayer[1] == "OVERLAY" and line._drawLayer[2] == 1, "line creation draw layer")
+line:SetDrawLayer("ARTWORK", 2)
+check(line._drawLayer[1] == "ARTWORK" and line._drawLayer[2] == 2, "region draw layer recorded")
+panel:SetClipsChildren(true)
+check(panel._clipsChildren == true, "child clipping enabled")
+panel:SetClipsChildren(false)
+check(panel._clipsChildren == false, "child clipping disabled")
+local texture = panel:CreateTexture()
+texture:SetRotation(0.5)
+texture:SetColorTexture(0.08, 0.08, 0.1)
+texture:SetHitRectInsets(0, 0, -11, 11)
+panel:SetHitRectInsets(0, 0, 0, 0)
+check(texture._rotation == 0.5 and texture._colorTexture[3] == 0.1
+    and texture._colorTexture[4] == 1, "texture rotation and default colour alpha")
+
+check(Enum.UIMapType.World == 1 and UnitLevel("player") > 0, "world enum and player level retained")
+check(M.maps[12].name == "Kalimdor" and M.maps[13].name == "Eastern Kingdoms"
+    and not M.maps[1414] and not M.maps[1415], "retail continent IDs retained")
+check(M.maps[291].parentMapID == 52 and M.maps[291].cont ~= M.maps[52].cont
+    and M.maps[1].parentMapID == 12, "dungeon instance and cross-continent zone fixtures")
+check(C_Map.GetWorldPosFromMapPos(947, CreateVector2D(0.5, 0.5)) == nil, "world map has no world position")
+check(C_Map.GetMapArtID(37) == 370 and C_Map.GetMapArtID(-1) == nil, "map art IDs")
+local layers = C_Map.GetMapArtLayers(37)
+check(C_Map.MapHasArt(37) and #layers == 1 and layers[1].layerWidth == 1002
+    and layers[1].layerHeight == 668 and layers[1].tileWidth == 256 and layers[1].tileHeight == 256
+    and layers[1].minScale == 1 and layers[1].maxScale == 1 and layers[1].additionalZoomSteps == 0,
+    "map art layer dimensions and scales")
+local textures = C_Map.GetMapArtLayerTextures(37, 1)
+local ordered = #textures == 12
+for i, file in ipairs(textures) do ordered = ordered and file == 37000 + i end
+check(ordered, "all twelve map art texture IDs in order")
+check(C_Map.GetMapArtLayerTextures(37, 2) == nil and C_Map.GetMapArtLayers(-1) == nil
+    and not C_Map.MapHasArt(-1) and C_Map.GetMapArtLayerTextures(-1, 1) == nil, "missing map art and layer")
+M.maps[52].noArt = true
+check(not C_Map.MapHasArt(52) and C_Map.GetMapArtLayers(52) == nil
+    and C_Map.GetMapArtLayerTextures(52, 1) == nil, "noArt disables layers and textures")
+M.maps[52].noArt = nil
+local minX, maxX, minY, maxY = C_Map.GetMapRectOnMap(13, 947)
+check(minX == 0.55 and maxX == 0.95 and minY == 0.10 and maxY == 0.90,
+    "Eastern Kingdoms world rectangle returns four numbers")
+minX, maxX, minY, maxY = C_Map.GetMapRectOnMap(12, 947)
+check(minX == 0.05 and maxX == 0.45 and minY == 0.10 and maxY == 0.90, "Kalimdor world rectangle")
+check(C_Map.GetMapRectOnMap(37, 947) == nil and C_Map.GetMapRectOnMap(13, 12) == nil
+    and C_Map.GetMapRectOnMap(-1, 947) == nil, "only continents have world rectangles")
+local explored = C_MapExplorationInfo.GetExploredMapTextures(37)
+local patch = explored[1]
+check(explored == M.explored[37] and #explored == 1 and patch.textureWidth == 300
+    and patch.textureHeight == 270 and patch.offsetX == 100 and patch.offsetY == 50
+    and #patch.fileDataIDs == 4 and patch.fileDataIDs[1] == 9001 and patch.fileDataIDs[2] == 9002
+    and patch.fileDataIDs[3] == 9003 and patch.fileDataIDs[4] == 9004
+    and patch.isShownByMouseOver == false and patch.isDrawOnTopLayer == false, "explored texture fixture")
+check(#C_MapExplorationInfo.GetExploredMapTextures(-1) == 0, "unexplored map has no overlays")
+
+local map = WorldMapFrame
+check(map:GetCanvas() == map.ScrollContainer.Child and map:GetCanvas():IsObjectType("Frame")
+    and map:GetCanvas():GetParent() == map.ScrollContainer and map.ScrollContainer:GetCanvasScale() == 1,
+    "map canvas child and scale")
+local refreshed, changed, providerShown, providerHidden, scriptShown, scriptHidden = 0, 0, 0, 0, 0, 0
+local provider = CreateFromMixins(MapCanvasDataProviderMixin)
+function provider:RefreshAllData()
+    refreshed = refreshed + 1
+    check(self:GetMap() == map, "provider refresh owns the map")
+end
+function provider:OnShow() providerShown = providerShown + 1 end
+function provider:OnHide() providerHidden = providerHidden + 1 end
+map:AddDataProvider(provider)
+local explicitProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+function explicitProvider:OnMapChanged() changed = changed + 1 end
+map:AddDataProvider(explicitProvider)
+map:SetMapID(52)
+check(map:GetMapID() == 52 and refreshed == 1 and changed == 1,
+    "SetMapID calls every provider, defaulting to RefreshAllData")
+map:SetScript("OnShow", function() scriptShown = scriptShown + 1 end)
+map:SetScript("OnHide", function() scriptHidden = scriptHidden + 1 end)
+OpenWorldMap(52)
+check(M.worldMapOpened == 52 and map:IsShown() and map:GetMapID() == 52 and refreshed == 2
+    and changed == 2 and scriptShown == 1 and providerShown == 1, "OpenWorldMap opens on requested map")
+map:Show()
+check(scriptShown == 1 and providerShown == 1, "repeated map Show has no visibility callbacks")
+HideUIPanel(map)
+check(not map:IsShown() and scriptHidden == 1 and providerHidden == 1, "map hide scripts and providers")
+map:Hide()
+check(scriptHidden == 1 and providerHidden == 1, "repeated map Hide has no visibility callbacks")
+local blocked = M.actionBlocked or 0
+M.player.combat = true
+OpenWorldMap(37)
+check(not map:IsShown() and map:GetMapID() == 52 and M.worldMapOpened == 52
+    and M.actionBlocked == blocked + 1 and refreshed == 2, "OpenWorldMap blocked in combat")
+M.player.combat = false
+ToggleWorldMap()
+check(map:IsShown() and map:GetMapID() == C_Map.GetBestMapForUnit("player"), "ToggleWorldMap opens player map")
+blocked = M.actionBlocked
+M.player.combat = true
+ToggleWorldMap()
+check(map:IsShown() and M.actionBlocked == blocked + 1, "ToggleWorldMap hide blocked in combat")
+M.player.combat = false
+ToggleWorldMap()
+check(not map:IsShown() and scriptShown == 2 and providerShown == 2
+    and scriptHidden == 2 and providerHidden == 2, "ToggleWorldMap hides through panel lifecycle")
+
+-- Keep waypoint and route pins together until their own template is removed.
+local oldWaypointMixin, oldRouteMixin = WaypointTrackerMapPinMixin, WaypointTrackerRoutePinMixin
+local waypointLoads, routeLoads, acquired = 0, 0, 0
+WaypointTrackerMapPinMixin = CreateFromMixins(MapCanvasPinMixin)
+function WaypointTrackerMapPinMixin:OnLoad() waypointLoads = waypointLoads + 1 end
+WaypointTrackerRoutePinMixin = CreateFromMixins(MapCanvasPinMixin)
+function WaypointTrackerRoutePinMixin:OnLoad() routeLoads = routeLoads + 1 end
+function WaypointTrackerRoutePinMixin:OnAcquired(route, i, x, y)
+    acquired = acquired + 1
+    self.route, self.index = route, i
+    self:SetPosition(x, y)
+    self.Number:SetText(i)
+end
+local route = { name = "Mock route" }
+local waypointPin = map:AcquirePin("WaypointTrackerMapPinTemplate")
+local routePin = map:AcquirePin("WaypointTrackerRoutePinTemplate", route, 2, 0.4, 0.6)
+check(#map.pins == 2 and waypointLoads == 1 and routeLoads == 1 and acquired == 1,
+    "AcquirePin honours each template mixin and lifecycle")
+check(routePin.Icon:IsObjectType("Texture") and routePin.Highlight:IsObjectType("Texture")
+    and routePin.Number:IsObjectType("FontString") and routePin.Number:GetText() == 2
+    and routePin.route == route and routePin.index == 2 and routePin.normalizedX == 0.4
+    and routePin.normalizedY == 0.6 and routePin:GetMap() == map, "route pin regions and acquisition arguments")
+check(rawget(waypointPin, "Number") == nil and waypointPin.template == "WaypointTrackerMapPinTemplate"
+    and routePin.template == "WaypointTrackerRoutePinTemplate", "pins retain their template")
+map:RemoveAllPinsByTemplate("MissingPinTemplate")
+check(#map.pins == 2, "unknown template removal preserves pins")
+map:RemoveAllPinsByTemplate("WaypointTrackerRoutePinTemplate")
+check(#map.pins == 1 and map.pins[1] == waypointPin and waypointPin:IsShown()
+    and not routePin:IsShown(), "route pin removal preserves waypoint pins")
+map:RemoveAllPinsByTemplate()
+check(#map.pins == 0 and not waypointPin:IsShown(), "nil template removal still clears all pins")
+check(PIN_FRAME_LEVEL_WAYPOINT_LOCATION == "PIN_FRAME_LEVEL_WAYPOINT_LOCATION", "waypoint frame level constant")
+WaypointTrackerMapPinMixin, WaypointTrackerRoutePinMixin = oldWaypointMixin, oldRouteMixin
+map.providers = {}
+map:SetScript("OnShow", nil)
+map:SetScript("OnHide", nil)
+map:SetMapID(37)
+
 check(next(M.unknownMethods) == nil, "new APIs use implemented methods")
 check(#M.errors == 0, "no reported Lua errors")
 

@@ -152,7 +152,8 @@ if not noCallbacks and not incompleteRegistry then
 end
 if delayed then
     check(not WaypointTrackerMapButton, "button waits for the world map")
-    check(#continuations == 2, "pins and button wait for Blizzard_WorldMap")
+    check(#continuations == 3, "pins, button and route preview wait for Blizzard_WorldMap")
+    check(ns.RoutePreview.provider == nil, "route preview provider waits for the map")
     ns.Set("worldCoords", false)
     M.cvars.worldMapShowCursorCoords = "1" -- Blizzard's UI changed it before map load.
     local beforeLoad = writes
@@ -162,6 +163,14 @@ if delayed then
         continuation.fn()
         continuation.fn() -- load notifications must not duplicate UI
     end
+    check(ns.RoutePreview.provider and ns.RoutePreview.provider:GetMap() == map,
+        "delayed map registers the route preview provider")
+    local previewProviders = 0
+    for _, provider in ipairs(map.providers) do
+        if provider == ns.RoutePreview.provider then previewProviders = previewProviders + 1 end
+    end
+    check(previewProviders == 1 and ns.RoutePreview.bar == nil,
+        "repeated map-load callbacks register one preview provider without allocating its bar")
     check(writes == beforeLoad and M.cvars.worldMapShowPlayerCoords == "0"
         and M.cvars.worldMapShowCursorCoords == "1", "delayed map setup preserves native CVars without writing")
 end

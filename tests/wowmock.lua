@@ -2,6 +2,8 @@
 -- outside the game with plain Lua 5.1. Any frame method we don't implement
 -- is recorded so it can be checked against the real API by hand.
 -- Frames model enabled state, multiline text height and vertical scroll offsets.
+-- Lines record _start/_end anchors and _thickness; regions record _drawLayer,
+-- _rotation and _colorTexture; frames record _clipsChildren.
 -- Settings initializers support parent and shown predicates.
 -- UI test state:
 --   frames, unknownMethods: created objects and calls to unimplemented methods.
@@ -18,6 +20,8 @@
 --   helpTips: Show history ({ parent, info, relativeRegion, shown }); Hide and
 --     Acknowledge clear shown; Acknowledge invokes info.onAcknowledgeCallback.
 --   cvars: string values (includes both world-map coordinate switches).
+--   worldMapOpened: last successfully opened map ID; world-map providers receive
+--     map-change and visibility callbacks; pins record their template name.
 --   editModeEntered: entry count; editLayouts/editActive: layout names/index.
 -- Game test state:
 --   player: world position wx/wy/inst, facing, combat, taxi, dead, ghost,
@@ -29,6 +33,8 @@
 --     attackable/controlled/player; hasTarget: fallback unit presence/player flag.
 --   shift/ctrl/alt: modifier keys; addonsLoaded/tomtomInstalled/noDataAddon:
 --     addon availability; maps: map geometry; quests: quest log and objectives.
+--   worldRects: continent rectangles { minX, maxX, minY, maxY } on map 947.
+--   explored: explored-map texture records by map ID; maps[id].noArt disables art.
 --   serverQuests/loadedQuests/questRequests: asynchronous quest title loading;
 --     completedQuests/superTracked: completed quest IDs and tracked quest.
 --   userWaypoint/pinTracked: Blizzard waypoint and tracking state; vignettes:
@@ -315,6 +321,11 @@ function Frame:CreateTexture(name)
     local t = NewObject("Texture", name, self)
     return t
 end
+function Frame:CreateLine(name, layer, template, sub)
+    local line = NewObject("Line", name, self)
+    line:SetDrawLayer(layer or "ARTWORK", sub or 0)
+    return line
+end
 function Frame:CreateFontString(name, layer, font)
     local fs = NewObject("FontString", name, self)
     fs.fontTemplate = font
@@ -324,6 +335,31 @@ function Frame:CreateAnimationGroup()
     return NewObject("AnimationGroup", nil, self)
 end
 -- regions
+function Frame:SetStartPoint(point, rel, x, y)
+    self._start = { point, rel, x, y }
+end
+function Frame:SetEndPoint(point, rel, x, y)
+    self._end = { point, rel, x, y }
+end
+function Frame:SetThickness(value)
+    self._thickness = value
+end
+function Frame:GetThickness()
+    return self._thickness or 1
+end
+function Frame:SetClipsChildren(on)
+    self._clipsChildren = on and true or false
+end
+function Frame:SetDrawLayer(layer, sub)
+    self._drawLayer = { layer, sub or 0 }
+end
+function Frame:SetRotation(rad)
+    self._rotation = rad
+end
+function Frame:SetColorTexture(r, g, b, a)
+    self._colorTexture = { r, g, b, a or 1 }
+end
+function Frame:SetHitRectInsets() end
 function Frame:SetTextColor(r, g, b, a)
     self._textColor = { r, g, b, a or 1 }
 end
@@ -1060,6 +1096,14 @@ M.maps = {
     -- dungeon maps are not offered in the picker
     [291] = { mapID = 291, name = "The Deadmines", mapType = 4, parentMapID = 52, cont = 36, top = 100, left = 100, w = 200, h = 200 },
 }
+M.worldRects = {
+    [13] = { 0.55, 0.95, 0.10, 0.90 },
+    [12] = { 0.05, 0.45, 0.10, 0.90 },
+}
+M.explored = {
+    [37] = { { textureWidth = 300, textureHeight = 270, offsetX = 100, offsetY = 50,
+        fileDataIDs = { 9001, 9002, 9003, 9004 }, isShownByMouseOver = false, isDrawOnTopLayer = false } },
+}
 
 local function MapToWorld(m, x, y)
     return m.top - y * m.h, m.left - x * m.w
@@ -1069,6 +1113,33 @@ local function WorldToMap(m, wx, wy)
 end
 
 C_Map = {}
+function C_Map.GetMapArtID(id)
+    return M.maps[id] and id * 10 or nil
+end
+function C_Map.MapHasArt(id)
+    return M.maps[id] and not M.maps[id].noArt
+end
+function C_Map.GetMapArtLayers(id)
+    if not C_Map.MapHasArt(id) then return nil end
+    return { { layerWidth = 1002, layerHeight = 668, tileWidth = 256, tileHeight = 256,
+        minScale = 1, maxScale = 1, additionalZoomSteps = 0 } }
+end
+function C_Map.GetMapArtLayerTextures(id, layer)
+    if not C_Map.MapHasArt(id) or layer ~= 1 then return nil end
+    local textures = {}
+    for i = 1, 12 do
+        textures[i] = id * 1000 + i
+    end
+    return textures
+end
+function C_Map.GetMapRectOnMap(child, top)
+    local m = M.maps[child]
+    local rect = top == 947 and m and m.mapType == 2 and M.worldRects[child]
+    if rect then return unpack(rect) end
+end
+C_MapExplorationInfo = {
+    GetExploredMapTextures = function(id) return M.explored[id] or {} end,
+}
 function C_Map.GetMapInfo(id)
     local m = M.maps[id]
     if not m then
@@ -1525,6 +1596,9 @@ end
 function MapCanvasDataProviderMixin:GetMap()
     return self.owningMap
 end
+function MapCanvasDataProviderMixin:OnMapChanged()
+    if self.RefreshAllData then self:RefreshAllData() end
+end
 MapCanvasPinMixin = {}
 function MapCanvasPinMixin:OnLoad() end
 function MapCanvasPinMixin:OnAcquired() end
@@ -1551,6 +1625,10 @@ end
 WorldMapFrame = NewObject("Frame", "WorldMapFrame", UIParent)
 WorldMapFrame._shown = false
 WorldMapFrame.ScrollContainer = NewObject("Frame", nil, WorldMapFrame)
+WorldMapFrame.ScrollContainer.Child = NewObject("Frame", nil, WorldMapFrame.ScrollContainer)
+function WorldMapFrame.ScrollContainer:GetCanvasScale()
+    return 1
+end
 WorldMapFrame.WorldMapTrackingPinButton = NewObject("Button", nil, WorldMapFrame)
 WorldMapFrame.overlayFrames = {}
 WorldMapFrame.mapID = 37
@@ -1559,6 +1637,40 @@ WorldMapFrame.providers = {}
 WorldMapFrame.clickHandlers = {}
 function WorldMapFrame:GetMapID()
     return self.mapID
+end
+function WorldMapFrame:SetMapID(id)
+    self.mapID = id
+    self:OnMapChanged()
+end
+function WorldMapFrame:OnMapChanged()
+    for _, p in ipairs(self.providers) do
+        if p.OnMapChanged then
+            p:OnMapChanged()
+        elseif p.RefreshAllData then
+            p:RefreshAllData()
+        end
+    end
+end
+function WorldMapFrame:GetCanvas()
+    return self.ScrollContainer.Child
+end
+function WorldMapFrame:Show()
+    local was = self:IsVisible()
+    Frame.Show(self)
+    if not was and self:IsVisible() then
+        for _, p in ipairs(self.providers) do
+            if p.OnShow then p:OnShow() end
+        end
+    end
+end
+function WorldMapFrame:Hide()
+    local was = self:IsVisible()
+    Frame.Hide(self)
+    if was then
+        for _, p in ipairs(self.providers) do
+            if p.OnHide then p:OnHide() end
+        end
+    end
 end
 function WorldMapFrame:GetCanvasContainer()
     return self.ScrollContainer
@@ -1582,7 +1694,16 @@ end
 function WorldMapFrame:AcquirePin(template, ...)
     local pin = CreateFrame("Frame", nil, self)
     -- the XML template's mixin + regions
-    Mixin(pin, _G.WaypointTrackerMapPinMixin)
+    local mixin
+    if template == "WaypointTrackerRoutePinTemplate" then
+        mixin = _G.WaypointTrackerRoutePinMixin
+        pin.Number = pin:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+    elseif template == "WaypointTrackerMapPinTemplate" then
+        mixin = _G.WaypointTrackerMapPinMixin
+    end
+    Mixin(pin, MapCanvasPinMixin)
+    if mixin then Mixin(pin, mixin) end
+    pin.template = template
     pin.Icon = pin:CreateTexture()
     pin.Highlight = pin:CreateTexture()
     pin.GetMap = function()
@@ -1594,11 +1715,33 @@ function WorldMapFrame:AcquirePin(template, ...)
     table.insert(self.pins, pin)
     return pin
 end
-function WorldMapFrame:RemoveAllPinsByTemplate()
+function WorldMapFrame:RemoveAllPinsByTemplate(template)
+    local kept = {}
     for _, p in ipairs(self.pins) do
-        p:Hide()
+        if not template or p.template == template then
+            p:Hide()
+        else
+            table.insert(kept, p)
+        end
     end
-    self.pins = {}
+    self.pins = kept
+end
+PIN_FRAME_LEVEL_WAYPOINT_LOCATION = "PIN_FRAME_LEVEL_WAYPOINT_LOCATION"
+function OpenWorldMap(id)
+    if M.player.combat then
+        M.actionBlocked = (M.actionBlocked or 0) + 1
+        return
+    end
+    M.worldMapOpened = id
+    ShowUIPanel(WorldMapFrame)
+    WorldMapFrame:SetMapID(id)
+end
+function ToggleWorldMap()
+    if WorldMapFrame:IsShown() then
+        HideUIPanel(WorldMapFrame)
+    else
+        OpenWorldMap(C_Map.GetBestMapForUnit("player"))
+    end
 end
 function WorldMapFrame:ClickCanvas(button, x, y)
     for _, fn in ipairs(self.clickHandlers) do

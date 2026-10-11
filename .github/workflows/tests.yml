@@ -23,6 +23,8 @@ jobs:
           done
       - name: Game API use
         run: lua5.1 tests/check_api.lua
+      - name: Route seed names and format
+        run: lua5.1 tests/check_seeds.lua
       - name: All play-through suites
         run: |
           for f in tests/run_*.lua; do
@@ -31,13 +33,13 @@ jobs:
           done
       - name: Positions as plain tables (as in WoW Forever)
         run: |
-          for f in run_tests run_bare run_travel run_map; do
+          for f in run_tests run_bare run_travel run_map run_routemap run_routepreview; do
             echo "== $f (plain vectors)"
             WT_PLAIN_VECTORS=1 lua5.1 "tests/$f.lua"
           done
       - name: Optional UI and delayed world map
         run: |
-          for f in run_tab_waypoints run_tab_find run_editmode run_minimap run_widgets; do
+          for f in run_tab_waypoints run_tab_find run_editmode run_minimap run_widgets run_routemap run_routepreview; do
             lua5.1 "tests/$f.lua" --bare
           done
           lua5.1 tests/run_map.lua --legacy
