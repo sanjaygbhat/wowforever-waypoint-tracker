@@ -56,5 +56,9 @@ Find.lua
 Routes.lua
 RoutesNet.lua
 RoutesUI.lua
+TravelData.lua
+Travel.lua
+Trails.lua
+TravelMap.lua
 AddonBridge.lua
 Slash.lua

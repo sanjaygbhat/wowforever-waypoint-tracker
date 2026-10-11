@@ -512,6 +512,29 @@ local function Update(dt)
         distText:SetText(L.YOU_ARE_HERE) -- even with the distance hidden
         return
     end
+    -- Real routes: the way there, one step at a time, not the straight line
+    local steer = ns.Travel and ns.Travel.Steer(wp)
+    if steer then
+        local distLine = steer.dist and Geo.FormatDistance(steer.dist) or ""
+        if steer.wait then
+            distLine = L.TRAVEL_LEAVES_IN:format(Geo.FormatTime(steer.wait))
+        end
+        local etaLine = steer.total and L.TRAVEL_TOTAL:format(steer.sub, Geo.FormatTime(steer.total)) or steer.sub
+        local facing = steer.bearing and Geo.GetFacing()
+        if facing then
+            local rel = Geo.RelativeAngle(steer.bearing, facing)
+            SetMode("arrow")
+            SetArrowIndex(Arrow.IndexFor(rel))
+            arrow:SetVertexColor(ArrowColour(dist or steer.dist or 0, rel, wp))
+        else
+            SetMode("pin")
+        end
+        SetFade(1, dt)
+        title:SetText(steer.title or name) -- always shown: it says what to do next
+        distText:SetText(ns.Get("showDistance") and distLine or "")
+        etaText:SetText(ns.Get("showETA") and etaLine or "")
+        return
+    end
     if dist and bearing then
         local facing = Geo.GetFacing()
         if facing then

@@ -63,6 +63,15 @@ ns.defaults = {
     followMapPins = true, -- the game's own map pin (and map pin links) move the arrow
     followQuest = false, -- point at the quest you track when you have no waypoint
     corpseWaypoint = true, -- dying points the arrow at your body
+    -- Real routes (beta, see Travel.lua): follow a way you can go, not the straight line
+    realRoutes = false,
+    travelFlights = true,
+    travelBoats = true,
+    travelHearth = true,
+    travelMapLine = true,
+    travelTrails = true, -- write down where you walk and follow walked paths
+    travelShare = true, -- share walked paths, crossings and boat times
+    travelNoticeShown = false,
     -- write down NPCs, quests and objects met in Forever (see Learn.lua)
     learn = true,
     -- treasure hunt (see Treasure.lua): off until you turn it on

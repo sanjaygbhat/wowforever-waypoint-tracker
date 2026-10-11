@@ -53,6 +53,17 @@ function PinMethods:OnMouseEnter()
     if dist then
         GameTooltip:AddLine(Geo.FormatDistance(dist), 0.8, 0.8, 0.8)
     end
+    -- Real routes: the way there
+    local T = ns.Travel
+    if wp == WP.GetActive() and T and T.Enabled() then
+        local steps = T.Describe()
+        if #steps > 0 then
+            GameTooltip:AddLine(L.TRAVEL_STEPS_HEADER, 1, 0.82, 0)
+            for i = 1, math.min(#steps, 8) do
+                GameTooltip:AddLine(("%d. %s"):format(i, steps[i]), 0.9, 0.9, 0.9)
+            end
+        end
+    end
     GameTooltip:AddLine(L.PIN_CLICK, 0.6, 0.6, 0.6)
     GameTooltip:AddLine(L.PIN_ALT_CLICK, 0.6, 0.6, 0.6)
     GameTooltip:Show()
