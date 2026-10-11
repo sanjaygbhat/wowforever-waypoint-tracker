@@ -21,11 +21,11 @@ M.FireEvent("PLAYER_LOGIN")
 M.FireEvent("PLAYER_ENTERING_WORLD")
 local WP, Routes, L = ns.WP, ns.Routes, ns.L
 
--- /wp opens your waypoints and Find together, and closes both
+-- /wp toggles the single window on its last tab.
 M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, "")
-check(ns.UI.IsShown() and ns.Find.IsShown(), "/wp opens the waypoint window and Find")
+check(WaypointTrackerFrame and WaypointTrackerFrame:IsShown(), "/wp opens the waypoint window")
 M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, "")
-check(not ns.UI.IsShown() and not ns.Find.IsShown(), "/wp again closes both")
+check(not WaypointTrackerFrame:IsShown(), "/wp again closes the window")
 check(_G.WaypointTrackerArrowFind == nil, "no Find button by the arrow")
 
 -- every item with a seller can be found, with all its sellers
@@ -126,16 +126,19 @@ check(not Routes.Recording(), "recording stopped")
 local saved = Routes.SaveMine(draft)
 check(saved and saved.public and Routes.IsMine(saved), "a saved route is yours and shared")
 
--- the windows open without errors
+-- Routes uses the shared window, pages and context menus
 ns.RoutesUI.Show()
 M.Tick(0.1)
-check(ns.RoutesUI.IsShown(), "Routes window opens")
+check(ns.RoutesUI.IsShown(), "Routes tab opens")
 local f = ns.RoutesUI.Frames()
-check(f.help and f.help:IsShown(), "the first time, it explains how routes work")
+check(ns.RoutesUI.widgets.detail.body:GetText() == L.ROUTES_HELP_TEXT
+    and not ns.Window.CurrentPage("routes"), "first-open help is inline in the detail pane")
 ns.RoutesUI.ShowCreate()
 ns.RoutesUI.ShowShare(saved, true)
 f = ns.RoutesUI.Frames()
-check(f.create and f.share and f.share:IsShown(), "create and share dialogs open")
+check(f.create and f.create:IsVisible()
+    and ns.Window.CurrentPage("routes").title == L.ROUTE_CREATE_TITLE, "Create opens a Routes page")
+check(M.lastMenu and M.lastMenu.items[1].text == L.ROUTE_SHARE_SAVED_TITLE, "Share opens a context menu")
 Routes.RecordStart()
 f = ns.RoutesUI.Frames()
 check(f.recorder and f.recorder:IsShown(), "the recorder bar shows while recording")

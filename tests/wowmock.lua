@@ -1,6 +1,43 @@
 -- A small fake of the WoW API, just enough to load and exercise the addon
 -- outside the game with plain Lua 5.1. Any frame method we don't implement
 -- is recorded so it can be checked against the real API by hand.
+-- Frames model enabled state, multiline text height and vertical scroll offsets.
+-- Settings initializers support parent and shown predicates.
+-- UI test state:
+--   frames, unknownMethods: created objects and calls to unimplemented methods.
+--   menus, lastMenu: menu history and the latest recording root (items contain
+--     kind, text/title, fn, isSelected and setSelected; elements support submenus).
+--   lastPopup, lastPopupArgs: last popup ID and { a1, a2, data }.
+--   popups: visible dialog frames by ID; autoAcceptPopup/autoAltPopup/
+--     autoCancelPopup select a callback automatically, in that order.
+--   uiPanelCalls: show/hide call counts, including blocked calls; actionBlocked
+--     counts combat-blocked calls, which return without changing visibility.
+--   settings: proxy settings by variable; settingsControls: control initializers;
+--     settingsOpened: last category ID; settingsNotified: variables notified;
+--     settingsCategory: latest canvas category; settingsLayouts: layouts by category.
+--   helpTips: Show history ({ parent, info, relativeRegion, shown }); Hide and
+--     Acknowledge clear shown; Acknowledge invokes info.onAcknowledgeCallback.
+--   cvars: string values (includes both world-map coordinate switches).
+--   editModeEntered: entry count; editLayouts/editActive: layout names/index.
+-- Game test state:
+--   player: world position wx/wy/inst, facing, combat, taxi, dead, ghost,
+--     noPosition and corpse { mapID, x, y }; writes advance now slightly.
+--   now/timers: clock and queued C_Timer callbacks; eventFrames/unknownEvents:
+--     event listeners and events that throw when registered; focus: edit focus.
+--   printed/sounds/errors: chat, sound IDs and reported errors; locale: WT_LOCALE.
+--   units: token -> guid/name/reaction/level/class/dead/tapped/faction/dist/
+--     attackable/controlled/player; hasTarget: fallback unit presence/player flag.
+--   shift/ctrl/alt: modifier keys; addonsLoaded/tomtomInstalled/noDataAddon:
+--     addon availability; maps: map geometry; quests: quest log and objectives.
+--   serverQuests/loadedQuests/questRequests: asynchronous quest title loading;
+--     completedQuests/superTracked: completed quest IDs and tracked quest.
+--   userWaypoint/pinTracked: Blizzard waypoint and tracking state; vignettes:
+--     marker info and positions; tooltip/tooltipOwner/tooltipPostCalls: tooltip
+--     lines, owner and data hooks; raidNotices/flashes: raid messages and flashes.
+--   questDialog: id/title/text; loot: slot source GUIDs; lootItems: id/name by slot;
+--     canRepair: merchant repair support; merchant: vendor id/name rows.
+--   group: raid/party/guild flags; chatOpen/chatText: chat edit-box state.
+-- Helpers: NewObject, FireEvent, Tick, ShowObjectTooltip, TypeSlash and LoadAddon.
 local M = {}
 
 M.unknownMethods = {}
@@ -8,6 +45,14 @@ M.frames = {}
 M.printed = {}
 M.sounds = {}
 M.errors = {}
+M.uiPanelCalls = { show = 0, hide = 0 }
+M.settings = {}
+M.settingsControls = {}
+M.settingsNotified = {}
+M.settingsLayouts = {}
+M.helpTips = {}
+M.popups = {}
+M.editModeEntered = 0
 
 local function noop() end
 
@@ -65,11 +110,22 @@ end
 -- Frames
 -- ---------------------------------------------------------------------------
 local Frame = {}
+-- template children and methods that plain frames don't have, so code can
+-- feature-detect them
+local optionalWindowFields = {
+    TitleText = true, TitleContainer = true, CloseButton = true,
+    Inset = true, PortraitContainer = true,
+    SetTitle = true, SetPortraitToAsset = true,
+}
+
 local FrameMT = {
     __index = function(t, k)
         local v = Frame[k]
         if v ~= nil then
             return v
+        end
+        if optionalWindowFields[k] then
+            return nil
         end
         -- unknown method: record it and return a no-op
         if type(k) == "string" and k:match("^[A-Z]") then
@@ -106,6 +162,12 @@ M.NewObject = NewObject
 
 function Frame:GetName()
     return self._name
+end
+function Frame:SetID(id)
+    self._id = id
+end
+function Frame:GetID()
+    return self._id
 end
 function Frame:GetParent()
     return self._parent
@@ -253,14 +315,21 @@ function Frame:CreateTexture(name)
     local t = NewObject("Texture", name, self)
     return t
 end
-function Frame:CreateFontString(name)
+function Frame:CreateFontString(name, layer, font)
     local fs = NewObject("FontString", name, self)
+    fs.fontTemplate = font
     return fs
 end
 function Frame:CreateAnimationGroup()
     return NewObject("AnimationGroup", nil, self)
 end
 -- regions
+function Frame:SetTextColor(r, g, b, a)
+    self._textColor = { r, g, b, a or 1 }
+end
+function Frame:GetTextColor()
+    return unpack(self._textColor or { 1, 1, 1, 1 })
+end
 function Frame:SetText(t)
     self._text = t
     if self._kind == "EditBox" then
@@ -275,6 +344,26 @@ function Frame:GetText()
 end
 function Frame:GetStringWidth()
     return #(tostring(self._text or "")) * 7
+end
+function Frame:GetStringHeight()
+    local text = (self:GetText() or ""):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+    local lines, width = 0, math.max(1, self:GetWidth())
+    for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+        lines = lines + math.max(1, math.ceil(#line * 6 / width))
+    end
+    return lines * 12
+end
+function Frame:GetVerticalScroll()
+    return self._verticalScroll or 0
+end
+function Frame:SetVerticalScroll(value)
+    self._verticalScroll = value
+end
+function Frame:SetEnabled(on)
+    self.enabled = on and true or false
+end
+function Frame:IsEnabled()
+    return self.enabled ~= false
 end
 function Frame:SetTexCoord(...)
     self._texcoord = { ... }
@@ -378,10 +467,230 @@ end
 
 M.eventFrames = {}
 
+local function NewMenuRoot()
+    local root = { items = {} }
+    local function Add(self, item)
+        item.items = {}
+        item.SetTooltip = noop
+        item.SetEnabled = noop
+        item.AddInitializer = noop
+        item.CreateTitle = root.CreateTitle
+        item.CreateButton = root.CreateButton
+        item.CreateCheckbox = root.CreateCheckbox
+        item.CreateRadio = root.CreateRadio
+        item.CreateDivider = root.CreateDivider
+        item.CreateSpacer = root.CreateSpacer
+        table.insert(self.items, item)
+        return item
+    end
+    function root:CreateTitle(text)
+        return Add(self, { kind = "title", title = text, text = text })
+    end
+    function root:CreateButton(text, fn)
+        return Add(self, { kind = "button", text = text, fn = fn })
+    end
+    function root:CreateCheckbox(text, isSelected, setSelected)
+        return Add(self, { kind = "checkbox", text = text, fn = setSelected,
+            isSelected = isSelected, setSelected = setSelected })
+    end
+    function root:CreateRadio(text, isSelected, setSelected)
+        return Add(self, { kind = "radio", text = text, fn = setSelected,
+            isSelected = isSelected, setSelected = setSelected })
+    end
+    function root:CreateDivider()
+        return Add(self, { kind = "divider" })
+    end
+    function root:CreateSpacer()
+        return Add(self, { kind = "spacer" })
+    end
+    return root
+end
+
+local function AddDropdownMethods(f)
+    function f:SetupMenu(gen)
+        self.menuGenerator = gen
+    end
+    function f:GenerateMenu()
+        local root = NewMenuRoot()
+        if self.menuGenerator then
+            self.menuGenerator(self, root)
+        end
+        self.lastRoot, M.lastMenu = root, root
+        return root
+    end
+    function f:OverrideText(text)
+        self:SetText(text)
+    end
+    function f:SetDefaultText(text)
+        self.defaultText = text
+        self:SetText(text)
+    end
+end
+
+local function AddSettingSliderMethods(slider)
+    slider._callbacks = {}
+    function slider:Init(value, min, max, steps, formatters)
+        self._min, self._max = min, max
+        self.steps, self.formatters = steps, formatters
+        self._value = value
+    end
+    function slider:RegisterCallback(event, fn, owner)
+        self._callbacks[event] = self._callbacks[event] or {}
+        table.insert(self._callbacks[event], { fn = fn, owner = owner })
+    end
+    function slider:SetValue(value)
+        local changed = self._value ~= value
+        Frame.SetValue(self, value)
+        if changed then
+            for _, cb in ipairs(self._callbacks.OnValueChanged or {}) do
+                cb.fn(cb.owner, value)
+            end
+        end
+    end
+end
+
 function CreateFrame(kind, name, parent, template)
+    local function Has(t)
+        return template and template:find(t, 1, true)
+    end
+    if Has("MagicButtonTemplate") or Has("UIPanelButtonTemplate") then
+        kind = "Button"
+    elseif Has("SearchBoxTemplate") or Has("InputBoxInstructionsTemplate") or Has("InputBoxTemplate") then
+        kind = "EditBox"
+    elseif Has("DialogBorderTranslucentTemplate") then
+        kind = "Frame"
+    end
     local f = NewObject(kind, name, parent)
     f._template = template
-    if template == "EditModeSystemSelectionTemplate" then
+    if Has("UIPanelButtonTemplate") then
+        f:SetFontString(f:CreateFontString(nil, "ARTWORK", "GameFontNormal"))
+        function f:SetText(text)
+            Frame.SetText(self, text)
+            self:GetFontString():SetText(text)
+        end
+    end
+    if Has("ButtonFrameTemplate") or Has("PortraitFrameTemplate") then
+        f.TitleText = f:CreateFontString()
+        f.TitleContainer = { TitleText = f.TitleText }
+        f.CloseButton = NewObject("Button", nil, f)
+        f.Inset = NewObject("Frame", nil, f)
+        f.Bg = f:CreateTexture()
+        f.TopTileStreaks = f:CreateTexture()
+        f.PortraitContainer = NewObject("Frame", nil, f)
+        f.PortraitContainer.portrait = f.PortraitContainer:CreateTexture()
+        f.portrait = f.PortraitContainer.portrait
+        function f:SetTitle(text)
+            self.TitleText:SetText(text)
+        end
+        function f:SetPortraitToAsset(asset)
+            self.portrait:SetTexture(asset)
+        end
+        f.SetPortraitTextureRaw = f.SetPortraitToAsset
+    end
+    if Has("PanelTabButtonTemplate") then
+        f.Left, f.Middle, f.Right = f:CreateTexture(), f:CreateTexture(), f:CreateTexture()
+        f.Left:SetWidth(20)
+        f.Middle:SetWidth(1)
+        f.Right:SetWidth(20)
+        f.GetTextWidth = Frame.GetStringWidth
+    end
+    if Has("SearchBoxTemplate") or Has("InputBoxInstructionsTemplate") then
+        f.Instructions = f:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
+        f.Instructions:SetTextColor(0.35, 0.35, 0.35)
+        f.Instructions:SetPoint("TOPLEFT", 16, 0)
+        f.Instructions:SetPoint("BOTTOMRIGHT", -20, 0)
+        if Has("SearchBoxTemplate") then
+            f.instructionText = "Search"
+            f.Instructions:SetText(f.instructionText)
+            f.searchIcon = f:CreateTexture()
+            f.clearButton = NewObject("Button", nil, f)
+            f.clearButton:Hide()
+            f.clearButton:SetScript("OnClick", function()
+                f:SetText("")
+                f:ClearFocus()
+            end)
+            f:SetScript("OnEditFocusLost", function(self)
+                if self:GetText() == "" then self.clearButton:Hide() end
+            end)
+            f:SetScript("OnEditFocusGained", function(self)
+                self.clearButton:Show()
+            end)
+        end
+        f:SetScript("OnTextChanged", function(self)
+            self.Instructions:SetShown(self:GetText() == "")
+            if self.clearButton then
+                self.clearButton:SetShown(self:HasFocus() or self:GetText() ~= "")
+            end
+        end)
+    end
+    if Has("InputScrollFrameTemplate") then
+        f.EditBox = NewObject("EditBox", nil, f)
+        f.EditBox.Instructions = f.EditBox:CreateFontString()
+        f.EditBox._multiLine = true
+        function f.EditBox:SetMultiLine(on)
+            self._multiLine = on
+        end
+        function f.EditBox:IsMultiLine()
+            return self._multiLine
+        end
+        f.ScrollBar = NewObject("Slider", nil, f)
+        f:SetScrollChild(f.EditBox)
+    end
+    if kind == "DropdownButton" and Has("WowStyle1DropdownTemplate") then
+        AddDropdownMethods(f)
+    end
+    if Has("EditModeSettingSliderTemplate") then
+        f.Label = f:CreateFontString()
+        f.Slider = NewObject("Slider", nil, f)
+        AddSettingSliderMethods(f.Slider)
+        function f:SetupSetting(data)
+            self.data = data
+            self.Label:SetText(data.settingName)
+            local info = data.displayInfo
+            local steps = info.stepSize and (info.maxValue - info.minValue) / info.stepSize
+            self.Slider:Init(data.currentValue, info.minValue, info.maxValue, steps, { info.formatter })
+        end
+        f.Slider:SetScript("OnValueChanged", function(_, value)
+            if f.data and f:GetParent() then
+                f:GetParent():OnSettingValueChanged(f.data.displayInfo.setting, value)
+            end
+        end)
+    end
+    if Has("EditModeSettingCheckboxTemplate") then
+        f.Label = f:CreateFontString()
+        f.Button = NewObject("CheckButton", nil, f)
+        function f:SetupSetting(data)
+            self.data = data
+            self.Label:SetText(data.settingName)
+            self.Button:SetChecked(data.currentValue == 1 or data.currentValue == true)
+        end
+        f.Button:SetScript("OnClick", function(button)
+            if f.data and f:GetParent() then
+                f:GetParent():OnSettingValueChanged(f.data.displayInfo.setting, button:GetChecked() and 1 or 0)
+            end
+        end)
+    end
+    if Has("EditModeSettingDropdownTemplate") then
+        f.Label = f:CreateFontString()
+        f.Dropdown = CreateFrame("DropdownButton", nil, f, "WowStyle1DropdownTemplate")
+        function f:SetupSetting(data)
+            self.data = data
+            self.Label:SetText(data.settingName)
+            self.Dropdown:SetupMenu(function(_, root)
+                for _, option in ipairs(data.displayInfo.options or {}) do
+                    local value, text = option.value or option[1], option.text or option[2]
+                    root:CreateRadio(text, function() return data.currentValue == value end, function()
+                        data.currentValue = value
+                        if self:GetParent() then
+                            self:GetParent():OnSettingValueChanged(data.displayInfo.setting, value)
+                        end
+                    end)
+                end
+            end)
+        end
+    end
+    if Has("EditModeSystemSelectionTemplate") then
+        f.Label = f:CreateFontString()
         -- the parts of Blizzard's Edit Mode selection box addons use
         function f:ShowHighlighted()
             self.isSelected = false
@@ -392,7 +701,7 @@ function CreateFrame(kind, name, parent, template)
             self:Show()
         end
     end
-    if template and template:find("UIPanelScrollFrameTemplate") then
+    if Has("UIPanelScrollFrameTemplate") then
         f.ScrollBar = NewObject("Slider", nil, f)
     end
     return f
@@ -420,6 +729,42 @@ end
 UISpecialFrames = {}
 SlashCmdList = {}
 ChatFontNormal = {}
+
+function PanelTemplates_SetNumTabs(frame, n)
+    frame.numTabs = n
+end
+function PanelTemplates_SetTab(frame, i)
+    frame.selectedTab = i
+end
+function PanelTemplates_GetSelectedTab(frame)
+    return frame.selectedTab
+end
+function PanelTemplates_TabResize(tab, padding)
+    tab:SetWidth(tab:GetTextWidth() + (padding or 0) + tab.Left:GetWidth() + tab.Right:GetWidth())
+end
+PanelTemplates_UpdateTabs = noop
+PanelTemplates_DeselectTab = noop
+PanelTemplates_SelectTab = noop
+ButtonFrameTemplate_HideAttic = noop
+ButtonFrameTemplate_ShowButtonBar = noop
+ButtonFrameTemplate_HidePortrait = noop
+
+UIPanelWindows = {}
+function RegisterUIPanel(frame, attrs)
+    UIPanelWindows[frame:GetName()] = attrs
+end
+function ToggleFrame(frame)
+    frame:SetShown(not frame:IsShown())
+end
+function InputScrollFrame_SetInstructions(frame, text)
+    if not rawget(frame.EditBox, "Instructions") then
+        frame.EditBox.Instructions = frame.EditBox:CreateFontString()
+    end
+    frame.EditBox.Instructions:SetText(text)
+end
+function GetAppropriateTooltip()
+    return GameTooltip
+end
 
 function M.FireEvent(event, ...)
     for _, f in ipairs(M.eventFrames[event] or {}) do
@@ -468,7 +813,7 @@ M.player = setmetatable({}, {
 })
 M.locale = os.getenv("WT_LOCALE") or "enUS"
 M.addonsLoaded = { WaypointTracker = true }
-M.cvars = { rotateMinimap = "0" }
+M.cvars = { rotateMinimap = "0", worldMapShowPlayerCoords = "0", worldMapShowCursorCoords = "0" }
 
 function GetTime()
     return M.now
@@ -547,11 +892,37 @@ end
 function GetCVar(k)
     return M.cvars[k]
 end
+function SetCVar(k, v)
+    M.cvars[k] = tostring(v)
+end
+C_CVar = {
+    GetCVar = GetCVar,
+    SetCVar = SetCVar,
+    GetCVarBool = function(k)
+        return M.cvars[k] == "1"
+    end,
+    GetCVarInfo = function(k)
+        return M.cvars[k] ~= nil and M.cvars[k] or nil
+    end,
+}
 function GetCursorPosition()
     return 0, 0
 end
-function HideUIPanel(f)
-    f:Hide()
+function ShowUIPanel(frame)
+    M.uiPanelCalls.show = M.uiPanelCalls.show + 1
+    if M.player.combat then
+        M.actionBlocked = (M.actionBlocked or 0) + 1
+        return
+    end
+    frame:Show()
+end
+function HideUIPanel(frame)
+    M.uiPanelCalls.hide = M.uiPanelCalls.hide + 1
+    if M.player.combat then
+        M.actionBlocked = (M.actionBlocked or 0) + 1
+        return
+    end
+    frame:Hide()
 end
 function issecretvalue()
     return false
@@ -609,6 +980,7 @@ function EditModeManagerFrame:SelectSystem(frame)
     self.selected = frame
 end
 function EditModeManagerFrame:EnterEditMode()
+    M.editModeEntered = M.editModeEntered + 1
     self.active = true
     EventRegistry:TriggerEvent("EditMode.Enter")
 end
@@ -625,6 +997,7 @@ C_Timer = {
 SOUNDKIT = { MAP_PING = 3175, IG_MAINMENU_OPTION_CHECKBOX_ON = 856, RAID_WARNING = 8959 }
 Enum = { UIMapType = { Cosmic = 0, World = 1, Continent = 2, Zone = 3, Dungeon = 4, Micro = 5, Orphan = 6 } }
 Enum.TooltipDataType = { Item = 0, Spell = 1, Unit = 2, Corpse = 3, Object = 4 }
+Enum.EditModeSettingDisplayType = { Dropdown = 0, Slider = 1, Checkbox = 2 }
 
 C_AddOns = {
     GetAddOnMetadata = function(name, field)
@@ -1178,12 +1551,23 @@ end
 WorldMapFrame = NewObject("Frame", "WorldMapFrame", UIParent)
 WorldMapFrame._shown = false
 WorldMapFrame.ScrollContainer = NewObject("Frame", nil, WorldMapFrame)
+WorldMapFrame.WorldMapTrackingPinButton = NewObject("Button", nil, WorldMapFrame)
+WorldMapFrame.overlayFrames = {}
 WorldMapFrame.mapID = 37
 WorldMapFrame.pins = {}
 WorldMapFrame.providers = {}
 WorldMapFrame.clickHandlers = {}
 function WorldMapFrame:GetMapID()
     return self.mapID
+end
+function WorldMapFrame:GetCanvasContainer()
+    return self.ScrollContainer
+end
+function WorldMapFrame:AddOverlayFrame(template, kind, point, rel, relPoint, x, y)
+    local frame = CreateFrame(kind, nil, self, template)
+    frame:SetPoint(point, rel, relPoint, x, y)
+    table.insert(self.overlayFrames, frame)
+    return frame
 end
 function WorldMapFrame:AddDataProvider(p)
     table.insert(self.providers, p)
@@ -1229,31 +1613,221 @@ end
 M.menus = {}
 MenuUtil = {
     CreateContextMenu = function(owner, gen)
-        local root = { items = {} }
-        function root:CreateTitle(t)
-            table.insert(self.items, { title = t })
-        end
-        function root:CreateButton(t, fn)
-            table.insert(self.items, { text = t, fn = fn })
-        end
+        local root = NewMenuRoot()
         gen(owner, root)
+        M.lastMenu = root
         table.insert(M.menus, root)
         return root
     end,
 }
+local nextCategoryID = 1
+local function NewCategory(name)
+    nextCategoryID = nextCategoryID + 1
+    local category = { name = name, ID = nextCategoryID, subcategories = {} }
+    function category:GetID()
+        return self.ID
+    end
+    return category
+end
+local function NewInitializer(kind, name)
+    local initializer = { kind = kind, name = name, searchTags = {} }
+    function initializer:SetParentInitializer(parent, predicate)
+        self.parentInitializer, self.parentPredicate = parent, predicate
+    end
+    function initializer:AddShownPredicate(fn)
+        self.shownPredicates = self.shownPredicates or {}
+        table.insert(self.shownPredicates, fn)
+    end
+    function initializer:ShouldShow()
+        for _, fn in ipairs(self.shownPredicates or {}) do
+            if not fn() then return false end
+        end
+        return true
+    end
+    function initializer:AddSearchTags(...)
+        for i = 1, select("#", ...) do
+            local tag = select(i, ...)
+            table.insert(self.searchTags, tag)
+        end
+    end
+    return initializer
+end
+local function SettingsControl(kind, cat, setting, options, tooltip)
+    local initializer = NewInitializer(kind, setting.name)
+    initializer.cat, initializer.setting = cat, setting
+    initializer.options, initializer.tooltip = options, tooltip
+    table.insert(M.settingsControls, initializer)
+    return initializer
+end
 Settings = {
     RegisterCanvasLayoutCategory = function(frame, name)
-        M.settingsCategory = { frame = frame, name = name }
+        M.settingsCategory = NewCategory(name)
+        M.settingsCategory.frame = frame
         return M.settingsCategory
     end,
     RegisterAddOnCategory = noop,
+    RegisterVerticalLayoutCategory = NewCategory,
+    RegisterVerticalLayoutSubcategory = function(parent, name)
+        local category = NewCategory(name)
+        category.parent = parent
+        table.insert(parent.subcategories, category)
+        return category
+    end,
+    RegisterProxySetting = function(cat, var, valueType, name, default, get, set)
+        local setting = { cat = cat, variable = var, valueType = valueType, name = name, default = default,
+            GetValue = get }
+        function setting:SetValue(value)
+            local old = self:GetValue()
+            set(value)
+            if self.onValueChanged and self:GetValue() ~= old then
+                self.onValueChanged(self, self:GetValue())
+            end
+        end
+        function setting:SetValueChangedCallback(fn)
+            self.onValueChanged = fn
+        end
+        M.settings[var] = setting
+        return setting
+    end,
+    CreateCheckbox = function(cat, setting, tooltip)
+        return SettingsControl("checkbox", cat, setting, nil, tooltip)
+    end,
+    CreateSlider = function(cat, setting, options, tooltip)
+        return SettingsControl("slider", cat, setting, options, tooltip)
+    end,
+    CreateDropdown = function(cat, setting, options, tooltip)
+        return SettingsControl("dropdown", cat, setting, options, tooltip)
+    end,
+    CreateColorSwatch = function(cat, setting, tooltip)
+        return SettingsControl("colorSwatch", cat, setting, nil, tooltip)
+    end,
+    CreateSliderOptions = function(min, max, step)
+        local options = { min = min, max = max, step = step, formatters = {} }
+        function options:SetLabelFormatter(label, fn)
+            self.formatters[label] = fn
+        end
+        return options
+    end,
+    CreateControlTextContainer = function()
+        local container = { data = {} }
+        function container:Add(value, text, tooltip)
+            table.insert(self.data, { value = value, text = text, tooltip = tooltip })
+        end
+        function container:GetData()
+            return self.data
+        end
+        return container
+    end,
+    OpenToCategory = function(id)
+        M.settingsOpened = id
+    end,
+    NotifyUpdate = function(var)
+        M.settingsNotified[var] = true
+    end,
+    VarType = { Boolean = "boolean", Number = "number", String = "string" },
+    KEYBINDINGS_CATEGORY_ID = 1,
+    GetSetting = function(var)
+        return M.settings[var]
+    end,
 }
+SettingsPanel = NewObject("Frame", "SettingsPanel", UIParent)
+SettingsPanel._shown = false
+function SettingsPanel:GetLayout(category)
+    local layout = M.settingsLayouts[category]
+    if not layout then
+        layout = { initializers = {} }
+        function layout:AddInitializer(initializer)
+            table.insert(self.initializers, initializer)
+        end
+        M.settingsLayouts[category] = layout
+    end
+    return layout
+end
+function SettingsPanel:Close()
+    self:Hide()
+end
+function CreateSettingsListSectionHeaderInitializer(name)
+    return NewInitializer("header", name)
+end
+function CreateSettingsButtonInitializer(name, text, click, tooltip, search)
+    local initializer = NewInitializer("button", name)
+    initializer.text, initializer.click = text, click
+    initializer.tooltip, initializer.search = tooltip, search
+    return initializer
+end
+MinimalSliderWithSteppersMixin = { Label = { Right = 2 } }
+
 StaticPopupDialogs = {}
-function StaticPopup_Show(which)
+function StaticPopup_Show(which, a1, a2, data)
     M.lastPopup = which
+    M.lastPopupArgs = { a1, a2, data }
     local d = StaticPopupDialogs[which]
-    if d and M.autoAcceptPopup then
-        d.OnAccept()
+    if not d then
+        return
+    end
+    local frame = NewObject("Frame", nil, UIParent)
+    frame.which, frame.data = which, data
+    M.popups[which] = frame
+    local fn
+    if M.autoAcceptPopup then
+        fn = d.OnAccept
+    elseif M.autoAltPopup then
+        fn = d.OnAlt
+    elseif M.autoCancelPopup then
+        fn = d.OnCancel
+    end
+    if fn then
+        fn(frame, data)
+        frame:Hide()
+    end
+    return frame
+end
+function StaticPopup_Hide(which)
+    local frame = M.popups[which]
+    if frame then
+        frame:Hide()
+    end
+end
+function StaticPopup_Visible(which)
+    local frame = M.popups[which]
+    return frame and frame:IsShown() or false
+end
+
+HelpTip = {
+    Point = { TopEdgeLeft = 1, TopEdgeCenter = 2, TopEdgeRight = 3,
+        BottomEdgeLeft = 4, BottomEdgeCenter = 5, BottomEdgeRight = 6,
+        RightEdgeTop = 7, RightEdgeCenter = 8, RightEdgeBottom = 9,
+        LeftEdgeTop = 10, LeftEdgeCenter = 11, LeftEdgeBottom = 12 },
+    Alignment = { Left = 1, Center = 2, Right = 3 },
+    ButtonStyle = { None = 1, Close = 2, Okay = 3, GotIt = 4 },
+}
+function HelpTip:Show(parent, info, relativeRegion)
+    table.insert(M.helpTips, { parent = parent, info = info, relativeRegion = relativeRegion, shown = true })
+    return true
+end
+function HelpTip:Hide(parent, text)
+    for _, tip in ipairs(M.helpTips) do
+        if tip.parent == parent and (text == nil or tip.info.text == text) then
+            tip.shown = false
+        end
+    end
+end
+function HelpTip:IsShowing(parent, text)
+    for _, tip in ipairs(M.helpTips) do
+        if tip.shown and tip.parent == parent and (text == nil or tip.info.text == text) then
+            return true
+        end
+    end
+    return false
+end
+function HelpTip:Acknowledge(parent, text)
+    for _, tip in ipairs(M.helpTips) do
+        if tip.shown and tip.parent == parent and (text == nil or tip.info.text == text) then
+            tip.shown = false
+            if tip.info.onAcknowledgeCallback then
+                tip.info.onAcknowledgeCallback(tip.info.callbackArg)
+            end
+        end
     end
 end
 

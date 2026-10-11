@@ -12,7 +12,7 @@ jobs:
       - name: Install Lua 5.1 (the version WoW uses)
         run: sudo apt-get update && sudo apt-get install -y lua5.1
       - name: Syntax check
-        run: for f in WaypointTracker/*.lua WaypointTracker/Locales/*.lua WaypointTracker_Data/*.lua; do luac5.1 -p "$f"; done
+        run: find . -type f -name '*.lua' -print0 | xargs -0 -n 1 luac5.1 -p
       - name: Translations complete
         run: lua5.1 tests/check_locales.lua
       - name: Play-through tests in every language
@@ -23,15 +23,24 @@ jobs:
           done
       - name: Game API use
         run: lua5.1 tests/check_api.lua
+      - name: All play-through suites
+        run: |
+          for f in tests/run_*.lua; do
+            echo "== $f"
+            lua5.1 "$f"
+          done
       - name: Positions as plain tables (as in WoW Forever)
-        run: WT_PLAIN_VECTORS=1 lua5.1 tests/run_tests.lua
-      - name: Client without the optional API
         run: |
-          lua5.1 tests/run_bare.lua
-          WT_PLAIN_VECTORS=1 lua5.1 tests/run_bare.lua
-      - name: Routes
-        run: lua5.1 tests/run_routes.lua
-      - name: Real routes
+          for f in run_tests run_bare run_travel run_map; do
+            echo "== $f (plain vectors)"
+            WT_PLAIN_VECTORS=1 lua5.1 "tests/$f.lua"
+          done
+      - name: Optional UI and delayed world map
         run: |
-          lua5.1 tests/run_travel.lua
-          WT_PLAIN_VECTORS=1 lua5.1 tests/run_travel.lua
+          for f in run_tab_waypoints run_tab_find run_editmode run_minimap run_widgets; do
+            lua5.1 "tests/$f.lua" --bare
+          done
+          lua5.1 tests/run_map.lua --legacy
+          lua5.1 tests/run_map.lua --delayed
+          lua5.1 tests/run_map.lua --coords-on
+          lua5.1 tests/run_map.lua --global-cvars

@@ -30,7 +30,7 @@ local Geo, WP, L = ns.Geo, ns.WP, ns.L
 check(ns.settings ~= nil, "settings created")
 check(ns.Get("arrowAlpha") == 0.8 and ns.Get("fadeOnCourse") == true, "old settings moved to the new softer defaults")
 check(ns.Get("arrowPos") == nil and ns.settings.arrowLocked == nil, "arrow moved back over the character")
-check(WaypointTrackerDB.version == 2, "settings version 2")
+check(WaypointTrackerDB.version == 3, "settings version 3")
 check(ns.Arrow.frame:IsMouseEnabled() == false, "arrow ignores the mouse (right-click to attack works)")
 check(SlashCmdList.WAYPOINTTRACKER ~= nil, "/wp registered")
 check(SlashCmdList.WAYPOINTTRACKERWAY ~= nil, "/way registered without TomTom")
@@ -238,9 +238,9 @@ for _, f in ipairs(M.frames) do
     end
 end
 ns.Set("worldCoords", false)
-check(coordsFrame and not coordsFrame:IsShown(), "map coordinates hide")
+check(not coordsFrame and M.cvars.worldMapShowPlayerCoords == "0" and M.cvars.worldMapShowCursorCoords == "0", "native map coordinates hide")
 ns.Set("worldCoords", true)
-check(coordsFrame:IsShown(), "map coordinates come back")
+check(not coordsFrame and M.cvars.worldMapShowPlayerCoords == "1" and M.cvars.worldMapShowCursorCoords == "1", "native map coordinates come back")
 WorldMapFrame:Hide()
 
 -- ---------------------------------------------------------------------------
@@ -277,51 +277,52 @@ M.cvars.rotateMinimap = "0"
 WaypointTracker_ToggleWindow()
 check(WaypointTrackerFrame and WaypointTrackerFrame:IsShown(), "window opens")
 local w = ns.UI.widgets
-check(w.zone:GetText() == "Elwynn Forest", "zone box starts at your zone")
-w.zone:SetFocus()
-w.zone:Type("west")
+w.list:SetSize(590, 200)
+w.list:RunScript("OnSizeChanged")
+check(w.add:GetText() == "", "Add starts empty")
+w.add:SetFocus()
+w.add:Type("west")
 check(w.zoneList:IsShown(), "zone list shows while typing")
 check(w.zoneList.buttons[1].result.zone.id == 52, "Westfall suggested")
-w.zone:RunScript("OnEnterPressed")
-check(w.zone:GetText() == "Westfall", "zone picked with Enter")
-w.x:Type("45.5 60.25")
-check(w.x:GetText() == "45.5" and w.y:GetText() == "60.25", "pasting 'x y' fills both boxes")
-w.note:Type("Sentinel Hill")
+w.add:RunScript("OnEnterPressed")
+check(w.add:GetText() == "Westfall ", "zone picked with Enter")
+w.add:Type("Westfall 45.5 60.25")
+w.name:Type("Sentinel Hill")
 local count = WP.Count()
 w.set:Click()
 check(WP.Count() == count + 1 and WP.GetActive().title == "Sentinel Hill", "Set Waypoint button")
-check(near(WP.GetActive().x, 0.455) and near(WP.GetActive().y, 0.6025), "coords from boxes")
-w.x:Type("45,5")
-check(w.x:GetText() == "45,5", "European decimal stays in X")
-w.y:Type("20")
+check(near(WP.GetActive().x, 0.455) and near(WP.GetActive().y, 0.6025), "coords from Add")
+w.add:Type("Westfall 45,5 20")
 w.set:Click()
 check(near(WP.GetActive().x, 0.455), "European decimal accepted")
-w.x:Type("150")
-w.y:Type("20")
+w.add:Type("150 20")
 count = WP.Count()
 w.set:Click()
 check(WP.Count() == count, "bad coords rejected")
 w.here:Click()
-check(w.zone:GetText() == "Elwynn Forest" and w.x:GetText() == "40.0", "Use My Position")
+check(w.add:GetText():find("Elwynn Forest 40.0", 1, true), "Use My Position")
 M.Tick(0.6)
-local row = w.rows[1]
+local row = w.list.rows[1]
 check(row:IsShown() and row.wp ~= nil, "list rows show waypoints")
 row:Click()
-row.remove:Click()
-
--- more options
-w.more:Click()
-check(WaypointTrackerOptionsFrame and WaypointTrackerOptionsFrame:IsShown(), "more options opens")
-for _, cb in ipairs(ns.UI.allChecks) do
-    -- (treasure hunt loads the database when it starts; it's tested on its own)
-    if cb.settingKey and cb.settingKey ~= "showAdvanced" and cb.settingKey ~= "treasureHunt" then
-        local was = ns.Get(cb.settingKey)
-        cb:Click()
-        M.Tick(0.1)
-        cb:Click()
-        check(ns.Get(cb.settingKey) == was, "toggle " .. cb.settingKey)
-    end
+row:Click("RightButton")
+for _, item in ipairs(M.lastMenu.items) do
+    if item.text == L.REMOVE then item.fn() end
 end
+local special = false
+for _, name in ipairs(UISpecialFrames) do
+    if name == "WaypointTrackerFrame" then special = true end
+end
+check(special, "window is registered for Esc")
+-- Emulate Blizzard's Esc handler for registered special frames.
+w.add:RunScript("OnEscapePressed")
+for _, name in ipairs(UISpecialFrames) do
+    local frame = _G[name]
+    if frame and frame:IsShown() then frame:Hide() end
+end
+check(not WaypointTrackerFrame:IsShown(), "Esc closes the window")
+ns.Window.Show("waypoints")
+
 ns.Set("colorMode", "direction")
 M.Tick(0.1)
 ns.Set("colorMode", "single")
@@ -339,20 +340,20 @@ M.player.combat = false
 M.Tick(0.1)
 check(ns.Arrow.frame:IsShown(), "back after combat")
 
--- moving the arrow happens from the window only
-w.move:Click()
+-- legacy arrow movement remains available as the fallback
+ns.Arrow.SetMoving(not ns.Arrow.moving)
 check(ns.Arrow.moving and ns.Arrow.frame:IsMouseEnabled(), "Move Arrow lets you drag it")
 ns.Arrow.frame:RunScript("OnDragStart")
 ns.Arrow.frame:RunScript("OnDragStop")
 check(type(ns.Get("arrowPos")) == "table", "new position saved")
-w.move:Click()
+ns.Arrow.SetMoving(not ns.Arrow.moving)
 check(not ns.Arrow.moving and not ns.Arrow.frame:IsMouseEnabled(), "Done: click-through again")
-w.move:Click()
+ns.Arrow.SetMoving(not ns.Arrow.moving)
 M.player.combat = true
 M.FireEvent("PLAYER_REGEN_DISABLED")
 check(not ns.Arrow.moving, "entering combat stops moving mode")
 M.player.combat = false
-w.reset:Click()
+ns.Arrow.Reset()
 check(ns.Get("arrowPos") == nil, "Reset puts the arrow back")
 
 -- places: quests, flight masters, dungeons and rares from the game's own data
@@ -369,12 +370,12 @@ check(kinds["Orc Camp"] == nil, "other faction's flight master skipped")
 check(kinds["The Deadmines"] == "dungeon", "dungeon entrance found")
 check(kinds["Mother Fang"] == "rare", "rare on the map found")
 
-w.zone:SetFocus()
-w.zone:Type("")
+w.add:SetFocus()
+w.add:Type("")
 local first = w.zoneList.buttons[1].result
 check(first and first.here, "empty search starts with where you are")
 check(w.zoneList.buttons[2].result.place and w.zoneList.buttons[2].result.place.kind ~= nil, "then your quests")
-w.zone:Type("goldsh")
+w.add:Type("goldsh")
 local hit
 for _, b in ipairs(w.zoneList.buttons) do
     if b.result and b.result.place and b.result.place.name == "Goldshire, Elwynn" then
@@ -385,18 +386,18 @@ check(hit ~= nil, "typing finds the flight master")
 count = WP.Count()
 hit:Click()
 check(WP.Count() == count + 1 and WP.GetActive().title == "Goldshire, Elwynn", "picking a place sets the waypoint")
-w.zone:SetFocus()
-w.zone:Type("tri")
-w.zone:RunScript("OnArrowPressed", "DOWN")
-w.zone:RunScript("OnArrowPressed", "UP")
-w.zone:RunScript("OnEnterPressed")
-check(w.zone:GetText() == "Tirisfal Glades", "keyboard pick of a zone")
+w.add:SetFocus()
+w.add:Type("tri")
+w.add:RunScript("OnArrowPressed", "DOWN")
+w.add:RunScript("OnArrowPressed", "UP")
+w.add:RunScript("OnEnterPressed")
+check(w.add:GetText() == "Tirisfal Glades ", "keyboard pick of a zone")
 
 -- sharing
 M.Tick(0.6)
-local shareRow = w.rows[1]
+local shareRow = w.list.rows[1]
 check(shareRow.wp ~= nil, "row to share")
-shareRow.share:Click()
+ns.Share.ShowMenu(shareRow, shareRow.wp)
 local shareMenu = M.menus[#M.menus]
 local labels = {}
 for _, item in ipairs(shareMenu.items) do
@@ -435,34 +436,28 @@ local function PickSay()
     end
 end
 count = WP.Count()
-w.zone:SetText("Westfall")
-w.x:SetText("56.3")
-w.y:SetText("47.1")
-w.note:SetText("Sentinel Hill")
+w.add:SetText("Westfall 56.3 47.1")
+w.name:SetText("Sentinel Hill")
 local menusBefore = #M.menus
-w.share:Click()
+w.set:Click("RightButton")
 check(#M.menus == menusBefore + 1, "Share opens the channel menu for typed coordinates")
 M.chatText = nil
 PickSay()
 check(M.chatText and M.chatText:find("^/say %[Waypoint Tracker%] Sentinel Hill: ") and M.chatText:find("56.3", 1, true), "typed coordinates go to chat (got " .. tostring(M.chatText) .. ")")
 check(WP.Count() == count, "sharing typed coordinates doesn't set a waypoint")
-w.x:SetText("")
-w.y:SetText("")
-w.note:SetText("")
-w.share:Click()
+w.add:SetText("")
+w.name:SetText("")
+w.set:Click("RightButton")
 M.chatText = nil
 PickSay()
 local myZone = Geo.GetMapName(C_Map.GetBestMapForUnit("player"))
 check(M.chatText and M.chatText:find(myZone, 1, true), "empty X and Y share where you stand")
 check(WP.Count() == count, "sharing your location doesn't set a waypoint")
-w.x:SetText("150")
-w.y:SetText("20")
+w.add:SetText("150 20")
 menusBefore = #M.menus
-w.share:Click()
+w.set:Click("RightButton")
 check(#M.menus == menusBefore, "bad coordinates aren't shared")
-w.x:SetText("")
-w.y:SetText("")
-w.zone:SetText("")
+w.add:SetText("")
 -- typed in the chat box, which the game empties and closes after the command
 M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, "share Westfall 40 50 Camp")
 M.Tick(0.1)
@@ -486,7 +481,7 @@ WaypointTracker_ShareHere()
 check(M.chatText and M.chatText:find(myZone, 1, true), "the key binding shares where you stand")
 check(WP.Count() == count, "none of the share commands set a waypoint")
 M.hasTarget = true
-shareRow.share:Click()
+ns.Share.ShowMenu(shareRow, shareRow.wp)
 local hasWhisper = false
 for _, item in ipairs(M.menus[#M.menus].items) do
     if item.text and item.text:find("Tester", 1, true) then
@@ -587,7 +582,6 @@ ns.Set("followQuest", false)
 -- reset
 M.autoAcceptPopup = true
 ns.Set("arrowScale", 1.7)
-StaticPopup_Show("WAYPOINTTRACKER_RESET")
 ns.ResetSettings()
 check(ns.Get("arrowScale") == 1.0, "reset settings")
 WaypointTracker_ToggleWindow()
@@ -600,13 +594,22 @@ M.player.noPosition = false
 M.Tick(0.1)
 
 -- ---------------------------------------------------------------------------
--- Find window (pfQuest's database, loaded on demand)
+-- Find tab (pfQuest's database, loaded on demand)
 -- ---------------------------------------------------------------------------
 M.player.wx, M.player.wy, M.player.inst = -1200, -1200, 0 -- Elwynn Forest 40, 60
 M.noDataAddon = true
 ns.Find.Show()
-check(WaypointTrackerFindFrame:IsShown(), "Find window opens")
+check(ns.Find.IsShown(), "Find tab opens")
 local fw = ns.Find.widgets
+fw.list:SetSize(276, 308)
+fw.list:RunScript("OnSizeChanged")
+local function PickMenu(widget, text)
+    widget:GenerateMenu()
+    for _, item in ipairs(M.lastMenu.items) do
+        if item.text == text then item.fn(); return end
+    end
+    error("missing menu item: " .. tostring(text))
+end
 fw.search:Type("kobold")
 M.Tick(0.3)
 check(fw.rows[1]:IsShown() == false, "no results without the database")
@@ -705,22 +708,14 @@ fw.faction:Click()
 ns.Set("findTab", "all")
 
 -- nearest services
-local innBtn, mailBtn
-for _, b in ipairs(WaypointTrackerFindFrame.serviceButtons) do
-    if b.service == "innkeeper" then
-        innBtn = b
-    elseif b.service == "mailbox" then
-        mailBtn = b
-    end
-end
-innBtn:Click()
+PickMenu(fw.nearest, L.SERVICE_INNKEEPER)
 check(WP.GetActive().title == Name("units", FARLEY), "nearest innkeeper is Goldshire's (got " .. tostring(WP.GetActive().title) .. ")")
-mailBtn:Click()
+PickMenu(fw.nearest, L.SERVICE_MAILBOX)
 check(WP.GetActive().m == 37 and WP.GetActive().title ~= Name("units", FARLEY), "nearest mailbox")
 ns.Find.Toggle()
-check(not WaypointTrackerFindFrame:IsShown(), "Find window closes")
+check(not ns.Find.IsShown(), "Find tab closes")
 SlashCmdList.WAYPOINTTRACKER("find mine")
-check(WaypointTrackerFindFrame:IsShown() and fw.search:GetText() == "mine", "/wp find opens it with the text")
+check(ns.Find.IsShown() and fw.search:GetText() == "mine", "/wp find opens it with the text")
 ns.Find.Toggle()
 
 -- ---------------------------------------------------------------------------
@@ -823,34 +818,26 @@ ns.Set("findTab", "object")
 fw.search:Type("skyflower")
 M.Tick(0.3)
 check(fw.rows[1].entry and fw.rows[1].entry.id == 95001, "Objects tab finds the learned object")
-for _, b in ipairs(WaypointTrackerFindFrame.serviceButtons) do
-    if b.service == "repair" then
-        b:Click()
-    end
-end
+PickMenu(fw.nearest, L.SERVICE_REPAIR)
 check(WP.GetActive().title == "Breezy Trader", "Nearest repair uses a learned vendor (got " .. tostring(WP.GetActive().title) .. ")")
-for _, b in ipairs(WaypointTrackerFindFrame.serviceButtons) do
-    if b.service == "mailbox" then
-        b:Click()
-    end
-end
+PickMenu(fw.nearest, L.SERVICE_MAILBOX)
 check(WP.GetActive().m == 2521, "Nearest mailbox uses a learned mailbox")
 
 -- sharing and importing discoveries
 local exported = Learn.Export()
 check(exported:find("Wings Over Zephras", 1, true) and exported:find("Galewing Serpent", 1, true), "export has the discoveries")
-fw.share:Click()
-check(WaypointTrackerShareBox:IsShown() and ns.Find.shareBox.edit:GetText() == exported, "share box shows the text to copy")
+PickMenu(fw.discoveries, L.SHARE_DISCOVERIES)
+check(ns.Find.shareBox:IsVisible() and ns.Window.CurrentPage("find").title == L.SHARE_DISCOVERIES and ns.Find.shareBox.edit:GetText() == exported, "share box shows the text to copy")
 WaypointTrackerDB.learned = nil
 check(Learn.Count() == 0, "discoveries cleared")
-fw.import:Click()
+PickMenu(fw.discoveries, L.IMPORT_DISCOVERIES)
 ns.Find.shareBox.edit:SetText(exported)
 ns.Find.shareBox.action:Click()
 check(Learn.Count() >= 5 and Learn.Store().quests[70001] ~= nil, "import brings them back")
 ns.Find.shareBox.edit:SetText("hello")
 ns.Find.shareBox.action:Click()
 check(ns.Find.shareBox.result:GetText() == L.IMPORT_NOTHING, "junk import is refused")
-WaypointTrackerShareBox:Hide()
+ns.Window.PopAll("find")
 
 -- the community file shipped with the database is used too
 local community = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
@@ -949,7 +936,7 @@ ns.DB.MergeLearned()
 -- in play: seen once Find's database is loaded, it's dropped a moment later
 M.units.nameplate13 = { guid = Guid("Creature", 60), name = "Ruklar the Trapper", reaction = 2, level = 10, dist = 5 }
 M.player.inst, M.player.wx, M.player.wy = Geo.MapToWorld(37, 0.646, 0.567) -- where the database has it
-M.Tick(1.1)
+Learn.LookAround() -- inspect the sighting before the periodic reconciliation
 check(st.npcs[60] ~= nil, "a sighting is written down first")
 M.units.nameplate13 = nil
 M.Tick(5.1)
@@ -1084,11 +1071,12 @@ check(#Learn.Fixes("npc", RUKLAR) == 1, "corrections are kept (they're always yo
 fb.undo:Click()
 check(fb.result:GetText() == L.FIX_REMOVED and near(ns.DB.Points(ns.DB.units[RUKLAR])[1].x, 0.646, 0.001), "removing it brings the database's spot back")
 ns.Find.ShowFixBox(ns.DB.units[RUKLAR])
+fb = ns.Find.fixBox
 fb.gone:Click()
 check(#ns.DB.Points(ns.DB.units[RUKLAR]) == 0, "It's not there removes the spot")
 check(Learn.Export():find("\nC\tN\t60\t37:646,567\t\n", 1, true) ~= nil or Learn.Export():find("\nC\tN\t60\t37:646,567\t$") ~= nil, "and is shared without a right spot")
 fb.undo:Click()
-fb:Hide()
+ns.Window.PopAll("find")
 -- someone else's correction: used, not shared on as yours, and yours wins
 local theirs = "WTL1\tenUS\t1\nC\tN\t60\t37:646,567\t37:100,100"
 check(Learn.Import(theirs) == 1 and #ns.DB.Points(ns.DB.units[RUKLAR]) >= 0, "a shared correction imports")
@@ -1104,6 +1092,7 @@ check(Learn.Import("WTL1\tenUS\t1\nC\tX\t60\t37:1,1\t37:2,2\nC\tN\tabc\t37:1,1\t
 local spotless = { kind = "npc", id = 248500, name = "Spotless", key = "spotless", fac = "" }
 ns.DB.units[248500] = spotless
 ns.Find.ShowFixBox(spotless)
+fb = ns.Find.fixBox
 check(not fb.gone:IsShown() and fb.help:GetText() == L.FIX_HELP_NEW:format("Spotless"), "for something without a spot, the box adds one")
 fb.x.edit:SetText("12,5")
 fb.y.edit:SetText("34")
@@ -1111,7 +1100,7 @@ fb.save:Click()
 spotless.points = nil
 check(#ns.DB.Points(spotless) == 1 and near(ns.DB.Points(spotless)[1].x, 0.125, 0.001), "typed coordinates (with a decimal comma) add the spot")
 Learn.ClearFixes("npc", 248500)
-fb:Hide()
+ns.Window.PopAll("find")
 ns.DB.units[248500] = nil
 ns.DB.MergeLearned()
 ns.Set("findTab", "all")
@@ -1132,18 +1121,14 @@ ns.DB.ParseClient({
     pois = ("86574\tstart\t%d\t37\t%.1f\t%.1f\n86574\tobj0\t%d\t37\t%.1f\t%.1f"):format(cont, wx, wy, cont, wx - 300, wy),
 })
 M.player.inst, M.player.wx, M.player.wy = 0, -1200, -1200 -- Elwynn Forest 40, 60
-for _, b in ipairs(WaypointTrackerFindFrame.serviceButtons) do
-    if b.service == "flight" then
-        b:Click()
-    end
-end
+PickMenu(fw.nearest, L.SERVICE_FLIGHT)
 check(WP.GetActive().title == "Testport, Elwynn" and near(WP.GetActive().x, 0.41, 0.001), "Nearest flight path uses the game's flight paths")
 
 -- while the first quest-name scan runs, Find says so
 local scanRunning, scanPct = ns.Learn.ScanProgress()
 check(scanRunning and scanPct >= 0 and scanPct < 100, "the quest-name scan is running (" .. tostring(scanPct) .. "%)")
-WaypointTrackerFindFrame:Hide()
-WaypointTrackerFindFrame:Show()
+ns.Window.Hide()
+ns.Window.Show("find")
 check(fw.note:GetText() == L.SCAN_PROGRESS:format(select(2, ns.Learn.ScanProgress())), "Find's footer shows the scan's progress")
 ns.Set("findTab", "all")
 fw.search:Type("zzzzqqq")
@@ -1172,7 +1157,7 @@ for _ = 1, 400 do
 end
 check(not ns.Learn.ScanProgress(), "the scan finishes")
 M.Tick(1.1)
-check(fw.note:GetText() == L.DB_NOTE, "Find's footer goes back to the tip when the scan is done")
+check(fw.note:GetText() == "", "Find's footer is empty when the scan is done")
 check(DetailText():find(L.ITEM_NO_SOURCE, 1, true) and not DetailText():find(L.SCAN_ITEM_NOTE, 1, true), "the scan note goes away when the scan is done")
 check(WaypointTrackerDB.questTitles.complete == true, "a finished scan is remembered")
 ns.Set("findTab", "all")
@@ -1509,7 +1494,7 @@ do
     local e = { kind = "place", id = 0, name = "Test Place", world = { { 0, 1429, -9000, 400 } } }
     local ok, pts = pcall(ns.DB.Points, e)
     check(ok and #pts == 0, "a spot without a usable y is skipped")
-    local before, wasShown = #M.errors, WaypointTrackerFindFrame and WaypointTrackerFindFrame:IsShown()
+    local before, wasShown = #M.errors, ns.Find.IsShown()
     ns.Find.Show("goldsh")
     M.Tick(1)
     ns.Find.Show("zzqqxv")
@@ -1530,20 +1515,20 @@ end
 ns.Find.Toggle()
 M.player.inst, M.player.wx, M.player.wy = 0, -1200, -1200 -- Elwynn Forest 40, 60
 SlashCmdList.WAYPOINTTRACKERWAY(Name("units", HOGGER))
-check(not WaypointTrackerFindFrame:IsShown() and WP.GetActive().title == Name("units", HOGGER), "/way with an exact name sets the arrow")
+check(not ns.Find.IsShown() and WP.GetActive().title == Name("units", HOGGER), "/way with an exact name sets the arrow")
 SlashCmdList.WAYPOINTTRACKERWAY("kobold")
-check(WaypointTrackerFindFrame:IsShown() and fw.search:GetText() == "kobold", "/way with a partial name opens Find with that search")
+check(ns.Find.IsShown() and fw.search:GetText() == "kobold", "/way with a partial name opens Find with that search")
 ns.Find.Toggle()
 -- two different things with the very same name: let the player choose
 local hog = ns.DB.units[HOGGER]
 ns.DB.units[999999] = { kind = "npc", id = 999999, name = hog.name, key = hog.key, fac = "", points = { { m = 37, x = 0.2, y = 0.2 } } }
 SlashCmdList.WAYPOINTTRACKERWAY(hog.name)
-check(WaypointTrackerFindFrame:IsShown() and fw.search:GetText() == hog.name, "/way with a name several things share opens Find")
+check(ns.Find.IsShown() and fw.search:GetText() == hog.name, "/way with a name several things share opens Find")
 ns.Find.Toggle()
 ns.DB.units[999999] = nil
 local printed = M.lastPrint
 SlashCmdList.WAYPOINTTRACKERWAY("45")
-check(not WaypointTrackerFindFrame:IsShown(), "/way with one number doesn't search")
+check(not ns.Find.IsShown(), "/way with one number doesn't search")
 
 -- Blizzard's Edit Mode: the arrow can be placed there, per layout
 WP.ClearAll()
@@ -1710,16 +1695,11 @@ check(ns.Get("findTab") == "npc", "the Quests/NPCs/... buttons still open their 
 ns.Find.Toggle()
 ns.Set("findTab", "all")
 
--- main window: one Find button per kind
-WaypointTracker_ToggleWindow()
-for _, b in ipairs(ns.UI.widgets.find) do
-    if b.tab == "enemy" then
-        b:Click()
-    end
-end
-check(WaypointTrackerFindFrame:IsShown() and ns.Get("findTab") == "enemy", "main window Enemies button opens Find on that tab")
-ns.Find.Toggle()
-WaypointTracker_ToggleWindow()
+-- Find's Kind dropdown switches the visible tab.
+ns.Find.Show()
+PickMenu(fw.kind, L.TAB_ENEMIES)
+check(ns.Find.IsShown() and ns.Get("findTab") == "enemy", "Kind selects Enemies in Find")
+ns.Window.Hide()
 ns.Set("findTab", "all")
 M.player.inst, M.player.wx, M.player.wy = 0, -1200, -1200
 
@@ -1854,6 +1834,17 @@ do
     local p1, p2, px, py = sns.SavedPoint({ "TOP", "BOGUS", "12", 5 })
     check(p1 == "TOP" and p2 == "TOP" and px == 12 and py == 5, "a saved position is repaired where it can be")
     check(sns.SavedPoint({ "TOP", "TOP", 0, 1 / 0 }) == nil, "an off-screen saved position is ignored")
+end
+
+-- Round-trip all boolean settings after the on-demand database checks.
+for key, value in pairs(ns.defaults) do
+    if type(value) == "boolean" then
+        ns.Set(key, not value)
+        M.Tick(0.1)
+        check(ns.Get(key) == not value, "toggle " .. key)
+        ns.Set(key, value)
+        check(ns.Get(key) == value, "restore " .. key)
+    end
 end
 
 -- ---------------------------------------------------------------------------

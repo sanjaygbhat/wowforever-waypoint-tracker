@@ -61,6 +61,15 @@ M.FireEvent("PLAYER_LOGIN")
 M.FireEvent("PLAYER_ENTERING_WORLD")
 local WP, Travel, Trails, L = ns.WP, ns.Travel, ns.Trails, ns.L
 
+-- Logging in must leave the Routes-tab notice for the player to acknowledge.
+M.Tick(13)
+check(not ns.Get("travelNoticeShown"), "login does not acknowledge the Real routes notice after 12 seconds")
+local teaser = false
+for _, message in ipairs(M.printed) do
+    if message:find(L.TRAVEL_NEW, 1, true) then teaser = true end
+end
+check(not teaser, "login never prints the Real routes teaser to chat")
+
 -- ---------------------------------------------------------------------------
 -- The shipped network
 -- ---------------------------------------------------------------------------
