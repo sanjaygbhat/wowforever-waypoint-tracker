@@ -48,10 +48,13 @@ Arrow.lua
 MapPins.lua
 Templates.xml
 MinimapPins.lua
-MinimapButton.lua
-CoordsBox.lua
-UI.lua
+Widgets.lua
+Window.lua
 EditMode.lua
+CoordsBox.lua
+Recorder.lua
+TabWaypoints.lua
+UI.lua
 Find.lua
 Routes.lua
 RoutesNet.lua
@@ -60,5 +63,9 @@ TravelData.lua
 Travel.lua
 Trails.lua
 TravelMap.lua
+MapButton.lua
+Options.lua
+QuickMenu.lua
+MinimapButton.lua
 AddonBridge.lua
 Slash.lua
