@@ -1,5 +1,5 @@
 -- World map: waypoint pins, Ctrl + Right-click to add a waypoint, and the
--- coordinates line at the bottom of the map.
+-- coordinates at the bottom of the map.
 local _, ns = ...
 local L, Geo, WP = ns.L, ns.Geo, ns.WP
 
@@ -166,6 +166,18 @@ end
 -- ---------------------------------------------------------------------------
 local coords, coordsText
 
+local function HasBlizzardCoords()
+    if C_CVar and C_CVar.GetCVarInfo then
+        local ok, value = pcall(C_CVar.GetCVarInfo, "worldMapShowPlayerCoords")
+        if ok and value ~= nil then return true end
+    end
+    if GetCVar then
+        local ok, value = pcall(GetCVar, "worldMapShowPlayerCoords")
+        return ok and value ~= nil
+    end
+    return false
+end
+
 local function UpdateCoords()
     local mapID = WorldMapFrame:GetMapID()
     local parts = {}
@@ -217,11 +229,38 @@ local function CreateCoords()
     end)
 end
 
+local function SyncFromCVars()
+    if not HasBlizzardCoords() then return end
+    local get = GetCVarBool or (C_CVar and C_CVar.GetCVarBool)
+    local ok, on = pcall(get, "worldMapShowPlayerCoords")
+    -- Mirror Blizzard's choice without firing SETTING_CHANGED (which writes
+    -- both CVars). Player and cursor coordinates may be enabled separately.
+    if ok and on ~= nil and ns.settings then
+        ns.settings.worldCoords = on and true or false
+    end
+end
+
+local function ApplyCoords(write)
+    local on = ns.Get("worldCoords")
+    if HasBlizzardCoords() then
+        local set = SetCVar or (C_CVar and C_CVar.SetCVar)
+        if write and set then
+            pcall(set, "worldMapShowPlayerCoords", on and "1" or "0")
+            pcall(set, "worldMapShowCursorCoords", on and "1" or "0")
+        end
+        if coords then coords:Hide() end
+    elseif WorldMapFrame then
+        if not coords then CreateCoords() end
+        coords:SetShown(on)
+    end
+end
+
 -- ---------------------------------------------------------------------------
 -- Setup (after the world map exists)
 -- ---------------------------------------------------------------------------
 local setupDone = false
 local function Setup()
+    ApplyCoords(false)
     if setupDone or not WorldMapFrame or not MapCanvasDataProviderMixin or not MapCanvasPinMixin then
         return
     end
@@ -231,13 +270,21 @@ local function Setup()
     if WorldMapFrame.AddCanvasClickHandler then
         WorldMapFrame:AddCanvasClickHandler(OnCanvasClick, 100)
     end
-    CreateCoords()
+end
+
+if CVarCallbackRegistry and CVarCallbackRegistry.RegisterCallback then
+    CVarCallbackRegistry:RegisterCallback("worldMapShowPlayerCoords", function()
+        SyncFromCVars()
+        if Settings and Settings.NotifyUpdate then
+            pcall(Settings.NotifyUpdate, "WAYPOINTTRACKER_worldCoords")
+        end
+    end, ns)
 end
 
 ns.On("LOGIN", function()
-    if WorldMapFrame then
-        Setup()
-    elseif EventUtil and EventUtil.ContinueOnAddOnLoaded then
+    SyncFromCVars()
+    Setup()
+    if not WorldMapFrame and EventUtil and EventUtil.ContinueOnAddOnLoaded then
         EventUtil.ContinueOnAddOnLoaded("Blizzard_WorldMap", ns.Safe(Setup))
     end
 end)
@@ -248,7 +295,7 @@ ns.On("SETTING_CHANGED", function(key)
     if key == "worldPins" or key == nil then
         RefreshPins()
     end
-    if (key == "worldCoords" or key == nil) and coords then
-        coords:SetShown(ns.Get("worldCoords"))
+    if key == "worldCoords" or key == nil then
+        ApplyCoords(true)
     end
 end)

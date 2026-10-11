@@ -1,6 +1,6 @@
 # Waypoint Tracker
 
-> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). It combines a TomTom-style 3D waypoint arrow and a quest/NPC/item finder in one addon. The arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find window, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Treasure hunt (new in 1.1, beta) pings the player when a chest or rare appears nearby. Any spot can be shared in chat as a clickable map pin.
+> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). It combines a TomTom-style 3D waypoint arrow and a quest/NPC/item finder in one addon. The arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find tab, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Treasure hunt (new in 1.1, beta) pings the player when a chest or rare appears nearby. Any spot can be shared in chat as a clickable map pin.
 
 Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese, Traditional Chinese.
 
@@ -13,10 +13,12 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 ## Key facts
 
 - `/way 42 65` sets a waypoint in the current zone; `/way Westfall 56.3 47.1 Sentinel Hill` in another zone; `/way hogger` goes to something by name. `/wp` opens the window, `/wp find` searches, `/wp share` shares a spot in chat, `/wp here` marks where you stand, `/wp closest` points to the closest waypoint.
-- Find covers the classic world and WoW Forever's new zones (Mount Hyjal, Riverglades, Zephras Isle where the Skyborne begin, Shen'dralas), with nearest-mailbox, innkeeper, flight master, repair, bank and auction house buttons.
-- The addon learns while you play (NPCs and enemies around you with their titles, vendor stock, quest givers, loot sources) and keeps only what's new, on the player's computer. Players share discoveries only by choice: Share discoveries in Find, pasted into a GitHub issue.
+- Find covers the classic world and WoW Forever's new zones (Mount Hyjal, Riverglades, Zephras Isle where the Skyborne begin, Shen'dralas), with a Nearest menu for mailbox, innkeeper, flight master, repair, bank and auction house.
+- The addon learns while you play (NPCs and enemies around you with their titles, vendor stock, quest givers, loot sources) and keeps only what's new, on the player's computer. Players share discoveries only by choice: Discoveries > Share discoveries in the Find tab, pasted into a GitHub issue.
 - Other addons that send waypoints to an arrow (quest guides, treasure maps) send them to Waypoint Tracker with nothing to set up.
 - Treasure hunt (`/wp treasure`, off until turned on): a ping (sound, on-screen message, blinking taskbar) the moment a chest, rare spawn or other minimap marker appears near the player; the arrow points at it, follows a wandering rare, and the waypoint goes once it's taken, killed or gone. Optionally walks the player between known chest spawn spots. `/wp treasure status` lists what it sees and recent finds.
+- One window has Waypoints, Find and Routes tabs. Editors and imports are pages with Back. `/wp settings` opens Blizzard Settings; `/wp editmode` enters Edit Mode for the arrow, its text, coordinates and route recorder. Left-click the minimap button opens the window; right-click opens the quick menu; Shift + left-click adds a waypoint here.
+- Real routes (beta), new in this release, guides through passes and gates using flight paths and transport when quicker. Enable it in the Routes notice, quick menu or Settings > Routes.
 - The arrow moves with the game's Edit Mode and never catches mouse clicks.
 
 ## Common questions it answers

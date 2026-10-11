@@ -23,4 +23,25 @@
             </Layer>
         </Layers>
     </Frame>
+    <!-- Temporary route preview; numbered circles at the stop positions. -->
+    <Frame name="WaypointTrackerRoutePinTemplate" mixin="WaypointTrackerRoutePinMixin" virtual="true" hidden="true" enableMouse="true">
+        <Size x="20" y="20"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Icon" file="Interface\COMMON\Indicator-Yellow">
+                    <Anchors><Anchor point="TOPLEFT"/><Anchor point="BOTTOMRIGHT"/></Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString parentKey="Number" inherits="NumberFontNormalSmall" justifyH="CENTER">
+                    <Anchors><Anchor point="CENTER"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture parentKey="Highlight" file="Interface\COMMON\Indicator-Yellow" alphaMode="ADD" alpha="0.5">
+                    <Anchors><Anchor point="TOPLEFT"/><Anchor point="BOTTOMRIGHT"/></Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
 </Ui>

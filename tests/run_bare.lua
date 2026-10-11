@@ -14,6 +14,9 @@ for _, name in ipairs({
     "ColorPickerFrame", "UiMapPoint", "UnitIsGhost", "UnitIsDeadOrGhost", "issecretvalue", "GetMinimapShape",
     "GetItemClassInfo", "GetItemSubClassInfo", "GetLootSourceInfo", "CanMerchantRepair", "WorldMapFrame",
     "MapCanvasDataProviderMixin", "MapCanvasMixin", "MapCanvasPinMixin",
+    "RegisterUIPanel", "ShowUIPanel", "HideUIPanel", "UIPanelWindows", "PanelTemplates_SetNumTabs",
+    "HelpTip", "C_CVar", "SetCVar", "CreateSettingsListSectionHeaderInitializer",
+    "CreateSettingsButtonInitializer", "MinimalSliderWithSteppersMixin",
 }) do
     _G[name] = nil
 end
@@ -124,8 +127,21 @@ end
 
 -- the window, Find, sharing and the arrow's own controls
 step("window", function()
-    WaypointTracker_ToggleWindow()
-    WaypointTracker_ToggleWindow()
+    ns.Window.Toggle()
+    ns.Window.ShowTab("routes")
+    ns.Window.Toggle()
+end)
+step("settings", function() ns.Options.Open() end)
+step("quick menu", function() ns.QuickMenu.Show(UIParent) end)
+step("Edit Mode", function()
+    ns.EditMode.Enter()
+    ns.Arrow.SetMoving(false)
+end)
+step("minimap and compartment quick menus", function()
+    local button = WaypointTrackerMinimapButton
+    button:GetScript("OnClick")(button, "RightButton")
+    WaypointTracker_OnAddonCompartmentClick("WaypointTracker", "RightButton")
+    WaypointTracker_OnAddonCompartmentClick("WaypointTracker", "LeftButton")
 end)
 step("find", function()
     ns.Find.Show()

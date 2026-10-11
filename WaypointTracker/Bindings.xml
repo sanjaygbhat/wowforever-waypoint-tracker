@@ -23,6 +23,9 @@
     <Binding name="WAYPOINTTRACKER_TREASURE">
         WaypointTracker_ToggleTreasure()
     </Binding>
+    <Binding name="WAYPOINTTRACKER_TRAVEL">
+        WaypointTracker_ToggleTravel()
+    </Binding>
     <Binding name="WAYPOINTTRACKER_ROUTES">
         WaypointTracker_ToggleRoutes()
     </Binding>

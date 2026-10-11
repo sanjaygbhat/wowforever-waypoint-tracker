@@ -15,6 +15,7 @@ local Vector = CreateVector2D or function(x, y)
     return { x = x, y = y }
 end
 
+local MAPTYPE_WORLD = (Enum and Enum.UIMapType and Enum.UIMapType.World) or 1
 local MAPTYPE_CONTINENT = (Enum and Enum.UIMapType and Enum.UIMapType.Continent) or 2
 local MAPTYPE_ZONE = (Enum and Enum.UIMapType and Enum.UIMapType.Zone) or 3
 
@@ -126,6 +127,146 @@ function Geo.TranslateToMap(fromMap, x, y, toMap)
     if mx and my and mx >= 0 and mx <= 1 and my >= 0 and my <= 1 then
         return mx, my
     end
+end
+
+-- Route previews use the map tree, rather than assuming continent IDs.
+-- Keep the existing map helpers' behaviour for their other callers.
+local function PreviewMapInfo(mapID)
+    if not C_Map or type(C_Map.GetMapInfo) ~= "function" then
+        return nil
+    end
+    local ok, info = pcall(Geo.GetMapInfo, mapID)
+    return ok and info or nil
+end
+
+local parentChainCache = {}
+function Geo.ParentChain(mapID)
+    if type(mapID) ~= "number" or mapID <= 0 then
+        return {}
+    end
+    local chain = parentChainCache[mapID]
+    if not chain then
+        chain = {}
+        local seen, current = {}, mapID
+        -- Self plus at most twelve parent hops; cycles stop immediately.
+        for _ = 0, 12 do
+            if not current or seen[current] then break end
+            chain[#chain + 1] = current
+            seen[current] = true
+            local info = PreviewMapInfo(current)
+            local parent = info and Num(info.parentMapID)
+            current = parent and parent > 0 and parent or nil
+        end
+        parentChainCache[mapID] = chain
+    end
+    return chain
+end
+
+function Geo.ContinentID(mapID)
+    for _, id in ipairs(Geo.ParentChain(mapID)) do
+        local info = PreviewMapInfo(id)
+        if info and info.mapType == MAPTYPE_CONTINENT then
+            return id
+        end
+    end
+end
+
+function Geo.WorldMapID()
+    if C_Map and type(C_Map.GetFallbackWorldMapID) == "function" then
+        local ok, id = pcall(C_Map.GetFallbackWorldMapID)
+        id = ok and Num(id)
+        if id and id > 0 then return id end
+    end
+    return 947
+end
+
+function Geo.IsWorldMap(mapID)
+    if type(mapID) ~= "number" or mapID <= 0 then return false end
+    local info = PreviewMapInfo(mapID)
+    if info and info.mapType == MAPTYPE_WORLD then return true end
+    if not C_Map or type(C_Map.GetWorldPosFromMapPos) ~= "function" then
+        return true
+    end
+    return Geo.MapToWorld(mapID, 0.5, 0.5) == nil
+end
+
+-- A world map has no yard coordinates: first translate onto the continent,
+-- then place that point within the continent's rectangle on the world map.
+function Geo.ProjectToMap(fromMap, x, y, toMap)
+    fromMap, toMap, x, y = Num(fromMap), Num(toMap), Num(x), Num(y)
+    if not fromMap or fromMap <= 0 or not toMap or toMap <= 0
+        or not x or not y or x < 0 or x > 1 or y < 0 or y > 1 then
+        return nil
+    end
+    if fromMap == toMap then return x, y end
+    if not C_Map or type(C_Map.GetWorldPosFromMapPos) ~= "function"
+        or type(C_Map.GetMapPosFromWorldPos) ~= "function" then
+        return nil
+    end
+    if Geo.SameMap(fromMap, toMap) then return x, y end
+    if not Geo.IsWorldMap(toMap) then
+        return Geo.TranslateToMap(fromMap, x, y, toMap)
+    end
+    if type(C_Map.GetMapRectOnMap) ~= "function" then return nil end
+    local continent = Geo.ContinentID(fromMap)
+    if not continent then return nil end
+    local cx, cy = Geo.TranslateToMap(fromMap, x, y, continent)
+    if not cx or not cy then return nil end
+    local ok, minX, maxX, minY, maxY = pcall(C_Map.GetMapRectOnMap, continent, toMap)
+    if not ok then return nil end
+    minX, maxX, minY, maxY = Num(minX), Num(maxX), Num(minY), Num(maxY)
+    if not minX or not maxX or not minY or not maxY or minX >= maxX or minY >= maxY then
+        return nil
+    end
+    local mx, my = minX + cx * (maxX - minX), minY + cy * (maxY - minY)
+    if mx >= 0 and mx <= 1 and my >= 0 and my <= 1 then return mx, my end
+end
+
+local function PreviewCount(pts, mapID)
+    local shown = 0
+    for _, p in ipairs(pts) do
+        if Geo.ProjectToMap(p.m, p.x, p.y, mapID) ~= nil then
+            shown = shown + 1
+        end
+    end
+    return shown
+end
+
+function Geo.CommonMap(pts)
+    if type(pts) ~= "table" or #pts == 0 then return nil, 0 end
+    local maps, counts, main, mainN = {}, {}, nil, 0
+    for _, p in ipairs(pts) do
+        -- Same tie-breaking as Routes' MainMap; keep it independent of Routes.
+        counts[p.m] = (counts[p.m] or 0) + 1
+        if counts[p.m] > mainN then main, mainN = p.m, counts[p.m] end
+        local have = false
+        for _, id in ipairs(maps) do
+            if Geo.SameMap(id, p.m) then have = true; break end
+        end
+        if not have then maps[#maps + 1] = p.m end
+    end
+    if #maps == 1 then return maps[1], PreviewCount(pts, maps[1]) end
+
+    local shared = {}
+    for _, id in ipairs(Geo.ParentChain(maps[1])) do shared[id] = true end
+    for i = 2, #maps do
+        local ancestors = {}
+        for _, id in ipairs(Geo.ParentChain(maps[i])) do ancestors[id] = true end
+        for id in pairs(shared) do
+            if not ancestors[id] then shared[id] = nil end
+        end
+    end
+    for _, id in ipairs(Geo.ParentChain(maps[1])) do
+        if shared[id] and PreviewCount(pts, id) == #pts then return id, #pts end
+    end
+
+    local shown = PreviewCount(pts, main)
+    local world = Geo.WorldMapID()
+    local worldShown = PreviewCount(pts, world)
+    -- A dungeon plus its outdoor area stays on the area map. Broaden to the
+    -- world only when it actually shows more stops than the main map.
+    if worldShown > shown then return world, worldShown end
+    return main, shown
 end
 
 -- If a point was picked on a continent/world map, turn it into a zone point

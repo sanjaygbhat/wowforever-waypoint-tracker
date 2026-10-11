@@ -10,18 +10,18 @@ Make sure both **WaypointTracker** and **WaypointTracker_Data** are enabled, and
 
 ## Showing the arrow
 
-1. Set a destination with `/way 42 65` or **Set Waypoint** in `/wp`.
-2. Check **Show the arrow**. Review **Hide during combat** and **Hide on flight paths** if it disappears only in those situations.
-3. Use **Reset** or **Esc → Edit Mode** if the arrow has moved off screen.
+1. Set a destination with `/way 42 65` or **Set** in the Waypoints tab.
+2. Check **Show the arrow** in **Settings → Waypoint Tracker**. Review **Hide during combat** and **Hide on flight paths** if it disappears only in those situations.
+3. Use **Reset to Default** in **Esc → Edit Mode** if the arrow has moved off screen.
 4. Arriving removes the waypoint by default. Set another destination, or change **When You Arrive** in the options.
 
-While the window is open with no waypoint, a preview arrow lets you adjust placement and size.
+While the Waypoints tab is open with no waypoint, a preview arrow lets you adjust placement and size.
 
 ## Getting the most from Find
 
-Check that **WaypointTracker_Data** is installed and enabled. The database loads on demand when Find first opens. Try the **All** tab, clear the zone/faction filters and search part of the name. Forever quest names are learned from the game in the background during the first minutes of play.
+Check that **WaypointTracker_Data** is installed and enabled. The database loads on demand when Find first opens. Pick **All** in the kind dropdown, clear the zone/faction filters and search part of the name. Forever quest names are learned from the game in the background during the first minutes of play.
 
-Find combines shipped data with your local observations and shared discoveries. To correct a spot, select the result and use **Wrong spot? Correct it**. Details are in [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing).
+Find combines shipped data with your local observations and shared discoveries. To correct a spot, select the result and use **Wrong Spot? Correct It**. Details are in [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing).
 
 ## `/way` and other addons
 
@@ -39,7 +39,7 @@ Update both addon folders from the same release. Keep your `WTF` folder and Save
 
 ## Treasure hunt doesn't ping
 
-Check that **Treasure hunt** is ticked, and that **Ping me when something appears** and the kinds you want are on under **Show more options → Treasure Hunt**. Type `/wp treasure status` to see what it sees: some places share no minimap markers, and rares there are found on nameplates and your target. More in [Treasure Hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt).
+Check that **Treasure hunt** is ticked, and that **Ping me when something appears** and the kinds you want are on under **Settings → Treasure Hunt (beta)**. Type `/wp treasure status` to see what it sees: some places share no minimap markers, and rares there are found on nameplates and your target. More in [Treasure Hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt).
 
 ## Get help
 

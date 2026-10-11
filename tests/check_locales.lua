@@ -1,5 +1,6 @@
 -- Checks every translation against English: all keys present, no unknown
--- keys, and the same %s / %d / %.1f placeholders in the same order.
+-- keys, no unfinished translations, and the same %s / %d / %.1f placeholders
+-- in the same order. Also catches deleted keys still used by addon code.
 --     lua5.1 tests/check_locales.lua
 local LOCALES = { "deDE", "frFR", "esES", "esMX", "ptBR", "ruRU", "zhCN", "zhTW", "koKR" }
 local FILES = { deDE = "deDE", frFR = "frFR", esES = "esES", esMX = "esES", ptBR = "ptBR", ruRU = "ruRU", zhCN = "zhCN", zhTW = "zhTW", koKR = "koKR" }
@@ -40,11 +41,33 @@ end
 
 local problems = 0
 local english = load("enUS")
+local files = assert(io.popen("ls WaypointTracker/*.lua"))
+for file in files:lines() do
+    local source = assert(io.open(file))
+    local text = source:read("*a")
+    source:close()
+    local checked = {}
+    for key in text:gmatch("%f[%w]L%.([A-Z][A-Z0-9_]+)") do
+        if not checked[key] and english[key] == nil then
+            checked[key] = true
+            problems = problems + 1
+            print(("%s: missing English key %s"):format(file, key))
+        end
+    end
+end
+files:close()
 local total = 0
 for _ in pairs(english) do
     total = total + 1
 end
 for _, locale in ipairs(LOCALES) do
+    local source = assert(io.open(DIR .. FILES[locale] .. ".lua"))
+    local text = source:read("*a")
+    source:close()
+    for key in text:gmatch("L%.([A-Z][A-Z0-9_]+)[^\n]*%-%- TODO translate") do
+        problems = problems + 1
+        print(("%s: unfinished translation %s"):format(locale, key))
+    end
     local _, seen = load(locale, FILES[locale])
     local missing, count = {}, 0
     for k, v in pairs(english) do

@@ -43,6 +43,7 @@ local MAX_LIBRARY = 400 -- routes from other players kept at most
 local MAX_TALLIES = 3000 -- routes whose votes are counted at most
 local MAX_VOTERS = 1000 -- votes counted per route at most
 Routes.TAG = "WTR1"
+Routes.SEED_COLUMNS = 7
 Routes.SUGGESTED_AUTHOR = "Waypoint Tracker"
 -- how long (seconds) you follow a route before finishing or stopping it
 -- asks how it was; /wp routes fast makes it 20 seconds for trying it out
@@ -54,6 +55,62 @@ end
 
 function Routes.ModeLabel(m)
     return L[MODE_LABEL[m] or "ROUTE_MODE_ORDER"]
+end
+
+-- Levels and faction belong to hand-picked seeds, never the share format.
+function Routes.ParseLevels(text)
+    if type(text) ~= "string" then
+        return nil
+    end
+    local lo, hi = text:match("^(%d+)%-(%d+)$")
+    if not lo then
+        lo = text:match("^(%d+)%+$")
+        if not lo then
+            lo = text:match("^(%d+)$")
+            hi = lo
+        end
+    end
+    local min, max = ns.Int(lo), ns.Int(hi)
+    if min and (not hi or (max and max >= min)) then
+        return { min = min, max = max }
+    end
+end
+
+function Routes.LevelText(r)
+    local lv = r and r.lv
+    if not lv then
+        return nil
+    end
+    -- Older locale files may not have these keys yet.
+    if not lv.max then
+        return (rawget(L, "ROUTE_LEVELS_UP") or "Level %d and up"):format(lv.min)
+    elseif lv.min == lv.max then
+        return (rawget(L, "ROUTE_LEVEL") or "Level %d"):format(lv.min)
+    end
+    return (rawget(L, "ROUTE_LEVELS") or "Levels %d\226\128\147%d"):format(lv.min, lv.max)
+end
+
+function Routes.FitsLevel(r, level)
+    local lv = r and r.lv
+    level = ns.Int(level)
+    if not lv or not level then
+        return nil
+    end
+    return level >= lv.min and (not lv.max or level <= lv.max)
+end
+
+function Routes.FactionText(r)
+    local faction = r and r.faction
+    if faction == "A" then
+        return rawget(L, "ROUTE_FACTION_A") or "Alliance only"
+    elseif faction == "H" then
+        return rawget(L, "ROUTE_FACTION_H") or "Horde only"
+    end
+end
+
+function Routes.StopTitle(r, i)
+    local p = r and r.pts and r.pts[i]
+    return p and p.t and p.t ~= "" and p.t or L.ROUTE_UNNAMED
 end
 
 -- ---------------------------------------------------------------------------
@@ -739,6 +796,12 @@ local function Make(out, id, name, cat, mode, note, pts, min, ordered)
         r.unordered = (mode == "loop" and not ordered) or nil
         out[#out + 1] = r
     end
+    return r
+end
+
+-- Accept the old locale wording while the shorter strings are rolling out.
+local function SuggestedName(key)
+    return (L[key]:gsub(" %- %%s$", ""))
 end
 
 -- Every known spot of the gathering nodes and chests, per map; plus the
@@ -769,15 +832,12 @@ local function FromDatabase(DB, out)
     table.sort(order)
     for _, key in ipairs(order) do
         local g = groups[key]
-        local zone = Geo.GetMapName(g.m)
-        if zone then
-            if g.kind == "treasure" then
-                Make(out, "c-" .. g.m, L.ROUTE_SUGGESTED_CHESTS:format(zone), "treasure", "loop", L.ROUTE_SUGGESTED_NOTE, g.pts, MIN_SUGGESTED)
-            elseif g.kind == "fishing" then
-                Make(out, "f" .. g.minID .. "-" .. g.m, L.ROUTE_SUGGESTED_NAME:format(g.name, zone), "fishing", "loop", L.ROUTE_FISHING_NOTE, g.pts, MIN_SUGGESTED)
-            else
-                Make(out, "g" .. g.minID .. "-" .. g.m, L.ROUTE_SUGGESTED_NAME:format(g.name, zone), g.kind, "loop", L.ROUTE_SUGGESTED_NOTE, g.pts, MIN_SUGGESTED)
-            end
+        if g.kind == "treasure" then
+            Make(out, "c-" .. g.m, SuggestedName("ROUTE_SUGGESTED_CHESTS"), "treasure", "loop", L.ROUTE_SUGGESTED_NOTE, g.pts, MIN_SUGGESTED)
+        elseif g.kind == "fishing" then
+            Make(out, "f" .. g.minID .. "-" .. g.m, g.name, "fishing", "loop", L.ROUTE_FISHING_NOTE, g.pts, MIN_SUGGESTED)
+        else
+            Make(out, "g" .. g.minID .. "-" .. g.m, g.name, g.kind, "loop", L.ROUTE_SUGGESTED_NOTE, g.pts, MIN_SUGGESTED)
         end
     end
     -- rare spawns: each one's known spots, a zone at a time
@@ -797,22 +857,20 @@ local function FromDatabase(DB, out)
     end
     table.sort(rareMaps)
     for _, m in ipairs(rareMaps) do
-        local zone = Geo.GetMapName(m)
-        if zone then
-            Make(out, "r-" .. m, L.ROUTE_SUGGESTED_RARES:format(zone), "treasure", "loop", L.ROUTE_RARES_NOTE, rares[m])
-        end
+        Make(out, "r-" .. m, SuggestedName("ROUTE_SUGGESTED_RARES"), "treasure", "loop", L.ROUTE_RARES_NOTE, rares[m])
     end
 end
 
 -- ---------------------------------------------------------------------------
--- Hand-picked routes: "category, mode, name, note, spec" lines. The spec is
+-- Hand-picked routes: tab-separated category, mode, faction, levels, name,
+-- note, spec. The spec is
 -- ";"-separated stops, resolved against the database:
 --   U12,34@1413   every spawn of these NPCs on that map (nearby ones merged)
 --   O56@1413      the same for objects
 --   N78           that NPC (its closest spawn)
 --   Q90           a quest: who gives it, its objectives, who takes it
 --   P1413:52.1,30.5,Title   a spot (map percentages)
--- Names starting "(A) " or "(H) " are for that faction only.
+-- Faction is "A", "H" or empty (both).
 -- ---------------------------------------------------------------------------
 local seedLines
 
@@ -884,12 +942,9 @@ local function FromSeeds(DB, out)
     end
     local letter = MyFactionLetter()
     for _, line in ipairs(seedLines or {}) do
-        local cat, mode, name, note, spec = line:match("^([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)$")
-        local only = name and name:match("^%(([AH])%) ")
-        if spec and not (only and letter and only ~= letter) then
-            if only then
-                name = name:sub(5)
-            end
+        local cat, mode, faction, levels, name, note, spec = line:match("^([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)$")
+        local only = (faction == "A" or faction == "H") and faction or nil
+        if spec and (faction == "" or only) and not (only and letter and only ~= letter) then
             local pts = {}
             for token in spec:gmatch("[^;]+") do
                 local kind, rest = token:sub(1, 1), token:sub(2)
@@ -914,7 +969,11 @@ local function FromSeeds(DB, out)
                     end
                 end
             end
-            Make(out, "s-" .. Hash(name .. spec), name, cat, mode, note ~= "" and note or nil, pts, MIN_STOPS, mode ~= "loop")
+            local r = Make(out, "s-" .. Hash(cat .. "|" .. faction .. "|" .. spec), name, cat, mode, note ~= "" and note or nil, pts, MIN_STOPS, mode ~= "loop")
+            if r then
+                r.faction = only
+                r.lv = Routes.ParseLevels(levels)
+            end
         end
     end
 end
@@ -1134,7 +1193,7 @@ function Routes.Start(id)
     end
     if others == 0 then
         return Routes.Apply(id, "add")
-    elseif not ns.Get("routeAsk") then
+    elseif ns.Get("routeApply") ~= "ask" then
         return Routes.Apply(id, ns.Get("routeApply") == "add" and "add" or "replace")
     end
     ns.Fire("ROUTE_ASK", id, others)

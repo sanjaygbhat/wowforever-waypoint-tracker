@@ -1,9 +1,7 @@
--- Minimap button (same idea as WoW Translate's): left-click opens the
--- window, right-click shows/hides the arrow, drag to move it around.
+-- Minimap and compartment entry points share the window and quick menu.
 local _, ns = ...
-local L = ns.L
 
-local button
+local button, compartmentButton
 
 local function UpdatePosition()
     if not button then
@@ -13,17 +11,6 @@ local function UpdatePosition()
     local radius = (Minimap:GetWidth() / 2) + 8
     button:ClearAllPoints()
     button:SetPoint("CENTER", Minimap, "CENTER", math.cos(angle) * radius, math.sin(angle) * radius)
-end
-
-local function ShowTooltip(owner)
-    GameTooltip:SetOwner(owner, "ANCHOR_LEFT")
-    GameTooltip:AddLine(L.ADDON_TITLE)
-    GameTooltip:AddLine(L.MINIMAP_TOOLTIP_LEFT, 0.8, 0.8, 0.8)
-    GameTooltip:AddLine(L.MINIMAP_TOOLTIP_RIGHT, 0.8, 0.8, 0.8)
-    if owner == button then
-        GameTooltip:AddLine(L.MINIMAP_TOOLTIP_DRAG, 0.8, 0.8, 0.8)
-    end
-    GameTooltip:Show()
 end
 
 local function Create()
@@ -69,17 +56,23 @@ local function Create()
         self:SetScript("OnUpdate", nil)
     end)
 
-    button:SetScript("OnClick", function(self, mouse)
+    button:SetScript("OnClick", ns.Safe(function(self, mouse)
         if mouse == "RightButton" then
-            WaypointTracker_ToggleWindow()
-        else
-            ns.Find.ToggleNearby()
+            if ns.QuickMenu and ns.QuickMenu.Show then ns.QuickMenu.Show(self) end
+        elseif mouse == "LeftButton" then
+            if IsShiftKeyDown and IsShiftKeyDown() then
+                ns.WP.AddHere()
+            elseif ns.Window and ns.Window.Toggle then
+                ns.Window.Toggle()
+            end
         end
-    end)
+    end))
 
-    button:SetScript("OnEnter", ShowTooltip)
+    button:SetScript("OnEnter", ns.Safe(function(self)
+        if ns.QuickMenu and ns.QuickMenu.Tooltip then ns.QuickMenu.Tooltip(self, true) end
+    end))
     button:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        if GameTooltip then GameTooltip:Hide() end
     end)
 end
 
@@ -108,18 +101,24 @@ ns.On("SETTING_CHANGED", function(key)
 end)
 
 -- Addon compartment (the addon list button on the minimap)
-function WaypointTracker_OnAddonCompartmentClick(_, mouse)
+function WaypointTracker_OnAddonCompartmentClick(_, mouse, frame)
+    compartmentButton = frame or compartmentButton
     if mouse == "RightButton" then
-        WaypointTracker_ToggleWindow()
-    else
-        ns.Find.ToggleNearby()
+        if ns.QuickMenu and ns.QuickMenu.Show then
+            ns.Call(ns.QuickMenu.Show, compartmentButton or UIParent)
+        end
+    elseif ns.Window and ns.Window.Toggle then
+        ns.Call(ns.Window.Toggle)
     end
 end
 
 function WaypointTracker_OnAddonCompartmentEnter(_, frame)
-    ShowTooltip(frame or UIParent)
+    compartmentButton = frame
+    if ns.QuickMenu and ns.QuickMenu.Tooltip then
+        ns.Call(ns.QuickMenu.Tooltip, compartmentButton or UIParent, false)
+    end
 end
 
 function WaypointTracker_OnAddonCompartmentLeave()
-    GameTooltip:Hide()
+    if GameTooltip then GameTooltip:Hide() end
 end
