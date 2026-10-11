@@ -58,6 +58,8 @@ UI.lua
 Find.lua
 Routes.lua
 RoutesNet.lua
+RouteMap.lua
+RoutePreview.lua
 RoutesUI.lua
 TravelData.lua
 Travel.lua

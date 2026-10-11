@@ -18,7 +18,9 @@ local function Status(text, good)
 end
 local function ScoreText(id)
     local up, down = R().Score(id)
-    return ("|cff40ff40+%d|r |cffff6060-%d|r"):format(up, down)
+    if up == 0 and down == 0 then return "" end
+    return ("|cff40ff40▲ %d|r"):format(up)
+        .. (down > 0 and (" |cffff6060▼ %d|r"):format(down) or "")
 end
 local TABS = {
     { value = "all", text = L.ROUTES_SOURCE_ALL },
@@ -31,6 +33,28 @@ local CAT_COLOUR = {
     quests = { 1, 1, 0.4 }, travel = { 0.5, 0.8, 1 }, dungeons = { 0.8, 0.6, 1 }, other = { 0.9, 0.9, 0.9 },
 }
 
+local function PreviewMap(r)
+    return (ns.RouteMap and ns.RouteMap.MapFor and ns.RouteMap.MapFor(r)) or r.zone
+end
+
+local function RowSubtitle(r)
+    return (Geo.GetMapName(PreviewMap(r)) or "?") .. " · " .. R().CategoryLabel(r.cat)
+end
+
+local function RowTooltip(row)
+    local r = row.item
+    if not r or not GameTooltip then return end
+    local c = CAT_COLOUR[r.cat] or CAT_COLOUR.other
+    GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
+    GameTooltip:AddLine(r.name, c[1], c[2], c[3])
+    local level = R().LevelText and R().LevelText(r)
+    if level then GameTooltip:AddLine(level, 0.8, 0.8, 0.8) end
+    local faction = R().FactionText and R().FactionText(r)
+    if faction then GameTooltip:AddLine(faction, 0.8, 0.8, 0.8) end
+    GameTooltip:AddLine(RowSubtitle(r) .. " · " .. L.ROUTES_POINTS:format(#r.pts), 0.8, 0.8, 0.8, true)
+    if r.note then GameTooltip:AddLine(r.note, 1, 1, 1, true) end
+    GameTooltip:Show()
+end
 
 -- what a search looks through, per route (worked out once)
 local hayOf = setmetatable({}, { __mode = "k" })
@@ -62,6 +86,8 @@ local function Matches(r, q, here)
         if not hay then
             hay = Geo.Squash(r.name) .. " " .. Geo.Squash(Geo.GetMapName(r.zone) or "") .. " " .. Geo.Squash(r.author or "")
                 .. " " .. Geo.Squash(R().CategoryLabel(r.cat)) .. " " .. Geo.Squash(r.note or "")
+                .. " " .. Geo.Squash((R().LevelText and R().LevelText(r)) or "")
+                .. " " .. Geo.Squash((R().FactionText and R().FactionText(r)) or "")
             hayOf[r] = hay
         end
         if not hay:find(q, 1, true) then
@@ -88,12 +114,21 @@ local function RefreshList()
     local q = Geo.Squash(searchBox.edit:GetText())
     local here = C_Map and C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
     results = {}
-    local dist = {}
+    local dist, levels = {}, {}
+    local level = UnitLevel and tonumber(UnitLevel("player"))
     for _, r in ipairs(R().All()) do
         if Matches(r, q, here) then
             results[#results + 1] = r
-            if state.sort == "near" then
+            if state.sort == "near" or state.sort == "level" then
                 dist[r] = R().Distance(r) or math.huge
+            end
+            if state.sort == "level" then
+                local fits = R().FitsLevel and R().FitsLevel(r, level)
+                local gap = 0
+                if fits == false and r.lv and level then
+                    gap = level < r.lv.min and r.lv.min - level or level - (r.lv.max or level)
+                end
+                levels[r] = { fits == true and 0 or (fits == false and 1 or 2), gap }
             end
         end
     end
@@ -103,6 +138,11 @@ local function RefreshList()
         rating[r] = { R().Rating(up, down), up }
     end
     table.sort(results, function(a, b)
+        if state.sort == "level" then
+            if levels[a][1] ~= levels[b][1] then return levels[a][1] < levels[b][1] end
+            if levels[a][2] ~= levels[b][2] then return levels[a][2] < levels[b][2] end
+            if dist[a] ~= dist[b] then return dist[a] < dist[b] end
+        end
         if state.sort == "near" and dist[a] ~= dist[b] then
             return dist[a] < dist[b]
         elseif state.sort == "new" then
@@ -147,7 +187,7 @@ local function RefreshList()
 end
 RoutesUI.Refresh = RefreshList
 
-local ShowEditor, ShowText, ShowShare, ShowCreate, ShowHelp
+local ShowEditor, ShowText, ShowShare, ShowCreate, ShowHelp, ShowMore
 
 local function Minutes(secs)
     return math.max(1, math.floor((secs or 0) / 60 + 0.5))
@@ -159,6 +199,7 @@ RefreshDetail = function()
     local changed = detailID ~= id
     detailID = id
     detail.route = r
+    if r and R().Prepare then R().Prepare(r) end
     if changed then detail.scroll:SetVerticalScroll(0) end
     detail.share = nil
     detail.body:ClearAllPoints()
@@ -170,17 +211,33 @@ RefreshDetail = function()
     detail.down:SetShown(r ~= nil)
     detail.name:SetShown(r ~= nil)
     detail.meta:SetShown(r ~= nil)
+    detail.meta2:SetShown(r ~= nil)
     detail.votes:SetShown(r ~= nil)
+    if detail.map then
+        if detail.mapRoute ~= r then
+            detail.map:SetRoute(r)
+            detail.mapRoute = r
+        end
+        detail.map:SetShown(r ~= nil)
+    end
+    detail.up:ClearAllPoints()
+    if detail.map and r then
+        local elsewhere = detail.map.shown and detail.map.shown < #r.pts
+        detail.up:SetPoint("TOPLEFT", detail.map, "BOTTOMLEFT", 0, elsewhere and -18 or -8)
+    else
+        detail.up:SetPoint("TOPLEFT", detail.meta2, "BOTTOMLEFT", 0, -8)
+    end
     detail.scroll:ClearAllPoints()
     if r then
         detail.scroll:SetPoint("TOPLEFT", detail.up, "BOTTOMLEFT", 0, -10)
     else
         detail.scroll:SetPoint("TOPLEFT", detail, "TOPLEFT", 10, -10)
     end
-    detail.scroll:SetPoint("BOTTOMRIGHT", detail, "BOTTOMRIGHT", -26, r and 104 or 10)
+    detail.scroll:SetPoint("BOTTOMRIGHT", detail, "BOTTOMRIGHT", -26, r and 44 or 10)
     if not r then
         detail.name:SetText("")
         detail.meta:SetText("")
+        detail.meta2:SetText("")
         detail.body:SetText(firstHelp and L.ROUTES_HELP_TEXT or L.ROUTES_PICK)
         detail.FitBody()
         detail.votes:SetText("")
@@ -189,19 +246,23 @@ RefreshDetail = function()
     local c = CAT_COLOUR[r.cat] or CAT_COLOUR.other
     detail.name:SetText(r.name)
     detail.name:SetTextColor(c[1], c[2], c[3])
-    local author = r.src == "mine" and L.ROUTES_BY_YOU or L.ROUTES_BY:format(R().ShortName(r.author))
+    local author = r.src == "suggested" and L.ROUTES_TAB_SUGGESTED
+        or (r.src == "mine" and L.ROUTES_BY_YOU or L.ROUTES_BY:format(R().ShortName(r.author)))
     local dist = R().Distance(r)
-    local lines = {
-        author .. "  ·  " .. R().CategoryLabel(r.cat) .. "  ·  " .. (Geo.GetMapName(r.zone) or "?"),
-        L.ROUTES_POINTS:format(#r.pts) .. "  ·  " .. R().ModeLabel(r.mode) .. (dist and ("  ·  " .. L.ROUTES_AWAY:format(Geo.FormatDistance(dist))) or ""),
-    }
-    if r.src == "mine" then
-        lines[#lines + 1] = r.public and L.ROUTES_PUBLIC or L.ROUTES_PRIVATE
-    elseif r.via and r.via ~= r.author then
-        lines[#lines + 1] = L.ROUTES_VIA:format(R().ShortName(r.via))
-    end
-    detail.meta:SetText(table.concat(lines, "\n"))
+    local mapID = PreviewMap(r)
+    local zone = Geo.GetMapName(mapID) or "?"
+    if mapID ~= r.zone then zone = L.ROUTE_SPANS:format(zone) end
+    local faction = R().FactionText and R().FactionText(r)
+    local level = R().LevelText and R().LevelText(r)
+    detail.meta:SetText(author .. " · " .. R().CategoryLabel(r.cat) .. " · " .. zone .. (faction and (" · " .. faction) or ""))
+    detail.meta2:SetText((level and (level .. " · ") or "") .. R().ModeLabel(r.mode) .. " · " .. L.ROUTES_POINTS:format(#r.pts)
+        .. (dist and (" · " .. L.ROUTES_AWAY:format(Geo.FormatDistance(dist))) or ""))
     local body = r.note or ""
+    if r.src == "mine" then
+        body = (r.public and L.ROUTES_PUBLIC or L.ROUTES_PRIVATE) .. (body ~= "" and ("\n\n" .. body) or "")
+    elseif r.via and r.via ~= r.author then
+        body = L.ROUTES_VIA:format(R().ShortName(r.via)) .. (body ~= "" and ("\n\n" .. body) or "")
+    end
     local run = R().Run()
     local running = run and run.id == r.id
     if running then
@@ -213,6 +274,13 @@ RefreshDetail = function()
         end
         body = "|cff40ff40" .. progress .. "|r" .. (body ~= "" and ("\n\n" .. body) or "")
     end
+    local stops = { L.ROUTE_STOPS_HEADER }
+    for i = 1, math.min(#r.pts, 60) do
+        local title = R().StopTitle and R().StopTitle(r, i) or r.pts[i].t or L.ROUTE_UNNAMED
+        stops[#stops + 1] = L.ROUTE_STOP_N:format(i, title)
+    end
+    if #r.pts > 60 then stops[#stops + 1] = "…" end
+    body = body .. (body ~= "" and "\n\n" or "") .. table.concat(stops, "\n")
     detail.body:SetText(body)
     detail.FitBody()
 
@@ -252,35 +320,10 @@ RefreshDetail = function()
             end
         end }
     end
-    actions[#actions + 1] = { L.ROUTE_SHARE, function()
-        ShowShare(r)
-    end }
-    if mine then
-        actions[#actions + 1] = { L.ROUTE_EDIT, function()
-            ShowEditor(r)
-        end }
-        actions[#actions + 1] = { L.ROUTE_DELETE, function()
-            Widgets.Confirm("WAYPOINTTRACKER_ROUTE_DELETE", {
-                text = L.ROUTE_DELETE_CONFIRM, button1 = L.ROUTE_DELETE, button2 = CANCEL or L.NO,
-                onAccept = function()
-                    R().Delete(r.id)
-                    selectedID = nil
-                    RefreshList()
-                end,
-            })
-            Widgets.Ask("WAYPOINTTRACKER_ROUTE_DELETE", r.name, nil, r.id)
-        end }
-    elseif r.src == "shared" then
-        actions[#actions + 1] = { L.ROUTE_REMOVE, function()
-            R().Delete(r.id)
-            selectedID = nil
-        end }
-        actions[#actions + 1] = { L.ROUTE_BLOCK, function()
-            R().Block(r.author)
-            selectedID = nil
-            Status(L.ROUTE_BLOCKED:format(R().ShortName(r.author)), true)
-        end }
+    if not running then
+        actions[#actions + 1] = { L.ROUTE_SHARE, function() ShowShare(r) end }
     end
+    actions[#actions + 1] = { L.ROUTE_MORE, function() ShowMore(r) end }
     for i, a in ipairs(actions) do
         local b = detail.buttons[i]
         if b then
@@ -378,7 +421,7 @@ local function Build(content)
     cat:SetPoint("TOPLEFT", searchBox, "BOTTOMLEFT", 0, -4)
     local sort = Dropdown(frame, 270, {
         { value = "near", text = L.ROUTES_SORT_NEAR }, { value = "top", text = L.ROUTES_SORT_TOP },
-        { value = "new", text = L.ROUTES_SORT_NEW },
+        { value = "new", text = L.ROUTES_SORT_NEW }, { value = "level", text = L.ROUTES_SORT_LEVEL },
     }, function() return state.sort end, function(v)
         state.sort = v
         list.offset = 0
@@ -394,26 +437,50 @@ local function Build(content)
         listBg:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
     end
     list = Widgets.List(listBg, {
-        rowHeight = 22, emptyText = L.ROUTES_EMPTY,
+        rowHeight = 36, emptyText = L.ROUTES_EMPTY,
         rowInit = function(row)
             row.sel = row:CreateTexture(nil, "BACKGROUND")
             row.sel:SetAllPoints()
             row.sel:SetColorTexture(1, 0.82, 0, 0.12)
             row.right = Widgets.Label(row, "", "GameFontHighlightSmall")
-            row.right:SetPoint("RIGHT", -4, 0)
+            row.right:SetPoint("TOPRIGHT", -4, -4)
             row.text = Widgets.Label(row, "")
-            row.text:SetPoint("LEFT", 4, 0)
+            row.text:SetPoint("TOPLEFT", 4, -3)
             row.text:SetPoint("RIGHT", row.right, "LEFT", -8, 0)
             row.text:SetWordWrap(false)
+            row.sub = Widgets.Label(row, "", "GameFontDisableSmall")
+            row.sub:SetPoint("BOTTOMLEFT", 4, 3)
+            row.sub:SetPoint("RIGHT", -4, 0)
+            row.sub:SetWordWrap(false)
+            row:SetScript("OnEnter", function(self) self.hovering = true; self.hoverTime = 0 end)
+            local function Leave(self)
+                self.hovering, self.hoverTime = nil, nil
+                if GameTooltip and (not GameTooltip.GetOwner or GameTooltip:GetOwner() == self) then GameTooltip:Hide() end
+            end
+            row:SetScript("OnLeave", Leave)
+            row:SetScript("OnHide", Leave)
+            row:SetScript("OnUpdate", ns.Safe(function(self, elapsed)
+                if self.hoverTime == nil then return end
+                self.hoverTime = self.hoverTime + elapsed
+                if self.hoverTime >= 0.4 then
+                    self.hoverTime = nil
+                    RowTooltip(self)
+                end
+            end))
         end,
         rowUpdate = function(row, r)
+            if row.route ~= r then
+                row.hoverTime = row.hovering and 0 or nil
+                if GameTooltip and (not GameTooltip.GetOwner or GameTooltip:GetOwner() == row) then GameTooltip:Hide() end
+            end
             row.route = r
             local c = CAT_COLOUR[r.cat] or CAT_COLOUR.other
             local run = R().Run()
             local mark = run and run.id == r.id and "|cff40ff40>|r " or ""
-            row.text:SetText(mark .. r.name .. "  |cff999999" .. (Geo.GetMapName(r.zone) or "") .. "|r")
+            row.text:SetText(mark .. r.name)
+            row.sub:SetText(RowSubtitle(r))
             row.text:SetTextColor(c[1], c[2], c[3])
-            row.right:SetText(ScoreText(r.id) .. "  |cffbbbbbb" .. #r.pts .. "|r")
+            row.right:SetText(ScoreText(r.id))
             row.sel:SetShown(r.id == selectedID)
         end,
         onClick = function(_, r, button) if button == "LeftButton" then SelectRoute(r.id) end end,
@@ -437,11 +504,26 @@ local function Build(content)
     detail.name:SetPoint("RIGHT", -10, 0)
     detail.name:SetWordWrap(false)
     detail.meta = Widgets.Label(detail, "", "GameFontHighlightSmall")
-    detail.meta:SetPoint("TOPLEFT", detail.name, "BOTTOMLEFT", 0, -6)
+    detail.meta:SetPoint("TOPLEFT", detail, "TOPLEFT", 10, -30)
     detail.meta:SetPoint("RIGHT", -10, 0)
     detail.meta:SetTextColor(0.8, 0.8, 0.8)
+    detail.meta:SetWordWrap(false)
+    detail.meta2 = Widgets.Label(detail, "", "GameFontHighlightSmall")
+    detail.meta2:SetPoint("TOPLEFT", detail.meta, "BOTTOMLEFT", 0, -2)
+    detail.meta2:SetPoint("RIGHT", -10, 0)
+    detail.meta2:SetTextColor(0.8, 0.8, 0.8)
+    detail.meta2:SetWordWrap(false)
+    if ns.RouteMap and ns.RouteMap.Create then
+        detail.map = ns.RouteMap.Create(detail, 290, 160)
+        detail.map:SetPoint("TOPLEFT", detail, "TOPLEFT", 10, -58)
+        detail.map.onClick = function(r, m)
+            local ok, why
+            if ns.RoutePreview and ns.RoutePreview.Show then ok, why = ns.RoutePreview.Show(r.id, m) end
+            if not ok then Status(why == "combat" and L.IN_COMBAT_NO_PANELS or L.ROUTE_PREVIEW_UNAVAILABLE) end
+        end
+    end
     detail.up = Widgets.Button(detail, L.ROUTE_UPVOTE, 56, 22)
-    detail.up:SetPoint("TOPLEFT", detail.meta, "BOTTOMLEFT", 0, -8)
+    detail.up:SetPoint("TOPLEFT", detail.meta2, "BOTTOMLEFT", 0, -8)
     detail.down = Widgets.Button(detail, L.ROUTE_DOWNVOTE, 56, 22)
     detail.down:SetPoint("LEFT", detail.up, "RIGHT", 4, 0)
     detail.votes = Widgets.Label(detail, "", "GameFontHighlightSmall")
@@ -479,8 +561,9 @@ local function Build(content)
         self:SetVerticalScroll(ns.Clamp(self:GetVerticalScroll() - delta * 22, 0, math.max(0, detail.bodyFrame:GetHeight() - self:GetHeight())))
     end))
     detail.buttons = {}
-    for i = 1, 6 do
-        local b = Widgets.Button(detail, "", 130, 24)
+    local widths = { 116, 104, 60 }
+    for i = 1, 3 do
+        local b = Widgets.Button(detail, "", widths[i], 24)
         local fs = b:GetFontString()
         if fs then
             fs:ClearAllPoints()
@@ -488,19 +571,17 @@ local function Build(content)
             fs:SetPoint("RIGHT", -6, 0)
             fs:SetWordWrap(false)
         end
-        local col, line = (i - 1) % 2, math.floor((i - 1) / 2)
-        if col == 0 then
-            b:SetPoint("BOTTOMLEFT", 10, 10 + (2 - line) * 28)
-            b:SetPoint("RIGHT", detail, "CENTER", -3, 0)
+        if i == 1 then
+            b:SetPoint("BOTTOMLEFT", 10, 10)
         else
-            b:SetPoint("BOTTOMRIGHT", -10, 10 + (2 - line) * 28)
-            b:SetPoint("LEFT", detail, "CENTER", 3, 0)
+            b:SetPoint("LEFT", detail.buttons[i - 1], "RIGHT", 5, 0)
         end
         b:SetScript("OnClick", ns.Safe(function(self)
             if self.action then self.action(); RefreshList() end
         end))
         detail.buttons[i] = b
     end
+    detail.more = detail.buttons[3]
 
     local footer = CreateFrame("Button", nil, frame)
     footer:SetPoint("LEFT", countText, "RIGHT", 8, 0)
@@ -523,6 +604,7 @@ local function Build(content)
         source = source, rows = rows, detail = detail, search = searchBox.edit, new = tab.leftButton,
         import = tab.leftButton2, help = help, cat = cat, sort = sort, zoneOnly = zoneOnly,
         empty = emptyText, net = netText, status = frame.status, list = list, notice = frame.notice,
+        map = detail.map, more = detail.more, meta2 = detail.meta2,
     }
     Layout()
     RefreshList()
@@ -718,6 +800,44 @@ ShowCreate = function()
 end
 RoutesUI.ShowCreate = ShowCreate
 
+ShowMore = function(r)
+    if not r then return end
+    return Widgets.Menu(detail.more, function(root)
+        root:CreateTitle(r.name)
+        root:CreateButton(L.ROUTE_COPY, function() ShowText("copy", R().Serialize(r)) end)
+        if R().IsMine(r) then
+            root:CreateButton(L.ROUTE_EDIT, function() ShowEditor(r) end)
+        end
+        if R().IsMine(r) then
+            root:CreateDivider()
+            root:CreateButton(L.ROUTE_DELETE, function()
+                Widgets.Confirm("WAYPOINTTRACKER_ROUTE_DELETE", {
+                    text = L.ROUTE_DELETE_CONFIRM, button1 = L.ROUTE_DELETE, button2 = CANCEL or L.NO,
+                    onAccept = function()
+                        R().Delete(r.id)
+                        selectedID = nil
+                        RefreshList()
+                    end,
+                })
+                Widgets.Ask("WAYPOINTTRACKER_ROUTE_DELETE", r.name, nil, r.id)
+            end)
+        elseif r.src == "shared" then
+            root:CreateDivider()
+            root:CreateButton(L.ROUTE_REMOVE, function()
+                R().Delete(r.id)
+                selectedID = nil
+                RefreshList()
+            end)
+            root:CreateButton(L.ROUTE_BLOCK, function()
+                R().Block(r.author)
+                selectedID = nil
+                RefreshList()
+                Status(L.ROUTE_BLOCKED:format(R().ShortName(r.author)), true)
+            end)
+        end
+    end)
+end
+
 local function ShareMenu(r, justSaved)
     return function(root)
         root:CreateTitle(justSaved and L.ROUTE_SHARE_SAVED_TITLE or L.ROUTE_SHARE_TITLE:format(r.name))
@@ -828,7 +948,13 @@ Window.RegisterTab {
     leftButton2 = { text = L.IMPORT, onClick = function() ShowText("import", "") end, tooltip = L.ROUTE_IMPORT_DESC },
     build = Build,
     onShow = function() Layout(); RefreshList() end,
-    onUpdate = function() RefreshList() end,
+    onHide = function()
+        if detail and detail.map then detail.map:SetRoute(nil); detail.mapRoute = nil end
+    end,
+    onUpdate = function()
+        RefreshList()
+        if detail and detail.map then detail.map:Refresh() end
+    end,
 }
 for _, event in ipairs({ "ROUTES_CHANGED", "WAYPOINTS_CHANGED", "ACTIVE_CHANGED", "SETTING_CHANGED" }) do
     ns.On(event, function()
