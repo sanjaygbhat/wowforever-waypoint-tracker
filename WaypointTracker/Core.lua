@@ -124,6 +124,20 @@ function ns.ReportError(err)
         return
     end
     reported[message] = true
+    -- kept in the saved variables too (the last few), so a bug seen once in
+    -- the game can still be read and fixed later
+    if type(WaypointTrackerDB) == "table" then
+        local log = type(WaypointTrackerDB.errorLog) == "table" and WaypointTrackerDB.errorLog or {}
+        WaypointTrackerDB.errorLog = log
+        table.insert(log, {
+            when = time and time() or 0,
+            version = ns.version,
+            error = err:sub(1, 2000),
+        })
+        while #log > 20 do
+            table.remove(log, 1)
+        end
+    end
     local handler = geterrorhandler and geterrorhandler()
     if handler then
         handler(err)
