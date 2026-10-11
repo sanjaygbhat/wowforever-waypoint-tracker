@@ -3,9 +3,9 @@
 -- It sits just below the middle of the screen (over your character), never
 -- catches mouse clicks, and is a little see-through so it feels part of
 -- the world. Its text (name, distance, time) is a second frame that hangs
--- under it, or goes anywhere with "Move the text separately". Moving it is done from Edit Mode or the
--- window ("Move arrow"), never by clicking the arrow itself, so right-click
--- to attack always keeps working.
+-- under it, or goes anywhere with "Move the text separately". Edit Mode
+-- owns placement; clients without it can use the legacy move mode.
+-- Right-click to attack always keeps working.
 local _, ns = ...
 local L, Geo, WP = ns.L, ns.Geo, ns.WP
 
@@ -161,6 +161,9 @@ function Arrow.IsTextSeparate()
 end
 
 local function SavedPosition(which)
+    if ns.EditMode and ns.EditMode.SavedPosition then
+        return ns.EditMode.SavedPosition(which)
+    end
     local s = SPOTS[which]
     local layouts = ns.Get(s.layouts)
     if Arrow.layout and type(layouts) == "table" and type(layouts[Arrow.layout]) == "table" then
@@ -171,6 +174,9 @@ end
 
 -- which: "arrow" (default) or "text"
 function Arrow.SavePosition(pos, which)
+    if ns.EditMode and ns.EditMode.SavePosition then
+        return ns.EditMode.SavePosition(which or "arrow", pos)
+    end
     local s = SPOTS[which or "arrow"]
     if Arrow.layout then
         local layouts = ns.Get(s.layouts)
@@ -196,6 +202,9 @@ function Arrow.SaveCurrentPoint(which)
 end
 
 function Arrow.SetLayout(name)
+    if ns.EditMode and ns.EditMode.SetLayout then
+        return ns.EditMode.SetLayout(name)
+    end
     if name ~= Arrow.layout then
         Arrow.layout = name
         Arrow.ApplyPosition()
@@ -203,6 +212,11 @@ function Arrow.SetLayout(name)
 end
 
 local function ApplyPosition()
+    if ns.EditMode and ns.EditMode.ApplyPosition then
+        ns.EditMode.ApplyPosition("arrow")
+        ns.EditMode.ApplyPosition("text")
+        return
+    end
     frame:ClearAllPoints()
     local point, rel, x, y = ns.SavedPoint(SavedPosition("arrow"))
     if point then
@@ -241,7 +255,7 @@ end
 
 Arrow.moving = false
 
--- Turn "move" mode on or off (only from the window's Move button).
+-- Legacy placement for clients without Edit Mode.
 function Arrow.SetMoving(on)
     on = on and true or false
     Arrow.moving = on
@@ -604,6 +618,44 @@ function Arrow.SetPreview(on)
 end
 
 ns.On("LOGIN", function()
+    local edit = ns.EditMode
+    if edit and edit.RegisterSystem then
+        local w = ns.Widgets
+        local textSettings = {
+            { type = "slider", key = "textScale", label = L.TEXT_SIZE, min = 0.5, max = 2, step = 0.05, format = w.Percent, tooltip = L.TEXT_SIZE_DESC },
+            { type = "slider", key = "textAlpha", label = L.TEXT_VISIBILITY, min = 0.2, max = 1, step = 0.05, format = w.Percent, tooltip = L.TEXT_VISIBILITY_DESC },
+            { type = "checkbox", key = "textSeparate", label = L.TEXT_SEPARATE, tooltip = L.TEXT_SEPARATE_DESC },
+        }
+        edit.RegisterSystem({
+            key = "arrow", frame = frame, name = L.ARROW_EDIT_NAME,
+            settings = {
+                { type = "slider", key = "arrowScale", label = L.ARROW_SIZE, min = 0.5, max = 2, step = 0.05, format = w.Percent },
+                { type = "slider", key = "arrowAlpha", label = L.ARROW_TRANSPARENCY, min = 0.2, max = 1, step = 0.05, format = w.Percent },
+                textSettings[1], textSettings[2], textSettings[3],
+            },
+            onReset = Arrow.Reset, defaultPoint = { "CENTER", "CENTER", DEFAULT_X, DEFAULT_Y },
+            selectionInsets = function()
+                if Arrow.IsTextSeparate() then return { 12, 12, 20, 12 } end
+                local ratio = textFrame:GetScale() / frame:GetScale()
+                local side = max(12, (TEXT_W * ratio - ARROW_W) / 2 + 8)
+                return { side, side, 20, max(12, TEXT_H * ratio + 6) }
+            end,
+            onApply = function() Arrow.layout = edit.layout end,
+            onEnter = function() Arrow.SetEditMode(true) end,
+            onExit = function() Arrow.SetEditMode(false) end,
+        })
+        edit.RegisterSystem({
+            key = "text", frame = textFrame, name = L.TEXT_EDIT_NAME, settings = textSettings,
+            onReset = Arrow.Reset, shouldShow = Arrow.IsTextSeparate,
+            defaultAnchor = function(f) f:SetPoint("TOP", frame, "BOTTOM", 0, 2) end,
+            onApply = function(f)
+                if not Arrow.IsTextSeparate() then
+                    f:ClearAllPoints()
+                    f:SetPoint("TOP", frame, "BOTTOM", 0, 2)
+                end
+            end,
+        })
+    end
     ApplyPosition()
     ApplyLayout()
     SetArrowIndex(0)

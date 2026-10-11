@@ -2,7 +2,7 @@
 
 **Set a waypoint. Follow the arrow. That's it.**
 
-Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever: a TomTom-style arrow with `/way` coordinates, a quest, NPC and item finder, clickable map-pin sharing, and a new treasure hunt (beta) that pings you when a chest or rare appears nearby. This guide covers version **1.1.1**, client **1.60.1**, interface **16001**.
+Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever: a TomTom-style arrow with `/way` coordinates, a quest, NPC and item finder, clickable map-pin sharing, and treasure hunt (beta) that pings you when a chest or rare appears nearby. This guide covers the **1.2.0 redesign (Unreleased)**, client **1.60.1**, interface **16001**.
 
 [![A green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 
@@ -20,11 +20,13 @@ Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft
 
 ## The first minute
 
-1. Type `/wp` to open the window.
+1. Type `/wp` to open one window with **Waypoints**, **Find** and **Routes** tabs.
 2. Type `/way 42 65` to set a waypoint in your current zone, or hold **Ctrl** and **right-click** the world map.
 3. Follow the arrow. It changes from gold to green as you approach.
 4. Open **Find** to search a quest, NPC, enemy, object or item; double-click a result and the arrow points to its closest spot.
-5. Tick **Treasure hunt** (or type `/wp treasure`) to get a ping and the arrow the moment a chest or rare spawns near you.
+5. Turn on **Treasure hunt (beta)** in the quick menu (or type `/wp treasure`) to get a ping and the arrow the moment a chest or rare spawns near you.
+
+Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placement. **Real routes (beta)** is new in this release; turn it on from the Routes notice or quick menu to follow passes, gates and transport.
 
 ## Downloads and help
 

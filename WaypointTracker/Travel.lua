@@ -1116,17 +1116,6 @@ for _, e in ipairs({ "ZONE_CHANGED_NEW_AREA", "PLAYER_ENTERING_WORLD", "PLAYER_L
     end)
 end
 
--- once: tell players the beta is there to try
-ns.On("LOGIN", function()
-    if ns.Get("travelNoticeShown") or ns.Get("realRoutes") then
-        return
-    end
-    C_Timer.After(12, function()
-        ns.Set("travelNoticeShown", true)
-        ns.Print(L.TRAVEL_NEW)
-    end)
-end)
-
 ns.On("ACTIVE_CHANGED", function()
     plan, riding, atDock = nil, nil, nil
     wipe(reached)
