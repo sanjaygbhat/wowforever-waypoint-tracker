@@ -1134,7 +1134,7 @@ function Routes.Start(id)
     end
     if others == 0 then
         return Routes.Apply(id, "add")
-    elseif not ns.Get("routeAsk") then
+    elseif ns.Get("routeApply") ~= "ask" then
         return Routes.Apply(id, ns.Get("routeApply") == "add" and "add" or "replace")
     end
     ns.Fire("ROUTE_ASK", id, others)

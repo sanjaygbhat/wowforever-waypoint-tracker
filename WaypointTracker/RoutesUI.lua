@@ -1,153 +1,37 @@
--- The Routes window: browse routes (yours, shared by other players, and
--- suggested ones made from Find's database) by category and zone, vote on
--- them, start one, make and share your own. Plus the small questions it
--- asks: replace or add to your waypoints, and how a route was.
+-- Routes live in the shared window; questions use popups and sharing uses menus.
 local _, ns = ...
 local L, Geo, WP = ns.L, ns.Geo, ns.WP
+local Widgets, Window = ns.Widgets, ns.Window
 
 local RoutesUI = {}
 ns.RoutesUI = RoutesUI
 
-local WIDTH, HEIGHT = 800, 592
-local LIST_W = 430
-local ROWS = 15
-local ROW_H = 22
-
-local frame, rows, detail, searchBox, emptyText, countText, netText, scrollBar
-local tabs = {}
-local results = {}
-local offset = 0
+local frame, rows, detail, searchBox, emptyText, countText, netText, list, listBg
+local detailID
 local selectedID
 local state = { tab = "all", cat = "all", sort = "near" }
-
-local function W()
-    return ns.UI.W
+local results = {}
+local firstHelp
+local function R() return ns.Routes end
+local function Status(text, good)
+    if RoutesUI.IsShown() then Window.SetStatus(text, good) end
 end
-
-local function R()
-    return ns.Routes
+local function ScoreText(id)
+    local up, down = R().Score(id)
+    return ("|cff40ff40+%d|r |cffff6060-%d|r"):format(up, down)
 end
-
 local TABS = {
-    { key = "all", label = "ROUTES_TAB_ALL" },
-    { key = "suggested", label = "ROUTES_TAB_SUGGESTED" },
-    { key = "shared", label = "ROUTES_TAB_SHARED" },
-    { key = "mine", label = "ROUTES_TAB_MINE" },
+    { value = "all", text = L.ROUTES_SOURCE_ALL },
+    { value = "suggested", text = L.ROUTES_TAB_SUGGESTED },
+    { value = "shared", text = L.ROUTES_TAB_SHARED },
+    { value = "mine", text = L.ROUTES_TAB_MINE },
 }
-
 local CAT_COLOUR = {
     mining = { 0.85, 0.65, 0.45 }, herbs = { 0.45, 1, 0.45 }, skinning = { 0.8, 0.55, 0.35 }, fishing = { 0.4, 0.75, 1 }, farming = { 1, 0.5, 0.4 }, treasure = { 1, 0.82, 0 },
     quests = { 1, 1, 0.4 }, travel = { 0.5, 0.8, 1 }, dungeons = { 0.8, 0.6, 1 }, other = { 0.9, 0.9, 0.9 },
 }
 
-local function Status(text, good)
-    if not frame then
-        return
-    end
-    frame.status:SetText(text or "")
-    if good then
-        frame.status:SetTextColor(0.3, 1, 0.3)
-    else
-        frame.status:SetTextColor(1, 0.35, 0.3)
-    end
-end
 
-local function ScoreText(id)
-    local up, down = R().Score(id)
-    return ("|cff40ff40+%d|r |cffff6060-%d|r"):format(up, down)
-end
-
--- "< text >" picker that doesn't need a setting
-local function Picker(parent, width, options, get, set)
-    local holder = CreateFrame("Frame", nil, parent)
-    holder:SetSize(width, 24)
-    local prev = CreateFrame("Button", nil, holder)
-    prev:SetSize(24, 24)
-    prev:SetPoint("LEFT")
-    prev:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
-    prev:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Down")
-    prev:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-    local nextB = CreateFrame("Button", nil, holder)
-    nextB:SetSize(24, 24)
-    nextB:SetPoint("RIGHT")
-    nextB:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-    nextB:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Down")
-    nextB:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-    local text = holder:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    text:SetPoint("LEFT", prev, "RIGHT", 2, 0)
-    text:SetPoint("RIGHT", nextB, "LEFT", -2, 0)
-    text:SetJustifyH("CENTER")
-    text:SetWordWrap(false)
-    local function Index()
-        local cur = get()
-        for i, o in ipairs(options) do
-            if o.value == cur then
-                return i
-            end
-        end
-        return 1
-    end
-    function holder.Refresh()
-        text:SetText(options[Index()].text)
-    end
-    local function Step(d)
-        local i = (Index() - 1 + d) % #options + 1
-        set(options[i].value)
-        holder.Refresh()
-    end
-    prev:SetScript("OnClick", function()
-        Step(-1)
-    end)
-    nextB:SetScript("OnClick", function()
-        Step(1)
-    end)
-    holder.prev, holder.next = prev, nextB
-    holder.Refresh()
-    return holder
-end
-
-local function PlainCheck(parent, label, width)
-    local cb = CreateFrame("CheckButton", nil, parent, "UICheckButtonTemplate")
-    cb:SetSize(24, 24)
-    local text = cb:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    text:SetPoint("LEFT", cb, "RIGHT", 2, 1)
-    text:SetWidth(width or 200)
-    text:SetJustifyH("LEFT")
-    text:SetWordWrap(false)
-    text:SetText(label)
-    cb:SetHitRectInsets(0, -math.min(text:GetStringWidth() + 4, width or 200), 0, 0)
-    cb.label = text
-    return cb
-end
-
-local function Dialog(name, w, h)
-    local f = CreateFrame("Frame", name, UIParent, "BackdropTemplate")
-    f:SetSize(w, h)
-    f:SetFrameStrata("FULLSCREEN_DIALOG")
-    f:SetToplevel(true)
-    f:EnableMouse(true)
-    f:SetMovable(true)
-    f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", f.StartMoving)
-    f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    f:SetBackdrop(W().BACKDROP_DIALOG)
-    f:SetBackdropColor(0, 0, 0, 1)
-    f:Hide()
-    tinsert(UISpecialFrames, name)
-    f.title = f:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-    f.title:SetPoint("TOPLEFT", 22, -20)
-    f.title:SetPoint("RIGHT", -40, 0)
-    f.title:SetJustifyH("LEFT")
-    f.title:SetWordWrap(false)
-    local close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
-    close:SetPoint("TOPRIGHT", -5, -5)
-    f.close = close
-    return f
-end
-
--- ---------------------------------------------------------------------------
--- The list
--- ---------------------------------------------------------------------------
 -- what a search looks through, per route (worked out once)
 local hayOf = setmetatable({}, { __mode = "k" })
 
@@ -188,35 +72,8 @@ local function Matches(r, q, here)
 end
 
 local RefreshDetail
-
 local function RefreshRows()
-    local maxOffset = math.max(0, #results - ROWS)
-    offset = ns.Clamp(offset, 0, maxOffset)
-    if scrollBar then
-        scrollBar.updating = true
-        scrollBar:SetMinMaxValues(0, maxOffset)
-        scrollBar:SetValue(offset)
-        scrollBar:SetShown(maxOffset > 0)
-        scrollBar.updating = false
-    end
-    local run = R().Run()
-    for i = 1, ROWS do
-        local row = rows[i]
-        local r = results[i + offset]
-        row.route = r
-        if r then
-            local c = CAT_COLOUR[r.cat] or CAT_COLOUR.other
-            local zone = Geo.GetMapName(r.zone) or ""
-            local mark = (run and run.id == r.id) and "|cff40ff40>|r " or ""
-            row.text:SetText(mark .. r.name .. "  |cff999999" .. zone .. "|r")
-            row.text:SetTextColor(c[1], c[2], c[3])
-            row.right:SetText(ScoreText(r.id) .. "  |cffbbbbbb" .. #r.pts .. "|r")
-            row.sel:SetShown(r.id == selectedID)
-            row:Show()
-        else
-            row:Hide()
-        end
-    end
+    list:SetSelected(selectedID and R().Get(selectedID))
 end
 
 local function RefreshList()
@@ -229,7 +86,7 @@ local function RefreshList()
         ns.DB.Load()
     end
     local q = Geo.Squash(searchBox.edit:GetText())
-    local here = C_Map.GetBestMapForUnit("player")
+    local here = C_Map and C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
     results = {}
     local dist = {}
     for _, r in ipairs(R().All()) do
@@ -273,25 +130,23 @@ local function RefreshList()
     else
         emptyText:Hide()
     end
-    if not selectedID or not R().Get(selectedID) then
-        selectedID = results[1] and results[1].id
+    local visible
+    for _, r in ipairs(results) do
+        if r.id == selectedID then visible = r; break end
     end
+    if not visible then
+        selectedID = not firstHelp and results[1] and results[1].id or nil
+    end
+    list:SetItems(results)
     RefreshRows()
     RefreshDetail()
     local s = ns.RoutesNet and ns.RoutesNet.Status()
-    if s then
-        if not s.sharing then
-            netText:SetText(L.ROUTES_NET_OFF)
-        else
-            netText:SetText(L.ROUTES_NET:format(s.peers))
-        end
-    end
+    netText:SetText(ns.Get("routeSharing") and L.ROUTES_SHARING_LINE:format(s and s.peers or 0) or L.ROUTES_SHARING_OFF_LINE)
+    local w = RoutesUI.widgets
+    if w then w.source:Refresh(); w.cat:Refresh(); w.sort:Refresh() end
 end
 RoutesUI.Refresh = RefreshList
 
--- ---------------------------------------------------------------------------
--- The detail pane
--- ---------------------------------------------------------------------------
 local ShowEditor, ShowText, ShowShare, ShowCreate, ShowHelp
 
 local function Minutes(secs)
@@ -300,16 +155,34 @@ end
 
 RefreshDetail = function()
     local r = selectedID and R().Get(selectedID)
+    local id = r and r.id
+    local changed = detailID ~= id
+    detailID = id
     detail.route = r
+    if changed then detail.scroll:SetVerticalScroll(0) end
+    detail.share = nil
+    detail.body:ClearAllPoints()
+    detail.body:SetPoint("TOPLEFT")
     for _, b in ipairs(detail.buttons) do
         b:Hide()
     end
     detail.up:SetShown(r ~= nil)
     detail.down:SetShown(r ~= nil)
+    detail.name:SetShown(r ~= nil)
+    detail.meta:SetShown(r ~= nil)
+    detail.votes:SetShown(r ~= nil)
+    detail.scroll:ClearAllPoints()
+    if r then
+        detail.scroll:SetPoint("TOPLEFT", detail.up, "BOTTOMLEFT", 0, -10)
+    else
+        detail.scroll:SetPoint("TOPLEFT", detail, "TOPLEFT", 10, -10)
+    end
+    detail.scroll:SetPoint("BOTTOMRIGHT", detail, "BOTTOMRIGHT", -26, r and 104 or 10)
     if not r then
         detail.name:SetText("")
         detail.meta:SetText("")
-        detail.body:SetText(L.ROUTES_PICK)
+        detail.body:SetText(firstHelp and L.ROUTES_HELP_TEXT or L.ROUTES_PICK)
+        detail.FitBody()
         detail.votes:SetText("")
         return
     end
@@ -341,10 +214,14 @@ RefreshDetail = function()
         body = "|cff40ff40" .. progress .. "|r" .. (body ~= "" and ("\n\n" .. body) or "")
     end
     detail.body:SetText(body)
+    detail.FitBody()
 
     local mine = R().IsMine(r)
     local my = R().MyVote(r.id)
-    detail.votes:SetText(ScoreText(r.id) .. (my ~= 0 and ("   " .. (my > 0 and L.ROUTES_YOU_UP or L.ROUTES_YOU_DOWN)) or ""))
+    local up, down = R().Score(r.id)
+    detail.up:SetText("▲ " .. up)
+    detail.down:SetText("▼ " .. down)
+    detail.votes:SetText(my ~= 0 and (my > 0 and L.ROUTES_YOU_UP or L.ROUTES_YOU_DOWN) or "")
     detail.up:SetEnabled(not mine)
     detail.down:SetEnabled(not mine)
     if my > 0 then
@@ -383,8 +260,15 @@ RefreshDetail = function()
             ShowEditor(r)
         end }
         actions[#actions + 1] = { L.ROUTE_DELETE, function()
-            R().Delete(r.id)
-            selectedID = nil
+            Widgets.Confirm("WAYPOINTTRACKER_ROUTE_DELETE", {
+                text = L.ROUTE_DELETE_CONFIRM, button1 = L.ROUTE_DELETE, button2 = CANCEL or L.NO,
+                onAccept = function()
+                    R().Delete(r.id)
+                    selectedID = nil
+                    RefreshList()
+                end,
+            })
+            Widgets.Ask("WAYPOINTTRACKER_ROUTE_DELETE", r.name, nil, r.id)
         end }
     elseif r.src == "shared" then
         actions[#actions + 1] = { L.ROUTE_REMOVE, function()
@@ -400,6 +284,7 @@ RefreshDetail = function()
     for i, a in ipairs(actions) do
         local b = detail.buttons[i]
         if b then
+            if a[1] == L.ROUTE_SHARE then detail.share = b end
             b:SetText(a[1])
             b.action = a[2]
             b:Show()
@@ -407,987 +292,546 @@ RefreshDetail = function()
     end
 end
 
--- ---------------------------------------------------------------------------
--- Building the window
--- ---------------------------------------------------------------------------
-local function RefreshTabs()
-    for _, b in ipairs(tabs) do
-        if b.key == state.tab then
-            b:LockHighlight()
-            b.bar:Show()
-        else
-            b:UnlockHighlight()
-            b.bar:Hide()
-        end
-    end
+local function Dropdown(parent, width, options, get, set)
+    return Widgets.Dropdown(parent, width, {
+        text = function()
+            for _, o in ipairs(options) do
+                if o.value == get() then return o.text end
+            end
+            return options[1] and options[1].text or ""
+        end,
+        menu = function(root)
+            for _, o in ipairs(options) do
+                local value = o.value
+                root:CreateRadio(o.text, function() return get() == value end, function() set(value) end)
+            end
+        end,
+    })
 end
 
-local function Create()
-    local w = W()
-    frame = CreateFrame("Frame", "WaypointTrackerRoutesFrame", UIParent, "BackdropTemplate")
-    frame:SetSize(WIDTH, HEIGHT)
-    frame:SetFrameStrata("DIALOG")
-    frame:SetToplevel(true)
-    frame:SetMovable(true)
-    frame:EnableMouse(true)
-    frame:SetClampedToScreen(true)
-    frame:RegisterForDrag("LeftButton")
-    frame:SetBackdrop(w.BACKDROP_DIALOG)
-    frame:SetBackdropColor(0, 0, 0, 1)
-    frame:SetPoint("CENTER", UIParent, "CENTER", 0, 30)
-    frame:SetScript("OnDragStart", frame.StartMoving)
-    frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-    frame:Hide()
-    tinsert(UISpecialFrames, "WaypointTrackerRoutesFrame")
-
-    local icon = frame:CreateTexture(nil, "ARTWORK")
-    icon:SetTexture(ns.MEDIA .. "Icon")
-    icon:SetSize(26, 26)
-    icon:SetPoint("TOPLEFT", 20, -16)
-    local title = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-    title:SetPoint("LEFT", icon, "RIGHT", 8, 0)
-    title:SetText(L.ROUTES_TITLE)
-    local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
-    close:SetPoint("TOPRIGHT", -5, -5)
-    local subtitle = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    subtitle:SetPoint("TOPLEFT", 22, -48)
-    subtitle:SetPoint("RIGHT", -22, 0)
-    subtitle:SetJustifyH("LEFT")
-    subtitle:SetTextColor(0.85, 0.85, 0.85)
-    subtitle:SetText(L.ROUTES_SUBTITLE)
-
-    local newBtn = w.Button(frame, L.ROUTE_CREATE, 150, 22)
-    newBtn:SetPoint("RIGHT", close, "LEFT", -6, 0)
-    newBtn:SetScript("OnClick", function()
-        ShowCreate()
-    end)
-    w.AddTooltip(newBtn, L.ROUTE_CREATE, L.ROUTE_CREATE_DESC)
-    local importBtn = w.Button(frame, L.IMPORT, 80, 22)
-    importBtn:SetPoint("RIGHT", newBtn, "LEFT", -4, 0)
-    importBtn:SetScript("OnClick", function()
-        ShowText("import", "")
-    end)
-    w.AddTooltip(importBtn, L.IMPORT, L.ROUTE_IMPORT_DESC)
-    local helpBtn = w.Button(frame, L.ROUTES_HOWTO, 110, 22)
-    helpBtn:SetPoint("RIGHT", importBtn, "LEFT", -4, 0)
-    helpBtn:SetScript("OnClick", function()
-        ShowHelp()
-    end)
-
-    -- tabs
-    local prev
-    for _, t in ipairs(TABS) do
-        local b = CreateFrame("Button", nil, frame)
-        b:SetHeight(22)
-        local fs = b:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        fs:SetPoint("CENTER")
-        fs:SetText(L[t.label])
-        b:SetFontString(fs)
-        b:SetWidth(math.max(70, fs:GetStringWidth() + 20))
-        b:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
-        b.bar = b:CreateTexture(nil, "ARTWORK")
-        b.bar:SetColorTexture(1, 0.82, 0, 0.9)
-        b.bar:SetHeight(2)
-        b.bar:SetPoint("BOTTOMLEFT", 4, 0)
-        b.bar:SetPoint("BOTTOMRIGHT", -4, 0)
-        if prev then
-            b:SetPoint("LEFT", prev, "RIGHT", 2, 0)
-        else
-            b:SetPoint("TOPLEFT", 22, -74)
-        end
-        b.key = t.key
-        b:SetScript("OnClick", function()
-            state.tab = t.key
-            offset = 0
-            RefreshTabs()
-            RefreshList()
-        end)
-        tabs[#tabs + 1] = b
-        prev = b
-    end
-
-    -- filters
-    searchBox = w.Box(frame, 220, L.ROUTES_SEARCH)
-    searchBox:SetPoint("TOPLEFT", 22, -104)
-    searchBox.edit:HookScript("OnTextChanged", function(_, user)
-        if user then
-            offset = 0
-            RefreshList()
-        end
-    end)
-    local cats = { { value = "all", text = L.ROUTES_ALL_CATEGORIES } }
+local function Categories(all)
+    local choices = all and { { value = "all", text = L.ROUTES_ALL_CATEGORIES } } or {}
     for _, c in ipairs(R().CATEGORIES) do
-        cats[#cats + 1] = { value = c, text = R().CategoryLabel(c) }
+        choices[#choices + 1] = { value = c, text = R().CategoryLabel(c) }
     end
-    local catPicker = Picker(frame, 190, cats, function()
-        return state.cat
-    end, function(v)
+    return choices
+end
+
+local function SelectRoute(id)
+    selectedID = id
+    if id and R().Get(id) then
+        firstHelp = false
+        ns.Set("routesHelpShown", true)
+    end
+    RefreshRows()
+    RefreshDetail()
+end
+
+local function Layout()
+    if not frame then return end
+    local notice = not ns.Get("travelNoticeShown") and not ns.Get("realRoutes")
+    frame.notice:SetShown(notice)
+    local top = notice and -78 or 0
+    searchBox:ClearAllPoints()
+    searchBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, top)
+    listBg:ClearAllPoints()
+    listBg:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, top - 62)
+    listBg:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 28)
+end
+
+local function Build(content)
+    frame = content
+    firstHelp = not ns.Get("routesHelpShown")
+    frame.status = Window.frame.status
+    frame.notice = CreateFrame("Frame", nil, frame)
+    frame.notice:SetPoint("TOPLEFT")
+    frame.notice:SetPoint("TOPRIGHT")
+    frame.notice:SetHeight(72)
+    frame.notice.text = Widgets.Label(frame.notice, L.TRAVEL_NEW_WINDOW, "GameFontHighlightSmall")
+    frame.notice.text:SetPoint("TOPLEFT", 4, -4)
+    frame.notice.text:SetPoint("RIGHT", -4, 0)
+    frame.notice.dismiss = Widgets.Button(frame.notice, L.TRAVEL_NOTICE_DISMISS, 90, 22)
+    frame.notice.dismiss:SetPoint("BOTTOMRIGHT", -4, 4)
+    frame.notice.dismiss:SetScript("OnClick", ns.Safe(function() ns.Set("travelNoticeShown", true) end))
+    frame.notice.enable = Widgets.Button(frame.notice, L.TRAVEL_NOTICE_ENABLE, 110, 22)
+    frame.notice.enable:SetPoint("RIGHT", frame.notice.dismiss, "LEFT", -6, 0)
+    frame.notice.enable:SetScript("OnClick", ns.Safe(function()
+        ns.Set("realRoutes", true)
+        ns.Set("travelNoticeShown", true)
+    end))
+    Widgets.Tooltip(frame.notice.enable, L.REAL_ROUTES, L.REAL_ROUTES_DESC)
+
+    -- Two filter rows leave enough room for translated dropdown labels.
+    searchBox = Widgets.EditBox(frame, 260, { search = true, placeholder = L.ROUTES_SEARCH })
+    searchBox.edit:HookScript("OnTextChanged", ns.Safe(function()
+        if list then list.offset = 0; RefreshList() end
+    end))
+    local source = Dropdown(frame, 160, TABS, function() return state.tab end, function(v) RoutesUI.SetTab(v) end)
+    source:SetPoint("LEFT", searchBox, "RIGHT", 6, 0)
+    local zoneOnly = Widgets.Check(frame, L.THIS_ZONE_ONLY, "routeThisZone", nil, 150)
+    zoneOnly:SetPoint("LEFT", source, "RIGHT", 4, 0)
+    local cat = Dropdown(frame, 300, Categories(true), function() return state.cat end, function(v)
         state.cat = v
-        offset = 0
+        list.offset = 0
         RefreshList()
     end)
-    catPicker:SetPoint("LEFT", searchBox, "RIGHT", 8, 0)
-    local sortPicker = Picker(frame, 170, {
-        { value = "top", text = L.ROUTES_SORT_TOP },
+    cat:SetPoint("TOPLEFT", searchBox, "BOTTOMLEFT", 0, -4)
+    local sort = Dropdown(frame, 270, {
+        { value = "near", text = L.ROUTES_SORT_NEAR }, { value = "top", text = L.ROUTES_SORT_TOP },
         { value = "new", text = L.ROUTES_SORT_NEW },
-        { value = "near", text = L.ROUTES_SORT_NEAR },
-    }, function()
-        return state.sort
-    end, function(v)
+    }, function() return state.sort end, function(v)
         state.sort = v
+        list.offset = 0
         RefreshList()
     end)
-    sortPicker:SetPoint("LEFT", catPicker, "RIGHT", 8, 0)
-    local zoneOnly = PlainCheck(frame, L.THIS_ZONE_ONLY, 140)
-    zoneOnly:SetPoint("LEFT", sortPicker, "RIGHT", 8, 0)
-    zoneOnly:SetScript("OnClick", function(self)
-        ns.Set("routeThisZone", self:GetChecked() and true or false)
-        offset = 0
-        RefreshList()
-    end)
+    sort:SetPoint("LEFT", cat, "RIGHT", 6, 0)
 
-    -- list
-    local listBg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    listBg:SetPoint("TOPLEFT", 20, -136)
-    listBg:SetSize(LIST_W + 4, ROWS * ROW_H + 10)
-    listBg:SetBackdrop(w.BACKDROP_BOX)
-    listBg:SetBackdropColor(0, 0, 0, 0.6)
-    listBg:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
-    listBg:EnableMouseWheel(true)
-    listBg:SetScript("OnMouseWheel", function(_, delta)
-        offset = offset - delta * 3
-        RefreshRows()
-    end)
-    rows = {}
-    for i = 1, ROWS do
-        local row = CreateFrame("Button", nil, listBg)
-        row:SetHeight(ROW_H)
-        row:SetPoint("TOPLEFT", 6, -5 - (i - 1) * ROW_H)
-        row:SetPoint("RIGHT", -20, 0)
-        row:RegisterForClicks("LeftButtonUp")
-        row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
-        row.sel = row:CreateTexture(nil, "BACKGROUND")
-        row.sel:SetAllPoints()
-        row.sel:SetColorTexture(1, 0.82, 0, 0.12)
-        row.sel:Hide()
-        row.right = row:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-        row.right:SetPoint("RIGHT", -4, 0)
-        row.text = row:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-        row.text:SetPoint("LEFT", 4, 0)
-        row.text:SetPoint("RIGHT", row.right, "LEFT", -8, 0)
-        row.text:SetJustifyH("LEFT")
-        row.text:SetWordWrap(false)
-        row:SetScript("OnClick", ns.Safe(function(self)
-            selectedID = self.route and self.route.id
-            RefreshRows()
-            RefreshDetail()
-        end))
-        row:SetScript("OnDoubleClick", ns.Safe(function(self)
-            if self.route then
-                R().Start(self.route.id)
-            end
-        end))
-        rows[i] = row
+    listBg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+    listBg:SetWidth(300)
+    if listBg.SetBackdrop then
+        listBg:SetBackdrop(Widgets.BACKDROP_BOX)
+        listBg:SetBackdropColor(0, 0, 0, 0.6)
+        listBg:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
     end
-    scrollBar = CreateFrame("Slider", nil, listBg)
-    scrollBar:SetOrientation("VERTICAL")
-    scrollBar:SetWidth(14)
-    scrollBar:SetPoint("TOPRIGHT", -4, -6)
-    scrollBar:SetPoint("BOTTOMRIGHT", -4, 6)
-    scrollBar:SetThumbTexture("Interface\\Buttons\\UI-ScrollBar-Knob")
-    scrollBar:SetValueStep(1)
-    scrollBar:SetObeyStepOnDrag(true)
-    local track = scrollBar:CreateTexture(nil, "BACKGROUND")
-    track:SetAllPoints()
-    track:SetColorTexture(1, 1, 1, 0.06)
-    scrollBar:SetScript("OnValueChanged", function(self, value)
-        if not self.updating then
-            offset = math.floor(value + 0.5)
-            RefreshRows()
-        end
-    end)
-    emptyText = listBg:CreateFontString(nil, "ARTWORK", "GameFontDisable")
-    emptyText:SetPoint("TOPLEFT", 12, -14)
-    emptyText:SetPoint("RIGHT", -12, 0)
-    emptyText:SetJustifyH("LEFT")
-    countText = frame:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
-    countText:SetPoint("TOPRIGHT", listBg, "BOTTOMRIGHT", -4, -4)
+    list = Widgets.List(listBg, {
+        rowHeight = 22, emptyText = L.ROUTES_EMPTY,
+        rowInit = function(row)
+            row.sel = row:CreateTexture(nil, "BACKGROUND")
+            row.sel:SetAllPoints()
+            row.sel:SetColorTexture(1, 0.82, 0, 0.12)
+            row.right = Widgets.Label(row, "", "GameFontHighlightSmall")
+            row.right:SetPoint("RIGHT", -4, 0)
+            row.text = Widgets.Label(row, "")
+            row.text:SetPoint("LEFT", 4, 0)
+            row.text:SetPoint("RIGHT", row.right, "LEFT", -8, 0)
+            row.text:SetWordWrap(false)
+        end,
+        rowUpdate = function(row, r)
+            row.route = r
+            local c = CAT_COLOUR[r.cat] or CAT_COLOUR.other
+            local run = R().Run()
+            local mark = run and run.id == r.id and "|cff40ff40>|r " or ""
+            row.text:SetText(mark .. r.name .. "  |cff999999" .. (Geo.GetMapName(r.zone) or "") .. "|r")
+            row.text:SetTextColor(c[1], c[2], c[3])
+            row.right:SetText(ScoreText(r.id) .. "  |cffbbbbbb" .. #r.pts .. "|r")
+            row.sel:SetShown(r.id == selectedID)
+        end,
+        onClick = function(_, r, button) if button == "LeftButton" then SelectRoute(r.id) end end,
+        onDoubleClick = function(_, r) R().Start(r.id) end,
+    })
+    list:SetPoint("TOPLEFT", 5, -5)
+    list:SetPoint("BOTTOMRIGHT", -5, 5)
+    rows, emptyText = list.rows, list.emptyText
+    countText = Widgets.Label(frame, "", "GameFontDisableSmall")
+    countText:SetPoint("BOTTOMLEFT", 4, 7)
 
-    -- detail
     detail = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    detail:SetPoint("TOPLEFT", listBg, "TOPRIGHT", 10, 0)
-    detail:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -20, 76)
-    detail:SetBackdrop(w.BACKDROP_BOX)
-    detail:SetBackdropColor(0, 0, 0, 0.6)
-    detail:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
-    detail.name = detail:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    detail:SetPoint("TOPLEFT", listBg, "TOPRIGHT", 8, 0)
+    detail:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 28)
+    if detail.SetBackdrop then
+        detail:SetBackdrop(Widgets.BACKDROP_BOX)
+        detail:SetBackdropColor(0, 0, 0, 0.6)
+    end
+    detail.name = Widgets.Label(detail, "", "GameFontNormalLarge")
     detail.name:SetPoint("TOPLEFT", 10, -10)
     detail.name:SetPoint("RIGHT", -10, 0)
-    detail.name:SetJustifyH("LEFT")
-    detail.meta = detail:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    detail.name:SetWordWrap(false)
+    detail.meta = Widgets.Label(detail, "", "GameFontHighlightSmall")
     detail.meta:SetPoint("TOPLEFT", detail.name, "BOTTOMLEFT", 0, -6)
     detail.meta:SetPoint("RIGHT", -10, 0)
-    detail.meta:SetJustifyH("LEFT")
     detail.meta:SetTextColor(0.8, 0.8, 0.8)
-    -- votes
-    detail.up = w.Button(detail, L.ROUTE_UPVOTE, 100, 22)
-    detail.up:SetPoint("TOPLEFT", detail.meta, "BOTTOMLEFT", 0, -10)
-    detail.down = w.Button(detail, L.ROUTE_DOWNVOTE, 100, 22)
-    detail.down:SetPoint("LEFT", detail.up, "RIGHT", 6, 0)
-    detail.votes = detail:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    detail.votes:SetPoint("LEFT", detail.down, "RIGHT", 8, 0)
+    detail.up = Widgets.Button(detail, L.ROUTE_UPVOTE, 56, 22)
+    detail.up:SetPoint("TOPLEFT", detail.meta, "BOTTOMLEFT", 0, -8)
+    detail.down = Widgets.Button(detail, L.ROUTE_DOWNVOTE, 56, 22)
+    detail.down:SetPoint("LEFT", detail.up, "RIGHT", 4, 0)
+    detail.votes = Widgets.Label(detail, "", "GameFontHighlightSmall")
+    detail.votes:SetPoint("LEFT", detail.down, "RIGHT", 4, 0)
     detail.votes:SetPoint("RIGHT", -10, 0)
-    detail.votes:SetJustifyH("LEFT")
-    local function VoteClick(v)
+    detail.votes:SetWordWrap(false)
+    local function Vote(v)
         local r = detail.route
-        if not r then
-            return
-        end
-        -- clicking your vote again takes it back
-        local new = R().MyVote(r.id) == v and 0 or v
-        R().Vote(r.id, new)
+        if not r then return end
+        local value = R().MyVote(r.id) == v and 0 or v
+        R().Vote(r.id, value)
         RefreshList()
-        Status(new == 0 and L.ROUTE_VOTE_REMOVED or L.ROUTE_VOTED, true)
+        Status(value == 0 and L.ROUTE_VOTE_REMOVED or L.ROUTE_VOTED, true)
     end
-    detail.up:SetScript("OnClick", function()
-        VoteClick(1)
-    end)
-    detail.down:SetScript("OnClick", function()
-        VoteClick(-1)
-    end)
-    w.AddTooltip(detail.up, L.ROUTE_UPVOTE, L.ROUTE_VOTE_DESC)
-    w.AddTooltip(detail.down, L.ROUTE_DOWNVOTE, L.ROUTE_VOTE_DESC)
-    detail.body = detail:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    detail.body:SetPoint("TOPLEFT", detail.up, "BOTTOMLEFT", 0, -10)
-    detail.body:SetPoint("RIGHT", -10, 0)
-    detail.body:SetPoint("BOTTOM", detail, "BOTTOM", 0, 128)
-    detail.body:SetJustifyH("LEFT")
+    detail.up:SetScript("OnClick", ns.Safe(function() Vote(1) end))
+    detail.down:SetScript("OnClick", ns.Safe(function() Vote(-1) end))
+    Widgets.Tooltip(detail.up, L.ROUTE_UPVOTE, L.ROUTE_VOTE_DESC)
+    Widgets.Tooltip(detail.down, L.ROUTE_DOWNVOTE, L.ROUTE_VOTE_DESC)
+    -- Long notes and the first-open help scroll inside the detail pane.
+    local ok, scroll = pcall(CreateFrame, "ScrollFrame", nil, detail, "UIPanelScrollFrameTemplate")
+    detail.scroll = ok and scroll or CreateFrame("ScrollFrame", nil, detail)
+    detail.bodyFrame = CreateFrame("Frame", nil, detail.scroll)
+    detail.body = Widgets.Label(detail.bodyFrame, "", "GameFontHighlightSmall")
     detail.body:SetJustifyV("TOP")
+    detail.scroll:SetScrollChild(detail.bodyFrame)
+    detail.FitBody = function()
+        local width = math.max(1, detail.scroll:GetWidth())
+        detail.bodyFrame:SetWidth(width)
+        detail.body:SetWidth(width)
+        detail.bodyFrame:SetHeight(math.max(1, detail.body:GetStringHeight()))
+    end
+    detail.scroll:SetScript("OnSizeChanged", ns.Safe(detail.FitBody))
+    detail.scroll:EnableMouseWheel(true)
+    detail.scroll:SetScript("OnMouseWheel", ns.Safe(function(self, delta)
+        self:SetVerticalScroll(ns.Clamp(self:GetVerticalScroll() - delta * 22, 0, math.max(0, detail.bodyFrame:GetHeight() - self:GetHeight())))
+    end))
     detail.buttons = {}
-    for i = 1, 8 do
-        local b = w.Button(detail, "", 150, 24)
+    for i = 1, 6 do
+        local b = Widgets.Button(detail, "", 130, 24)
+        local fs = b:GetFontString()
+        if fs then
+            fs:ClearAllPoints()
+            fs:SetPoint("LEFT", 6, 0)
+            fs:SetPoint("RIGHT", -6, 0)
+            fs:SetWordWrap(false)
+        end
         local col, line = (i - 1) % 2, math.floor((i - 1) / 2)
         if col == 0 then
-            b:SetPoint("BOTTOMLEFT", 10, 10 + (3 - line) * 28)
+            b:SetPoint("BOTTOMLEFT", 10, 10 + (2 - line) * 28)
             b:SetPoint("RIGHT", detail, "CENTER", -3, 0)
         else
-            b:SetPoint("BOTTOMRIGHT", -10, 10 + (3 - line) * 28)
+            b:SetPoint("BOTTOMRIGHT", -10, 10 + (2 - line) * 28)
             b:SetPoint("LEFT", detail, "CENTER", 3, 0)
         end
         b:SetScript("OnClick", ns.Safe(function(self)
-            if self.action then
-                self.action()
-                RefreshList()
-            end
+            if self.action then self.action(); RefreshList() end
         end))
-        b:Hide()
         detail.buttons[i] = b
     end
 
-    -- footer
-    frame.status = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    frame.status:SetPoint("BOTTOMLEFT", 24, 50)
-    frame.status:SetPoint("RIGHT", -24, 0)
-    frame.status:SetJustifyH("LEFT")
-    frame.status:SetWordWrap(false)
-    local share = PlainCheck(frame, L.ROUTES_SHARING, 240)
-    share:SetPoint("BOTTOMLEFT", 20, 16)
-    share:SetScript("OnClick", function(self)
-        ns.Set("routeSharing", self:GetChecked() and true or false)
-        RefreshList()
-    end)
-    W().AddTooltip(share, L.ROUTES_SHARING, L.ROUTES_SHARING_DESC)
-    local low = PlainCheck(frame, L.ROUTES_LOW_RATED, 180)
-    low:SetPoint("LEFT", share, "RIGHT", 250, 0)
-    low:SetScript("OnClick", function(self)
-        ns.Set("routeLowRated", self:GetChecked() and true or false)
-        RefreshList()
-    end)
-    netText = frame:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
-    netText:SetPoint("BOTTOMRIGHT", -24, 22)
-    netText:SetJustifyH("RIGHT")
-
-    -- keep progress and distances fresh while it's open
-    local acc, dirty = 0, false
-    frame.MarkDirty = function()
-        dirty = true
-    end
-    frame:SetScript("OnUpdate", function(_, elapsed)
-        acc = acc + elapsed
-        if acc >= (dirty and 0.2 or 2) then
-            acc, dirty = 0, false
-            ns.Call(RefreshList)
-        end
-    end)
-    frame:SetScript("OnShow", function()
-        share:SetChecked(ns.Get("routeSharing") and true or false)
-        low:SetChecked(ns.Get("routeLowRated") and true or false)
-        zoneOnly:SetChecked(ns.Get("routeThisZone") and true or false)
-        catPicker.Refresh()
-        sortPicker.Refresh()
-        RefreshTabs()
-        Status("")
-        RefreshList()
-        -- the first time: what routes are and how to share one
-        if not ns.settings.routesHelpShown then
-            ns.settings.routesHelpShown = true
-            C_Timer.After(0, function()
-                ShowHelp()
-            end)
-        end
-    end)
-
+    local footer = CreateFrame("Button", nil, frame)
+    footer:SetPoint("LEFT", countText, "RIGHT", 8, 0)
+    footer:SetPoint("RIGHT", frame, "RIGHT", -30, 0)
+    footer:SetHeight(22)
+    netText = Widgets.Label(footer, "", "GameFontDisableSmall")
+    netText:SetAllPoints()
+    netText:SetWordWrap(false)
+    footer:SetScript("OnClick", ns.Safe(function()
+        if ns.Options and ns.Options.Open then ns.Options.Open("routes") end
+    end))
+    Widgets.Tooltip(footer, L.SETTINGS, L.ROUTES_SHARING_DESC)
+    local okHelp, help = pcall(CreateFrame, "Button", nil, frame, "UIPanelInfoButton")
+    if not okHelp then help = Widgets.Button(frame, "?", 24, 24) end
+    help:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 8)
+    help:SetScript("OnClick", ns.Safe(function() ShowHelp() end))
+    Widgets.Tooltip(help, L.ROUTES_HOWTO, L.ROUTES_DESC)
+    local tab = Window.tabs.routes
     RoutesUI.widgets = {
-        tabs = tabs, rows = rows, detail = detail, search = searchBox.edit, new = newBtn, import = importBtn, help = helpBtn,
-        cat = catPicker, sort = sortPicker, zoneOnly = zoneOnly, share = share, low = low, empty = emptyText, net = netText,
-        status = frame.status,
+        source = source, rows = rows, detail = detail, search = searchBox.edit, new = tab.leftButton,
+        import = tab.leftButton2, help = help, cat = cat, sort = sort, zoneOnly = zoneOnly,
+        empty = emptyText, net = netText, status = frame.status, list = list, notice = frame.notice,
     }
+    Layout()
+    RefreshList()
 end
 
--- ---------------------------------------------------------------------------
--- Editor: name, category, how it's followed, a note, public or not
--- ---------------------------------------------------------------------------
-local editor
-local function CreateEditor()
-    local w = W()
-    editor = Dialog("WaypointTrackerRouteEditor", 440, 330)
-    editor:SetPoint("CENTER", 0, 40)
-    local y = -54
-    local function Label(text)
-        local fs = editor:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        fs:SetPoint("TOPLEFT", 24, y - 6)
-        fs:SetText(text)
-        return fs
-    end
-    Label(L.ROUTE_NAME)
-    editor.name = w.Box(editor, 290, L.ROUTE_NAME_HINT)
-    editor.name:SetPoint("TOPLEFT", 120, y)
-    editor.name.edit:SetMaxLetters(R().MAX_NAME)
-    y = y - 34
-    Label(L.ROUTE_NOTE)
-    editor.note = w.Box(editor, 290, L.ROUTE_NOTE_HINT)
-    editor.note:SetPoint("TOPLEFT", 120, y)
-    editor.note.edit:SetMaxLetters(R().MAX_NOTE)
-    y = y - 38
-    Label(L.ROUTE_CATEGORY)
-    local cats = {}
-    for _, c in ipairs(R().CATEGORIES) do
-        cats[#cats + 1] = { value = c, text = R().CategoryLabel(c) }
-    end
-    editor.cat = Picker(editor, 220, cats, function()
-        return editor.draft and editor.draft.cat
-    end, function(v)
-        editor.draft.cat = v
-    end)
-    editor.cat:SetPoint("TOPLEFT", 116, y)
-    y = y - 32
-    Label(L.ROUTE_MODE)
-    local modes = {}
-    for _, m in ipairs(R().MODES) do
-        modes[#modes + 1] = { value = m, text = R().ModeLabel(m) }
-    end
-    editor.mode = Picker(editor, 220, modes, function()
-        return editor.draft and editor.draft.mode
-    end, function(v)
-        editor.draft.mode = v
-    end)
-    editor.mode:SetPoint("TOPLEFT", 116, y)
-    w.AddTooltip(editor.mode.next, L.ROUTE_MODE, L.ROUTE_MODE_DESC)
-    y = y - 34
-    editor.public = PlainCheck(editor, L.ROUTE_PUBLIC, 300)
-    editor.public:SetPoint("TOPLEFT", 20, y)
-    w.AddTooltip(editor.public, L.ROUTE_PUBLIC, L.ROUTE_PUBLIC_DESC)
-    y = y - 30
-    editor.info = editor:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    editor.info:SetPoint("TOPLEFT", 24, y)
-    editor.info:SetPoint("RIGHT", -24, 0)
-    editor.info:SetJustifyH("LEFT")
+local editor, textBox, help, create
+local function Page(key, title, build)
+    if not Window.Show("routes") then return nil end
+    return Window.PushPage("routes", { key = key, title = title, build = build })
+end
 
-    editor.save = w.Button(editor, L.ROUTE_SAVE, 120, 24)
-    editor.save:SetPoint("BOTTOMRIGHT", -22, 18)
-    editor.save:SetScript("OnClick", ns.Safe(function()
-        local d = editor.draft
-        d.name = editor.name.edit:GetText()
-        d.note = editor.note.edit:GetText()
-        d.public = editor.public:GetChecked() and true or false
-        local saved = R().SaveMine(d)
-        editor:Hide()
-        if saved then
-            selectedID = saved.id
-            state.tab = "mine"
-            RoutesUI.Show()
-            Status(L.ROUTE_SAVED:format(saved.name), true)
-            ShowShare(saved, true)
-        end
-    end))
-    local cancel = w.Button(editor, CANCEL or L.NO, 100, 24)
-    cancel:SetPoint("RIGHT", editor.save, "LEFT", -6, 0)
-    cancel:SetScript("OnClick", function()
-        editor:Hide()
-    end)
+local function Reveal(r, source)
+    state.cat, state.tab = "all", source
+    searchBox.edit:SetText("")
+    local here = C_Map and C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
+    if not Matches(r, "", here) then ns.Set("routeThisZone", false) end
+    SelectRoute(r.id)
+    RoutesUI.SetTab(source)
+    for i, route in ipairs(results) do
+        if route.id == r.id then list:ScrollTo(i); break end
+    end
 end
 
 ShowEditor = function(r)
-    if not editor then
-        CreateEditor()
-    end
+    if not r then return end
     local d = {}
-    for k, v in pairs(r) do
-        d[k] = v
-    end
-    if d.public == nil then
-        d.public = true
-    end
+    for k, v in pairs(r) do d[k] = v end
+    d.public = d.public ~= false
+    editor = Page("editor", d.id and L.ROUTE_EDIT_TITLE or L.ROUTE_NEW_TITLE, function(p)
+        p.draft = d
+        local function Field(label, y, hint, max)
+            local text = Widgets.Label(p, label, "GameFontNormal")
+            text:SetPoint("TOPLEFT", 12, y - 6)
+            local box = Widgets.EditBox(p, 450, { placeholder = hint, maxLetters = max })
+            box:SetPoint("TOPLEFT", 110, y)
+            return box
+        end
+        p.name = Field(L.ROUTE_NAME, -8, L.ROUTE_NAME_HINT, R().MAX_NAME)
+        p.note = Field(L.ROUTE_NOTE, -44, L.ROUTE_NOTE_HINT, R().MAX_NOTE)
+        local catLabel = Widgets.Label(p, L.ROUTE_CATEGORY, "GameFontNormal")
+        catLabel:SetPoint("TOPLEFT", 12, -86)
+        p.cat = Dropdown(p, 185, Categories(), function() return p.draft.cat end, function(v) p.draft.cat = v end)
+        p.cat:SetPoint("TOPLEFT", 110, -80)
+        local modeLabel = Widgets.Label(p, L.ROUTE_MODE, "GameFontNormal")
+        modeLabel:SetPoint("TOPLEFT", 310, -86)
+        local modes = {}
+        for _, m in ipairs(R().MODES) do modes[#modes + 1] = { value = m, text = R().ModeLabel(m) } end
+        p.mode = Dropdown(p, 185, modes, function() return p.draft.mode end, function(v) p.draft.mode = v end)
+        p.mode:SetPoint("TOPLEFT", 380, -80)
+        Widgets.Tooltip(p.mode, L.ROUTE_MODE, L.ROUTE_MODE_DESC)
+        p.public = Widgets.Check(p, L.ROUTE_PUBLIC, { get = function() return p.draft.public end, set = function(v) p.draft.public = v end }, L.ROUTE_PUBLIC_DESC, 540)
+        p.public:SetPoint("TOPLEFT", 8, -118)
+        p.info = Widgets.Label(p, "", "GameFontHighlightSmall")
+        p.info:SetPoint("TOPLEFT", 12, -154)
+        p.save = Widgets.Button(p, L.ROUTE_SAVE, 120, 24)
+        p.save:SetPoint("BOTTOMRIGHT", -10, 10)
+        p.save:SetScript("OnClick", ns.Safe(function()
+            local d = p.draft
+            d.name, d.note = p.name.edit:GetText(), p.note.edit:GetText()
+            d.public = p.public:GetChecked() and true or false
+            local saved = R().SaveMine(d)
+            if not saved then return end
+            Window.PopAll("routes")
+            Reveal(saved, "mine")
+            Status(L.ROUTE_SAVED:format(saved.name), true)
+            ShowShare(saved, true)
+        end))
+        p.cancel = Widgets.Button(p, CANCEL or L.NO, 100, 24)
+        p.cancel:SetPoint("RIGHT", p.save, "LEFT", -6, 0)
+        p.cancel:SetScript("OnClick", ns.Safe(function() Window.PopPage("routes") end))
+    end)
+    if not editor then return end
     editor.draft = d
-    editor.title:SetText(d.id and L.ROUTE_EDIT_TITLE or L.ROUTE_NEW_TITLE)
     editor.name.edit:SetText(d.name or "")
     editor.note.edit:SetText(d.note or "")
-    editor.public:SetChecked(d.public and true or false)
-    editor.cat.Refresh()
-    editor.mode.Refresh()
+    editor.cat:Refresh()
+    editor.mode:Refresh()
+    editor.public:Refresh()
     editor.info:SetText(L.ROUTES_POINTS:format(#d.pts) .. "  ·  " .. (Geo.GetMapName(d.zone) or ""))
-    editor:Show()
-    editor:Raise()
     editor.name.edit:SetFocus()
 end
-RoutesUI.ShowEditor = function(r)
-    ShowEditor(r)
-end
+RoutesUI.ShowEditor = ShowEditor
 
--- ---------------------------------------------------------------------------
--- Copy / import box
--- ---------------------------------------------------------------------------
-local textBox
-local function CreateTextBox()
-    local w = W()
-    textBox = Dialog("WaypointTrackerRouteText", 520, 360)
-    textBox:SetPoint("CENTER", 0, 20)
-    textBox.help = textBox:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    textBox.help:SetPoint("TOPLEFT", 22, -46)
-    textBox.help:SetPoint("RIGHT", -22, 0)
-    textBox.help:SetJustifyH("LEFT")
-    local bg = CreateFrame("Frame", nil, textBox, "BackdropTemplate")
-    bg:SetPoint("TOPLEFT", 18, -86)
-    bg:SetPoint("BOTTOMRIGHT", -18, 50)
-    bg:SetBackdrop(w.BACKDROP_BOX)
-    bg:SetBackdropColor(0, 0, 0, 0.8)
-    local scroll = CreateFrame("ScrollFrame", "WaypointTrackerRouteTextScroll", bg, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", 8, -8)
-    scroll:SetPoint("BOTTOMRIGHT", -28, 8)
-    local edit = CreateFrame("EditBox", nil, scroll)
-    edit:SetMultiLine(true)
-    edit:SetAutoFocus(false)
-    edit:SetFontObject(ChatFontNormal)
-    edit:SetWidth(440)
-    edit:SetMaxLetters(0)
-    edit:SetScript("OnEscapePressed", function(self)
-        self:ClearFocus()
-    end)
-    scroll:SetScrollChild(edit)
-    textBox.edit = edit
-    textBox.action = w.Button(textBox, L.IMPORT, 140, 24)
-    textBox.action:SetPoint("BOTTOMRIGHT", -22, 18)
-    textBox.action:SetScript("OnClick", ns.Safe(function()
-        local text = edit:GetText()
-        local r, skipped = nil, 0
-        if #text <= 100000 then
-            r, skipped = R().Parse(text)
-        end
-        if not r then
-            textBox.result:SetText(L.ROUTE_IMPORT_NOTHING)
-            textBox.result:SetTextColor(1, 0.35, 0.3)
-            return
-        end
-        textBox:Hide()
-        -- a shared route with its id keeps it (and its votes); plain lines make a new one of yours
-        if r.id and r.author and r.author ~= R().Me() then
-            local kept = R().Keep(r)
-            if kept then
-                selectedID = kept.id
-                state.tab = "shared"
-                RoutesUI.Show()
-                Status(L.ROUTE_IMPORTED:format(kept.name, #kept.pts), true)
+ShowText = function(mode, text)
+    textBox = Page(mode == "copy" and "copy" or "import", mode == "copy" and L.ROUTE_COPY_TITLE or L.ROUTE_IMPORT_TITLE, function(p)
+        p.help = Widgets.Label(p, mode == "copy" and L.ROUTE_COPY_HELP or L.ROUTE_IMPORT_HELP, "GameFontHighlightSmall")
+        p.help:SetPoint("TOPLEFT", 10, -4)
+        p.help:SetPoint("RIGHT", -10, 0)
+        p.area = Widgets.TextArea(p)
+        p.area:SetPoint("TOPLEFT", 8, -56)
+        p.area:SetPoint("BOTTOMRIGHT", -8, 48)
+        p.edit = p.area.edit
+        p.result = Widgets.Label(p, "", "GameFontHighlightSmall")
+        p.result:SetPoint("BOTTOMLEFT", 12, 18)
+        p.result:SetPoint("RIGHT", -170, 0)
+        p.action = Widgets.Button(p, L.IMPORT, 140, 24)
+        p.action:SetPoint("BOTTOMRIGHT", -10, 10)
+        p.action:SetShown(mode ~= "copy")
+        p.action:SetScript("OnClick", ns.Safe(function()
+            local input = p.edit:GetText()
+            local r, skipped
+            if #input <= 100000 then r, skipped = R().Parse(input) end
+            if not r then
+                p.result:SetText(L.ROUTE_IMPORT_NOTHING)
+                p.result:SetTextColor(1, 0.35, 0.3)
                 return
             end
-        end
-        r.id = (r.id and R().Get(r.id) and R().IsMine(R().Get(r.id))) and r.id or nil
-        ShowEditor(r)
-        if skipped > 0 then
-            Status(L.ROUTE_IMPORT_SKIPPED:format(skipped))
-        end
-    end))
-    textBox.result = textBox:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    textBox.result:SetPoint("BOTTOMLEFT", 24, 24)
-    textBox.result:SetPoint("RIGHT", textBox.action, "LEFT", -8, 0)
-    textBox.result:SetJustifyH("LEFT")
-end
-
--- mode: "copy" (text to copy) or "import" (paste here)
-ShowText = function(mode, text)
-    if not textBox then
-        CreateTextBox()
-    end
-    textBox.result:SetText("")
-    textBox.edit:SetText(text or "")
-    if mode == "copy" then
-        textBox.title:SetText(L.ROUTE_COPY_TITLE)
-        textBox.help:SetText(L.ROUTE_COPY_HELP)
-        textBox.action:Hide()
-    else
-        textBox.title:SetText(L.ROUTE_IMPORT_TITLE)
-        textBox.help:SetText(L.ROUTE_IMPORT_HELP)
-        textBox.action:Show()
-    end
-    textBox:Show()
-    textBox:Raise()
-    textBox.edit:SetFocus()
-    if mode == "copy" then
-        textBox.edit:HighlightText()
-    end
-end
-RoutesUI.ShowText = function(mode, text)
-    ShowText(mode, text)
-end
-
--- ---------------------------------------------------------------------------
--- "Replace your waypoints or add to them?"
--- ---------------------------------------------------------------------------
-local ask
-local function CreateAsk()
-    local w = W()
-    ask = Dialog("WaypointTrackerRouteAsk", 420, 170)
-    ask:SetPoint("CENTER", 0, 120)
-    ask.text = ask:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    ask.text:SetPoint("TOPLEFT", 24, -50)
-    ask.text:SetPoint("RIGHT", -24, 0)
-    ask.text:SetJustifyH("LEFT")
-    ask.remember = PlainCheck(ask, L.ROUTE_ASK_REMEMBER, 300)
-    ask.remember:SetPoint("BOTTOMLEFT", 20, 50)
-    local function Choose(how)
-        if ask.remember:GetChecked() then
-            ns.Set("routeApply", how)
-            ns.Set("routeAsk", false)
-        end
-        ask:Hide()
-        R().Apply(ask.routeID, how)
-    end
-    ask.replace = w.Button(ask, L.ROUTE_ASK_REPLACE, 120, 24)
-    ask.replace:SetPoint("BOTTOMLEFT", 22, 18)
-    ask.replace:SetScript("OnClick", ns.Safe(function()
-        Choose("replace")
-    end))
-    ask.add = w.Button(ask, L.ROUTE_ASK_ADD, 120, 24)
-    ask.add:SetPoint("LEFT", ask.replace, "RIGHT", 6, 0)
-    ask.add:SetScript("OnClick", ns.Safe(function()
-        Choose("add")
-    end))
-    ask.cancel = w.Button(ask, CANCEL or L.NO, 100, 24)
-    ask.cancel:SetPoint("LEFT", ask.add, "RIGHT", 6, 0)
-    ask.cancel:SetScript("OnClick", function()
-        ask:Hide()
+            if r.id and r.author and r.author ~= R().Me() then
+                local kept = R().Keep(r)
+                if kept then
+                    Window.PopAll("routes")
+                    Reveal(kept, "shared")
+                    Status(L.ROUTE_IMPORTED:format(kept.name, #kept.pts), true)
+                    return
+                end
+            end
+            r.id = (r.id and R().Get(r.id) and R().IsMine(R().Get(r.id))) and r.id or nil
+            Window.PopPage("routes")
+            ShowEditor(r)
+            if (skipped or 0) > 0 then Status(L.ROUTE_IMPORT_SKIPPED:format(skipped)) end
+        end))
     end)
+    if not textBox then return end
+    textBox.edit:SetText(text or "")
+    textBox.result:SetText("")
+    textBox.edit:SetFocus()
+    if mode == "copy" then textBox.edit:HighlightText() end
 end
+RoutesUI.ShowText = ShowText
+
+ShowHelp = function()
+    help = Page("help", L.ROUTES_HELP_TITLE, function(p)
+        p.text = Widgets.Label(p, L.ROUTES_HELP_TEXT)
+        p.text:SetPoint("TOPLEFT", 12, -8)
+        p.text:SetPoint("RIGHT", -12, 0)
+        p.text:SetSpacing(3)
+        p.create = Widgets.Button(p, L.ROUTE_CREATE, 150, 24)
+        p.create:SetPoint("BOTTOMRIGHT", -10, 10)
+        p.create:SetScript("OnClick", ns.Safe(function() Window.PopPage("routes"); ShowCreate() end))
+        p.ok = Widgets.Button(p, L.ROUTES_HELP_OK, 110, 24)
+        p.ok:SetPoint("RIGHT", p.create, "LEFT", -6, 0)
+        p.ok:SetScript("OnClick", ns.Safe(function() Window.PopPage("routes") end))
+    end)
+    if not help then return end
+end
+RoutesUI.ShowHelp = ShowHelp
+
+ShowCreate = function()
+    create = Page("create", L.ROUTE_CREATE_TITLE, function(p)
+        local y = -10
+        local function Choice(label, desc, fn)
+            local b = Widgets.Button(p, label, 190, 26)
+            b:SetPoint("TOPLEFT", 10, y)
+            local text = Widgets.Label(p, desc, "GameFontHighlightSmall")
+            text:SetPoint("TOPLEFT", b, "TOPRIGHT", 10, 0)
+            text:SetPoint("RIGHT", -12, 0)
+            b:SetScript("OnClick", ns.Safe(fn))
+            Widgets.Tooltip(b, label, desc)
+            y = y - 80
+            return b, text
+        end
+        p.record = Choice(L.ROUTE_CREATE_RECORD, L.ROUTE_CREATE_RECORD_DESC, function()
+            Window.Hide()
+            R().RecordStart()
+        end)
+        p.fromWp, p.fromWpText = Choice(L.ROUTE_NEW, "", function()
+            local draft = R().FromWaypoints()
+            if not draft then Status(L.ROUTE_NEW_NONE); return end
+            Window.PopPage("routes")
+            ShowEditor(draft)
+        end)
+        p.fromWp:SetMotionScriptsWhileDisabled(true)
+        p.fromWp:SetScript("OnEnter", ns.Safe(function(self)
+            if not GameTooltip then return end
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:AddLine(L.ROUTE_NEW, 1, 1, 1)
+            GameTooltip:AddLine(p.fromWpText:GetText(), 1, 0.82, 0, true)
+            GameTooltip:Show()
+        end))
+        p.fromWp:SetScript("OnLeave", function() if GameTooltip then GameTooltip:Hide() end end)
+        p.paste = Choice(L.ROUTE_CREATE_PASTE, L.ROUTE_IMPORT_DESC, function()
+            Window.PopPage("routes")
+            ShowText("import", "")
+        end)
+        p.footer = Widgets.Label(p, L.ROUTE_CREATE_FOOTER, "GameFontDisableSmall")
+        p.footer:SetPoint("BOTTOMLEFT", 12, 12)
+        p.footer:SetPoint("RIGHT", -12, 0)
+    end)
+    if not create then return end
+    local n = WP.Count()
+    create.fromWpText:SetText(n > 0 and L.ROUTE_NEW_DESC_N:format(n) or L.ROUTE_NEW_NONE)
+    create.fromWp:SetEnabled(n > 0)
+end
+RoutesUI.ShowCreate = ShowCreate
+
+local function ShareMenu(r, justSaved)
+    return function(root)
+        root:CreateTitle(justSaved and L.ROUTE_SHARE_SAVED_TITLE or L.ROUTE_SHARE_TITLE:format(r.name))
+        local msg = L.ROUTE_CHAT_LINE:format(r.name, #r.pts, Geo.GetMapName(r.zone) or "")
+        local first = r.pts[1]
+        local link = first and ns.Share and ns.Share.MapPinLink(first)
+        if link then msg = msg .. " " .. link end
+        if ns.Get("sharePrefix") and ns.Share then msg = ns.Share.PREFIX .. " " .. msg end
+        for _, ch in ipairs(ns.Share and ns.Share.Channels() or {}) do
+            local prefix = ch[2]
+            root:CreateButton(L.ROUTE_SHARE_POST:format(ch[1]), function()
+                if ns.Share and ns.Share.OpenChat then ns.Share.OpenChat(prefix .. " " .. msg) end
+            end)
+        end
+        root:CreateDivider()
+        local send = root:CreateButton(L.ROUTE_SEND_TARGET, function()
+            local name = UnitIsPlayer and UnitIsPlayer("target") and UnitName and UnitName("target")
+            if not name or name == UnitName("player") then Status(L.ROUTE_SEND_NO_TARGET); return end
+            if ns.RoutesNet and ns.RoutesNet.SendTo and ns.RoutesNet.SendTo(r.id, name) then
+                Status(L.ROUTE_SENT:format(r.name, name), true)
+            end
+        end)
+        if send and send.SetTooltip then
+            send:SetTooltip(function(tt)
+                if GameTooltip_SetTitle then GameTooltip_SetTitle(tt, L.ROUTE_SEND_TARGET) end
+                if GameTooltip_AddNormalLine then GameTooltip_AddNormalLine(tt, L.ROUTE_SEND_TARGET_DESC) end
+            end)
+        end
+        root:CreateButton(L.ROUTE_COPY, function() ShowText("copy", R().Serialize(r)) end)
+    end
+end
+
+ShowShare = function(r, justSaved)
+    if not r then return end
+    local owner = frame or UIParent
+    if RoutesUI.IsShown() and frame:IsVisible() and detail.share and detail.share:IsVisible() then
+        owner = detail.share
+    end
+    return Widgets.Menu(owner, ShareMenu(r, justSaved))
+end
+RoutesUI.ShowShare = ShowShare
 
 ns.On("ROUTE_ASK", function(id, others)
     local r = R().Get(id)
-    if not r then
-        return
-    end
-    if not ask then
-        CreateAsk()
-    end
-    ask.routeID = id
-    ask.title:SetText(L.ROUTE_ASK_TITLE:format(r.name))
-    ask.text:SetText(L.ROUTE_ASK_TEXT:format(others))
-    ask.remember:SetChecked(false)
-    ask:Show()
-    ask:Raise()
+    if not r then return end
+    local name = (r.name or ""):gsub("%%", "%%%%")
+    Widgets.Confirm("WAYPOINTTRACKER_ROUTE_ASK", {
+        text = L.ROUTE_ASK_TITLE:format(name) .. "\n\n" .. L.ROUTE_ASK_TEXT .. "\n\n" .. L.ROUTE_ASK_FOOTER,
+        button1 = L.ROUTE_ASK_REPLACE, button3 = L.ROUTE_ASK_ADD, button2 = CANCEL or L.NO,
+        onAccept = function() R().Apply(id, "replace") end,
+        onAlt = function() R().Apply(id, "add") end,
+    })
+    Widgets.Ask("WAYPOINTTRACKER_ROUTE_ASK", others, nil, id)
 end)
-
--- ---------------------------------------------------------------------------
--- "How was it?"
--- ---------------------------------------------------------------------------
-local feedback
-local function CreateFeedback()
-    local w = W()
-    feedback = Dialog("WaypointTrackerRouteFeedback", 420, 150)
-    feedback:SetPoint("TOP", 0, -140)
-    feedback.text = feedback:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    feedback.text:SetPoint("TOPLEFT", 24, -50)
-    feedback.text:SetPoint("RIGHT", -24, 0)
-    feedback.text:SetJustifyH("LEFT")
-    local function Answer(v)
-        feedback:Hide()
-        if v then
-            R().Vote(feedback.routeID, v)
-            ns.Print(L.ROUTE_FEEDBACK_THANKS)
-        end
-    end
-    feedback.good = w.Button(feedback, L.ROUTE_FEEDBACK_GOOD, 120, 24)
-    feedback.good:SetPoint("BOTTOMLEFT", 22, 18)
-    feedback.good:SetScript("OnClick", ns.Safe(function()
-        Answer(1)
-    end))
-    feedback.bad = w.Button(feedback, L.ROUTE_FEEDBACK_BAD, 120, 24)
-    feedback.bad:SetPoint("LEFT", feedback.good, "RIGHT", 6, 0)
-    feedback.bad:SetScript("OnClick", ns.Safe(function()
-        Answer(-1)
-    end))
-    feedback.later = w.Button(feedback, L.ROUTE_FEEDBACK_LATER, 110, 24)
-    feedback.later:SetPoint("LEFT", feedback.bad, "RIGHT", 6, 0)
-    feedback.later:SetScript("OnClick", function()
-        Answer(nil)
-    end)
-end
 
 ns.On("ROUTE_FEEDBACK", function(id, secs)
     local r = R().Get(id)
-    if not r then
-        return
-    end
-    if not feedback then
-        CreateFeedback()
-    end
-    feedback.routeID = id
-    feedback.title:SetText(L.ROUTE_FEEDBACK_TITLE:format(r.name))
-    local text = L.ROUTE_FEEDBACK_TEXT:format(Minutes(secs))
+    if not r then return end
+    local text = L.ROUTE_FEEDBACK_TITLE:format(r.name) .. "\n\n" .. L.ROUTE_FEEDBACK_TEXT:format(Minutes(secs))
     local my = R().MyVote(id)
-    if my ~= 0 then
-        text = text .. "\n" .. (my > 0 and L.ROUTE_FEEDBACK_WAS_UP or L.ROUTE_FEEDBACK_WAS_DOWN)
+    if my ~= 0 then text = text .. "\n" .. (my > 0 and L.ROUTE_FEEDBACK_WAS_UP or L.ROUTE_FEEDBACK_WAS_DOWN) end
+    local function Vote(value)
+        if R().Vote(id, value) then Status(L.ROUTE_VOTED, true) end
     end
-    feedback.text:SetText(text)
-    feedback:Show()
-    feedback:Raise()
-    if PlaySound then
-        PlaySound((SOUNDKIT and SOUNDKIT.IG_QUEST_LIST_OPEN) or 875, "Master")
-    end
+    Widgets.Confirm("WAYPOINTTRACKER_ROUTE_FEEDBACK", {
+        -- No format arguments here: route names can contain percent signs.
+        text = text:gsub("%%", "%%%%"), button1 = L.ROUTE_FEEDBACK_GOOD,
+        button3 = L.ROUTE_FEEDBACK_BAD, button2 = L.ROUTE_FEEDBACK_LATER,
+        onAccept = function() Vote(1) end, onAlt = function() Vote(-1) end,
+        sound = (SOUNDKIT and SOUNDKIT.IG_QUEST_LIST_OPEN) or 875,
+    })
+    Widgets.Ask("WAYPOINTTRACKER_ROUTE_FEEDBACK", nil, nil, id)
 end)
 
--- ---------------------------------------------------------------------------
--- "How it works"
--- ---------------------------------------------------------------------------
-local help
-ShowHelp = function()
-    if not help then
-        local w = W()
-        help = Dialog("WaypointTrackerRouteHelp", 500, 370)
-        help:SetPoint("CENTER", 0, 40)
-        help.title:SetText(L.ROUTES_HELP_TITLE)
-        help.text = help:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-        help.text:SetPoint("TOPLEFT", 24, -52)
-        help.text:SetPoint("RIGHT", -24, 0)
-        help.text:SetJustifyH("LEFT")
-        help.text:SetSpacing(3)
-        help.text:SetText(L.ROUTES_HELP_TEXT)
-        local create = w.Button(help, L.ROUTE_CREATE, 150, 24)
-        create:SetPoint("BOTTOMRIGHT", -22, 18)
-        create:SetScript("OnClick", function()
-            help:Hide()
-            ShowCreate()
-        end)
-        local ok = w.Button(help, L.ROUTES_HELP_OK, 110, 24)
-        ok:SetPoint("RIGHT", create, "LEFT", -6, 0)
-        ok:SetScript("OnClick", function()
-            help:Hide()
-        end)
-    end
-    help:Show()
-    help:Raise()
-end
-
--- ---------------------------------------------------------------------------
--- "Create a route": record as you go, from your waypoints, or paste
--- ---------------------------------------------------------------------------
-local create
-ShowCreate = function()
-    if not create then
-        local w = W()
-        create = Dialog("WaypointTrackerRouteCreate", 460, 300)
-        create:SetPoint("CENTER", 0, 40)
-        create.title:SetText(L.ROUTE_CREATE_TITLE)
-        local y = -52
-        local function Choice(label, desc, fn)
-            local b = w.Button(create, label, 180, 26)
-            b:SetPoint("TOPLEFT", 22, y)
-            local fs = create:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-            fs:SetPoint("TOPLEFT", b, "TOPRIGHT", 10, 0)
-            fs:SetPoint("RIGHT", -22, 0)
-            fs:SetJustifyH("LEFT")
-            fs:SetText(desc)
-            b:SetScript("OnClick", ns.Safe(function()
-                create:Hide()
-                fn()
-            end))
-            y = y - 62
-            return b, fs
-        end
-        Choice(L.ROUTE_CREATE_RECORD, L.ROUTE_CREATE_RECORD_DESC, function()
-            if frame then
-                frame:Hide()
-            end
-            R().RecordStart()
-        end)
-        create.fromWp, create.fromWpText = Choice(L.ROUTE_NEW, L.ROUTE_NEW_DESC, function()
-            local draft = R().FromWaypoints()
-            if not draft then
-                Status(L.ROUTE_NEW_NONE)
-                return
-            end
-            ShowEditor(draft)
-        end)
-        Choice(L.ROUTE_CREATE_PASTE, L.ROUTE_IMPORT_DESC, function()
-            ShowText("import", "")
-        end)
-        create.footer = create:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
-        create.footer:SetPoint("BOTTOMLEFT", 24, 20)
-        create.footer:SetPoint("RIGHT", -24, 0)
-        create.footer:SetJustifyH("LEFT")
-        create.footer:SetText(L.ROUTE_CREATE_FOOTER)
-    end
-    local n = #WP.List()
-    create.fromWp:SetEnabled(n > 0)
-    create.fromWpText:SetText(n > 0 and L.ROUTE_NEW_DESC_N:format(n) or L.ROUTE_NEW_NONE)
-    create:Show()
-    create:Raise()
-end
-
--- ---------------------------------------------------------------------------
--- The recorder: a small bar while you record a route
--- ---------------------------------------------------------------------------
-local recorder
-local function RefreshRecorder()
-    local rec = R().Recording()
-    if not rec then
-        if recorder then
-            recorder:Hide()
-        end
-        return
-    end
-    if not recorder then
-        local w = W()
-        recorder = CreateFrame("Frame", "WaypointTrackerRouteRecorder", UIParent, "BackdropTemplate")
-        recorder:SetSize(430, 106)
-        recorder:SetPoint("TOP", 0, -120)
-        recorder:SetFrameStrata("HIGH")
-        recorder:SetMovable(true)
-        recorder:EnableMouse(true)
-        recorder:SetClampedToScreen(true)
-        recorder:RegisterForDrag("LeftButton")
-        recorder:SetScript("OnDragStart", recorder.StartMoving)
-        recorder:SetScript("OnDragStop", recorder.StopMovingOrSizing)
-        recorder:SetBackdrop(w.BACKDROP_DIALOG)
-        recorder:SetBackdropColor(0, 0, 0, 0.9)
-        local dot = recorder:CreateTexture(nil, "ARTWORK")
-        dot:SetColorTexture(1, 0.2, 0.2, 1)
-        dot:SetSize(10, 10)
-        dot:SetPoint("TOPLEFT", 20, -20)
-        recorder.text = recorder:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        recorder.text:SetPoint("LEFT", dot, "RIGHT", 8, 0)
-        recorder.text:SetPoint("RIGHT", -20, 0)
-        recorder.text:SetJustifyH("LEFT")
-        recorder.add = w.Button(recorder, L.ROUTE_REC_ADD, 130, 24)
-        recorder.add:SetPoint("BOTTOMLEFT", 16, 14)
-        recorder.add:SetScript("OnClick", ns.Safe(function()
-            R().RecordAdd()
-        end))
-        w.AddTooltip(recorder.add, L.ROUTE_REC_ADD, L.ROUTE_REC_ADD_DESC)
-        recorder.finish = w.Button(recorder, L.ROUTE_REC_FINISH, 110, 24)
-        recorder.finish:SetPoint("LEFT", recorder.add, "RIGHT", 6, 0)
-        recorder.finish:SetScript("OnClick", ns.Safe(function()
-            local draft = R().RecordFinish()
-            if draft then
-                ShowEditor(draft)
-            else
-                ns.Print(L.ROUTE_REC_EMPTY, true)
-            end
-        end))
-        recorder.cancel = w.Button(recorder, CANCEL or L.NO, 100, 24)
-        recorder.cancel:SetPoint("LEFT", recorder.finish, "RIGHT", 6, 0)
-        recorder.cancel:SetScript("OnClick", function()
-            R().RecordCancel()
-        end)
-        recorder.auto = PlainCheck(recorder, L.ROUTE_REC_AUTO, 360)
-        recorder.auto:SetPoint("TOPLEFT", 14, -34)
-        recorder.auto:SetScript("OnClick", function(self)
-            R().RecordSetAuto(self:GetChecked())
-        end)
-    end
-    recorder.text:SetText(L.ROUTE_REC_TITLE:format(#rec.pts))
-    recorder.auto:SetChecked(rec.auto and true or false)
-    recorder.finish:SetEnabled(#rec.pts > 0)
-    recorder:Show()
-end
-ns.On("ROUTE_RECORDING", function()
-    ns.Call(RefreshRecorder)
-end)
-
--- ---------------------------------------------------------------------------
--- Share: tell people about a route (chat), send it, or copy it
--- ---------------------------------------------------------------------------
-local shareBox
-ShowShare = function(r, justSaved)
-    if not r then
-        return
-    end
-    local w = W()
-    if not shareBox then
-        shareBox = Dialog("WaypointTrackerRouteShare", 460, 290)
-        shareBox:SetPoint("CENTER", 0, 60)
-        shareBox.text = shareBox:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-        shareBox.text:SetPoint("TOPLEFT", 24, -50)
-        shareBox.text:SetPoint("RIGHT", -24, 0)
-        shareBox.text:SetJustifyH("LEFT")
-        shareBox.text:SetSpacing(2)
-        shareBox.chatLabel = shareBox:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        shareBox.chatLabel:SetPoint("TOPLEFT", 24, -150)
-        shareBox.chatLabel:SetText(L.ROUTE_SHARE_CHAT)
-        shareBox.chat = {}
-        for i = 1, 5 do
-            local b = w.Button(shareBox, "", 80, 22)
-            if i == 1 then
-                b:SetPoint("TOPLEFT", shareBox.chatLabel, "BOTTOMLEFT", -2, -6)
-            else
-                b:SetPoint("LEFT", shareBox.chat[i - 1], "RIGHT", 4, 0)
-            end
-            b:Hide()
-            shareBox.chat[i] = b
-        end
-        shareBox.send = w.Button(shareBox, L.ROUTE_SEND_TARGET, 150, 24)
-        shareBox.send:SetPoint("BOTTOMLEFT", 22, 18)
-        w.AddTooltip(shareBox.send, L.ROUTE_SEND_TARGET, L.ROUTE_SEND_TARGET_DESC)
-        shareBox.copy = w.Button(shareBox, L.ROUTE_COPY, 120, 24)
-        shareBox.copy:SetPoint("LEFT", shareBox.send, "RIGHT", 6, 0)
-        w.AddTooltip(shareBox.copy, L.ROUTE_COPY, L.ROUTE_COPY_HELP)
-        local done = w.Button(shareBox, L.ROUTES_HELP_OK, 100, 24)
-        done:SetPoint("BOTTOMRIGHT", -22, 18)
-        done:SetScript("OnClick", function()
-            shareBox:Hide()
-        end)
-    end
-    shareBox.title:SetText(justSaved and L.ROUTE_SHARE_SAVED_TITLE or L.ROUTE_SHARE_TITLE:format(r.name))
-    local text
-    if R().IsMine(r) and not r.public then
-        text = L.ROUTE_SHARE_PRIVATE
-    elseif R().IsMine(r) then
-        text = L.ROUTE_SHARE_PUBLIC
-    elseif r.src == "suggested" then
-        text = L.ROUTE_SHARE_READY
-    else
-        text = L.ROUTE_SHARE_OTHER
-    end
-    shareBox.text:SetText(text)
-    -- a line for chat: the route's name and where it starts (a map pin anyone can click)
-    local zone = Geo.GetMapName(r.zone) or ""
-    local msg = L.ROUTE_CHAT_LINE:format(r.name, #r.pts, zone)
-    local first = r.pts[1]
-    local link = first and ns.Share.MapPinLink(first)
-    if link then
-        msg = msg .. " " .. link
-    end
-    if ns.Get("sharePrefix") then
-        msg = ns.Share.PREFIX .. " " .. msg
-    end
-    local channels = ns.Share.Channels()
-    for i, b in ipairs(shareBox.chat) do
-        local ch = channels[i]
-        if ch then
-            b:SetText(ch[1])
-            b:SetWidth(math.max(70, (b:GetFontString() and b:GetFontString():GetStringWidth() or 60) + 24))
-            b:SetScript("OnClick", function()
-                shareBox:Hide()
-                ns.Share.OpenChat(ch[2] .. " " .. msg)
-            end)
-            b:Show()
-        else
-            b:Hide()
-        end
-    end
-    shareBox.send:SetScript("OnClick", function()
-        local name = UnitIsPlayer and UnitIsPlayer("target") and UnitName("target")
-        if not name or name == UnitName("player") then
-            Status(L.ROUTE_SEND_NO_TARGET)
-            ns.Print(L.ROUTE_SEND_NO_TARGET, true)
-            return
-        end
-        ns.RoutesNet.SendTo(r.id, name)
-        Status(L.ROUTE_SENT:format(r.name, name), true)
-        ns.Print(L.ROUTE_SENT:format(r.name, name), true)
-    end)
-    shareBox.copy:SetScript("OnClick", function()
-        shareBox:Hide()
-        ShowText("copy", R().Serialize(r))
-    end)
-    shareBox:Show()
-    shareBox:Raise()
-end
-RoutesUI.ShowShare = function(r, justSaved)
-    ShowShare(r, justSaved)
-end
-RoutesUI.ShowCreate = function()
-    ShowCreate()
-end
-RoutesUI.ShowHelp = function()
-    ShowHelp()
-end
-
--- ---------------------------------------------------------------------------
--- Public
--- ---------------------------------------------------------------------------
 function RoutesUI.Show()
-    if not ns.settings then
-        return
-    end
-    if not frame then
-        Create()
-    end
-    if frame:IsShown() then
-        RefreshTabs()
-        RefreshList()
-    end
-    frame:Show()
-    frame:Raise()
+    if not ns.settings then return end
+    if not Window.Show("routes") then return end
+    RefreshList()
 end
-
-function RoutesUI.Toggle()
-    if frame and frame:IsShown() then
-        frame:Hide()
-    else
-        RoutesUI.Show()
-    end
-end
-
-function RoutesUI.IsShown()
-    return frame and frame:IsShown() or false
-end
-
+function RoutesUI.Toggle() Window.Toggle("routes") end
+function RoutesUI.IsShown() return Window.IsShown() and Window.GetTab() == "routes" end
 function RoutesUI.Select(id)
     selectedID = id
-    if frame and frame:IsShown() then
-        RefreshList()
+    if id and R().Get(id) then
+        firstHelp = false
+        ns.Set("routesHelpShown", true)
     end
+    if frame then RefreshList() end
 end
-
 function RoutesUI.SetTab(key)
+    local valid = false
+    for _, t in ipairs(TABS) do if t.value == key then valid = true; break end end
+    if not valid then return end
     state.tab = key
-    offset = 0
-    if frame and frame:IsShown() then
-        RefreshTabs()
+    if frame then
+        list.offset = 0
+        RoutesUI.widgets.source:Refresh()
         RefreshList()
     end
 end
-
 function RoutesUI.Frames()
-    return { editor = editor, text = textBox, ask = ask, feedback = feedback, help = help, create = create, recorder = recorder, share = shareBox }
+    return { editor = editor, text = textBox, help = help, create = create, recorder = ns.Recorder and ns.Recorder.frame }
 end
 
-for _, event in ipairs({ "ROUTES_CHANGED", "WAYPOINTS_CHANGED", "ACTIVE_CHANGED" }) do
+Window.RegisterTab {
+    key = "routes", order = 3, title = L.ROUTES_TITLE,
+    leftButton = { text = L.ROUTE_CREATE, onClick = function() ShowCreate() end, tooltip = L.ROUTE_CREATE_DESC },
+    leftButton2 = { text = L.IMPORT, onClick = function() ShowText("import", "") end, tooltip = L.ROUTE_IMPORT_DESC },
+    build = Build,
+    onShow = function() Layout(); RefreshList() end,
+    onUpdate = function() RefreshList() end,
+}
+for _, event in ipairs({ "ROUTES_CHANGED", "WAYPOINTS_CHANGED", "ACTIVE_CHANGED", "SETTING_CHANGED" }) do
     ns.On(event, function()
-        if frame and frame:IsShown() then
-            frame.MarkDirty()
-        end
+        if RoutesUI.IsShown() and frame then Layout(); RefreshList() end
     end)
-end
-
-function WaypointTracker_ToggleRoutes()
-    RoutesUI.Toggle()
 end
