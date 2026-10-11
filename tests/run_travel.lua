@@ -422,6 +422,18 @@ M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, "travel")
 check(ns.Get("realRoutes"), "/wp travel turns it on")
 ns.TravelMap.Draw()
 
+-- what the arrow was told is kept for bug reports, and so are errors
+local log = WaypointTrackerDB.travelLog
+check(type(log) == "table" and #log > 0 and log[#log].target and log[#log].here, "the arrow's steps are logged")
+check(#log <= 60, "the log stays short")
+local before = #M.errors
+ns.ReportError("test error\nstack")
+check(WaypointTrackerDB.errorLog and WaypointTrackerDB.errorLog[#WaypointTrackerDB.errorLog].error:find("test error", 1, true),
+    "errors are kept in the saved variables")
+for _ = #M.errors, before + 1, -1 do
+    table.remove(M.errors)
+end
+
 check(#M.errors == 0, "no Lua errors: " .. tostring(M.errors[1]))
 print(("%d passed, %d failed"):format(passed, failed))
 os.exit(failed == 0 and 0 or 1)

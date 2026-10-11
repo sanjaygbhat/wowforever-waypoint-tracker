@@ -976,6 +976,46 @@ end
 
 -- What the arrow should do for this waypoint, or nil to point straight at
 -- it: { dist, bearing (nil: show a pin), title, sub, total }
+-- A short record of what the arrow was told to do (in the saved variables,
+-- the last 60 changes), so a wrong turn reported from the game can be
+-- traced afterwards.
+local lastLog
+local function Log(here, target, s)
+    if type(WaypointTrackerDB) ~= "table" then
+        return
+    end
+    local now = GetTime()
+    local key = tostring(target.id) .. ">" .. tostring(here.area) .. ">" .. tostring(s.trail ~= nil)
+    if lastLog and lastLog.key == key and now - lastLog.t < 15 then
+        return
+    end
+    lastLog = { key = key, t = now }
+    local log = type(WaypointTrackerDB.travelLog) == "table" and WaypointTrackerDB.travelLog or {}
+    WaypointTrackerDB.travelLog = log
+    local d = data or {}
+    local tc, tx, ty = Pos(target)
+    local facing = GetPlayerFacing and GetPlayerFacing()
+    local route = {}
+    for i, e in ipairs(plan and plan.path or {}) do
+        route[i] = e.node.id or (e.node.player and "you") or (e.node.goal and "goal") or "?"
+    end
+    table.insert(log, {
+        when = time and time() or 0,
+        step = s.title,
+        here = ("%s %.4f %.4f | %s %.1f %.1f | %s %s"):format(tostring(here.m), here.x or 0, here.y or 0,
+            tostring(here.cont), here.wx or 0, here.wy or 0, tostring(d.areas and d.areas[here.area] or here.area),
+            tostring(here.city or "")),
+        target = ("%s | %s %.1f %.1f"):format(tostring(target.id), tostring(tc), tx or 0, ty or 0),
+        bearing = s.bearing and floor(math.deg(s.bearing) + 0.5),
+        trail = s.trail and true or nil,
+        facing = facing and floor(math.deg(facing) + 0.5),
+        route = table.concat(route, " "),
+    })
+    while #log > 60 do
+        table.remove(log, 1)
+    end
+end
+
 function Travel.Steer(wp)
     if not wp or not Travel.Enabled() then
         plan = nil
@@ -1048,7 +1088,14 @@ function Travel.Steer(wp)
         return s
     end
     local target = e.node
-    local _, tx, ty = Pos(target)
+    local tc, tx, ty = Pos(target)
+    if tc ~= here.cont or not tx then
+        -- not on the same world map as the player (a phased copy, say):
+        -- better no direction than a wrong one
+        s.pin = true
+        Log(here, target, s)
+        return s
+    end
     local dNorth, dWest = tx - here.wx, ty - here.wy
     s.dist = sqrt(dNorth * dNorth + dWest * dWest)
     s.bearing = math.atan2(dWest, dNorth)
@@ -1057,9 +1104,11 @@ function Travel.Steer(wp)
     if T and T.Steer and ns.Get("travelTrails") then
         local bearing = T.Steer(here, target)
         if bearing then
+            s.trail = bearing
             s.bearing = bearing
         end
     end
+    Log(here, target, s)
     return s
 end
 
