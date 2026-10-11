@@ -7,7 +7,7 @@ local function Help()
     ns.Print(L.HELP_HEADER, true)
     -- when another addon owns /way, /wp does the same job
     local wayTaken = ns.IsOtherArrowAddonPresent()
-    for _, key in ipairs({ "HELP_OPEN", "HELP_OPTIONS", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS", "HELP_ROUTES", "HELP_ROUTES_MORE", "HELP_HELP" }) do
+    for _, key in ipairs({ "HELP_OPEN", "HELP_OPTIONS", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS", "HELP_ROUTES", "HELP_ROUTES_MORE", "HELP_TRAVEL", "HELP_HELP" }) do
         local line = L[key]
         if wayTaken then
             line = line:gsub("/way ", "/wp ")
@@ -196,6 +196,35 @@ local function Handle(msg, isWayCommand)
                 s.guild and L.YES or L.NO, s.group or "-", s.peers, s.sent, s.got, s.routes, s.votes), true)
         else
             ns.RoutesUI.Toggle()
+        end
+    elseif cmd == "travel" or cmd == "realroutes" or cmd == "rr" then
+        local sub = Geo.Lower(ns.Trim(rest))
+        local T = ns.Travel
+        if sub == "steps" or sub == "route" then
+            local lines = T.Describe()
+            if #lines == 0 then
+                ns.Print(T.Enabled() and L.TRAVEL_NO_PLAN or L.TRAVEL_OFF, true)
+            end
+            for i, line in ipairs(lines) do
+                ns.Print(("%d. %s"):format(i, line), true)
+            end
+        elseif sub == "status" then
+            local found = 0
+            for _, v in pairs(T.Know().flights) do
+                if v == true then
+                    found = found + 1
+                end
+            end
+            local own, shared, crossings = ns.Trails.Stats()
+            local _, bind = T.BindNode()
+            ns.Print(L.TRAVEL_STATUS:format(T.Enabled() and L.YES or L.NO, found, bind or "-", own, shared, crossings), true)
+        else
+            local on = sub == "on" or (sub ~= "off" and not ns.Get("realRoutes"))
+            ns.Set("realRoutes", on)
+            ns.Print(on and L.TRAVEL_NOW_ON or L.TRAVEL_NOW_OFF, true)
+            if on and not T.KnowsAnyFlight() then
+                ns.Print(L.TRAVEL_OPEN_FLIGHT_MAP, true)
+            end
         end
     elseif cmd == "find" or cmd == "search" then
         ns.Find.Show(rest)

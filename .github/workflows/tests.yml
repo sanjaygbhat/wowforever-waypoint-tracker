@@ -29,3 +29,9 @@ jobs:
         run: |
           lua5.1 tests/run_bare.lua
           WT_PLAIN_VECTORS=1 lua5.1 tests/run_bare.lua
+      - name: Routes
+        run: lua5.1 tests/run_routes.lua
+      - name: Real routes
+        run: |
+          lua5.1 tests/run_travel.lua
+          WT_PLAIN_VECTORS=1 lua5.1 tests/run_travel.lua
