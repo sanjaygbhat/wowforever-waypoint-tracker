@@ -1,0 +1,951 @@
+BORDER_DUROTAR_TO_THE_BARRENS	border	kalimdor.durotar	1411	0.349	0.434						Borders
+BORDER_THE_BARRENS_TO_DUROTAR	border	kalimdor.the_barrens	1413	0.623	0.187						Borders
+BORDER_MULGORE_TO_THE_BARRENS	border	kalimdor.mulgore	1412	0.672	0.621						Borders
+BORDER_THE_BARRENS_TO_MULGORE	border	kalimdor.the_barrens	1413	0.418	0.589						Borders
+BORDER_MULGORE_TO_STONETALON_MOUNTAINS	border	kalimdor.mulgore	1412	0.413	0.128						Borders
+BORDER_STONETALON_MOUNTAINS_TO_MULGORE	border	kalimdor.stonetalon_mountains	1442	0.679	0.975						Borders
+BORDER_MULGORE_TO_DESOLACE	border	kalimdor.mulgore	1412	0.311	0.232						Borders
+BORDER_DESOLACE_TO_MULGORE	border	kalimdor.desolace	1443	0.815	0.379						Borders
+BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS	border	kalimdor.the_barrens	1413	0.362	0.278						Borders
+BORDER_STONETALON_MOUNTAINS_TO_THE_BARRENS	border	kalimdor.stonetalon_mountains	1442	0.876	0.961						Borders
+BORDER_THE_BARRENS_TO_ASHENVALE	border	kalimdor.the_barrens	1413	0.482	0.103						Borders
+BORDER_ASHENVALE_TO_THE_BARRENS	border	kalimdor.ashenvale	1440	0.68	0.885						Borders
+BORDER_THE_BARRENS_TO_THOUSAND_NEEDLES	border	kalimdor.the_barrens	1413	0.42	0.945						Borders
+BORDER_THOUSAND_NEEDLES_TO_THE_BARRENS	border	kalimdor.thousand_needles	1441	0.319	0.223						Borders
+BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH	border	kalimdor.the_barrens	1413	0.515	0.793						Borders
+BORDER_DUSTWALLOW_MARSH_TO_THE_BARRENS	border	kalimdor.dustwallow_marsh	1445	0.32	0.463						Borders
+BORDER_ASHENVALE_TO_STONETALON_MOUNTAINS	border	kalimdor.ashenvale	1440	0.424	0.725						Borders
+BORDER_STONETALON_MOUNTAINS_TO_ASHENVALE	border	kalimdor.stonetalon_mountains	1442	0.779	0.415						Borders
+BORDER_ASHENVALE_TO_DARKSHORE	border	kalimdor.ashenvale	1440	0.28	0.128						Borders
+BORDER_DARKSHORE_TO_ASHENVALE	border	kalimdor.darkshore	1439	0.371	1						Borders
+BORDER_ASHENVALE_TO_FELWOOD	border	kalimdor.ashenvale	1440	0.559	0.268						Borders
+BORDER_FELWOOD_TO_ASHENVALE	border	kalimdor.felwood	1448	0.57	0.985						Borders
+BORDER_ASHENVALE_TO_AZSHARA	border	kalimdor.ashenvale	1440	0.945	0.474						Borders
+BORDER_AZSHARA_TO_ASHENVALE	border	kalimdor.azshara	1447	0.104	0.745						Borders
+BORDER_FELWOOD_TO_WINTERSPRING	border	kalimdor.felwood	1448	0.654	0.069						Borders
+BORDER_WINTERSPRING_TO_FELWOOD	border	kalimdor.winterspring	1452	0.305	0.354						Borders
+BORDER_FELWOOD_TO_MOONGLADE	border	kalimdor.felwood	1448	0.654	0.069						Borders
+BORDER_MOONGLADE_TO_FELWOOD	border	kalimdor.moonglade	1450	0.354	0.736						Borders
+BORDER_WINTERSPRING_TO_MOONGLADE	border	kalimdor.winterspring	1452	0.305	0.354						Borders
+BORDER_MOONGLADE_TO_WINTERSPRING	border	kalimdor.moonglade	1450	0.354	0.736						Borders
+BORDER_WINTERSPRING_TO_MOUNT_HYJAL	border	kalimdor.winterspring	1452	0.51	0.913						Borders
+BORDER_MOUNT_HYJAL_TO_WINTERSPRING	border	kalimdor.mount_hyjal	2482	0.879	0.37						Borders
+BORDER_STONETALON_MOUNTAINS_TO_DESOLACE	border	kalimdor.stonetalon_mountains	1442	0.29	0.809						Borders
+BORDER_DESOLACE_TO_STONETALON_MOUNTAINS	border	kalimdor.desolace	1443	0.534	0.057						Borders
+BORDER_DESOLACE_TO_FERALAS	border	kalimdor.desolace	1443	0.428	0.979						Borders
+BORDER_FERALAS_TO_DESOLACE	border	kalimdor.feralas	1444	0.461	0.04						Borders
+BORDER_DESOLACE_TO_SHENDRALAS	border	kalimdor.desolace	1443	0.68	0.881						Borders
+BORDER_SHENDRALAS_TO_DESOLACE	border	kalimdor.shendralas	2652	0.339	0.076						Borders
+BORDER_DESOLACE_TO_SHENDRALAS_2	border	kalimdor.desolace	1443	0.586	0.901						Borders
+BORDER_SHENDRALAS_TO_DESOLACE_2	border	kalimdor.shendralas	2652	0.224	0.241						Borders
+BORDER_THOUSAND_NEEDLES_TO_TANARIS	border	kalimdor.thousand_needles	1441	0.75	0.958						Borders
+BORDER_TANARIS_TO_THOUSAND_NEEDLES	border	kalimdor.tanaris	1446	0.507	0.225						Borders
+BORDER_THOUSAND_NEEDLES_TO_FERALAS	border	kalimdor.thousand_needles	1441	0.066	0.135						Borders
+BORDER_FERALAS_TO_THOUSAND_NEEDLES	border	kalimdor.feralas	1444	0.967	0.483						Borders
+BORDER_TANARIS_TO_UNGORO_CRATER	border	kalimdor.tanaris	1446	0.268	0.531						Borders
+BORDER_UNGORO_CRATER_TO_TANARIS	border	kalimdor.ungoro_crater	1449	0.675	0.815						Borders
+BORDER_UNGORO_CRATER_TO_SILITHUS	border	kalimdor.ungoro_crater	1449	0.347	0.169						Borders
+BORDER_SILITHUS_TO_UNGORO_CRATER	border	kalimdor.silithus	1451	0.813	0.165						Borders
+BORDER_ELWYNN_FOREST_TO_WESTFALL	border	easternkingdoms.elwynn_forest	1429	0.2029	0.8044				60		Borders
+BORDER_WESTFALL_TO_ELWYNN_FOREST	border	easternkingdoms.westfall	1436	0.6234	0.1734						Borders
+BORDER_ELWYNN_FOREST_TO_REDRIDGE_MOUNTAINS	border	easternkingdoms.elwynn_forest	1429	0.938	0.721						Borders
+BORDER_REDRIDGE_MOUNTAINS_TO_ELWYNN_FOREST	border	easternkingdoms.redridge_mountains	1433	0.028	0.728						Borders
+BORDER_DUSKWOOD_TO_WESTFALL	border	easternkingdoms.duskwood	1431	0.087	0.635						Borders
+BORDER_WESTFALL_TO_DUSKWOOD	border	easternkingdoms.westfall	1436	0.672	0.624						Borders
+BORDER_DUSKWOOD_TO_REDRIDGE_MOUNTAINS	border	easternkingdoms.duskwood	1431	0.934	0.108						Borders
+BORDER_REDRIDGE_MOUNTAINS_TO_DUSKWOOD	border	easternkingdoms.redridge_mountains	1433	0.077	0.883						Borders
+BORDER_DUSKWOOD_TO_STRANGLETHORN_VALE	border	easternkingdoms.duskwood	1431	0.444	0.977						Borders
+BORDER_STRANGLETHORN_VALE_TO_DUSKWOOD	border	easternkingdoms.stranglethorn_vale	1434	0.396	0.043						Borders
+BORDER_DUSKWOOD_TO_DEADWIND_PASS	border	easternkingdoms.duskwood	1431	0.898	0.4						Borders
+BORDER_DEADWIND_PASS_TO_DUSKWOOD	border	easternkingdoms.deadwind_pass	1430	0.319	0.348						Borders
+BORDER_DEADWIND_PASS_TO_SWAMP_OF_SORROWS	border	easternkingdoms.deadwind_pass	1430	0.591	0.416						Borders
+BORDER_SWAMP_OF_SORROWS_TO_DEADWIND_PASS	border	easternkingdoms.swamp_of_sorrows	1435	0.029	0.607						Borders
+BORDER_SWAMP_OF_SORROWS_TO_BLASTED_LANDS	border	easternkingdoms.swamp_of_sorrows	1435	0.333	0.741						Borders
+BORDER_BLASTED_LANDS_TO_SWAMP_OF_SORROWS	border	easternkingdoms.blasted_lands	1419	0.527	0.085						Borders
+BORDER_BURNING_STEPPES_TO_SEARING_GORGE	border	easternkingdoms.burning_steppes	1428	0.294	0.385				254		Borders
+BORDER_SEARING_GORGE_TO_BURNING_STEPPES	border	easternkingdoms.searing_gorge	1427	0.349	0.87						Borders
+BORDER_SEARING_GORGE_TO_BADLANDS	border	easternkingdoms.searing_gorge	1427	0.776	0.601						Borders
+BORDER_BADLANDS_TO_SEARING_GORGE	border	easternkingdoms.badlands	1418	0.087	0.68						Borders
+BORDER_BADLANDS_TO_LOCH_MODAN	border	easternkingdoms.badlands	1418	0.467	0.036						Borders
+BORDER_LOCH_MODAN_TO_BADLANDS	border	easternkingdoms.loch_modan	1432	0.472	0.854						Borders
+BORDER_BADLANDS_TO_RIVERGLADES	border	easternkingdoms.badlands	1418	0.625	0.841						Borders
+BORDER_RIVERGLADES_TO_BADLANDS	border	easternkingdoms.riverglades	2548	0.317	0.25						Borders
+BORDER_RIVERGLADES_TO_REDRIDGE_MOUNTAINS	border	easternkingdoms.riverglades	2548	0.138	0.784						Borders
+BORDER_REDRIDGE_MOUNTAINS_TO_RIVERGLADES	border	easternkingdoms.redridge_mountains	1433	0.523	0.076						Borders
+BORDER_RIVERGLADES_TO_BURNING_STEPPES	border	easternkingdoms.riverglades	2548	0.138	0.648						Borders
+BORDER_BURNING_STEPPES_TO_RIVERGLADES	border	easternkingdoms.burning_steppes	1428	0.945	0.703						Borders
+BORDER_RIVERGLADES_TO_SWAMP_OF_SORROWS	border	easternkingdoms.riverglades	2548	0.369	0.919						Borders
+BORDER_SWAMP_OF_SORROWS_TO_RIVERGLADES	border	easternkingdoms.swamp_of_sorrows	1435	0.653	0.106						Borders
+BORDER_LOCH_MODAN_TO_DUN_MOROGH	border	easternkingdoms.loch_modan	1432	0.1966	0.6286						Borders
+BORDER_DUN_MOROGH_TO_LOCH_MODAN	border	easternkingdoms.dun_morogh	1426	0.8622	0.5129				806		Borders
+BORDER_LOCH_MODAN_TO_WETLANDS	border	easternkingdoms.loch_modan	1432	0.2557	0.1039						Borders
+BORDER_WETLANDS_TO_LOCH_MODAN	border	easternkingdoms.wetlands	1437	0.5565	0.848						Borders
+BORDER_LOCH_MODAN_TO_SEARING_GORGE	border	easternkingdoms.loch_modan	1432	0.168	0.84						Borders
+BORDER_SEARING_GORGE_TO_LOCH_MODAN	border	easternkingdoms.searing_gorge	1427	0.784	0.167						Borders
+BORDER_WETLANDS_TO_ARATHI_HIGHLANDS	border	easternkingdoms.wetlands	1437	0.5112	0.0804						Borders
+BORDER_ARATHI_HIGHLANDS_TO_WETLANDS	border	easternkingdoms.arathi_highlands	1417	0.4547	0.9291				880		Borders
+BORDER_ARATHI_HIGHLANDS_TO_HILLSBRAD_FOOTHILLS	border	easternkingdoms.arathi_highlands	1417	0.199	0.2923				334		Borders
+BORDER_HILLSBRAD_FOOTHILLS_TO_ARATHI_HIGHLANDS	border	easternkingdoms.hillsbrad_foothills	1424	0.826	0.5763						Borders
+BORDER_HILLSBRAD_FOOTHILLS_TO_HINTERLANDS	border	easternkingdoms.hillsbrad_foothills	1424	0.868	0.287						Borders
+BORDER_HINTERLANDS_TO_HILLSBRAD_FOOTHILLS	border	easternkingdoms.hinterlands	1425	0.057	0.605						Borders
+BORDER_HILLSBRAD_FOOTHILLS_TO_SILVERPINE_FOREST	border	easternkingdoms.hillsbrad_foothills	1424	0.045	0.42						Borders
+BORDER_SILVERPINE_FOREST_TO_HILLSBRAD_FOOTHILLS	border	easternkingdoms.silverpine_forest	1421	0.676	0.807						Borders
+BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS	border	easternkingdoms.hillsbrad_foothills	1424	0.537	0.081						Borders
+BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS	border	easternkingdoms.alterac_mountains	1416	0.536	0.933						Borders
+BORDER_HINTERLANDS_TO_WESTERN_PLAGUELANDS	border	easternkingdoms.hinterlands	1425	0.236	0.262						Borders
+BORDER_WESTERN_PLAGUELANDS_TO_HINTERLANDS	border	easternkingdoms.western_plaguelands	1422	0.676	0.874						Borders
+BORDER_ALTERAC_MOUNTAINS_TO_WESTERN_PLAGUELANDS	border	easternkingdoms.alterac_mountains	1416	0.802	0.309						Borders
+BORDER_WESTERN_PLAGUELANDS_TO_ALTERAC_MOUNTAINS	border	easternkingdoms.western_plaguelands	1422	0.432	0.938						Borders
+BORDER_SILVERPINE_FOREST_TO_TIRISFAL_GLADES	border	easternkingdoms.silverpine_forest	1421	0.678	0.049						Borders
+BORDER_TIRISFAL_GLADES_TO_SILVERPINE_FOREST	border	easternkingdoms.tirisfal_glades	1420	0.539	0.764						Borders
+BORDER_TIRISFAL_GLADES_TO_WESTERN_PLAGUELANDS	border	easternkingdoms.tirisfal_glades	1420	0.851	0.698						Borders
+BORDER_WESTERN_PLAGUELANDS_TO_TIRISFAL_GLADES	border	easternkingdoms.western_plaguelands	1422	0.204	0.572						Borders
+BORDER_WESTERN_PLAGUELANDS_TO_EASTERN_PLAGUELANDS	border	easternkingdoms.western_plaguelands	1422	0.755	0.499						Borders
+BORDER_EASTERN_PLAGUELANDS_TO_WESTERN_PLAGUELANDS	border	easternkingdoms.eastern_plaguelands	1423	0.094	0.725						Borders
+TAXI_2	taxi	easternkingdoms.elwynn_forest	1453	0.7098	0.7293						EasternKingdoms
+TAXI_4	taxi	easternkingdoms.westfall	1436	0.5657	0.5267						EasternKingdoms
+TAXI_5	taxi	easternkingdoms.redridge_mountains	1433	0.2534	0.5899						EasternKingdoms
+TAXI_6	taxi	easternkingdoms.dun_morogh	1455	0.5589	0.4787						EasternKingdoms
+TAXI_7	taxi	easternkingdoms.wetlands	1437	0.0952	0.5966						EasternKingdoms
+TAXI_8	taxi	easternkingdoms.loch_modan	1432	0.3394	0.5079						EasternKingdoms
+TAXI_10	taxi	easternkingdoms.silverpine_forest	1421	0.4556	0.4242						EasternKingdoms
+TAXI_11	taxi	easternkingdoms.tirisfal_glades	1458	0.6308	0.4832						EasternKingdoms
+TAXI_12	taxi	easternkingdoms.duskwood	1431	0.7759	0.4438						EasternKingdoms
+TAXI_13	taxi	easternkingdoms.hillsbrad_foothills	1424	0.6021	0.1875						EasternKingdoms
+TAXI_14	taxi	easternkingdoms.hillsbrad_foothills	1424	0.4944	0.521						EasternKingdoms
+TAXI_16	taxi	easternkingdoms.arathi_highlands	1417	0.4579	0.4613						EasternKingdoms
+TAXI_17	taxi	easternkingdoms.arathi_highlands	1417	0.7306	0.3262						EasternKingdoms
+TAXI_18	taxi	easternkingdoms.stranglethorn_vale	1434	0.2682	0.77						EasternKingdoms
+TAXI_19	taxi	easternkingdoms.stranglethorn_vale	1434	0.2753	0.7767						EasternKingdoms
+TAXI_20	taxi	easternkingdoms.stranglethorn_vale	1434	0.3251	0.2928						EasternKingdoms
+TAXI_21	taxi	easternkingdoms.badlands	1418	0.0406	0.4489						EasternKingdoms
+TAXI_43	taxi	easternkingdoms.hinterlands	1425	0.1111	0.4609						EasternKingdoms
+TAXI_45	taxi	easternkingdoms.blasted_lands	1419	0.6549	0.2443						EasternKingdoms
+TAXI_56	taxi	easternkingdoms.swamp_of_sorrows	1435	0.4605	0.5468						EasternKingdoms
+TAXI_66	taxi	easternkingdoms.western_plaguelands	1422	0.4295	0.8495						EasternKingdoms
+TAXI_67	taxi	easternkingdoms.eastern_plaguelands	1423	0.717	0.4956						EasternKingdoms
+TAXI_68	taxi	easternkingdoms.eastern_plaguelands	1423	0.7045	0.4759						EasternKingdoms
+TAXI_70	taxi	easternkingdoms.burning_steppes	1428	0.6558	0.2422						EasternKingdoms
+TAXI_71	taxi	easternkingdoms.burning_steppes	1428	0.8438	0.683						EasternKingdoms
+TAXI_74	taxi	easternkingdoms.searing_gorge	1427	0.3789	0.3043						EasternKingdoms
+TAXI_75	taxi	easternkingdoms.searing_gorge	1427	0.3483	0.3058						EasternKingdoms
+TAXI_76	taxi	easternkingdoms.hinterlands	1425	0.817	0.8189						EasternKingdoms
+TAXI_84	taxi	easternkingdoms.eastern_plaguelands	1423	0.1845	0.2417						EasternKingdoms
+TAXI_85	taxi	easternkingdoms.eastern_plaguelands	1423	0.4716	0.2031						EasternKingdoms
+TAXI_86	taxi	easternkingdoms.eastern_plaguelands	1423	0.578	0.416						EasternKingdoms
+TAXI_87	taxi	easternkingdoms.eastern_plaguelands	1423	0.3259	0.6398						EasternKingdoms
+TAXI_3203	taxi	easternkingdoms.riverglades	2548	0.5961	0.4506						EasternKingdoms
+TAXI_3276	taxi	easternkingdoms.riverglades	2548	0.6059	0.8157						EasternKingdoms
+TAXI_POWDERFUSE	taxi	easternkingdoms.riverglades	2548	0.768	0.5302						EasternKingdoms
+ZEPPELIN_TIRISFAL_ORGRIMMAR	zeppelin	easternkingdoms.tirisfal_glades	1420	0.607	0.588						EasternKingdoms
+ZEPPELIN_TIRISFAL_GROMGOL	zeppelin	easternkingdoms.tirisfal_glades	1420	0.619	0.591						EasternKingdoms
+ZEPPELIN_GROMGOL_ORGRIMMAR	zeppelin	easternkingdoms.stranglethorn_vale	1434	0.313	0.301						EasternKingdoms
+ZEPPELIN_GROMGOL_TIRISFAL	zeppelin	easternkingdoms.stranglethorn_vale	1434	0.316	0.292						EasternKingdoms
+DOCK_MENETHIL	dock	easternkingdoms.wetlands	1437	0.0464	0.5716						EasternKingdoms
+DOCK_MENETHIL_THERAMORE	dock	easternkingdoms.wetlands	1437	0.0509	0.6351						EasternKingdoms
+DOCK_SOUTHSHORE	dock	easternkingdoms.hillsbrad_foothills	1424	0.5053	0.6975						EasternKingdoms
+DOCK_STORMWIND	dock	easternkingdoms.elwynn_forest	1453	0.2255	0.5613						EasternKingdoms
+DOCK_BOOTYBAY	dock	easternkingdoms.stranglethorn_vale	1434	0.3908	0.6673						EasternKingdoms
+DOCK_DALARAN	dock	easternkingdoms.alterac_mountains	1416	0.1262	0.5203						EasternKingdoms
+PORTAL_DALARAN_STORMWIND	portal	easternkingdoms.alterac_mountains	1416	0.1205	0.5636						EasternKingdoms
+PORTAL_STORMWIND_DALARAN	portal	easternkingdoms.elwynn_forest.stormwind_wizards_sanctum	1453	0.4987	0.8667						EasternKingdoms
+ENTRANCE_SW_WIZARDS_SANCTUM_OUTER	entrance	easternkingdoms.elwynn_forest	1453	0.4944	0.8677						EasternKingdoms
+ENTRANCE_SW_WIZARDS_SANCTUM_INNER	entrance	easternkingdoms.elwynn_forest.stormwind_wizards_sanctum	1453	0.4936	0.8693						EasternKingdoms
+TRAM_STORMWIND	tram	easternkingdoms.elwynn_forest	1453	0.6903	0.311						EasternKingdoms
+TRAM_IRONFORGE	tram	easternkingdoms.dun_morogh	1455	0.7641	0.5123						EasternKingdoms
+DOCK_POWDERFUSE	dock	easternkingdoms.riverglades	2548	0.7222	0.7603						EasternKingdoms
+TAXI_22	taxi	kalimdor.mulgore	1456	0.4665	0.499						Kalimdor
+TAXI_23	taxi	kalimdor.durotar	1454	0.4528	0.6375						Kalimdor
+TAXI_25	taxi	kalimdor.the_barrens	1413	0.515	0.3041						Kalimdor
+TAXI_26	taxi	kalimdor.darkshore	1439	0.364	0.4562						Kalimdor
+TAXI_27	taxi	kalimdor.teldrassil.ruttheran	1438	0.584	0.9393						Kalimdor
+TAXI_28	taxi	kalimdor.ashenvale	1440	0.345	0.4801						Kalimdor
+TAXI_29	taxi	kalimdor.stonetalon_mountains	1442	0.4516	0.5989						Kalimdor
+TAXI_30	taxi	kalimdor.thousand_needles	1441	0.4502	0.4913						Kalimdor
+TAXI_31	taxi	kalimdor.feralas	1444	0.8946	0.4587						Kalimdor
+TAXI_32	taxi	kalimdor.dustwallow_marsh	1445	0.6746	0.512						Kalimdor
+TAXI_33	taxi	kalimdor.stonetalon_mountains	1442	0.3654	0.0723						Kalimdor
+TAXI_37	taxi	kalimdor.desolace	1443	0.6467	0.1044						Kalimdor
+TAXI_38	taxi	kalimdor.desolace	1443	0.2156	0.7404						Kalimdor
+TAXI_39	taxi	kalimdor.tanaris	1446	0.5095	0.2933						Kalimdor
+TAXI_40	taxi	kalimdor.tanaris	1446	0.5162	0.2552						Kalimdor
+TAXI_41	taxi	kalimdor.feralas	1444	0.3026	0.4332						Kalimdor
+TAXI_42	taxi	kalimdor.feralas	1444	0.7543	0.4431						Kalimdor
+TAXI_44	taxi	kalimdor.azshara	1447	0.2195	0.4969						Kalimdor
+TAXI_48	taxi	kalimdor.felwood	1448	0.3442	0.5387						Kalimdor
+TAXI_49	taxi	kalimdor.moonglade	1450	0.4791	0.6711						Kalimdor
+TAXI_52	taxi	kalimdor.winterspring	1452	0.6233	0.3664						Kalimdor
+TAXI_53	taxi	kalimdor.winterspring	1452	0.6049	0.3634						Kalimdor
+TAXI_55	taxi	kalimdor.dustwallow_marsh	1445	0.3557	0.3183						Kalimdor
+TAXI_58	taxi	kalimdor.ashenvale	1440	0.1219	0.3377						Kalimdor
+TAXI_61	taxi	kalimdor.ashenvale	1440	0.7326	0.6167						Kalimdor
+TAXI_62	taxi	kalimdor.moonglade	1450	0.4428	0.4534						Kalimdor
+TAXI_63	taxi	kalimdor.moonglade	1450	0.4431	0.4572						Kalimdor
+TAXI_64	taxi	kalimdor.azshara	1440	0.9677	0.5076						Kalimdor
+TAXI_65	taxi	kalimdor.felwood	1448	0.6246	0.2419						Kalimdor
+TAXI_69	taxi	kalimdor.moonglade	1450	0.3215	0.6633						Kalimdor
+TAXI_72	taxi	kalimdor.silithus	1451	0.4883	0.3672						Kalimdor
+TAXI_73	taxi	kalimdor.silithus	1451	0.5068	0.3459						Kalimdor
+TAXI_77	taxi	kalimdor.the_barrens	1413	0.4446	0.591						Kalimdor
+TAXI_79	taxi	kalimdor.ungoro_crater	1449	0.453	0.0597						Kalimdor
+TAXI_80	taxi	kalimdor.the_barrens	1413	0.6312	0.3711						Kalimdor
+TAXI_559	taxi	kalimdor.mount_hyjal	2482	0.6864	0.4411						Kalimdor
+TAXI_3242	taxi	kalimdor.mount_hyjal	2482	0.551	0.8255						Kalimdor
+DOCK_RUTTHERAN	dock	kalimdor.teldrassil.ruttheran	1438	0.5488	0.9671						Kalimdor
+DOCK_AUBERDINE_STORMWIND	dock	kalimdor.darkshore	1439	0.3077	0.4101						Kalimdor
+DOCK_AUBERDINE_RUTTHERAN	dock	kalimdor.darkshore	1439	0.3318	0.4013						Kalimdor
+DOCK_AUBERDINE_MENETHIL	dock	kalimdor.darkshore	1439	0.3237	0.4381						Kalimdor
+DOCK_RATCHET	dock	kalimdor.the_barrens	1413	0.6446	0.5083						Kalimdor
+DOCK_THERAMORE	dock	kalimdor.dustwallow_marsh	1445	0.715	0.5635						Kalimdor
+DOCK_STEAMWHEEDLE	dock	kalimdor.tanaris	1446	0.6538	0.2245						Kalimdor
+DOCK_FEATHERMOON	dock	kalimdor.feralas	1444	0.278	0.3171						Kalimdor
+DOCK_FORGOTTENCOAST	dock	kalimdor.feralas	1444	0.3542	0.504						Kalimdor
+ZEPPELIN_ORGRIMMAR_GROMGOL	zeppelin	kalimdor.durotar	1411	0.507	0.128						Kalimdor
+ZEPPELIN_ORGRIMMAR_TIRISFAL	zeppelin	kalimdor.durotar	1411	0.508	0.137						Kalimdor
+PORTAL_RUTTHERAN_DARNASSUS	portal	kalimdor.teldrassil.ruttheran	1438	0.5592	0.8969						Kalimdor
+PORTAL_DARNASSUS_RUTTHERAN	portal	kalimdor.teldrassil	1457	0.3032	0.4136						Kalimdor
+TELEPORT_MOONGLADE	teleport	kalimdor.moonglade	1450	0.5627	0.3241						Kalimdor
+DOCK_SKYWATCHER	dock	kalimdor.mulgore	1412	0.343	0.2576						Kalimdor
+CONVERGENCE_C1411_451_157	convergence	kalimdor.durotar	1411	0.4512	0.157						Pois
+CONVERGENCE_C1411_532_162	convergence	kalimdor.durotar	1411	0.5317	0.1615						Pois
+ENTRANCE_C1411_355_46	entrance	kalimdor.durotar	1411	0.355	0.0457	orgrimmar					Pois
+ENTRANCE_C1411_455_119	entrance	kalimdor.durotar	1411	0.455	0.119	orgrimmar					Pois
+INN_6928	inn	kalimdor.durotar	1411	0.515	0.416		razor_hill			6928	Pois
+STABLE_9987	stable	kalimdor.durotar	1411	0.52	0.418		razor_hill			9987	Pois
+TRAINER_ENGINEERING_11025	trainer	kalimdor.durotar	1411	0.522	0.408		razor_hill			11025	Pois
+TRAINER_DEMON_12776	trainer	kalimdor.durotar	1411	0.406	0.684					12776	Pois
+TRAINER_WARRIOR_3153	trainer	kalimdor.durotar	1411	0.428	0.694					3153	Pois
+TRAINER_HUNTER_3154	trainer	kalimdor.durotar	1411	0.428	0.692					3154	Pois
+TRAINER_ROGUE_3155	trainer	kalimdor.durotar	1411	0.412	0.68					3155	Pois
+TRAINER_WARLOCK_3156	trainer	kalimdor.durotar	1411	0.406	0.684					3156	Pois
+TRAINER_SHAMAN_3157	trainer	kalimdor.durotar	1411	0.424	0.69					3157	Pois
+TRAINER_WARRIOR_3169	trainer	kalimdor.durotar	1411	0.541	0.425		razor_hill			3169	Pois
+TRAINER_ROGUE_3170	trainer	kalimdor.durotar	1411	0.52	0.435		razor_hill			3170	Pois
+TRAINER_HUNTER_3171	trainer	kalimdor.durotar	1411	0.518	0.435		razor_hill			3171	Pois
+TRAINER_WARLOCK_3172	trainer	kalimdor.durotar	1411	0.542	0.412		razor_hill			3172	Pois
+TRAINER_SHAMAN_3173	trainer	kalimdor.durotar	1411	0.544	0.425		razor_hill			3173	Pois
+TRAINER_BLACKSMITHING_3174	trainer	kalimdor.durotar	1411	0.52	0.406		razor_hill			3174	Pois
+TRAINER_MINING_3175	trainer	kalimdor.durotar	1411	0.518	0.408		razor_hill			3175	Pois
+TRAINER_ALCHEMY_3184	trainer	kalimdor.durotar	1411	0.555	0.74					3184	Pois
+TRAINER_HERBALISM_3185	trainer	kalimdor.durotar	1411	0.555	0.75					3185	Pois
+TRAINER_PET_3620	trainer	kalimdor.durotar	1411	0.52	0.435		razor_hill			3620	Pois
+TRAINER_PRIEST_3706	trainer	kalimdor.durotar	1411	0.542	0.428		razor_hill			3706	Pois
+TRAINER_PRIEST_3707	trainer	kalimdor.durotar	1411	0.424	0.688					3707	Pois
+TRAINER_MAGE_5880	trainer	kalimdor.durotar	1411	0.562	0.75					5880	Pois
+TRAINER_MAGE_5884	trainer	kalimdor.durotar	1411	0.425	0.69					5884	Pois
+TRAINER_FISHING_5941	trainer	kalimdor.durotar	1411	0.532	0.815					5941	Pois
+TRAINER_FIRSTAID_5943	trainer	kalimdor.durotar	1411	0.54	0.42		razor_hill			5943	Pois
+TRAINER_DEMON_6027	trainer	kalimdor.durotar	1411	0.5453	0.4147		razor_hill			6027	Pois
+TRAINER_RIDING_7953	trainer	kalimdor.durotar	1411	0.552	0.755					7953	Pois
+BATTLEMASTER_12198	battlemaster	kalimdor.mulgore	1412	0.368	0.308					12198	Pois
+CONVERGENCE_C1412_386_447	convergence	kalimdor.mulgore	1412	0.3861	0.4473						Pois
+CONVERGENCE_C1412_506_529	convergence	kalimdor.mulgore	1412	0.5061	0.5294						Pois
+ENTRANCE_C1412_359_364	entrance	kalimdor.mulgore	1412	0.3594	0.3642	thunder_bluff			1638		Pois
+ENTRANCE_C1412_383_407	entrance	kalimdor.mulgore	1412	0.3831	0.4066	thunder_bluff			1638		Pois
+ENTRANCE_C1412_395_292	entrance	kalimdor.mulgore	1412	0.3952	0.292	thunder_bluff			1638		Pois
+ENTRANCE_C1412_422_300	entrance	kalimdor.mulgore	1412	0.4222	0.3003	thunder_bluff			1638		Pois
+INN_6747	inn	kalimdor.mulgore	1412	0.466	0.61		bloodhoof_village			6747	Pois
+STABLE_10050	stable	kalimdor.mulgore	1412	0.468	0.602		bloodhoof_village			10050	Pois
+TRAINER_ENGINEERING_10993	trainer	kalimdor.mulgore	1412	0.618	0.315					10993	Pois
+TRAINER_PALADIN_246344	trainer	kalimdor.mulgore	1412	0.362	0.297					246344	Pois
+TRAINER_SHAMAN_262558	trainer	kalimdor.mulgore	1412	0.336	0.224					262558	Pois
+TRAINER_DRUID_262560	trainer	kalimdor.mulgore	1412	0.334	0.22					262560	Pois
+TRAINER_WARRIOR_3059	trainer	kalimdor.mulgore	1412	0.44	0.76					3059	Pois
+TRAINER_DRUID_3060	trainer	kalimdor.mulgore	1412	0.45	0.76					3060	Pois
+TRAINER_HUNTER_3061	trainer	kalimdor.mulgore	1412	0.442	0.758					3061	Pois
+TRAINER_SHAMAN_3062	trainer	kalimdor.mulgore	1412	0.45	0.76					3062	Pois
+TRAINER_WARRIOR_3063	trainer	kalimdor.mulgore	1412	0.495	0.605		bloodhoof_village			3063	Pois
+TRAINER_DRUID_3064	trainer	kalimdor.mulgore	1412	0.485	0.595		bloodhoof_village			3064	Pois
+TRAINER_HUNTER_3065	trainer	kalimdor.mulgore	1412	0.4747	0.5687		bloodhoof_village			3065	Pois
+TRAINER_SHAMAN_3066	trainer	kalimdor.mulgore	1412	0.484	0.592		bloodhoof_village			3066	Pois
+TRAINER_COOKING_3067	trainer	kalimdor.mulgore	1412	0.4533	0.592		bloodhoof_village			3067	Pois
+TRAINER_LEATHERWORKING_3069	trainer	kalimdor.mulgore	1412	0.455	0.579		bloodhoof_village			3069	Pois
+TRAINER_PET_3688	trainer	kalimdor.mulgore	1412	0.4735	0.566		bloodhoof_village			3688	Pois
+TRAINER_RIDING_3690	trainer	kalimdor.mulgore	1412	0.4753	0.5847		bloodhoof_village			3690	Pois
+TRAINER_FISHING_5938	trainer	kalimdor.mulgore	1412	0.445	0.605		bloodhoof_village			5938	Pois
+TRAINER_FIRSTAID_5939	trainer	kalimdor.mulgore	1412	0.464	0.623		bloodhoof_village			5939	Pois
+TRAINER_MAGE_5957	trainer	kalimdor.mulgore	1412	0.357	0.301					5957	Pois
+TRAINER_SKINNING_6290	trainer	kalimdor.mulgore	1412	0.455	0.578		bloodhoof_village			6290	Pois
+BANK_3496	bank	kalimdor.the_barrens	1413	0.626	0.374		ratchet			3496	Pois
+CONVERGENCE_C1413_436_422	convergence	kalimdor.the_barrens	1413	0.4358	0.4215						Pois
+CONVERGENCE_C1413_448_550	convergence	kalimdor.the_barrens	1413	0.4479	0.5497						Pois
+CONVERGENCE_C1413_485_463	convergence	kalimdor.the_barrens	1413	0.485	0.4629						Pois
+CONVERGENCE_C1413_491_155	convergence	kalimdor.the_barrens	1413	0.4907	0.1547						Pois
+CONVERGENCE_C1413_497_346	convergence	kalimdor.the_barrens	1413	0.4967	0.3458						Pois
+CONVERGENCE_C1413_498_286	convergence	kalimdor.the_barrens	1413	0.4982	0.2856						Pois
+CONVERGENCE_C1413_504_587	convergence	kalimdor.the_barrens	1413	0.5038	0.587						Pois
+CONVERGENCE_C1413_531_222	convergence	kalimdor.the_barrens	1413	0.5306	0.2217						Pois
+CONVERGENCE_C1413_540_266	convergence	kalimdor.the_barrens	1413	0.5402	0.2659						Pois
+CONVERGENCE_C1413_548_347	convergence	kalimdor.the_barrens	1413	0.5482	0.3473						Pois
+CONVERGENCE_C1413_631_411	convergence	kalimdor.the_barrens	1413	0.6308	0.4109						Pois
+INN_3934	inn	kalimdor.the_barrens	1413	0.52	0.298		crossroads			3934	Pois
+INN_6791	inn	kalimdor.the_barrens	1413	0.62	0.394		ratchet			6791	Pois
+INN_7714	inn	kalimdor.the_barrens	1413	0.455	0.59		camp_taurajo			7714	Pois
+STABLE_10063	stable	kalimdor.the_barrens	1413	0.622	0.392		ratchet			10063	Pois
+STABLE_9981	stable	kalimdor.the_barrens	1413	0.516	0.296		crossroads			9981	Pois
+STABLE_9983	stable	kalimdor.the_barrens	1413	0.452	0.586		camp_taurajo			9983	Pois
+TRAINER_BLACKSMITHING_3478	trainer	kalimdor.the_barrens	1413	0.512	0.288		crossroads			3478	Pois
+TRAINER_TAILORING_3484	trainer	kalimdor.the_barrens	1413	0.522	0.316		crossroads			3484	Pois
+TRAINER_ENGINEERING_3494	trainer	kalimdor.the_barrens	1413	0.626	0.362		ratchet			3494	Pois
+TRAINER_LEATHERWORKING_3703	trainer	kalimdor.the_barrens	1413	0.448	0.594		camp_taurajo			3703	Pois
+TRAINER_TAILORING_3704	trainer	kalimdor.the_barrens	1413	0.448	0.594		camp_taurajo			3704	Pois
+TRAINER_SKINNING_6387	trainer	kalimdor.the_barrens	1413	0.45	0.59		camp_taurajo			6387	Pois
+TRAINER_COOKING_8306	trainer	kalimdor.the_barrens	1413	0.552	0.318		crossroads			8306	Pois
+ENTRANCE_C1416_219_828	entrance	easternkingdoms.alterac_mountains	1416	0.219	0.828	dalaran					Pois
+INN_C1416_113_661	inn	easternkingdoms.alterac_mountains	1416	0.117	0.663	dalaran					Pois
+INN_C1416_183_666	inn	easternkingdoms.alterac_mountains	1416	0.1845	0.6615	dalaran					Pois
+LEYLINE_C1416_199_861	leyline	easternkingdoms.alterac_mountains	1416	0.199	0.861						Pois
+STABLE_C1416_198_702	stable	easternkingdoms.alterac_mountains	1416	0.198	0.702	dalaran					Pois
+TRAINER_DRUID_C1416_118_566	trainer	easternkingdoms.alterac_mountains	1416	0.118	0.566	dalaran				270459	Pois
+TRAINER_COOKING_C1416_126_659	trainer	easternkingdoms.alterac_mountains	1416	0.126	0.659	dalaran					Pois
+TRAINER_ENCHANTING_C1416_168_622	trainer	easternkingdoms.alterac_mountains	1416	0.168	0.622	dalaran					Pois
+TRAINER_FIRSTAID_C1416_172_611	trainer	easternkingdoms.alterac_mountains	1416	0.172	0.611	dalaran					Pois
+TRAINER_TAILORING_C1416_177_602	trainer	easternkingdoms.alterac_mountains	1416	0.177	0.602	dalaran					Pois
+TRAINER_MAGE_C1416_177_695	trainer	easternkingdoms.alterac_mountains	1416	0.177	0.695	dalaran					Pois
+TRAINER_HERBALISM_C1416_184_631	trainer	easternkingdoms.alterac_mountains	1416	0.184	0.631	dalaran					Pois
+TRAINER_ALCHEMY_C1416_185_623	trainer	easternkingdoms.alterac_mountains	1416	0.185	0.624	dalaran					Pois
+TRAINER_BLACKSMITHING_C1416_197_633	trainer	easternkingdoms.alterac_mountains	1416	0.197	0.633	dalaran					Pois
+CONVERGENCE_C1417_520_507	convergence	easternkingdoms.arathi_highlands	1417	0.5205	0.507						Pois
+INN_9501	inn	easternkingdoms.arathi_highlands	1417	0.738	0.325		hammerfall			9501	Pois
+LEYLINE_C1417_253_300	leyline	easternkingdoms.arathi_highlands	1417	0.253	0.3						Pois
+LEYLINE_C1417_480_605	leyline	easternkingdoms.arathi_highlands	1417	0.48	0.605						Pois
+STABLE_9976	stable	easternkingdoms.arathi_highlands	1417	0.738	0.332		hammerfall			9976	Pois
+TRAINER_SKINNING_2818	trainer	easternkingdoms.arathi_highlands	1417	0.739	0.336		hammerfall			2818	Pois
+TRAINER_LEATHERWORKING_7869	trainer	easternkingdoms.arathi_highlands	1417	0.282	0.45					7869	Pois
+INN_9356	inn	easternkingdoms.badlands	1418	0.028	0.458		kargath			9356	Pois
+STABLE_10058	stable	easternkingdoms.badlands	1418	0.038	0.476		kargath			10058	Pois
+TRAINER_LEATHERWORKING_7867	trainer	easternkingdoms.badlands	1418	0.625	0.575					7867	Pois
+CONVERGENCE_C1420_492_639	convergence	easternkingdoms.tirisfal_glades	1420	0.4923	0.6387						Pois
+ENTRANCE_C1420_619_646	entrance	easternkingdoms.tirisfal_glades	1420	0.619	0.646	undercity					Pois
+INN_5688	inn	easternkingdoms.tirisfal_glades	1420	0.616	0.52		brill			5688	Pois
+STABLE_10055	stable	easternkingdoms.tirisfal_glades	1420	0.6	0.522		brill			10055	Pois
+TRAINER_HERBALISM_2114	trainer	easternkingdoms.tirisfal_glades	1420	0.598	0.52		brill			2114	Pois
+TRAINER_WARRIOR_2119	trainer	easternkingdoms.tirisfal_glades	1420	0.325	0.656					2119	Pois
+TRAINER_ROGUE_2122	trainer	easternkingdoms.tirisfal_glades	1420	0.325	0.656					2122	Pois
+TRAINER_PRIEST_2123	trainer	easternkingdoms.tirisfal_glades	1420	0.31	0.66					2123	Pois
+TRAINER_MAGE_2124	trainer	easternkingdoms.tirisfal_glades	1420	0.308	0.66					2124	Pois
+TRAINER_WARLOCK_2126	trainer	easternkingdoms.tirisfal_glades	1420	0.308	0.662					2126	Pois
+TRAINER_WARLOCK_2127	trainer	easternkingdoms.tirisfal_glades	1420	0.616	0.525		brill			2127	Pois
+TRAINER_MAGE_2128	trainer	easternkingdoms.tirisfal_glades	1420	0.618	0.524		brill			2128	Pois
+TRAINER_PRIEST_2129	trainer	easternkingdoms.tirisfal_glades	1420	0.616	0.522		brill			2129	Pois
+TRAINER_ROGUE_2130	trainer	easternkingdoms.tirisfal_glades	1420	0.616	0.52		brill			2130	Pois
+TRAINER_WARRIOR_2131	trainer	easternkingdoms.tirisfal_glades	1420	0.618	0.525		brill			2131	Pois
+TRAINER_ALCHEMY_2132	trainer	easternkingdoms.tirisfal_glades	1420	0.594	0.522		brill			2132	Pois
+TRAINER_PALADIN_244808	trainer	easternkingdoms.tirisfal_glades	1420	0.31	0.662					244808	Pois
+TRAINER_PALADIN_246152	trainer	easternkingdoms.tirisfal_glades	1420	0.602	0.526		brill			246152	Pois
+TRAINER_PALADIN_246389	trainer	easternkingdoms.tirisfal_glades	1420	0.22	0.472					246389	Pois
+TRAINER_TAILORING_3523	trainer	easternkingdoms.tirisfal_glades	1420	0.5253	0.5553		brill			3523	Pois
+TRAINER_LEATHERWORKING_3549	trainer	easternkingdoms.tirisfal_glades	1420	0.655	0.599		brill			3549	Pois
+TRAINER_RIDING_4773	trainer	easternkingdoms.tirisfal_glades	1420	0.6	0.525		brill			4773	Pois
+TRAINER_FISHING_5690	trainer	easternkingdoms.tirisfal_glades	1420	0.672	0.51		brill			5690	Pois
+TRAINER_ENCHANTING_5695	trainer	easternkingdoms.tirisfal_glades	1420	0.616	0.516		brill			5695	Pois
+TRAINER_DEMON_5749	trainer	easternkingdoms.tirisfal_glades	1420	0.308	0.664					5749	Pois
+TRAINER_DEMON_5750	trainer	easternkingdoms.tirisfal_glades	1420	0.616	0.525		brill			5750	Pois
+TRAINER_FIRSTAID_5759	trainer	easternkingdoms.tirisfal_glades	1420	0.618	0.528		brill			5759	Pois
+TRAINER_SKINNING_6289	trainer	easternkingdoms.tirisfal_glades	1420	0.655	0.6		brill			6289	Pois
+CONVERGENCE_C1421_562_100	convergence	easternkingdoms.silverpine_forest	1421	0.5621	0.1002						Pois
+INN_6739	inn	easternkingdoms.silverpine_forest	1421	0.432	0.412		the_sepulcher			6739	Pois
+STABLE_9979	stable	easternkingdoms.silverpine_forest	1421	0.434	0.412		the_sepulcher			9979	Pois
+TRAINER_MINING_3555	trainer	easternkingdoms.silverpine_forest	1421	0.434	0.405		the_sepulcher			3555	Pois
+TRAINER_BLACKSMITHING_3557	trainer	easternkingdoms.silverpine_forest	1421	0.432	0.41		the_sepulcher			3557	Pois
+INN_16256	inn	easternkingdoms.eastern_plaguelands	1423	0.815	0.581		lights_hope_chapel			16256	Pois
+INN_2352	inn	easternkingdoms.hillsbrad_foothills	1424	0.51	0.588		southshore			2352	Pois
+INN_2388	inn	easternkingdoms.hillsbrad_foothills	1424	0.626	0.19		tarren_mill			2388	Pois
+STABLE_9978	stable	easternkingdoms.hillsbrad_foothills	1424	0.504	0.586		southshore			9978	Pois
+TRAINER_FISHING_2367	trainer	easternkingdoms.hillsbrad_foothills	1424	0.505	0.61		southshore			2367	Pois
+TRAINER_HERBALISM_2390	trainer	easternkingdoms.hillsbrad_foothills	1424	0.6153	0.196		tarren_mill			2390	Pois
+TRAINER_ALCHEMY_2391	trainer	easternkingdoms.hillsbrad_foothills	1424	0.615	0.192		tarren_mill			2391	Pois
+TRAINER_TAILORING_2399	trainer	easternkingdoms.hillsbrad_foothills	1424	0.635	0.208		tarren_mill			2399	Pois
+INN_14731	inn	easternkingdoms.hinterlands	1425	0.782	0.812		revantusk_village			14731	Pois
+INN_7744	inn	easternkingdoms.hinterlands	1425	0.136	0.417		aerie_peak			7744	Pois
+STABLE_10061	stable	easternkingdoms.hinterlands	1425	0.144	0.452		aerie_peak			10061	Pois
+STABLE_14741	stable	easternkingdoms.hinterlands	1425	0.79	0.794		revantusk_village			14741	Pois
+TRAINER_LEATHERWORKING_11097	trainer	easternkingdoms.hinterlands	1425	0.134	0.434		aerie_peak			11097	Pois
+TRAINER_FISHING_14740	trainer	easternkingdoms.hinterlands	1425	0.804	0.8147		revantusk_village			14740	Pois
+BATTLEMASTER_857	battlemaster	easternkingdoms.dun_morogh	1426	0.6227	0.3532					857	Pois
+ENTRANCE_C1426_534_350	entrance	easternkingdoms.dun_morogh	1426	0.5343	0.3496	ironforge			809		Pois
+INN_1247	inn	easternkingdoms.dun_morogh	1426	0.474	0.525		kharanos			1247	Pois
+LEYLINE_C1426_459_442	leyline	easternkingdoms.dun_morogh	1426	0.4594	0.4421						Pois
+LEYLINE_C1426_566_456	leyline	easternkingdoms.dun_morogh	1426	0.566	0.456						Pois
+LEYLINE_C1426_638_507	leyline	easternkingdoms.dun_morogh	1426	0.638	0.507						Pois
+STABLE_9980	stable	easternkingdoms.dun_morogh	1426	0.47	0.526		kharanos			9980	Pois
+STABLE_9984	stable	easternkingdoms.dun_morogh	1426	0.622	0.346					9984	Pois
+TRAINER_PRIEST_1226	trainer	easternkingdoms.dun_morogh	1426	0.472	0.522		kharanos			1226	Pois
+TRAINER_MAGE_1228	trainer	easternkingdoms.dun_morogh	1426	0.474	0.52		kharanos			1228	Pois
+TRAINER_WARRIOR_1229	trainer	easternkingdoms.dun_morogh	1426	0.472	0.525		kharanos			1229	Pois
+TRAINER_HUNTER_1231	trainer	easternkingdoms.dun_morogh	1426	0.458	0.53		kharanos			1231	Pois
+TRAINER_PALADIN_1232	trainer	easternkingdoms.dun_morogh	1426	0.475	0.52		kharanos			1232	Pois
+TRAINER_ROGUE_1234	trainer	easternkingdoms.dun_morogh	1426	0.4753	0.5247		kharanos			1234	Pois
+TRAINER_BLACKSMITHING_1241	trainer	easternkingdoms.dun_morogh	1426	0.452	0.52		kharanos			1241	Pois
+TRAINER_COOKING_1355	trainer	easternkingdoms.dun_morogh	1426	0.684	0.545					1355	Pois
+TRAINER_COOKING_1699	trainer	easternkingdoms.dun_morogh	1426	0.476	0.524		kharanos			1699	Pois
+TRAINER_FISHING_1700	trainer	easternkingdoms.dun_morogh	1426	0.355	0.403					1700	Pois
+TRAINER_MINING_1701	trainer	easternkingdoms.dun_morogh	1426	0.692	0.555					1701	Pois
+TRAINER_ENGINEERING_1702	trainer	easternkingdoms.dun_morogh	1426	0.502	0.504		kharanos			1702	Pois
+TRAINER_FIRSTAID_2326	trainer	easternkingdoms.dun_morogh	1426	0.472	0.525		kharanos			2326	Pois
+TRAINER_SHAMAN_257446	trainer	easternkingdoms.dun_morogh	1426	0.288	0.662					257446	Pois
+TRAINER_SHAMAN_258113	trainer	easternkingdoms.dun_morogh	1426	0.474	0.52		kharanos			258113	Pois
+TRAINER_PET_2878	trainer	easternkingdoms.dun_morogh	1426	0.466	0.538		kharanos			2878	Pois
+TRAINER_WARLOCK_460	trainer	easternkingdoms.dun_morogh	1426	0.286	0.662					460	Pois
+TRAINER_RIDING_4772	trainer	easternkingdoms.dun_morogh	1426	0.638	0.502					4772	Pois
+TRAINER_MINING_5392	trainer	easternkingdoms.dun_morogh	1426	0.5	0.504		kharanos			5392	Pois
+TRAINER_WARLOCK_5612	trainer	easternkingdoms.dun_morogh	1426	0.472	0.535		kharanos			5612	Pois
+TRAINER_DEMON_6328	trainer	easternkingdoms.dun_morogh	1426	0.472	0.535		kharanos			6328	Pois
+TRAINER_DEMON_6376	trainer	easternkingdoms.dun_morogh	1426	0.288	0.662					6376	Pois
+TRAINER_RIDING_7954	trainer	easternkingdoms.dun_morogh	1426	0.492	0.48		kharanos			7954	Pois
+TRAINER_PRIEST_837	trainer	easternkingdoms.dun_morogh	1426	0.286	0.665					837	Pois
+TRAINER_HUNTER_895	trainer	easternkingdoms.dun_morogh	1426	0.29	0.675					895	Pois
+TRAINER_WARRIOR_912	trainer	easternkingdoms.dun_morogh	1426	0.288	0.672					912	Pois
+TRAINER_ROGUE_916	trainer	easternkingdoms.dun_morogh	1426	0.284	0.675					916	Pois
+TRAINER_PALADIN_926	trainer	easternkingdoms.dun_morogh	1426	0.288	0.682					926	Pois
+TRAINER_MAGE_944	trainer	easternkingdoms.dun_morogh	1426	0.286	0.664					944	Pois
+TRAINER_LEATHERWORKING_7868	trainer	easternkingdoms.searing_gorge	1427	0.6345	0.7565					7868	Pois
+LEYLINE_C1428_786_618	leyline	easternkingdoms.burning_steppes	1428	0.786	0.618						Pois
+BATTLEMASTER_7410	battlemaster	easternkingdoms.elwynn_forest	1429	0.3373	0.1103					7410	Pois
+ENTRANCE_C1429_318_488	entrance	easternkingdoms.elwynn_forest	1429	0.318	0.4877	stormwind					Pois
+INN_295	inn	easternkingdoms.elwynn_forest	1429	0.438	0.658		goldshire			295	Pois
+LEYLINE_C1429_274_943	leyline	easternkingdoms.elwynn_forest	1429	0.2742	0.9427						Pois
+LEYLINE_C1429_373_556	leyline	easternkingdoms.elwynn_forest	1429	0.3732	0.5555						Pois
+LEYLINE_C1429_649_673	leyline	easternkingdoms.elwynn_forest	1429	0.6493	0.6732						Pois
+LEYLINE_C1429_752_520	leyline	easternkingdoms.elwynn_forest	1429	0.7525	0.5195						Pois
+LEYLINE_C1429_847_757	leyline	easternkingdoms.elwynn_forest	1429	0.8469	0.7567						Pois
+STABLE_11069	stable	easternkingdoms.elwynn_forest	1429	0.252	0.11					11069	Pois
+STABLE_6749	stable	easternkingdoms.elwynn_forest	1429	0.428	0.658		goldshire			6749	Pois
+TRAINER_TAILORING_1103	trainer	easternkingdoms.elwynn_forest	1429	0.792	0.69					1103	Pois
+TRAINER_ENCHANTING_11072	trainer	easternkingdoms.elwynn_forest	1429	0.648	0.705					11072	Pois
+TRAINER_ALCHEMY_1215	trainer	easternkingdoms.elwynn_forest	1429	0.398	0.485					1215	Pois
+TRAINER_HERBALISM_1218	trainer	easternkingdoms.elwynn_forest	1429	0.398	0.484					1218	Pois
+TRAINER_COOKING_1430	trainer	easternkingdoms.elwynn_forest	1429	0.442	0.66		goldshire			1430	Pois
+TRAINER_LEATHERWORKING_1632	trainer	easternkingdoms.elwynn_forest	1429	0.465	0.622		goldshire			1632	Pois
+TRAINER_FISHING_1651	trainer	easternkingdoms.elwynn_forest	1429	0.475	0.622		goldshire			1651	Pois
+TRAINER_MAGE_198	trainer	easternkingdoms.elwynn_forest	1429	0.4953	0.3953					198	Pois
+TRAINER_FIRSTAID_2329	trainer	easternkingdoms.elwynn_forest	1429	0.434	0.656		goldshire			2329	Pois
+TRAINER_HUNTER_248415	trainer	easternkingdoms.elwynn_forest	1429	0.512	0.408					248415	Pois
+TRAINER_HUNTER_251507	trainer	easternkingdoms.elwynn_forest	1429	0.412	0.662		goldshire			251507	Pois
+TRAINER_MAGE_328	trainer	easternkingdoms.elwynn_forest	1429	0.432	0.662		goldshire			328	Pois
+TRAINER_PRIEST_375	trainer	easternkingdoms.elwynn_forest	1429	0.498	0.395					375	Pois
+TRAINER_PRIEST_377	trainer	easternkingdoms.elwynn_forest	1429	0.434	0.656		goldshire			377	Pois
+TRAINER_WARLOCK_459	trainer	easternkingdoms.elwynn_forest	1429	0.498	0.426					459	Pois
+TRAINER_RIDING_4732	trainer	easternkingdoms.elwynn_forest	1429	0.842	0.65					4732	Pois
+TRAINER_WARRIOR_514	trainer	easternkingdoms.elwynn_forest	1429	0.413	0.657		goldshire			514	Pois
+TRAINER_BLACKSMITHING_514	trainer	easternkingdoms.elwynn_forest	1429	0.416	0.655		goldshire			514	Pois
+TRAINER_SKINNING_6306	trainer	easternkingdoms.elwynn_forest	1429	0.462	0.622		goldshire			6306	Pois
+TRAINER_DEMON_6373	trainer	easternkingdoms.elwynn_forest	1429	0.5	0.426					6373	Pois
+TRAINER_DEMON_6374	trainer	easternkingdoms.elwynn_forest	1429	0.444	0.66		goldshire			6374	Pois
+TRAINER_WARLOCK_906	trainer	easternkingdoms.elwynn_forest	1429	0.444	0.66		goldshire			906	Pois
+TRAINER_WARRIOR_911	trainer	easternkingdoms.elwynn_forest	1429	0.502	0.422					911	Pois
+TRAINER_ROGUE_915	trainer	easternkingdoms.elwynn_forest	1429	0.505	0.399					915	Pois
+TRAINER_ROGUE_917	trainer	easternkingdoms.elwynn_forest	1429	0.438	0.658		goldshire			917	Pois
+TRAINER_PALADIN_925	trainer	easternkingdoms.elwynn_forest	1429	0.504	0.42					925	Pois
+TRAINER_PALADIN_927	trainer	easternkingdoms.elwynn_forest	1429	0.41	0.66		goldshire			927	Pois
+INN_6790	inn	easternkingdoms.duskwood	1431	0.739	0.445		darkshire			6790	Pois
+LEYLINE_C1431_187_572	leyline	easternkingdoms.duskwood	1431	0.187	0.572						Pois
+LEYLINE_C1431_257_347	leyline	easternkingdoms.duskwood	1431	0.2566	0.3466						Pois
+LEYLINE_C1431_628_742	leyline	easternkingdoms.duskwood	1431	0.6276	0.7417						Pois
+LEYLINE_C1431_725_306	leyline	easternkingdoms.duskwood	1431	0.725	0.306						Pois
+LEYLINE_C1431_782_358	leyline	easternkingdoms.duskwood	1431	0.7823	0.3575						Pois
+STABLE_10062	stable	easternkingdoms.duskwood	1431	0.74	0.462		darkshire			10062	Pois
+TRAINER_ENGINEERING_1676	trainer	easternkingdoms.duskwood	1431	0.774	0.485		darkshire			1676	Pois
+TRAINER_BLACKSMITHING_3136	trainer	easternkingdoms.duskwood	1431	0.739	0.485		darkshire			3136	Pois
+TRAINER_MINING_3137	trainer	easternkingdoms.duskwood	1431	0.74	0.495		darkshire			3137	Pois
+INN_6734	inn	easternkingdoms.loch_modan	1432	0.354	0.485		thelsamar			6734	Pois
+STABLE_9989	stable	easternkingdoms.loch_modan	1432	0.346	0.48		thelsamar			9989	Pois
+TRAINER_HUNTER_10930	trainer	easternkingdoms.loch_modan	1432	0.823	0.625					10930	Pois
+TRAINER_ALCHEMY_1470	trainer	easternkingdoms.loch_modan	1432	0.37	0.492		thelsamar			1470	Pois
+TRAINER_HERBALISM_1473	trainer	easternkingdoms.loch_modan	1432	0.365	0.484		thelsamar			1473	Pois
+TRAINER_MINING_1681	trainer	easternkingdoms.loch_modan	1432	0.371	0.473		thelsamar			1681	Pois
+TRAINER_FISHING_1683	trainer	easternkingdoms.loch_modan	1432	0.405	0.395		thelsamar			1683	Pois
+TRAINER_ENGINEERING_3290	trainer	easternkingdoms.loch_modan	1432	0.458	0.135					3290	Pois
+TRAINER_PET_3545	trainer	easternkingdoms.loch_modan	1432	0.822	0.626					3545	Pois
+INN_6727	inn	easternkingdoms.redridge_mountains	1433	0.268	0.445		lakeshire			6727	Pois
+LEYLINE_C1433_126_728	leyline	easternkingdoms.redridge_mountains	1433	0.126	0.728						Pois
+LEYLINE_C1433_302_550	leyline	easternkingdoms.redridge_mountains	1433	0.3018	0.5505						Pois
+LEYLINE_C1433_310_461	leyline	easternkingdoms.redridge_mountains	1433	0.3097	0.4611						Pois
+LEYLINE_C1433_550_647	leyline	easternkingdoms.redridge_mountains	1433	0.5502	0.647						Pois
+LEYLINE_C1433_654_748	leyline	easternkingdoms.redridge_mountains	1433	0.6538	0.7476						Pois
+STABLE_9982	stable	easternkingdoms.redridge_mountains	1433	0.268	0.466		lakeshire			9982	Pois
+TRAINER_FISHING_1680	trainer	easternkingdoms.redridge_mountains	1433	0.2655	0.5075		lakeshire			1680	Pois
+TRAINER_COOKING_3087	trainer	easternkingdoms.redridge_mountains	1433	0.228	0.435		lakeshire			3087	Pois
+TRAINER_SKINNING_6295	trainer	easternkingdoms.redridge_mountains	1433	0.888	0.71					6295	Pois
+TRAINER_HERBALISM_812	trainer	easternkingdoms.redridge_mountains	1433	0.2153	0.456		lakeshire			812	Pois
+AUCTION_9858	auction	easternkingdoms.stranglethorn_vale	1434	0.276	0.764		booty_bay			9858	Pois
+BANK_2625	bank	easternkingdoms.stranglethorn_vale	1434	0.2655	0.7645		booty_bay			2625	Pois
+INN_5814	inn	easternkingdoms.stranglethorn_vale	1434	0.314	0.296		gromgol_base_camp			5814	Pois
+INN_6807	inn	easternkingdoms.stranglethorn_vale	1434	0.27	0.772		booty_bay			6807	Pois
+STABLE_10060	stable	easternkingdoms.stranglethorn_vale	1434	0.272	0.772		booty_bay			10060	Pois
+STABLE_16094	stable	easternkingdoms.stranglethorn_vale	1434	0.318	0.294		gromgol_base_camp			16094	Pois
+TRAINER_COOKING_1382	trainer	easternkingdoms.stranglethorn_vale	1434	0.314	0.28		gromgol_base_camp			1382	Pois
+TRAINER_LEATHERWORKING_1385	trainer	easternkingdoms.stranglethorn_vale	1434	0.316	0.288		gromgol_base_camp			1385	Pois
+TRAINER_HUNTER_1404	trainer	easternkingdoms.stranglethorn_vale	1434	0.312	0.285		gromgol_base_camp			1404	Pois
+TRAINER_ROGUE_1411	trainer	easternkingdoms.stranglethorn_vale	1434	0.268	0.772		booty_bay			1411	Pois
+TRAINER_TAILORING_2627	trainer	easternkingdoms.stranglethorn_vale	1434	0.286	0.768		booty_bay			2627	Pois
+TRAINER_FISHING_2834	trainer	easternkingdoms.stranglethorn_vale	1434	0.275	0.77		booty_bay			2834	Pois
+TRAINER_BLACKSMITHING_2836	trainer	easternkingdoms.stranglethorn_vale	1434	0.29	0.755		booty_bay			2836	Pois
+TRAINER_ALCHEMY_2837	trainer	easternkingdoms.stranglethorn_vale	1434	0.28	0.78		booty_bay			2837	Pois
+TRAINER_HERBALISM_2856	trainer	easternkingdoms.stranglethorn_vale	1434	0.322	0.275		gromgol_base_camp			2856	Pois
+TRAINER_PET_3624	trainer	easternkingdoms.stranglethorn_vale	1434	0.312	0.288		gromgol_base_camp			3624	Pois
+TRAINER_ENGINEERING_7406	trainer	easternkingdoms.stranglethorn_vale	1434	0.282	0.762		booty_bay			7406	Pois
+TRAINER_LEATHERWORKING_7871	trainer	easternkingdoms.stranglethorn_vale	1434	0.365	0.341		gromgol_base_camp			7871	Pois
+TRAINER_HERBALISM_908	trainer	easternkingdoms.stranglethorn_vale	1434	0.276	0.778		booty_bay			908	Pois
+INN_6930	inn	easternkingdoms.swamp_of_sorrows	1435	0.45	0.565		stonard			6930	Pois
+STABLE_10049	stable	easternkingdoms.swamp_of_sorrows	1435	0.454	0.55		stonard			10049	Pois
+TRAINER_ALCHEMY_1386	trainer	easternkingdoms.swamp_of_sorrows	1435	0.484	0.5553		stonard			1386	Pois
+TRAINER_PET_3622	trainer	easternkingdoms.swamp_of_sorrows	1435	0.471	0.527		stonard			3622	Pois
+TRAINER_WARRIOR_985	trainer	easternkingdoms.swamp_of_sorrows	1435	0.448	0.575		stonard			985	Pois
+TRAINER_SHAMAN_986	trainer	easternkingdoms.swamp_of_sorrows	1435	0.479	0.576		stonard			986	Pois
+TRAINER_HUNTER_987	trainer	easternkingdoms.swamp_of_sorrows	1435	0.474	0.532		stonard			987	Pois
+TRAINER_WARLOCK_988	trainer	easternkingdoms.swamp_of_sorrows	1435	0.485	0.555		stonard			988	Pois
+INN_8931	inn	easternkingdoms.westfall	1436	0.528	0.535		sentinel_hill			8931	Pois
+LEYLINE_C1436_350_730	leyline	easternkingdoms.westfall	1436	0.3505	0.7298						Pois
+LEYLINE_C1436_419_833	leyline	easternkingdoms.westfall	1436	0.4191	0.8329						Pois
+LEYLINE_C1436_463_590	leyline	easternkingdoms.westfall	1436	0.4628	0.5904						Pois
+LEYLINE_C1436_511_675	leyline	easternkingdoms.westfall	1436	0.511	0.675						Pois
+LEYLINE_C1436_513_225	leyline	easternkingdoms.westfall	1436	0.513	0.2246						Pois
+LEYLINE_C1436_598_315	leyline	easternkingdoms.westfall	1436	0.598	0.315						Pois
+STABLE_10045	stable	easternkingdoms.westfall	1436	0.53	0.53		sentinel_hill			10045	Pois
+CONVERGENCE_C1437_602_570	convergence	easternkingdoms.wetlands	1437	0.602	0.5698						Pois
+INN_1464	inn	easternkingdoms.wetlands	1437	0.106	0.608		menethil_harbor			1464	Pois
+LEYLINE_C1437_402_386	leyline	easternkingdoms.wetlands	1437	0.4023	0.3858						Pois
+LEYLINE_C1437_562_639	leyline	easternkingdoms.wetlands	1437	0.5625	0.6391						Pois
+LEYLINE_C1437_690_366	leyline	easternkingdoms.wetlands	1437	0.6898	0.3655						Pois
+STABLE_10046	stable	easternkingdoms.wetlands	1437	0.104	0.596		menethil_harbor			10046	Pois
+TRAINER_HERBALISM_1458	trainer	easternkingdoms.wetlands	1437	0.08	0.558		menethil_harbor			1458	Pois
+TRAINER_FISHING_3179	trainer	easternkingdoms.wetlands	1437	0.081	0.585		menethil_harbor			3179	Pois
+TRAINER_FIRSTAID_3181	trainer	easternkingdoms.wetlands	1437	0.108	0.612		menethil_harbor			3181	Pois
+ENTRANCE_C1438_357_544	entrance	kalimdor.teldrassil	1438	0.357	0.5438	darnassus					Pois
+INN_6736	inn	kalimdor.teldrassil	1438	0.556	0.598		dolanaar			6736	Pois
+STABLE_10051	stable	kalimdor.teldrassil	1438	0.566	0.596		dolanaar			10051	Pois
+STABLE_10056	stable	kalimdor.teldrassil	1438	0.254	0.49					10056	Pois
+TRAINER_PET_3306	trainer	kalimdor.teldrassil	1438	0.567	0.595		dolanaar			3306	Pois
+TRAINER_WARRIOR_3593	trainer	kalimdor.teldrassil	1438	0.5953	0.3853					3593	Pois
+TRAINER_ROGUE_3594	trainer	kalimdor.teldrassil	1438	0.595	0.387					3594	Pois
+TRAINER_PRIEST_3595	trainer	kalimdor.teldrassil	1438	0.592	0.405					3595	Pois
+TRAINER_HUNTER_3596	trainer	kalimdor.teldrassil	1438	0.5853	0.4053					3596	Pois
+TRAINER_DRUID_3597	trainer	kalimdor.teldrassil	1438	0.586	0.404					3597	Pois
+TRAINER_WARRIOR_3598	trainer	kalimdor.teldrassil	1438	0.562	0.592		dolanaar			3598	Pois
+TRAINER_ROGUE_3599	trainer	kalimdor.teldrassil	1438	0.562	0.6		dolanaar			3599	Pois
+TRAINER_PRIEST_3600	trainer	kalimdor.teldrassil	1438	0.555	0.568		dolanaar			3600	Pois
+TRAINER_HUNTER_3601	trainer	kalimdor.teldrassil	1438	0.566	0.595		dolanaar			3601	Pois
+TRAINER_DRUID_3602	trainer	kalimdor.teldrassil	1438	0.56	0.615		dolanaar			3602	Pois
+TRAINER_ALCHEMY_3603	trainer	kalimdor.teldrassil	1438	0.576	0.606		dolanaar			3603	Pois
+TRAINER_HERBALISM_3604	trainer	kalimdor.teldrassil	1438	0.575	0.606		dolanaar			3604	Pois
+TRAINER_LEATHERWORKING_3605	trainer	kalimdor.teldrassil	1438	0.418	0.495					3605	Pois
+TRAINER_ENCHANTING_3606	trainer	kalimdor.teldrassil	1438	0.368	0.342					3606	Pois
+TRAINER_FISHING_3607	trainer	kalimdor.teldrassil	1438	0.558	0.935					3607	Pois
+TRAINER_FIRSTAID_6094	trainer	kalimdor.teldrassil	1438	0.552	0.568		dolanaar			6094	Pois
+TRAINER_COOKING_6286	trainer	kalimdor.teldrassil	1438	0.57	0.612		dolanaar			6286	Pois
+TRAINER_SKINNING_6287	trainer	kalimdor.teldrassil	1438	0.42	0.5					6287	Pois
+INN_6737	inn	kalimdor.darkshore	1439	0.37	0.44		auberdine			6737	Pois
+LEYLINE_C1439_360_862	leyline	kalimdor.darkshore	1439	0.3598	0.8622						Pois
+LEYLINE_C1439_428_598	leyline	kalimdor.darkshore	1439	0.4281	0.5984						Pois
+LEYLINE_C1439_576_266	leyline	kalimdor.darkshore	1439	0.5758	0.2662						Pois
+LEYLINE_C1439_604_195	leyline	kalimdor.darkshore	1439	0.6044	0.1948						Pois
+STABLE_10085	stable	kalimdor.darkshore	1439	0.374	0.442		auberdine			10085	Pois
+TRAINER_ENGINEERING_11037	trainer	kalimdor.darkshore	1439	0.382	0.41		auberdine			11037	Pois
+TRAINER_TAILORING_4193	trainer	kalimdor.darkshore	1439	0.382	0.405		auberdine			4193	Pois
+TRAINER_MINING_6297	trainer	kalimdor.darkshore	1439	0.382	0.41		auberdine			6297	Pois
+TRAINER_BLACKSMITHING_6299	trainer	kalimdor.darkshore	1439	0.382	0.41		auberdine			6299	Pois
+CONVERGENCE_C1440_206_322	convergence	kalimdor.ashenvale	1440	0.2063	0.3221						Pois
+INN_12196	inn	kalimdor.ashenvale	1440	0.74	0.606		splintertree_post			12196	Pois
+INN_6738	inn	kalimdor.ashenvale	1440	0.37	0.492		astranaar			6738	Pois
+LEYLINE_C1440_131_248	leyline	kalimdor.ashenvale	1440	0.1307	0.2484						Pois
+LEYLINE_C1440_335_669	leyline	kalimdor.ashenvale	1440	0.3346	0.6687						Pois
+STABLE_10052	stable	kalimdor.ashenvale	1440	0.364	0.504		astranaar			10052	Pois
+STABLE_15131	stable	kalimdor.ashenvale	1440	0.734	0.61		splintertree_post			15131	Pois
+TRAINER_FISHING_12961	trainer	kalimdor.ashenvale	1440	0.108	0.335					12961	Pois
+TRAINER_PET_3698	trainer	kalimdor.ashenvale	1440	0.18	0.6					3698	Pois
+TRAINER_HUNTER_3963	trainer	kalimdor.ashenvale	1440	0.5	0.678					3963	Pois
+TRAINER_ALCHEMY_3964	trainer	kalimdor.ashenvale	1440	0.508	0.67					3964	Pois
+TRAINER_HERBALISM_3965	trainer	kalimdor.ashenvale	1440	0.505	0.67					3965	Pois
+TRAINER_LEATHERWORKING_3967	trainer	kalimdor.ashenvale	1440	0.358	0.52		astranaar			3967	Pois
+TRAINER_PET_4320	trainer	kalimdor.ashenvale	1440	0.498	0.67					4320	Pois
+TRAINER_SKINNING_6288	trainer	kalimdor.ashenvale	1440	0.5	0.672					6288	Pois
+TRAINER_HUNTER_8308	trainer	kalimdor.ashenvale	1440	0.18	0.598					8308	Pois
+CONVERGENCE_C1441_422_495	convergence	kalimdor.thousand_needles	1441	0.4219	0.4947						Pois
+INN_11116	inn	kalimdor.thousand_needles	1441	0.46	0.515		freewind_post			11116	Pois
+LEYLINE_C1441_770_774	leyline	kalimdor.thousand_needles	1441	0.7695	0.7745						Pois
+STABLE_11117	stable	kalimdor.thousand_needles	1441	0.458	0.51		freewind_post			11117	Pois
+CONVERGENCE_C1442_748_944	convergence	kalimdor.stonetalon_mountains	1442	0.7484	0.9443						Pois
+INN_16458	inn	kalimdor.stonetalon_mountains	1442	0.356	0.058		stonetalon_peak			16458	Pois
+INN_7731	inn	kalimdor.stonetalon_mountains	1442	0.475	0.62		sun_rock_retreat			7731	Pois
+LEYLINE_C1442_696_520	leyline	kalimdor.stonetalon_mountains	1442	0.6964	0.5203						Pois
+STABLE_10048	stable	kalimdor.stonetalon_mountains	1442	0.478	0.612		sun_rock_retreat			10048	Pois
+TRAINER_ENCHANTING_11074	trainer	kalimdor.stonetalon_mountains	1442	0.492	0.572		sun_rock_retreat			11074	Pois
+INN_11103	inn	kalimdor.desolace	1443	0.662	0.066		nijels_point			11103	Pois
+INN_11106	inn	kalimdor.desolace	1443	0.24	0.682		shadowprey_village			11106	Pois
+STABLE_11104	stable	kalimdor.desolace	1443	0.656	0.078		nijels_point			11104	Pois
+STABLE_11105	stable	kalimdor.desolace	1443	0.248	0.688		shadowprey_village			11105	Pois
+TRAINER_SKINNING_12030	trainer	kalimdor.desolace	1443	0.232	0.698		shadowprey_village			12030	Pois
+TRAINER_FISHING_12032	trainer	kalimdor.desolace	1443	0.226	0.725		shadowprey_village			12032	Pois
+TRAINER_LEATHERWORKING_8153	trainer	kalimdor.desolace	1443	0.552	0.562					8153	Pois
+INN_7736	inn	kalimdor.feralas	1444	0.31	0.434		feathermoon_stronghold			7736	Pois
+INN_7737	inn	kalimdor.feralas	1444	0.748	0.45		camp_mojache			7737	Pois
+STABLE_10059	stable	kalimdor.feralas	1444	0.314	0.432		feathermoon_stronghold			10059	Pois
+STABLE_9986	stable	kalimdor.feralas	1444	0.744	0.432		camp_mojache			9986	Pois
+TRAINER_LEATHERWORKING_11098	trainer	kalimdor.feralas	1444	0.744	0.43		camp_mojache			11098	Pois
+TRAINER_LEATHERWORKING_7870	trainer	kalimdor.feralas	1444	0.894	0.465					7870	Pois
+TRAINER_FISHING_7946	trainer	kalimdor.feralas	1444	0.322	0.415		feathermoon_stronghold			7946	Pois
+TRAINER_ALCHEMY_7948	trainer	kalimdor.feralas	1444	0.325	0.438		feathermoon_stronghold			7948	Pois
+TRAINER_ENCHANTING_7949	trainer	kalimdor.feralas	1444	0.315	0.442		feathermoon_stronghold			7949	Pois
+TRAINER_DRUID_8142	trainer	kalimdor.feralas	1444	0.76	0.422		camp_mojache			8142	Pois
+TRAINER_SKINNING_8144	trainer	kalimdor.feralas	1444	0.745	0.429		camp_mojache			8144	Pois
+TRAINER_HERBALISM_8146	trainer	kalimdor.feralas	1444	0.76	0.434		camp_mojache			8146	Pois
+INN_6272	inn	kalimdor.dustwallow_marsh	1445	0.665	0.452		theramore_isle			6272	Pois
+STABLE_10047	stable	kalimdor.dustwallow_marsh	1445	0.66	0.454		theramore_isle			10047	Pois
+TRAINER_TAILORING_11052	trainer	kalimdor.dustwallow_marsh	1445	0.662	0.516		theramore_isle			11052	Pois
+TRAINER_HERBALISM_4898	trainer	kalimdor.dustwallow_marsh	1445	0.64	0.476		theramore_isle			4898	Pois
+TRAINER_ALCHEMY_4900	trainer	kalimdor.dustwallow_marsh	1445	0.64	0.476		theramore_isle			4900	Pois
+TRAINER_PALADIN_8140	trainer	kalimdor.dustwallow_marsh	1445	0.674	0.4747		theramore_isle			8140	Pois
+TRAINER_WARRIOR_8141	trainer	kalimdor.dustwallow_marsh	1445	0.679	0.485		theramore_isle			8141	Pois
+AUCTION_8661	auction	kalimdor.tanaris	1446	0.52	0.295		gadgetzan			8661	Pois
+BANK_7799	bank	kalimdor.tanaris	1446	0.523	0.288		gadgetzan			7799	Pois
+INN_7733	inn	kalimdor.tanaris	1446	0.525	0.279		gadgetzan			7733	Pois
+LEYLINE_C1446_604_249	leyline	kalimdor.tanaris	1446	0.604	0.249						Pois
+STABLE_9985	stable	kalimdor.tanaris	1446	0.522	0.28		gadgetzan			9985	Pois
+TRAINER_ENGINEERING_8126	trainer	kalimdor.tanaris	1446	0.523	0.2735		gadgetzan			8126	Pois
+TRAINER_MINING_8128	trainer	kalimdor.tanaris	1446	0.51	0.28		gadgetzan			8128	Pois
+TRAINER_LEATHERWORKING_7866	trainer	kalimdor.azshara	1447	0.3747	0.6547					7866	Pois
+TRAINER_PET_543	trainer	kalimdor.felwood	1448	0.622	0.242					543	Pois
+TRAINER_HUNTER_5501	trainer	kalimdor.felwood	1448	0.618	0.235					5501	Pois
+TRAINER_DRUID_9465	trainer	kalimdor.felwood	1448	0.619	0.245					9465	Pois
+STABLE_228176	stable	kalimdor.moonglade	1450	0.562	0.324					228176	Pois
+TRAINER_HERBALISM_12025	trainer	kalimdor.moonglade	1450	0.455	0.469					12025	Pois
+TRAINER_DRUID_12042	trainer	kalimdor.moonglade	1450	0.5247	0.4047					12042	Pois
+INN_15174	inn	kalimdor.silithus	1451	0.518	0.39		cenarion_hold			15174	Pois
+STABLE_15722	stable	kalimdor.silithus	1451	0.492	0.366		cenarion_hold			15722	Pois
+AUCTION_9857	auction	kalimdor.winterspring	1452	0.614	0.372		everlook			9857	Pois
+BANK_13917	bank	kalimdor.winterspring	1452	0.614	0.37		everlook			13917	Pois
+INN_11118	inn	kalimdor.winterspring	1452	0.612	0.388		everlook			11118	Pois
+STABLE_11119	stable	kalimdor.winterspring	1452	0.604	0.38		everlook			11119	Pois
+AUCTION_8670	auction	easternkingdoms.elwynn_forest	1453	0.6101	0.7112	stormwind				8670	Pois
+BANK_C1453_638_808	bank	easternkingdoms.elwynn_forest	1453	0.638	0.808	stormwind					Pois
+BATTLEMASTER_14991	battlemaster	easternkingdoms.elwynn_forest	1453	0.6177	0.7311	stormwind				14991	Pois
+ENTRANCE_C1453_741_922	entrance	easternkingdoms.elwynn_forest	1453	0.7413	0.9225	stormwind					Pois
+INN_6740	inn	easternkingdoms.elwynn_forest	1453	0.604	0.7532	stormwind				6740	Pois
+STABLE_9977	stable	easternkingdoms.elwynn_forest	1453	0.428	0.645	stormwind				9977	Pois
+TRAINER_PRIEST_11397	trainer	easternkingdoms.elwynn_forest	1453	0.3616	0.6398	stormwind				11397	Pois
+TRAINER_WEAPON_11867	trainer	easternkingdoms.elwynn_forest	1453	0.6359	0.6938	stormwind				11867	Pois
+TRAINER_SKINNING_1292	trainer	easternkingdoms.elwynn_forest	1453	0.7178	0.6284	stormwind				1292	Pois
+TRAINER_TAILORING_1300	trainer	easternkingdoms.elwynn_forest	1453	0.5343	0.8148	stormwind				1300	Pois
+TRAINER_ENCHANTING_1317	trainer	easternkingdoms.elwynn_forest	1453	0.5331	0.7424	stormwind				1317	Pois
+TRAINER_FIRSTAID_2327	trainer	easternkingdoms.elwynn_forest	1453	0.5286	0.4594	stormwind				2327	Pois
+TRAINER_PET_2879	trainer	easternkingdoms.elwynn_forest	1453	0.6713	0.3794	stormwind				2879	Pois
+TRAINER_MAGE_331	trainer	easternkingdoms.elwynn_forest	1453	0.4953	0.8661	stormwind				331	Pois
+TRAINER_PRIEST_376	trainer	easternkingdoms.elwynn_forest	1453	0.5043	0.4624	stormwind				376	Pois
+TRAINER_WARLOCK_461	trainer	easternkingdoms.elwynn_forest	1453	0.4011	0.8478	stormwind				461	Pois
+TRAINER_COOKING_5482	trainer	easternkingdoms.elwynn_forest	1453	0.7778	0.5386	stormwind				5482	Pois
+TRAINER_FISHING_5493	trainer	easternkingdoms.elwynn_forest	1453	0.5504	0.6943	stormwind				5493	Pois
+TRAINER_ALCHEMY_5499	trainer	easternkingdoms.elwynn_forest	1453	0.5567	0.8553	stormwind				5499	Pois
+TRAINER_HERBALISM_5502	trainer	easternkingdoms.elwynn_forest	1453	0.3207	0.634	stormwind				5502	Pois
+TRAINER_MINING_5513	trainer	easternkingdoms.elwynn_forest	1453	0.5919	0.3884	stormwind				5513	Pois
+TRAINER_HUNTER_5515	trainer	easternkingdoms.elwynn_forest	1453	0.6753	0.3724	stormwind				5515	Pois
+TRAINER_ENGINEERING_5518	trainer	easternkingdoms.elwynn_forest	1453	0.6208	0.3203	stormwind				5518	Pois
+TRAINER_DEMON_5520	trainer	easternkingdoms.elwynn_forest	1453	0.3991	0.8462	stormwind				5520	Pois
+TRAINER_LEATHERWORKING_5564	trainer	easternkingdoms.elwynn_forest	1453	0.7166	0.6321	stormwind				5564	Pois
+TRAINER_HERBALISM_5566	trainer	easternkingdoms.elwynn_forest	1453	0.5441	0.8409	stormwind				5566	Pois
+TRAINER_TAILORING_5567	trainer	easternkingdoms.elwynn_forest	1453	0.5236	0.836	stormwind				5567	Pois
+TRAINER_WARRIOR_914	trainer	easternkingdoms.elwynn_forest	1453	0.801	0.6062	stormwind				914	Pois
+TRAINER_ROGUE_918	trainer	easternkingdoms.elwynn_forest	1453	0.7841	0.6758	stormwind				918	Pois
+TRAINER_PALADIN_928	trainer	easternkingdoms.elwynn_forest	1453	0.492	0.5036	stormwind				928	Pois
+TRAINER_BLACKSMITHING_957	trainer	easternkingdoms.elwynn_forest	1453	0.6374	0.3807	stormwind				957	Pois
+TRAINER_TAILORING_9584	trainer	easternkingdoms.elwynn_forest	1453	0.406	0.8435	stormwind				9584	Pois
+TRAINER_DRUID_C1453_362_643	trainer	easternkingdoms.elwynn_forest	1453	0.3619	0.6428	stormwind					Pois
+AUCTION_C1454_557_629	auction	kalimdor.durotar	1454	0.557	0.629	orgrimmar				8673	Pois
+BANK_C1454_496_693	bank	kalimdor.durotar	1454	0.496	0.693	orgrimmar				3309	Pois
+BATTLEMASTER_14990	battlemaster	kalimdor.durotar	1454	0.503	0.659	orgrimmar				14990	Pois
+BATTLEMASTER_3890	battlemaster	kalimdor.durotar	1454	0.791	0.3037	orgrimmar				3890	Pois
+ENTRANCE_C1454_115_669	entrance	kalimdor.durotar	1454	0.115	0.6686	orgrimmar					Pois
+ENTRANCE_C1454_517_858	entrance	kalimdor.durotar	1454	0.517	0.858	orgrimmar					Pois
+INN_C1454_541_684	inn	kalimdor.durotar	1454	0.541	0.684	orgrimmar				6929	Pois
+TRAINER_PET_10088	trainer	kalimdor.durotar	1454	0.6647	0.152	orgrimmar				10088	Pois
+TRAINER_BLACKSMITHING_1383	trainer	kalimdor.durotar	1454	0.8077	0.233	orgrimmar				1383	Pois
+TRAINER_WEAPON_2704	trainer	kalimdor.durotar	1454	0.8147	0.1947	orgrimmar				2704	Pois
+TRAINER_TAILORING_2855	trainer	kalimdor.durotar	1454	0.6307	0.499	orgrimmar				2855	Pois
+TRAINER_ENGINEERING_2857	trainer	kalimdor.durotar	1454	0.7568	0.247	orgrimmar				2857	Pois
+TRAINER_WARLOCK_3324	trainer	kalimdor.durotar	1454	0.4828	0.464	orgrimmar				3324	Pois
+TRAINER_ROGUE_3327	trainer	kalimdor.durotar	1454	0.4327	0.5304	orgrimmar				3327	Pois
+TRAINER_FISHING_3332	trainer	kalimdor.durotar	1454	0.6955	0.291	orgrimmar				3332	Pois
+TRAINER_SHAMAN_3344	trainer	kalimdor.durotar	1454	0.3831	0.3658	orgrimmar				3344	Pois
+TRAINER_ENCHANTING_3345	trainer	kalimdor.durotar	1454	0.5367	0.3842	orgrimmar				3345	Pois
+TRAINER_ALCHEMY_3347	trainer	kalimdor.durotar	1454	0.562	0.3347	orgrimmar				3347	Pois
+TRAINER_HUNTER_3352	trainer	kalimdor.durotar	1454	0.6692	0.1858	orgrimmar				3352	Pois
+TRAINER_WARRIOR_3353	trainer	kalimdor.durotar	1454	0.7994	0.3101	orgrimmar				3353	Pois
+TRAINER_MINING_3357	trainer	kalimdor.durotar	1454	0.73	0.267	orgrimmar				3357	Pois
+TRAINER_LEATHERWORKING_3365	trainer	kalimdor.durotar	1454	0.6295	0.446	orgrimmar				3365	Pois
+TRAINER_FIRSTAID_3373	trainer	kalimdor.durotar	1454	0.34	0.844	orgrimmar				3373	Pois
+TRAINER_COOKING_3399	trainer	kalimdor.durotar	1454	0.575	0.535	orgrimmar				3399	Pois
+TRAINER_HERBALISM_3404	trainer	kalimdor.durotar	1454	0.555	0.395	orgrimmar				3404	Pois
+TRAINER_RIDING_4752	trainer	kalimdor.durotar	1454	0.693	0.1305	orgrimmar				4752	Pois
+TRAINER_DEMON_5815	trainer	kalimdor.durotar	1454	0.4752	0.4704	orgrimmar				5815	Pois
+TRAINER_MAGE_5882	trainer	kalimdor.durotar	1454	0.3857	0.857	orgrimmar				5882	Pois
+TRAINER_PRIEST_5994	trainer	kalimdor.durotar	1454	0.3554	0.8749	orgrimmar				5994	Pois
+TRAINER_SKINNING_7088	trainer	kalimdor.durotar	1454	0.632	0.452	orgrimmar				7088	Pois
+AUCTION_8671	auction	easternkingdoms.dun_morogh	1455	0.2486	0.7367	ironforge				8671	Pois
+BANK_2460	bank	easternkingdoms.dun_morogh	1455	0.3555	0.6061	ironforge				2460	Pois
+ENTRANCE_C1455_152_857	entrance	easternkingdoms.dun_morogh	1455	0.1518	0.8569	ironforge			809		Pois
+INN_5111	inn	easternkingdoms.dun_morogh	1455	0.185	0.515	ironforge				5111	Pois
+TRAINER_PET_10090	trainer	easternkingdoms.dun_morogh	1455	0.7055	0.851	ironforge				10090	Pois
+TRAINER_WEAPON_11865	trainer	easternkingdoms.dun_morogh	1455	0.616	0.8925	ironforge				11865	Pois
+TRAINER_ALCHEMY_1246	trainer	easternkingdoms.dun_morogh	1455	0.6662	0.5511	ironforge				1246	Pois
+TRAINER_LEATHERWORKING_1466	trainer	easternkingdoms.dun_morogh	1455	0.3948	0.3319	ironforge				1466	Pois
+TRAINER_TAILORING_1703	trainer	easternkingdoms.dun_morogh	1455	0.4358	0.2897	ironforge				1703	Pois
+TRAINER_WARRIOR_1901	trainer	easternkingdoms.dun_morogh	1455	0.6793	0.8924	ironforge				1901	Pois
+TRAINER_SHAMAN_258098	trainer	easternkingdoms.dun_morogh	1455	0.473	0.136	ironforge				258098	Pois
+TRAINER_MINING_4254	trainer	easternkingdoms.dun_morogh	1455	0.504	0.2645	ironforge				4254	Pois
+TRAINER_BLACKSMITHING_4258	trainer	easternkingdoms.dun_morogh	1455	0.5188	0.4202	ironforge				4258	Pois
+TRAINER_HUNTER_5115	trainer	easternkingdoms.dun_morogh	1455	0.7021	0.8583	ironforge				5115	Pois
+TRAINER_HERBALISM_5137	trainer	easternkingdoms.dun_morogh	1455	0.5556	0.588	ironforge				5137	Pois
+TRAINER_PRIEST_5141	trainer	easternkingdoms.dun_morogh	1455	0.2483	0.0917	ironforge				5141	Pois
+TRAINER_MAGE_5144	trainer	easternkingdoms.dun_morogh	1455	0.264	0.0794	ironforge				5144	Pois
+TRAINER_PALADIN_5147	trainer	easternkingdoms.dun_morogh	1455	0.2387	0.0561	ironforge				5147	Pois
+TRAINER_FIRSTAID_5150	trainer	easternkingdoms.dun_morogh	1455	0.5507	0.5873	ironforge				5150	Pois
+TRAINER_ENCHANTING_5157	trainer	easternkingdoms.dun_morogh	1455	0.6018	0.4498	ironforge				5157	Pois
+TRAINER_COOKING_5159	trainer	easternkingdoms.dun_morogh	1455	0.602	0.3707	ironforge				5159	Pois
+TRAINER_FISHING_5161	trainer	easternkingdoms.dun_morogh	1455	0.484	0.064	ironforge				5161	Pois
+TRAINER_ROGUE_5165	trainer	easternkingdoms.dun_morogh	1455	0.5194	0.1457	ironforge				5165	Pois
+TRAINER_WARLOCK_5171	trainer	easternkingdoms.dun_morogh	1455	0.5047	0.0668	ironforge				5171	Pois
+TRAINER_ENGINEERING_5174	trainer	easternkingdoms.dun_morogh	1455	0.6808	0.4398	ironforge				5174	Pois
+TRAINER_SKINNING_6291	trainer	easternkingdoms.dun_morogh	1455	0.395	0.325	ironforge				6291	Pois
+TRAINER_DEMON_6382	trainer	easternkingdoms.dun_morogh	1455	0.5307	0.0673	ironforge				6382	Pois
+TRAINER_ENGINEERING_7944	trainer	easternkingdoms.dun_morogh	1455	0.6977	0.5051	ironforge				7944	Pois
+AUCTION_8674	auction	kalimdor.mulgore	1456	0.3962	0.5157	thunder_bluff				8674	Pois
+BANK_C1456_474_586	bank	kalimdor.mulgore	1456	0.474	0.586	thunder_bluff				2996	Pois
+BATTLEMASTER_14990_1456	battlemaster	kalimdor.mulgore	1456	0.44	0.5727	thunder_bluff				14990	Pois
+BATTLEMASTER_7427	battlemaster	kalimdor.mulgore	1456	0.577	0.769	thunder_bluff				7427	Pois
+ENTRANCE_C1456_243_547	entrance	kalimdor.mulgore	1456	0.2428	0.5467	thunder_bluff					Pois
+ENTRANCE_C1456_376_790	entrance	kalimdor.mulgore	1456	0.3764	0.7901	thunder_bluff					Pois
+ENTRANCE_C1456_454_123	entrance	kalimdor.mulgore	1456	0.4536	0.1231	thunder_bluff					Pois
+ENTRANCE_C1456_607_173	entrance	kalimdor.mulgore	1456	0.607	0.1727	thunder_bluff					Pois
+INN_6746	inn	kalimdor.mulgore	1456	0.456	0.6388	thunder_bluff				6746	Pois
+STABLE_10054	stable	kalimdor.mulgore	1456	0.45	0.592	thunder_bluff				10054	Pois
+TRAINER_PET_10086	trainer	kalimdor.mulgore	1456	0.544	0.8333	thunder_bluff				10086	Pois
+TRAINER_WEAPON_11869	trainer	kalimdor.mulgore	1456	0.4072	0.6224	thunder_bluff				11869	Pois
+TRAINER_FIRSTAID_2798	trainer	kalimdor.mulgore	1456	0.295	0.215	thunder_bluff				2798	Pois
+TRAINER_BLACKSMITHING_2998	trainer	kalimdor.mulgore	1456	0.3938	0.5569	thunder_bluff				2998	Pois
+TRAINER_MINING_3001	trainer	kalimdor.mulgore	1456	0.345	0.575	thunder_bluff				3001	Pois
+TRAINER_TAILORING_3004	trainer	kalimdor.mulgore	1456	0.439	0.4445	thunder_bluff				3004	Pois
+TRAINER_LEATHERWORKING_3007	trainer	kalimdor.mulgore	1456	0.4214	0.4296	thunder_bluff				3007	Pois
+TRAINER_ALCHEMY_3009	trainer	kalimdor.mulgore	1456	0.4683	0.3378	thunder_bluff				3009	Pois
+TRAINER_ENCHANTING_3011	trainer	kalimdor.mulgore	1456	0.448	0.3834	thunder_bluff				3011	Pois
+TRAINER_HERBALISM_3013	trainer	kalimdor.mulgore	1456	0.4967	0.3947	thunder_bluff				3013	Pois
+TRAINER_COOKING_3026	trainer	kalimdor.mulgore	1456	0.509	0.526	thunder_bluff				3026	Pois
+TRAINER_FISHING_3028	trainer	kalimdor.mulgore	1456	0.559	0.472	thunder_bluff				3028	Pois
+TRAINER_SHAMAN_3030	trainer	kalimdor.mulgore	1456	0.2312	0.1985	thunder_bluff				3030	Pois
+TRAINER_DRUID_3033	trainer	kalimdor.mulgore	1456	0.7674	0.2825	thunder_bluff				3033	Pois
+TRAINER_HUNTER_3038	trainer	kalimdor.mulgore	1456	0.5815	0.8758	thunder_bluff				3038	Pois
+TRAINER_WARRIOR_3041	trainer	kalimdor.mulgore	1456	0.5755	0.8723	thunder_bluff				3041	Pois
+TRAINER_PRIEST_3044	trainer	kalimdor.mulgore	1456	0.2514	0.1968	thunder_bluff				3044	Pois
+TRAINER_MAGE_3047	trainer	kalimdor.mulgore	1456	0.2401	0.1506	thunder_bluff				3047	Pois
+TRAINER_MAGE_3049	trainer	kalimdor.mulgore	1456	0.2516	0.2084	thunder_bluff				3049	Pois
+TRAINER_SKINNING_7089	trainer	kalimdor.mulgore	1456	0.4464	0.4276	thunder_bluff				7089	Pois
+AUCTION_8669	auction	kalimdor.teldrassil	1457	0.5636	0.5298	darnassus				8669	Pois
+BANK_4155	bank	kalimdor.teldrassil	1457	0.3993	0.4217	darnassus				4155	Pois
+BATTLEMASTER_14991_1457	battlemaster	kalimdor.teldrassil	1457	0.425	0.3935	darnassus				14991	Pois
+BATTLEMASTER_5118	battlemaster	kalimdor.teldrassil	1457	0.569	0.448	darnassus				5118	Pois
+BATTLEMASTER_907	battlemaster	kalimdor.teldrassil	1457	0.584	0.366	darnassus				907	Pois
+ENTRANCE_C1457_885_358	entrance	kalimdor.teldrassil	1457	0.8854	0.3577	darnassus					Pois
+INN_6735	inn	kalimdor.teldrassil	1457	0.6725	0.158	darnassus				6735	Pois
+TRAINER_PET_10089	trainer	kalimdor.teldrassil	1457	0.422	0.086	darnassus				10089	Pois
+TRAINER_WEAPON_11866	trainer	kalimdor.teldrassil	1457	0.5744	0.4628	darnassus				11866	Pois
+TRAINER_WARRIOR_4087	trainer	kalimdor.teldrassil	1457	0.5842	0.3527	darnassus				4087	Pois
+TRAINER_WARRIOR_4089	trainer	kalimdor.teldrassil	1457	0.618	0.422	darnassus				4089	Pois
+TRAINER_PRIEST_4090	trainer	kalimdor.teldrassil	1457	0.3865	0.8125	darnassus				4090	Pois
+TRAINER_PRIEST_4092	trainer	kalimdor.teldrassil	1457	0.4017	0.885	darnassus				4092	Pois
+TRAINER_HUNTER_4138	trainer	kalimdor.teldrassil	1457	0.4063	0.0759	darnassus				4138	Pois
+TRAINER_FISHING_4156	trainer	kalimdor.teldrassil	1457	0.475	0.5655	darnassus				4156	Pois
+TRAINER_TAILORING_4159	trainer	kalimdor.teldrassil	1457	0.6325	0.2197	darnassus				4159	Pois
+TRAINER_ALCHEMY_4160	trainer	kalimdor.teldrassil	1457	0.5565	0.2369	darnassus				4160	Pois
+TRAINER_ROGUE_4163	trainer	kalimdor.teldrassil	1457	0.3642	0.2266	darnassus				4163	Pois
+TRAINER_MAGE_4165	trainer	kalimdor.teldrassil	1457	0.404	0.819	darnassus				4165	Pois
+TRAINER_HERBALISM_4204	trainer	kalimdor.teldrassil	1457	0.48	0.685	darnassus				4204	Pois
+TRAINER_COOKING_4210	trainer	kalimdor.teldrassil	1457	0.4907	0.2113	darnassus				4210	Pois
+TRAINER_FIRSTAID_4211	trainer	kalimdor.teldrassil	1457	0.5152	0.1272	darnassus				4211	Pois
+TRAINER_LEATHERWORKING_4212	trainer	kalimdor.teldrassil	1457	0.6448	0.2131	darnassus				4212	Pois
+TRAINER_ENCHANTING_4213	trainer	kalimdor.teldrassil	1457	0.5875	0.1317	darnassus				4213	Pois
+TRAINER_DRUID_4217	trainer	kalimdor.teldrassil	1457	0.3441	0.08	darnassus				4217	Pois
+TRAINER_RIDING_4753	trainer	kalimdor.teldrassil	1457	0.385	0.161	darnassus				4753	Pois
+TRAINER_SKINNING_6292	trainer	kalimdor.teldrassil	1457	0.644	0.214	darnassus				6292	Pois
+AUCTION_8672	auction	easternkingdoms.tirisfal_glades	1458	0.6592	0.4413	undercity				8672	Pois
+BANK_2458	bank	easternkingdoms.tirisfal_glades	1458	0.659	0.4364	undercity				2458	Pois
+BATTLEMASTER_14990_1458	battlemaster	easternkingdoms.tirisfal_glades	1458	0.733	0.443	undercity				14990	Pois
+BATTLEMASTER_15007	battlemaster	easternkingdoms.tirisfal_glades	1458	0.609	0.931	undercity				15007	Pois
+BATTLEMASTER_15105	battlemaster	easternkingdoms.tirisfal_glades	1458	0.659	0.554	undercity				15105	Pois
+BATTLEMASTER_2804	battlemaster	easternkingdoms.tirisfal_glades	1458	0.543	0.959	undercity				2804	Pois
+BATTLEMASTER_347	battlemaster	easternkingdoms.tirisfal_glades	1458	0.561	0.857	undercity				347	Pois
+ENTRANCE_C1458_657_24	entrance	easternkingdoms.tirisfal_glades	1458	0.657	0.024	undercity					Pois
+INN_6741	inn	easternkingdoms.tirisfal_glades	1458	0.674	0.384	undercity				6741	Pois
+STABLE_10053	stable	easternkingdoms.tirisfal_glades	1458	0.673	0.381	undercity				10053	Pois
+TRAINER_ALCHEMY_11044	trainer	easternkingdoms.tirisfal_glades	1458	0.4636	0.742	undercity				11044	Pois
+TRAINER_PRIEST_11048	trainer	easternkingdoms.tirisfal_glades	1458	0.701	0.297	undercity				11048	Pois
+TRAINER_WEAPON_11870	trainer	easternkingdoms.tirisfal_glades	1458	0.571	0.3267	undercity				11870	Pois
+TRAINER_LEATHERWORKING_223	trainer	easternkingdoms.tirisfal_glades	1458	0.7054	0.5848	undercity				223	Pois
+TRAINER_MAGE_2492	trainer	easternkingdoms.tirisfal_glades	1458	0.8491	0.1391	undercity				2492	Pois
+TRAINER_PALADIN_260093	trainer	easternkingdoms.tirisfal_glades	1458	0.473	0.151	undercity				260093	Pois
+TRAINER_COOKING_4552	trainer	easternkingdoms.tirisfal_glades	1458	0.624	0.445	undercity				4552	Pois
+TRAINER_WARLOCK_4563	trainer	easternkingdoms.tirisfal_glades	1458	0.866	0.1561	undercity				4563	Pois
+TRAINER_FISHING_4573	trainer	easternkingdoms.tirisfal_glades	1458	0.8096	0.3096	undercity				4573	Pois
+TRAINER_TAILORING_4576	trainer	easternkingdoms.tirisfal_glades	1458	0.7047	0.2985	undercity				4576	Pois
+TRAINER_TAILORING_4578	trainer	easternkingdoms.tirisfal_glades	1458	0.8625	0.2205	undercity				4578	Pois
+TRAINER_ROGUE_4582	trainer	easternkingdoms.tirisfal_glades	1458	0.8425	0.7204	undercity				4582	Pois
+TRAINER_ENGINEERING_4586	trainer	easternkingdoms.tirisfal_glades	1458	0.758	0.7378	undercity				4586	Pois
+TRAINER_FIRSTAID_4591	trainer	easternkingdoms.tirisfal_glades	1458	0.735	0.555	undercity				4591	Pois
+TRAINER_WARRIOR_4593	trainer	easternkingdoms.tirisfal_glades	1458	0.4757	0.1578	undercity				4593	Pois
+TRAINER_BLACKSMITHING_4596	trainer	easternkingdoms.tirisfal_glades	1458	0.6076	0.2928	undercity				4596	Pois
+TRAINER_MINING_4598	trainer	easternkingdoms.tirisfal_glades	1458	0.5573	0.364	undercity				4598	Pois
+TRAINER_PRIEST_4606	trainer	easternkingdoms.tirisfal_glades	1458	0.4862	0.1765	undercity				4606	Pois
+TRAINER_ALCHEMY_4609	trainer	easternkingdoms.tirisfal_glades	1458	0.5148	0.7472	undercity				4609	Pois
+TRAINER_ALCHEMY_4611	trainer	easternkingdoms.tirisfal_glades	1458	0.48	0.729	undercity				4611	Pois
+TRAINER_HERBALISM_4614	trainer	easternkingdoms.tirisfal_glades	1458	0.5444	0.4992	undercity				4614	Pois
+TRAINER_ENCHANTING_4616	trainer	easternkingdoms.tirisfal_glades	1458	0.624	0.6098	undercity				4616	Pois
+TRAINER_DEMON_5753	trainer	easternkingdoms.tirisfal_glades	1458	0.856	0.156	undercity				5753	Pois
+TRAINER_SKINNING_7087	trainer	easternkingdoms.tirisfal_glades	1458	0.706	0.594	undercity				7087	Pois
+AUCTION_C2521_579_771	auction	zephras_isle.zephras_isle	2521	0.5789	0.7707		valanaar				Pois
+BANK_C2521_577_771	bank	zephras_isle.zephras_isle	2521	0.5768	0.771		valanaar			257036	Pois
+CONVERGENCE_C2521_341_598	convergence	zephras_isle.zephras_isle	2521	0.3407	0.5983						Pois
+CONVERGENCE_C2521_359_337	convergence	zephras_isle.zephras_isle	2521	0.3593	0.3368						Pois
+CONVERGENCE_C2521_466_382	convergence	zephras_isle.zephras_isle	2521	0.4659	0.3824						Pois
+CONVERGENCE_C2521_476_695	convergence	zephras_isle.zephras_isle	2521	0.4764	0.6954						Pois
+CONVERGENCE_C2521_484_203	convergence	zephras_isle.zephras_isle	2521	0.4844	0.2031						Pois
+CONVERGENCE_C2521_484_806	convergence	zephras_isle.zephras_isle	2521	0.4839	0.8064						Pois
+CONVERGENCE_C2521_485_558	convergence	zephras_isle.zephras_isle	2521	0.485	0.5581						Pois
+CONVERGENCE_C2521_528_575	convergence	zephras_isle.zephras_isle	2521	0.5285	0.5752						Pois
+CONVERGENCE_C2521_591_798	convergence	zephras_isle.zephras_isle	2521	0.5914	0.7981						Pois
+CONVERGENCE_C2521_616_515	convergence	zephras_isle.zephras_isle	2521	0.6159	0.5153						Pois
+CONVERGENCE_C2521_648_380	convergence	zephras_isle.zephras_isle	2521	0.6485	0.3802						Pois
+CONVERGENCE_C2521_675_505	convergence	zephras_isle.zephras_isle	2521	0.6751	0.5054						Pois
+CONVERGENCE_C2521_679_749	convergence	zephras_isle.zephras_isle	2521	0.6789	0.7494						Pois
+CONVERGENCE_C2521_684_660	convergence	zephras_isle.zephras_isle	2521	0.6836	0.6604						Pois
+CONVERGENCE_C2521_700_614	convergence	zephras_isle.zephras_isle	2521	0.7004	0.6141						Pois
+INN_C2521_430_433	inn	zephras_isle.zephras_isle	2521	0.43	0.433		shendar_village				Pois
+INN_C2521_622_727	inn	zephras_isle.zephras_isle	2521	0.6218	0.7269		valanaar				Pois
+LEYLINE_C2521_338_555	leyline	zephras_isle.zephras_isle	2521	0.338	0.555						Pois
+LEYLINE_C2521_353_337	leyline	zephras_isle.zephras_isle	2521	0.3528	0.3368						Pois
+LEYLINE_C2521_384_476	leyline	zephras_isle.zephras_isle	2521	0.3839	0.4758						Pois
+LEYLINE_C2521_455_813	leyline	zephras_isle.zephras_isle	2521	0.455	0.8131						Pois
+LEYLINE_C2521_460_181	leyline	zephras_isle.zephras_isle	2521	0.4603	0.1808						Pois
+LEYLINE_C2521_480_591	leyline	zephras_isle.zephras_isle	2521	0.4799	0.591						Pois
+LEYLINE_C2521_503_332	leyline	zephras_isle.zephras_isle	2521	0.5031	0.3318						Pois
+LEYLINE_C2521_538_663	leyline	zephras_isle.zephras_isle	2521	0.538	0.663						Pois
+LEYLINE_C2521_550_504	leyline	zephras_isle.zephras_isle	2521	0.5497	0.5041						Pois
+LEYLINE_C2521_588_335	leyline	zephras_isle.zephras_isle	2521	0.588	0.335						Pois
+LEYLINE_C2521_637_459	leyline	zephras_isle.zephras_isle	2521	0.6373	0.4594						Pois
+LEYLINE_C2521_639_741	leyline	zephras_isle.zephras_isle	2521	0.639	0.741						Pois
+LEYLINE_C2521_688_619	leyline	zephras_isle.zephras_isle	2521	0.6885	0.6188						Pois
+TRAINER_HERBALISM_C2521_430_435	trainer	zephras_isle.zephras_isle	2521	0.43	0.435		shendar_village				Pois
+TRAINER_FIRSTAID_C2521_431_463	trainer	zephras_isle.zephras_isle	2521	0.431	0.463		shendar_village				Pois
+TRAINER_ENCHANTING_C2521_432_432	trainer	zephras_isle.zephras_isle	2521	0.432	0.432		shendar_village				Pois
+TRAINER_ROGUE_C2521_432_433	trainer	zephras_isle.zephras_isle	2521	0.432	0.433		shendar_village				Pois
+TRAINER_SKINNING_C2521_433_434	trainer	zephras_isle.zephras_isle	2521	0.433	0.434		shendar_village				Pois
+TRAINER_SHAMAN_C2521_434_449	trainer	zephras_isle.zephras_isle	2521	0.434	0.449		shendar_village				Pois
+TRAINER_ALCHEMY_C2521_437_434	trainer	zephras_isle.zephras_isle	2521	0.437	0.434		shendar_village				Pois
+TRAINER_COOKING_C2521_438_439	trainer	zephras_isle.zephras_isle	2521	0.438	0.439		shendar_village				Pois
+TRAINER_LEATHERWORKING_C2521_447_445	trainer	zephras_isle.zephras_isle	2521	0.447	0.445		shendar_village				Pois
+TRAINER_MINING_C2521_448_445	trainer	zephras_isle.zephras_isle	2521	0.448	0.445		shendar_village				Pois
+TRAINER_TAILORING_C2521_449_442	trainer	zephras_isle.zephras_isle	2521	0.449	0.442		shendar_village				Pois
+TRAINER_BLACKSMITHING_C2521_449_443	trainer	zephras_isle.zephras_isle	2521	0.449	0.443		shendar_village				Pois
+TRAINER_WARRIOR_C2521_449_451	trainer	zephras_isle.zephras_isle	2521	0.449	0.451		shendar_village				Pois
+TRAINER_FISHING_C2521_450_484	trainer	zephras_isle.zephras_isle	2521	0.45	0.484		shendar_village				Pois
+TRAINER_MAGE_C2521_451_459	trainer	zephras_isle.zephras_isle	2521	0.451	0.459		shendar_village				Pois
+TRAINER_DRUID_C2521_452_443	trainer	zephras_isle.zephras_isle	2521	0.452	0.443		shendar_village				Pois
+TRAINER_HUNTER_C2521_453_443	trainer	zephras_isle.zephras_isle	2521	0.453	0.443		shendar_village				Pois
+TRAINER_ENGINEERING_C2521_540_389	trainer	zephras_isle.zephras_isle	2521	0.5399	0.3892						Pois
+TRAINER_HERBALISM_C2521_579_755	trainer	zephras_isle.zephras_isle	2521	0.579	0.755		valanaar				Pois
+TRAINER_SHAMAN_C2521_583_784	trainer	zephras_isle.zephras_isle	2521	0.583	0.784		valanaar				Pois
+TRAINER_ALCHEMY_C2521_592_763	trainer	zephras_isle.zephras_isle	2521	0.592	0.763		valanaar				Pois
+TRAINER_ENCHANTING_C2521_592_764	trainer	zephras_isle.zephras_isle	2521	0.592	0.764		valanaar				Pois
+TRAINER_PET_C2521_596_725	trainer	zephras_isle.zephras_isle	2521	0.596	0.725		valanaar				Pois
+TRAINER_HUNTER_C2521_596_726	trainer	zephras_isle.zephras_isle	2521	0.596	0.726		valanaar				Pois
+TRAINER_SKINNING_C2521_596_760	trainer	zephras_isle.zephras_isle	2521	0.596	0.76		valanaar				Pois
+TRAINER_ROGUE_C2521_599_725	trainer	zephras_isle.zephras_isle	2521	0.599	0.725		valanaar				Pois
+TRAINER_WARRIOR_C2521_599_728	trainer	zephras_isle.zephras_isle	2521	0.599	0.728		valanaar				Pois
+TRAINER_COOKING_C2521_607_727	trainer	zephras_isle.zephras_isle	2521	0.607	0.727		valanaar				Pois
+TRAINER_FIRSTAID_C2521_631_726	trainer	zephras_isle.zephras_isle	2521	0.631	0.726		valanaar				Pois
+TRAINER_FISHING_C2521_632_757	trainer	zephras_isle.zephras_isle	2521	0.632	0.757		valanaar				Pois
+TRAINER_LEATHERWORKING_C2521_637_806	trainer	zephras_isle.zephras_isle	2521	0.637	0.806		valanaar				Pois
+TRAINER_DRUID_C2521_640_751	trainer	zephras_isle.zephras_isle	2521	0.64	0.751		valanaar				Pois
+TRAINER_TAILORING_C2521_644_812	trainer	zephras_isle.zephras_isle	2521	0.644	0.812		valanaar				Pois
+TRAINER_BLACKSMITHING_C2521_654_800	trainer	zephras_isle.zephras_isle	2521	0.654	0.8		valanaar				Pois
+TRAINER_MINING_C2521_654_805	trainer	zephras_isle.zephras_isle	2521	0.654	0.805		valanaar				Pois
+TRAINER_MAGE_C2521_659_805	trainer	zephras_isle.zephras_isle	2521	0.659	0.805		valanaar				Pois
+TRAINER_ALCHEMY_C2521_663_795	trainer	zephras_isle.zephras_isle	2521	0.663	0.795		valanaar				Pois
+LEYLINE_C2548_569_763	leyline	easternkingdoms.riverglades	2548	0.5687	0.7628						Pois
+TOWN_AERIE_PEAK	settlement	easternkingdoms.hinterlands	1425	0.134	0.418		aerie_peak				Pois
+TOWN_ASTRANAAR	settlement	kalimdor.ashenvale	1440	0.37	0.492		astranaar				Pois
+TOWN_AUBERDINE	settlement	kalimdor.darkshore	1439	0.37	0.44		auberdine				Pois
+TOWN_BLOODHOOF_VILLAGE	settlement	kalimdor.mulgore	1412	0.466	0.61		bloodhoof_village				Pois
+TOWN_BOOTY_BAY	settlement	easternkingdoms.stranglethorn_vale	1434	0.27	0.772		booty_bay				Pois
+TOWN_BRILL	settlement	easternkingdoms.tirisfal_glades	1420	0.616	0.52		brill				Pois
+TOWN_CAMP_MOJACHE	settlement	kalimdor.feralas	1444	0.748	0.45		camp_mojache				Pois
+TOWN_CAMP_TAURAJO	settlement	kalimdor.the_barrens	1413	0.454	0.59		camp_taurajo				Pois
+TOWN_CENARION_HOLD	settlement	kalimdor.silithus	1451	0.518	0.39		cenarion_hold				Pois
+TOWN_CROSSROADS	settlement	kalimdor.the_barrens	1413	0.52	0.298		crossroads				Pois
+CITY_DALARAN	settlement	easternkingdoms.alterac_mountains	1416	0.151	0.662	dalaran					Pois
+TOWN_DARKSHIRE	settlement	easternkingdoms.duskwood	1431	0.738	0.444		darkshire				Pois
+CITY_DARNASSUS	settlement	kalimdor.teldrassil	1457	0.67	0.168	darnassus					Pois
+TOWN_DOLANAAR	settlement	kalimdor.teldrassil	1438	0.556	0.598		dolanaar				Pois
+TOWN_EVERLOOK	settlement	kalimdor.winterspring	1452	0.612	0.388		everlook				Pois
+TOWN_FEATHERMOON_STRONGHOLD	settlement	kalimdor.feralas	1444	0.31	0.434		feathermoon_stronghold				Pois
+TOWN_FREEWIND_POST	settlement	kalimdor.thousand_needles	1441	0.46	0.514		freewind_post				Pois
+TOWN_GADGETZAN	settlement	kalimdor.tanaris	1446	0.524	0.278		gadgetzan				Pois
+TOWN_GOLDSHIRE	settlement	easternkingdoms.elwynn_forest	1429	0.438	0.658		goldshire				Pois
+TOWN_GROMGOL_BASE_CAMP	settlement	easternkingdoms.stranglethorn_vale	1434	0.314	0.296		gromgol_base_camp				Pois
+TOWN_HAMMERFALL	settlement	easternkingdoms.arathi_highlands	1417	0.738	0.324		hammerfall				Pois
+CITY_IRONFORGE	settlement	easternkingdoms.dun_morogh	1455	0.184	0.514	ironforge					Pois
+TOWN_KARGATH	settlement	easternkingdoms.badlands	1418	0.028	0.458		kargath				Pois
+TOWN_KHARANOS	settlement	easternkingdoms.dun_morogh	1426	0.474	0.524		kharanos				Pois
+TOWN_LAKESHIRE	settlement	easternkingdoms.redridge_mountains	1433	0.268	0.442		lakeshire				Pois
+TOWN_LIGHTS_HOPE_CHAPEL	settlement	easternkingdoms.eastern_plaguelands	1423	0.814	0.582		lights_hope_chapel				Pois
+TOWN_MENETHIL_HARBOR	settlement	easternkingdoms.wetlands	1437	0.106	0.608		menethil_harbor				Pois
+TOWN_NIJELS_POINT	settlement	kalimdor.desolace	1443	0.662	0.066		nijels_point				Pois
+CITY_ORGRIMMAR	settlement	kalimdor.durotar	1454	0.54	0.686	orgrimmar					Pois
+TOWN_RATCHET	settlement	kalimdor.the_barrens	1413	0.62	0.394		ratchet				Pois
+TOWN_RAZOR_HILL	settlement	kalimdor.durotar	1411	0.514	0.416		razor_hill				Pois
+TOWN_REVANTUSK_VILLAGE	settlement	easternkingdoms.hinterlands	1425	0.782	0.812		revantusk_village				Pois
+TOWN_SENTINEL_HILL	settlement	easternkingdoms.westfall	1436	0.528	0.534		sentinel_hill				Pois
+TOWN_SHADOWPREY_VILLAGE	settlement	kalimdor.desolace	1443	0.24	0.682		shadowprey_village				Pois
+TOWN_SHENDAR_VILLAGE	settlement	zephras_isle.zephras_isle	2521	0.43	0.433		shendar_village				Pois
+TOWN_SOUTHSHORE	settlement	easternkingdoms.hillsbrad_foothills	1424	0.51	0.588		southshore				Pois
+TOWN_SPLINTERTREE_POST	settlement	kalimdor.ashenvale	1440	0.74	0.606		splintertree_post				Pois
+TOWN_STONARD	settlement	easternkingdoms.swamp_of_sorrows	1435	0.45	0.564		stonard				Pois
+TOWN_STONETALON_PEAK	settlement	kalimdor.stonetalon_mountains	1442	0.356	0.058		stonetalon_peak				Pois
+CITY_STORMWIND	settlement	easternkingdoms.elwynn_forest	1453	0.6025	0.7537	stormwind					Pois
+TOWN_SUN_ROCK_RETREAT	settlement	kalimdor.stonetalon_mountains	1442	0.474	0.62		sun_rock_retreat				Pois
+TOWN_TARREN_MILL	settlement	easternkingdoms.hillsbrad_foothills	1424	0.626	0.19		tarren_mill				Pois
+TOWN_THE_SEPULCHER	settlement	easternkingdoms.silverpine_forest	1421	0.432	0.412		the_sepulcher				Pois
+TOWN_THELSAMAR	settlement	easternkingdoms.loch_modan	1432	0.354	0.484		thelsamar				Pois
+TOWN_THERAMORE_ISLE	settlement	kalimdor.dustwallow_marsh	1445	0.664	0.452		theramore_isle				Pois
+CITY_THUNDER_BLUFF	settlement	kalimdor.mulgore	1456	0.454	0.634	thunder_bluff					Pois
+CITY_UNDERCITY	settlement	easternkingdoms.tirisfal_glades	1458	0.668	0.386	undercity					Pois
+TOWN_VALANAAR	settlement	zephras_isle.zephras_isle	2521	0.6218	0.7269		valanaar				Pois
+INSTANCE_BLACKFATHOM_DEEPS	instance	kalimdor.darkshore	1439	0.335	0.935				719		Pois
+INSTANCE_DIRE_MAUL	instance	kalimdor.feralas	1444	0.62	0.333				2557		Pois
+INSTANCE_MARAUDON	instance	kalimdor.desolace	1443	0.291	0.629				2100		Pois
+INSTANCE_RAGEFIRE_CHASM	instance	kalimdor.durotar	1454	0.528	0.489				2437		Pois
+INSTANCE_RAZORFEN_DOWNS	instance	kalimdor.the_barrens	1413	0.509	0.929				722		Pois
+INSTANCE_RAZORFEN_KRAUL	instance	kalimdor.the_barrens	1413	0.423	0.899				491		Pois
+INSTANCE_WAILING_CAVERNS	instance	kalimdor.the_barrens	1413	0.477	0.35				718		Pois
+INSTANCE_ZULFARRAK	instance	kalimdor.tanaris	1446	0.387	0.199				1176		Pois
+INSTANCE_AHNQIRAJ_TEMPLE	instance	kalimdor.silithus	1451	0.29	0.927				3428		Pois
+INSTANCE_ONYXIAS_LAIR	instance	kalimdor.dustwallow_marsh	1445	0.529	0.777				2159		Pois
+INSTANCE_RUINS_OF_AHNQIRAJ	instance	kalimdor.silithus	1451	0.29	0.928				3429		Pois
+INSTANCE_BLACKROCK_DEPTHS	instance	easternkingdoms.blackrock_mountain	1427	0.271	0.725				1584		Pois
+INSTANCE_BLACKROCK_SPIRE	instance	easternkingdoms.blackrock_mountain	1428	0.33	0.252				1583		Pois
+INSTANCE_CITY_OF_DALARAN	instance	easternkingdoms.alterac_mountains	1416	0.087	0.594						Pois
+INSTANCE_DEADMINES	instance	easternkingdoms.westfall	1436	0.382	0.775				1581		Pois
+INSTANCE_EXCAVATION_SITE_WETLANDS	instance	easternkingdoms.wetlands	1437	0.476	0.56						Pois
+INSTANCE_GNOMEREGAN	instance	easternkingdoms.dun_morogh	1426	0.177	0.392				133		Pois
+INSTANCE_RUINS_OF_LORDAERON	instance	easternkingdoms.tirisfal_glades	1458	0.648	0.357						Pois
+INSTANCE_SCARLET_MONASTERY	instance	easternkingdoms.tirisfal_glades	1420	0.85	0.314				796		Pois
+INSTANCE_SCHOLOMANCE	instance	easternkingdoms.western_plaguelands	1422	0.69	0.73				2057		Pois
+INSTANCE_SHADOWFANG_KEEP	instance	easternkingdoms.silverpine_forest	1421	0.447	0.678				209		Pois
+INSTANCE_STORMWIND_STOCKADE	instance	easternkingdoms.elwynn_forest	1453	0.5873	0.7575				717		Pois
+INSTANCE_STRATHOLME	instance	easternkingdoms.eastern_plaguelands	1423	0.26	0.105				2017		Pois
+INSTANCE_SUNKEN_TEMPLE	instance	easternkingdoms.swamp_of_sorrows	1435	0.773	0.359				1417		Pois
+INSTANCE_THE_HALL_OF_THANES	instance	easternkingdoms.dun_morogh	1455	0.152	0.857						Pois
+INSTANCE_ULDAMAN	instance	easternkingdoms.loch_modan	1432	0.348	0.855				1337		Pois
+INSTANCE_BLACKWING_LAIR	instance	easternkingdoms.blackrock_mountain	1428	0.325	0.324				2677		Pois
+INSTANCE_MOLTEN_CORE	instance	easternkingdoms.blackrock_mountain	1428	0.263	0.245				2717		Pois
+INSTANCE_NAXXRAMAS	instance	easternkingdoms.eastern_plaguelands	1423	0.342	0.195				3456		Pois
+INSTANCE_ZULGURUB	instance	easternkingdoms.stranglethorn_vale	1434	0.54	0.176				1977		Pois
+DOCK_VALANAAR	dock	zephras_isle.zephras_isle	2521	0.5791	0.8078				16628		ZephrasIsle
+DOCK_ZEPHRAS_ALLIANCE	dock	zephras_isle.zephras_isle	2521	0.6581	0.8341						ZephrasIsle

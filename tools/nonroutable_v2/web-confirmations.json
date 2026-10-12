@@ -1,0 +1,22 @@
+{
+  "retrieved": "2026-10-11",
+  "scope": "Identity/title confirmation only; no coordinates inferred from zone prose or comments.",
+  "definitions": {
+    "I216661": {"name": "Grime-Encrusted Ring", "url": "https://www.wowhead.com/classic/item=216661/grime-encrusted-ring", "evidence": "Item page heading confirms the ring; resolves contradictory Salvage comment."},
+    "I226701": {"name": "Shadowcraft Belt", "url": "https://www.wowhead.com/classic/item=226701/shadowcraft-belt", "evidence": "Item page heading and Waist slot; resolves swapped cost comments."},
+    "I226702": {"name": "Shadowcraft Gloves", "url": "https://www.wowhead.com/classic/item=226702/shadowcraft-gloves", "evidence": "Item page heading and Hands slot; resolves swapped cost comments."},
+    "Q85798": {"name": "Arms for the Field", "url": "https://www.wowhead.com/forever/tw/quest=85798/arms-for-the-field", "evidence": "Search-index page title in English and exact quest ID; French Classic page and German Forever page describe delivery to Janela Stouthammer. English direct page retrieval failed."},
+    "Q86760": {"name": "Darkmoon Beast Deck", "url": "https://www.wowhead.com/classic/quest=86760/darkmoon-beast-deck", "evidence": "Quest page heading and exact quest ID."},
+    "Q86761": {"name": "Darkmoon Warlords Deck", "url": "https://www.wowhead.com/classic/quest=86761/darkmoon-warlords-deck", "evidence": "Quest page heading and exact quest ID."},
+    "Q86762": {"name": "Darkmoon Elementals Deck", "url": "https://www.wowhead.com/classic/quest=86762/darkmoon-elementals-deck", "evidence": "Search-index heading and exact quest ID; direct page retrieval denied by robots."},
+    "Q86763": {"name": "Darkmoon Portals Deck", "url": "https://www.wowhead.com/classic/quest=86763/darkmoon-portals-deck", "evidence": "Quest page heading and exact quest ID."}
+  },
+  "context": [
+    {"target": "U217996", "url": "https://www.wowhead.com/classic/npc=217996/aeonas", "finding": "Aeonas in Scarlet Monastery; no usable Forever map point."},
+    {"target": "O15084,O15085", "url": "https://www.wowhead.com/classic/quest=4601/the-sparklematic-5200", "finding": "The Sparklematic 5200; quest takes place in Gnomeregan. Exact provider IDs confirmed separately by pinned raw ATT."}
+  ],
+  "unavailable": [
+    {"url": "https://wago.tools/db2/Creature?build=1.60.1.70338", "reason": "Web tool could not retrieve; shell DNS unavailable. No new DB2 extraction claimed."},
+    {"url": "https://www.wowhead.com/classic/quest=97267", "reason": "Web tool could not retrieve; Classic and Forever searches returned no ID-specific quest evidence."}
+  ]
+}

@@ -1,0 +1,753 @@
+{
+  "build": "1.60.1.70338",
+  "flavor": "wow_classic_beta / Camelot (Forever)",
+  "source_commit": "943764493e6b16d63ded3ab304150d1f05e58b57",
+  "note": "Verified means symbol appears in build-matched Blizzard documentation or Lua source. Optional load-on-demand UI availability and client-native legacy globals still require runtime capability checks. Unverified is NOT an assertion of nonexistence. Freeze evidence offline; review new symbols rather than automatically expanding this list. Native-name rows have the exact API name as a NUL-terminated string in the installed client binary; that establishes static presence, not runtime export/load availability. Optional compatibility globals are accepted only when their call retains a nearby capability guard.",
+  "apis": {
+    "EventUtil.ContinueOnAddOnLoaded": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXML/EventUtil.lua"
+    },
+    "TooltipDataProcessor.AddTooltipPostCall": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua"
+    },
+    "UiMapPoint.CreateFromCoordinates": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_ObjectAPI/Mainline/UiMapPoint.lua"
+    },
+    "C_AddOns.GetAddOnEnableState": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnsDocumentation.lua"
+    },
+    "C_AddOns.GetAddOnMetadata": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnsDocumentation.lua"
+    },
+    "C_AddOns.IsAddOnLoadable": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnsDocumentation.lua"
+    },
+    "C_AddOns.IsAddOnLoaded": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnsDocumentation.lua"
+    },
+    "C_AddOns.LoadAddOn": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnsDocumentation.lua"
+    },
+    "C_AreaPoiInfo.GetAreaPOIForMap": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/AreaPoiInfoDocumentation.lua"
+    },
+    "C_AreaPoiInfo.GetAreaPOIInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/AreaPoiInfoDocumentation.lua"
+    },
+    "C_ChatInfo.RegisterAddonMessagePrefix": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatInfoDocumentation.lua"
+    },
+    "C_ChatInfo.SendAddonMessage": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatInfoDocumentation.lua"
+    },
+    "C_Container.GetItemCooldown": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/ContainerDocumentation.lua"
+    },
+    "C_CVar.GetCVarBool": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/CVarDocumentation.lua"
+    },
+    "C_CVar.GetCVarInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/CVarDocumentation.lua"
+    },
+    "C_CVar.SetCVar": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/CVarDocumentation.lua"
+    },
+    "C_DeathInfo.GetCorpseMapPosition": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/DeathInfoDocumentation.lua"
+    },
+    "C_EncounterJournal.GetDungeonEntrancesForMap": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterJournalDocumentation.lua"
+    },
+    "C_EventUtils.IsEventValid": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/EventUtilsDocumentation.lua"
+    },
+    "C_Item.GetItemClassInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua"
+    },
+    "C_Item.GetItemSubClassInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua"
+    },
+    "C_Map.CanSetUserWaypointOnMap": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.ClearUserWaypoint": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetAreaInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetBestMapForUnit": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetFallbackWorldMapID": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapArtID": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapArtLayers": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapArtLayerTextures": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapChildrenInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapInfoAtPosition": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapPosFromWorldPos": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetMapRectOnMap": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetPlayerMapPosition": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetUserWaypoint": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetUserWaypointHyperlink": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.GetWorldPosFromMapPos": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.HasUserWaypoint": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.MapHasArt": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_Map.SetUserWaypoint": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua"
+    },
+    "C_MapExplorationInfo.GetExploredMapTextures": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapExplorationDocumentation.lua"
+    },
+    "C_Minimap.GetViewRadius": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MinimapDocumentation.lua"
+    },
+    "C_Minimap.IsRotateMinimapIgnored": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/MinimapDocumentation.lua"
+    },
+    "C_QuestLog.GetInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.GetLogIndexForQuestID": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.GetNextWaypoint": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.GetNumQuestLogEntries": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.GetQuestIDForLogIndex": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.GetQuestObjectives": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.GetQuestsOnMap": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.GetTitleForQuestID": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.IsComplete": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.IsQuestFlaggedCompleted": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_QuestLog.RequestLoadQuestByID": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua"
+    },
+    "C_Secrets.ShouldUnitIdentityBeSecret": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/SecretPredicateAPIDocumentation.lua"
+    },
+    "C_Spell.GetSpellCooldown": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/SpellDocumentation.lua",
+      "secret_flags": [
+        "SecretWhenCooldownsRestricted"
+      ]
+    },
+    "C_Spell.GetSpellName": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/SpellDocumentation.lua"
+    },
+    "C_SuperTrack.GetSuperTrackedQuestID": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/SuperTrackManagerDocumentation.lua"
+    },
+    "C_SuperTrack.IsSuperTrackingUserWaypoint": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/SuperTrackManagerDocumentation.lua"
+    },
+    "C_SuperTrack.SetSuperTrackedUserWaypoint": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/SuperTrackManagerDocumentation.lua"
+    },
+    "C_TaxiMap.GetAllTaxiNodes": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/TaxiMapDocumentation.lua"
+    },
+    "C_TaxiMap.GetTaxiNodesForMap": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/TaxiMapDocumentation.lua"
+    },
+    "C_Timer.After": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UITimerDocumentation.lua"
+    },
+    "C_TooltipInfo.GetUnit": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/TooltipInfoDocumentation.lua"
+    },
+    "C_VignetteInfo.GetVignetteInfo": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/VignetteInfoDocumentation.lua"
+    },
+    "C_VignetteInfo.GetVignettePosition": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/VignetteInfoDocumentation.lua"
+    },
+    "C_VignetteInfo.GetVignettes": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/VignetteInfoDocumentation.lua"
+    },
+    "CanMerchantRepair": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67361211
+    },
+    "ChatEdit_InsertLink": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
+    },
+    "ChatFrame_OpenChat": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
+    },
+    "ChatFrame_RemoveChannel": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
+    },
+    "ChatFrameUtil.InsertLink": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_ChatFrameBase/Mainline/ChatFrameUtilOverrides.lua"
+    },
+    "ChatFrameUtil.OpenChat": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameUtil.lua"
+    },
+    "CreateFrame": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 65656165
+    },
+    "CreateFromMixins": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameScriptDocumentation.lua"
+    },
+    "CreateSettingsButtonInitializer": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_SettingControls.lua"
+    },
+    "CreateSettingsListSectionHeaderInitializer": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_SettingControls.lua"
+    },
+    "CreateVector2D": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXML/Vector2D.lua"
+    },
+    "GameTooltip_AddNormalLine": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXML/SharedTooltipTemplates.lua"
+    },
+    "GameTooltip_SetTitle": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXML/SharedTooltipTemplates.lua"
+    },
+    "GetBindLocation": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/PlayerScriptDocumentation.lua"
+    },
+    "GetChannelName": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67187132
+    },
+    "GetCursorPosition": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/InputDocumentation.lua"
+    },
+    "GetCVar": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXMLBase/CvarUtil.lua"
+    },
+    "GetCVarBool": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXMLBase/CvarUtil.lua"
+    },
+    "GetItemClassInfo": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66147385
+    },
+    "GetItemCooldown": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 65991608
+    },
+    "GetItemCount": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66147430
+    },
+    "GetItemSubClassInfo": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66148004
+    },
+    "GetLocale": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/LocaleDocumentation.lua"
+    },
+    "GetLootSlotInfo": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67354421
+    },
+    "GetLootSlotLink": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67354437
+    },
+    "GetLootSourceInfo": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67354718
+    },
+    "GetMerchantItemLink": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67361102
+    },
+    "GetMerchantNumItems": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67360996
+    },
+    "GetMinimapShape": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
+    },
+    "GetNormalizedRealmName": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/PlayerScriptDocumentation.lua"
+    },
+    "GetNumLootItems": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67354405
+    },
+    "GetObjectiveText": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 65994969
+    },
+    "GetPlayerFacing": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66241396
+    },
+    "GetQuestID": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67404629
+    },
+    "GetRealmName": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/ConnectionDocumentation.lua"
+    },
+    "GetServerTime": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66380428
+    },
+    "GetSpellCooldown": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66357193
+    },
+    "GetSpellInfo": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66357340
+    },
+    "GetTaxiMapID": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67447326
+    },
+    "GetTime": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/LuaDurationClockAPIDocumentation.lua"
+    },
+    "GetTitleText": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67404640
+    },
+    "GetUnitName": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_UnitFrame/Mainline/UnitFrame.lua"
+    },
+    "GetUnitSpeed": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+      "secret_flags": [
+        "SecretWhenUnitStatsRestricted"
+      ]
+    },
+    "hooksecurefunc": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 65653165
+    },
+    "IsAddOnLoaded": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 65868888
+    },
+    "IsAltKeyDown": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66141224
+    },
+    "IsControlKeyDown": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66141237
+    },
+    "IsInGroup": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67380603
+    },
+    "IsInGuild": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/PlayerScriptDocumentation.lua"
+    },
+    "IsInRaid": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67380628
+    },
+    "IsMounted": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66242351
+    },
+    "IsPlayerSpell": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_DeprecatedSpellBook/Deprecated_SpellBook.lua"
+    },
+    "IsShiftKeyDown": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66141468
+    },
+    "IsSpellKnown": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_DeprecatedSpellBook/Deprecated_SpellBook.lua"
+    },
+    "IsSwimming": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66456247
+    },
+    "JoinTemporaryChannel": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67186927
+    },
+    "LeaveChannelByName": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67186990
+    },
+    "MenuUtil.CreateContextMenu": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Menu/MenuUtil.lua"
+    },
+    "OpenWorldMap": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_WorldMap/Blizzard_WorldMap.lua"
+    },
+    "PanelTemplates_SetNumTabs": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua"
+    },
+    "PanelTemplates_SetTab": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua"
+    },
+    "PanelTemplates_TabResize": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua"
+    },
+    "PlaySound": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66053269
+    },
+    "Settings.CreateCheckbox": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.CreateControlTextContainer": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.CreateDropdown": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.CreateSlider": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.CreateSliderOptions": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.RegisterAddOnCategory": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.RegisterCanvasLayoutCategory": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.RegisterProxySetting": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.RegisterVerticalLayoutCategory": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "Settings.RegisterVerticalLayoutSubcategory": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Settings.lua"
+    },
+    "StaticPopup_Show": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_StaticPopup/StaticPopup.lua"
+    },
+    "TakeTaxiNode": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 67447395
+    },
+    "UnitCanAttack": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitClass": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+      "secret_flags": [
+        "SecretWhenUnitIdentityRestricted"
+      ]
+    },
+    "UnitClassification": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitExists": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitFactionGroup": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitGUID": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+      "secret_flags": [
+        "SecretWhenUnitIdentityRestricted"
+      ]
+    },
+    "UnitIsDead": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitIsDeadOrGhost": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitIsGhost": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitIsPlayer": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitIsTapDenied": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitIsUnit": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+      "secret_flags": [
+        "SecretWhenUnitComparisonRestricted"
+      ]
+    },
+    "UnitLevel": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitName": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+      "secret_flags": [
+        "SecretWhenUnitNameIdentityRestricted"
+      ]
+    },
+    "UnitOnTaxi": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitPlayerControlled": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitPosition": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitRace": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+      "secret_flags": [
+        "SecretWhenUnitIdentityRestricted"
+      ]
+    },
+    "UnitReaction": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "IsModifiedClick": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_ObjectiveTracker/Blizzard_QuestObjectiveTracker.lua",
+      "note": "Build-matched tracker uses this native helper for QUESTWATCHTOGGLE; invocation remains capability-guarded."
+    },
+    "issecretvalue": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66079526,
+      "note": "Follow.lua capability-checks this optional native secret predicate before distinguishing an unavailable log entry from a restricted value."
+    },
+    "GetInstanceInfo": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 65978915
+    },
+    "IsFlying": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66456202
+    },
+    "IsFalling": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66456192
+    },
+    "UnitInVehicle": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66457685
+    },
+    "UnitAffectingCombat": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 66456475
+    },
+    "GetBuildInfo": {
+      "status": "native-name",
+      "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
+      "binary_offset": 65906261
+    }
+  },
+  "native_binary_sha256": "0d89aed141d61541513aad0f02946f5cb76bc74e967ec35139811e280d488620"
+}

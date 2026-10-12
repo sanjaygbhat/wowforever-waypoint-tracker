@@ -1,0 +1,341 @@
+{
+  "travel/TaxiPathNode.csv": {
+    "sha256": "c8ccd626eed82a6d6bd048222176847c915dcf9e14c02230ae27025c62005be1",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/mz_edges.tsv": {
+    "sha256": "cb75b94a71e455cf6aa19674ca694e6ce750d26fe670bb4de62219e00197bce0",
+    "source": "Mapzeroth Forever rebuild extraction"
+  },
+  "travel/mz_settlements.tsv": {
+    "sha256": "d77de3c4753058344a47c387fcc8c55c331abf8462087abf292b27d08922bc44",
+    "source": "Mapzeroth Forever rebuild extraction"
+  },
+  "travel/AreaTable_1.15.csv": {
+    "sha256": "2d7dbadd2f9dc005cd2b8139b50db18bb26cecb61ee2551edcc755d63e01ec41",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/mz_misc.tsv": {
+    "sha256": "7307bb888619451ceffaaf71e487a497338b233196d7606b2e9310dfc00c1399",
+    "source": "Mapzeroth Forever rebuild extraction"
+  },
+  "travel/Map.csv": {
+    "sha256": "ed4ae1ec9990ce80402ad3a0720a52edf792ee77da8d10ac0b66e3892cb4e30a",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/UiMapAssignment.csv": {
+    "sha256": "79267e8be8034e47daab14350411b3acc0b1f64e86efc9d821a217497254ca0a",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/TransportAnimation.csv": {
+    "sha256": "d734b9cc688c122e2e57cd0c890a3d0545034d48c8a377dfa4da0df50f5836eb",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/AreaTrigger.csv": {
+    "sha256": "b96a5ef667a17b0a9b551e2d75552d3872a1d0e147fd817d251e1fab415dc81c",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/mz_nodes.tsv": {
+    "sha256": "93ce361bab80719c9bfc4b804cdfca24ccf98980436cdddf35c6c88e2a04fc58",
+    "source": "Mapzeroth Forever rebuild extraction"
+  },
+  "travel/AreaTable.csv": {
+    "sha256": "3ab69cb2020d76c395983d3877d472fdd6d986af73d5de1417f4928f79222ecc",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/UiMap.csv": {
+    "sha256": "1f4aac70eaac015b1d2d0ea0faf6e3d7fb2cf7afdf45e5bb6772d9b80a72346b",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/TaxiNodes.csv": {
+    "sha256": "e3d4833dcb395214c0366d241fdaa4b7d7e2330133bb6db03ed5bfd01f974bea",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "travel/TaxiPath.csv": {
+    "sha256": "07222b184a692c0b275ad713bbb30e1a88e8da14e3f2e26d9afb6d6b59e41404",
+    "source": "Wago build 1.60.1.70338"
+  },
+  "client/AreaPOI-1.60.1.70338-deDE.csv": {
+    "source_sha256": "109ea26aa654b57d24ab84dd164f71ba34c584aab3fd0cda8884e6e2e60cc80c",
+    "sha256": "109ea26aa654b57d24ab84dd164f71ba34c584aab3fd0cda8884e6e2e60cc80c",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-enUS.csv": {
+    "source_sha256": "073b941fa518af9b43970425f581ac274f2b70d7324bf0e7622509415e44a22d",
+    "sha256": "073b941fa518af9b43970425f581ac274f2b70d7324bf0e7622509415e44a22d",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-esES.csv": {
+    "source_sha256": "3dd3b681bbd252b422fe0d8eb41c88fbf82b3fc8916e03986b479d2b29bff984",
+    "sha256": "3dd3b681bbd252b422fe0d8eb41c88fbf82b3fc8916e03986b479d2b29bff984",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-esMX.csv": {
+    "source_sha256": "a35b42dc85c427287fc4c93bcca8d46253ceb8c9d0fbc3bc0a81ba4ea2b16cd8",
+    "sha256": "a35b42dc85c427287fc4c93bcca8d46253ceb8c9d0fbc3bc0a81ba4ea2b16cd8",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-frFR.csv": {
+    "source_sha256": "73dd55f07365eebaa1c5bf73d85261de9103b9363ff7336a2d9e1c57fb661c6a",
+    "sha256": "73dd55f07365eebaa1c5bf73d85261de9103b9363ff7336a2d9e1c57fb661c6a",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-koKR.csv": {
+    "source_sha256": "8c4ea768b271ad1a39aace8ece5f686edbe62925226e6c523c6bdd0ae830a596",
+    "sha256": "8c4ea768b271ad1a39aace8ece5f686edbe62925226e6c523c6bdd0ae830a596",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-ptBR.csv": {
+    "source_sha256": "2234aeee1267777263f007bece1b413f979b24b097843e262c65e7f11d438993",
+    "sha256": "2234aeee1267777263f007bece1b413f979b24b097843e262c65e7f11d438993",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-ruRU.csv": {
+    "source_sha256": "7bb26736cab869e8c05dd2f4556ad82e3e44fb1f75d4c8b92822f1e391bc681b",
+    "sha256": "7bb26736cab869e8c05dd2f4556ad82e3e44fb1f75d4c8b92822f1e391bc681b",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-zhCN.csv": {
+    "source_sha256": "b3bdae09c851fd67bfe08403ae07a7eaf2dec0e24899b6c40ce80ef7cb01069f",
+    "sha256": "b3bdae09c851fd67bfe08403ae07a7eaf2dec0e24899b6c40ce80ef7cb01069f",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70338-zhTW.csv": {
+    "source_sha256": "d4ae174eb040cac260a31a8fbe7d065b641b92db40401affbbe9fd5954bd6b7b",
+    "sha256": "d4ae174eb040cac260a31a8fbe7d065b641b92db40401affbbe9fd5954bd6b7b",
+    "source": "https://wago.tools/db2/AreaPOI?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/Item-1.60.1.70338-enUS.csv.gz": {
+    "source_sha256": "8af07a6717ff8c4bb5de005cfb40f687c12ca27e5e45cd50b1c8bd71e31d6c2f",
+    "sha256": "2a81f8002e661f9d1d651a8c949675883f2aa44a382f48ddbf3c22c0a1701266",
+    "source": "https://wago.tools/db2/Item?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-deDE.csv.gz": {
+    "source_sha256": "da517a09b43da7a8a9dfa85fff036454ed612169cf6aad1a0d712ce5f1967881",
+    "sha256": "4274b91061d6682f032f4e5428b79119a22eb6b58e338d8d9d4835c7e7f5a914",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-enUS.csv.gz": {
+    "source_sha256": "c4910b0ca68f886b3745be0a54cba4e1400240c618f99af05cd569a4da72c861",
+    "sha256": "b49b4884d62483bfdd7075b09edfd76640bf096931f368cf96a33366abd30050",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-esES.csv.gz": {
+    "source_sha256": "f308033b83b9e2dae396059a096d6783bfbd0703bd2eabf377d54ab13bd3e565",
+    "sha256": "b3ec3f0fd4786c4b7979b8abc3d743413248d4cd35183dba021ce7f3eabe4741",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-esMX.csv.gz": {
+    "source_sha256": "6feee30577ab7ecd7c80838ab17fe25765e3cd741b5e1612bdf1a7666ec3fcd7",
+    "sha256": "71ec905ea9bf1a0e850f7b949df470bd2b8991a50e3de27aabda67c386479484",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-frFR.csv.gz": {
+    "source_sha256": "3378f8033f8a403ad061f7c5d56db42625845d77a8f07b874f766616723e7db8",
+    "sha256": "858dce2aa8ce05852cef4c698a2f6cd521676a750f06f2a5060b75d914161bba",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-koKR.csv.gz": {
+    "source_sha256": "c9c0a48b760a3529d9daf8752fa694ce58ca1161cefe2fed5b05bf97eea3c9ac",
+    "sha256": "5d8773bad8a18dc47c2d9d04c570bba1434e19559af1cf7174284ae5d204be9a",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-ptBR.csv.gz": {
+    "source_sha256": "db3dd8e07c9451e73e17550f9c9e72b6472d619cb4cad965aa2b85d07519f58c",
+    "sha256": "3e6dd8acbd04ada31e95fad58cb0bdc9cd1352b9fc564dcb74af100ddd5f8e67",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-ruRU.csv.gz": {
+    "source_sha256": "4d8aeb53524185f2846c0b9f3f48a1411709aa5a5eabd678a186119622dbe0b5",
+    "sha256": "0fddbc4c714ddf5d72ba3513cc742d362002b2e59c6c11256b67407581e44b49",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-zhCN.csv.gz": {
+    "source_sha256": "cdd2ce6bfe71413e708a54d18ce3f063624ac75ae503bcdb7a8454eb5b07cf80",
+    "sha256": "09ac2a042c2b9393560450bf53d0a26a504b8fdee9ffe8aaea5bd0f73c0f3695",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70338-zhTW.csv.gz": {
+    "source_sha256": "3b2c397a1b445d715b3f268c6850d73d41a8a781492209e115bb0f82708d9c4a",
+    "sha256": "57fb0fdffcad5259dcce2bd3999de95ad782a570a85bdaab86e087b78ded53ee",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70338",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/QuestPOIBlob-1.60.1.70338-enUS.csv": {
+    "source_sha256": "4fbf4b386a1d795cee2caada8ef5dd25d4fc2d11a04a11d61c2ed32b67790b82",
+    "sha256": "4fbf4b386a1d795cee2caada8ef5dd25d4fc2d11a04a11d61c2ed32b67790b82",
+    "source": "https://wago.tools/db2/QuestPOIBlob?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/QuestPOIPoint-1.60.1.70338-enUS.csv": {
+    "source_sha256": "b56776fc48084e0482386c6e5403a25cd7800768910a007c98f8da3d79728b2f",
+    "sha256": "b56776fc48084e0482386c6e5403a25cd7800768910a007c98f8da3d79728b2f",
+    "source": "https://wago.tools/db2/QuestPOIPoint?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/QuestV2-1.60.1.70338-enUS.csv": {
+    "source_sha256": "4e865f98fce538f55da40a69eedc731ee0f52a4e9275148e91a7f9eb6f4e1bbe",
+    "sha256": "4e865f98fce538f55da40a69eedc731ee0f52a4e9275148e91a7f9eb6f4e1bbe",
+    "source": "https://wago.tools/db2/QuestV2?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-deDE.csv": {
+    "source_sha256": "7dc7579dd6e52ae5263d8d7f5ed0425fe44346ef612db53d7841510ec817cb12",
+    "sha256": "7dc7579dd6e52ae5263d8d7f5ed0425fe44346ef612db53d7841510ec817cb12",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-enUS.csv": {
+    "source_sha256": "e3d4833dcb395214c0366d241fdaa4b7d7e2330133bb6db03ed5bfd01f974bea",
+    "sha256": "e3d4833dcb395214c0366d241fdaa4b7d7e2330133bb6db03ed5bfd01f974bea",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-esES.csv": {
+    "source_sha256": "a161604b5796c356a61cf108ba53cd5226955dfe7449ad3a359425a4acdd4368",
+    "sha256": "a161604b5796c356a61cf108ba53cd5226955dfe7449ad3a359425a4acdd4368",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-esMX.csv": {
+    "source_sha256": "7ec1835a48396f15cd715c9b43b3298e27e463d9da82174603e260f67e977be9",
+    "sha256": "7ec1835a48396f15cd715c9b43b3298e27e463d9da82174603e260f67e977be9",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-frFR.csv": {
+    "source_sha256": "2510363d77fc5a85fe22f70d42ab6a30de36d85af8b6304cad83dcb3a24b3c5a",
+    "sha256": "2510363d77fc5a85fe22f70d42ab6a30de36d85af8b6304cad83dcb3a24b3c5a",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-koKR.csv": {
+    "source_sha256": "f769718c2b8a92fb41ed4413c208b998a617d2b8c000e4f6ad796e3f177380fe",
+    "sha256": "f769718c2b8a92fb41ed4413c208b998a617d2b8c000e4f6ad796e3f177380fe",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-ptBR.csv": {
+    "source_sha256": "f556200a5fd1f8668571844885e46f6d1cba8bce6cabe6f76b4e195d35198f3d",
+    "sha256": "f556200a5fd1f8668571844885e46f6d1cba8bce6cabe6f76b4e195d35198f3d",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-ruRU.csv": {
+    "source_sha256": "43668fc0e082a8da499b1c8dea87e88a4e765cdaf0c9b5021666ed8897c6bf0d",
+    "sha256": "43668fc0e082a8da499b1c8dea87e88a4e765cdaf0c9b5021666ed8897c6bf0d",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-zhCN.csv": {
+    "source_sha256": "fcdfff4e4589b872d5d051a6cd60322fd2f58e6260e98fb2a20d7bc978e301db",
+    "sha256": "fcdfff4e4589b872d5d051a6cd60322fd2f58e6260e98fb2a20d7bc978e301db",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70338-zhTW.csv": {
+    "source_sha256": "fd5a4c187158ac0c3e5cb11ee4d3cc051464bd8a9260b630656b47c84fb55383",
+    "sha256": "fd5a4c187158ac0c3e5cb11ee4d3cc051464bd8a9260b630656b47c84fb55383",
+    "source": "https://wago.tools/db2/TaxiNodes?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/UiMap-1.60.1.70338-enUS.csv": {
+    "source_sha256": "1f4aac70eaac015b1d2d0ea0faf6e3d7fb2cf7afdf45e5bb6772d9b80a72346b",
+    "sha256": "1f4aac70eaac015b1d2d0ea0faf6e3d7fb2cf7afdf45e5bb6772d9b80a72346b",
+    "source": "https://wago.tools/db2/UiMap?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/UiMapAssignment-1.60.1.70338-enUS.csv": {
+    "source_sha256": "79267e8be8034e47daab14350411b3acc0b1f64e86efc9d821a217497254ca0a",
+    "sha256": "79267e8be8034e47daab14350411b3acc0b1f64e86efc9d821a217497254ca0a",
+    "source": "https://wago.tools/db2/UiMapAssignment?build=1.60.1.70338",
+    "selection": "full extraction"
+  },
+  "client/ItemSparse-1.60.1.70205-enUS.csv.gz": {
+    "sha256": "5a1b4a0b3e0157f7898d009841c5b23ca53289674aa8acd8fc6271bbafc3315e",
+    "source_sha256": "4ace92a12e1c11c22d2d463d311817a77ba29c9787b229749e02d447851c3515",
+    "selection": "full prior ID set",
+    "source": "https://wago.tools/db2/ItemSparse?build=1.60.1.70205"
+  },
+  "pfquest/db/items.lua": {
+    "sha256": "8a4226492e99a48263a821a6ccc3e07012554364262a0ab6bbf2556dd5102b52",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest/db/quests.lua": {
+    "sha256": "5adbe0c342e7e600a20595ed89fcef8a7ae851083c9e77fdce2038029ef07b7c",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest/db/objects.lua": {
+    "sha256": "7f1f32c2c5bbcd250ce403ff4c4c6b7b82d15bd1fa1b5755e7a103477b9d9402",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest/db/units.lua": {
+    "sha256": "2af0170603ec0e70cac973f09905ef49d408731fc7d3a79f21a09d833dffea70",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest/db/enUS/items.lua": {
+    "sha256": "0de5fff5e67d9226d5cf5e9d4f508695db1fe03ac3993172671ae2efc62dcdfe",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest/db/enUS/quests.lua": {
+    "sha256": "fad3e488621fe7f3206073497e8087c4f0ca466e231b2580daa1007a38f0f3be",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest/db/enUS/objects.lua": {
+    "sha256": "5a335537b5c8920196e7cabc491edd5a4788846914bf530f7e04259d13664dfc",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest/db/enUS/units.lua": {
+    "sha256": "0e8b0d85b21b5baeba423fb2fd3a583b6c7e2222716db645d63e1dcc70ad7f83",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "reference-pfquest/db/enUS/items.lua": {
+    "sha256": "7a6cc4b6db971bec7a6efc306b2335429911fb27b4bdc3cb276f2bd2e37db6cf",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "reference-pfquest/db/enUS/objects.lua": {
+    "sha256": "cf15c23a1c3503b76c45d61f05ab65e9dca6e3ac51388deabb3fdddfaf731ed1",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "reference-pfquest/db/enUS/units.lua": {
+    "sha256": "30e57a939fb999e1f54286b67b9b208ad00daacd6c3a05f029f086629ca18d8e",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db",
+    "selection": "selected source fields/names for independent offline audit (MIT)"
+  },
+  "pfquest-item-ids.txt": {
+    "sha256": "b0a087e1fbcf005f0636467e933654eac9eeb9e98bf523945eca15f48ab374ae",
+    "source_sha256": "98bbd02ed910f528f744162c9e0b993f04a0215e48afa88c78711b6f634f137d",
+    "source": "https://github.com/shagu/pfQuest/blob/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db/enUS/items.lua",
+    "selection": "complete source item ID set (MIT)"
+  }
+}
