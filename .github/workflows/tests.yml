@@ -46,3 +46,22 @@ jobs:
           lua5.1 tests/run_map.lua --delayed
           lua5.1 tests/run_map.lua --coords-on
           lua5.1 tests/run_map.lua --global-cvars
+      - name: All Lua check gates
+        run: |
+          for f in tests/check_*.lua; do
+            # This helper receives map/probe input from validate_terrain_geometry.py.
+            if [ "$f" = tests/check_terrain_runtime.lua ]; then
+              python3 -B tools/validate_terrain_geometry.py --lua lua5.1
+            else
+              lua5.1 "$f"
+            fi
+          done
+      - name: Data, runtime audits and Python regression tests
+        env:
+          LUA51: lua5.1
+        run: |
+          python3 -B tools/validate_data.py
+          python3 -B tools/validate_runtime.py all --reviews tools/validate_runtime_reviews.json
+          for f in tests/check_*.py; do
+            python3 -B "$f"
+          done

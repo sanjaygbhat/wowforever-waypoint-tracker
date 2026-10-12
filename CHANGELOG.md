@@ -12,6 +12,8 @@
 - Left-click the minimap button to open the window; right-click for the quick menu; Shift + left-click to add a waypoint here. The Addon Compartment and world-map button offer quick access too.
 - Feedback appears below the title. Clicks in the window keep chat quiet; the Real routes notice offers a button to turn it on. World-map coordinates respect Blizzard's saved settings.
 - Real routes (beta): the arrow guides you through passes and gates, with flight paths, boats, zeppelins, the tram, hearthstone and teleports when quicker. Enable it in Routes or the quick menu; tune it in Settings → Routes.
+- Real routes corrects transport eligibility and timings, replaces blocked walking shortcuts with verified paths where available, and labels needed unmeasured passages. Unresolved quest positions are removed while their names and definitions stay available in Find. The incomplete shipped corpse trace is dropped; corpse routing uses the general planner with checks for blocked legs and backward steering.
+- Zone-border roads use corrected ground anchors and verified bends or tunnel floors, recovering connections rejected by straight shortcuts across nearby slopes.
 - Treasure hunt remains beta, with its controls in Settings and the quick menu.
 
 ## 1.1.1

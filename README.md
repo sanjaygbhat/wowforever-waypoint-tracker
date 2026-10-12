@@ -453,7 +453,7 @@ Per character, in `WTF\Account\<name>\<realm>\<character>\SavedVariables\Waypoin
 
 ## 🛠️ Development
 
-The addon is plain Lua with no libraries. Everything outside the game can be checked with Lua 5.1, the version WoW uses:
+The addon is plain Lua with no libraries. Outside-game checks use Lua 5.1, the version WoW uses, and Python 3's standard library for offline audits:
 
 ```sh
 lua5.1 tests/check_locales.lua                    # every translation complete, placeholders intact
@@ -467,7 +467,13 @@ lua5.1 tests/run_routepreview.lua --bare          # world-map pins without line 
 WT_PLAIN_VECTORS=1 lua5.1 tests/run_bare.lua      # absent optional APIs and plain positions
 ```
 
+The standard `tests/run_tests.lua` entrypoint also runs the offline data and runtime audits, and fails when either gate fails. Data fixtures are pinned in `tools/fixtures`; no network or scratch checkout is needed. See [data audit coverage and unresolved findings](docs/data-audit.md).
+
+It also runs `tests/run_review_regressions.lua`: quest/corpse waypoint ownership, scheduled safe planning, moved goals, clicked-quest updates and resurrection, corridor retention, polyline progress, tracker cleanup, and the ten-second faster-route offer. Each scenario runs with isolated mocks. The finite planner scaling probe reports CPU timings without imposing a machine-dependent timing threshold; native mouse hit testing and taint require client verification.
+
 The tests load the real addon files and act out what a player does: typing `/way`, walking to a waypoint, arriving, clicking the map, using the window, reloading, and running next to another waypoint addon. They run on every push.
+
+`tests/run_tests.lua` also runs `tests/run_runtime_audit.lua`: character identity, SavedVariables migration, secret-value sentinels, handler registration, static API/glyph checks, and the independent planner oracle with `--no-client-cache`. Each gate fails the test run on errors; no network or client installation is required. The secret-review baseline in `tools/validate_runtime_reviews.json` is empty; new findings fail, and the review gate still rejects changed, duplicate or stale entries. Run `python3 -B tools/validate_runtime.py all` for the strict static audit. Exact locale font coverage needs extracted fonts (`--font LOCALE=/path/font.ttf`); long inferred walking legs remain informational until surveyed, with `--strict-long-legs` available as a separate review gate. Neither is treated as a confirmed runtime error.
 
 Releases are built and published by GitHub Actions. The website in `site/` is built with `sh tools/build_site.sh` and published from `main` by GitHub Pages.
 

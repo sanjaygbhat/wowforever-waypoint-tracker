@@ -1,6 +1,6 @@
 # Waypoint Tracker — Routes tab, round 2 (names, map preview, world-map preview)
 
-Branch: `ux-redesign` of `/Users/sanjaybhat/WoW Projects/waypoint-tracker-public-files`. Client: WoW Forever 1.60.1
+Branch: `ux-redesign` of `.`. Client: WoW Forever 1.60.1
 (Interface 16001, FrameXML = `Gethe/wow-ui-source` branch `forever`, game type camelot). Companion to `DESIGN.md`
 (§5.3 is superseded by this file where they differ); the parcel plan is §9 at the end.
 
