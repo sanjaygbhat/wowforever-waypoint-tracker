@@ -118,6 +118,7 @@ D.sourceNames.ptBR = [==[
 954	Pergaminho de Força
 955	Pergaminho do Intelecto
 1017	Kebab Temperado de Lobo
+1018	Chows Blade of DOOM! (Test)
 1041	Trompa do Lobo Preto
 1074	Ponta Dura de Perna de Aranha
 1077	Anel de Mago Défias
@@ -131,6 +132,7 @@ D.sourceNames.ptBR = [==[
 1181	Pergaminho do Espírito
 1194	Espada Bastarda
 1195	Pá de Mineração Kobold
+1196	Tabar
 1197	Maça Gigante
 1198	Espadão
 1200	Escudo Grande de Madeira
@@ -380,6 +382,7 @@ D.sourceNames.ptBR = [==[
 2015	Machado de Guerra de Metal Preto
 2020	Lâmina da Presa Oca
 2021	Escudo de Carapaça Verde
+2023	Monster - Spear, Rusty
 2024	Tarasca
 2025	Machado Farpado
 2026	Martelo de Rocha
@@ -455,6 +458,7 @@ D.sourceNames.ptBR = [==[
 2168	Botas do Encarregado
 2175	Machado de Batalha Umbrapele
 2194	Martelo Diamante
+2207	Jambiya
 2208	Cotó
 2209	Cris
 2214	Broquel de Madeira
@@ -597,7 +601,9 @@ D.sourceNames.ptBR = [==[
 2516	Munição Leve
 2519	Munição Pesada
 2520	Espada Larga
+2521	Flamberge
 2522	Machado Crescente
+2523	Bullova
 2524	Porrete
 2525	Martelo de Guerra
 2526	Adaga de Bloqueio
@@ -608,6 +614,7 @@ D.sourceNames.ptBR = [==[
 2531	Machado Grande
 2532	Maça de Guerra
 2533	Malho de Guerra
+2534	Rondel
 2535	Cajado de Guerra
 2553	Receita: Elixir de Agilidade Menor
 2555	Receita: Poção de Rapidez
@@ -1567,6 +1574,7 @@ D.sourceNames.ptBR = [==[
 5801	Guano de Morcego
 5824	Tabuleta da Vontade
 5825	Pingente de Treshala
+5828	Ring of Uber Resists (TEST)
 5829	Bico Afiadíssimo
 5833	Minério de Indúrio
 5839	Página de Diário
@@ -2813,6 +2821,7 @@ D.sourceNames.ptBR = [==[
 10454	Essência de Erânicos
 10460	Sangue Hakkari
 10505	Pó Explosivo Maciço
+10555	Resist Test Item
 10601	Diagrama: Óculos Brilho-do-olhar
 10602	Diagrama: Mira Letal
 10603	Diagrama: Ultra-óculos Olho-de-gato
@@ -3699,6 +3708,10 @@ D.sourceNames.ptBR = [==[
 16056	Diagrama: Rifle Impecável de Arcanita
 16059	Camisa Marrom Comum
 16060	Camisa Branca Comum
+16068	Test Fire Resist Cloth LockBox
+16069	Test Fire Resist Leather LockBox
+16070	Test Fire Resist Mail LockBox
+16071	Test Fire Resist Plate LockBox
 16072	Livro de Receitas de Perito
 16083	Pescador Perito – O Bagre e Você
 16084	Socorrista Perito – Enfaixado
@@ -3711,6 +3724,23 @@ D.sourceNames.ptBR = [==[
 16168	Pêssego celestial
 16169	Bolinho de Arroz Selvagem
 16170	Mandu no Vapor
+16171	Shinsollo
+16173	Test Frost Resist Cloth LockBox
+16174	Test Frost Resist Leather LockBox
+16175	Test Frost Resist Mail LockBox
+16176	Test Frost Resist Plate LockBox
+16177	Test Nature Resist Plate LockBox
+16178	Test Nature Resist Leather LockBox
+16179	Test Nature Resist Mail LockBox
+16180	Test Nature Resist Cloth LockBox
+16181	Test Shadow Resist Cloth LockBox
+16182	Test Shadow Resist Leather LockBox
+16183	Test Shadow Resist Mail LockBox
+16184	Test Shadow Resist Plate LockBox
+16185	Test Arcane Resist Plate LockBox
+16186	Test Arcane Resist Cloth LockBox
+16187	Test Arcane Resist Leather LockBox
+16188	Test Arcane Resist Mail LockBox
 16214	Fórmula: Encantamento Maior de Intelecto - Braçadeiras
 16215	Fórmula: Encantamento Maior de Vigor - Botas
 16216	Fórmula: Encantamento Maior de Resistência - Manto
@@ -4003,6 +4033,7 @@ D.sourceNames.ptBR = [==[
 17026	Tuberspinho Selvagem
 17028	Vela Sagrada
 17029	Vela Sacra
+17030	Ankh
 17031	Runa de Teleporte
 17032	Runa de Portais
 17033	Símbolo da Divindade
@@ -4924,6 +4955,7 @@ D.sourceNames.ptBR = [==[
 21031	Ragu de Repolho
 21033	Ragu de Rabanete
 21038	Bola de Neve Bem Compacta
+21044	Reindeer Reins
 21071	Sabichão Cru
 21099	Receita: Sabichão Defumado
 21103	Dracônico para Leigos

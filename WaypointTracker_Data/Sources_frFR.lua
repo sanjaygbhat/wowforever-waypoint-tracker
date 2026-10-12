@@ -41,6 +41,7 @@ D.sourceNames.frFR = [==[
 765	Feuillargent
 770	Croc pointu de crocilisque
 771	Défense ébréchée de sanglier
+774	Malachite
 777	Dent de Rôdeur
 778	Pioche de kobold
 779	Coquillage luisant
@@ -117,6 +118,7 @@ D.sourceNames.frFR = [==[
 954	Parchemin de force
 955	Parchemin d'intelligence
 1017	Kébab de loup assaisonné
+1018	Chows Blade of DOOM! (Test)
 1041	Cor du loup noir
 1074	Patte d'araignée
 1077	Anneau de mage défias
@@ -132,11 +134,13 @@ D.sourceNames.frFR = [==[
 1195	Pelle de kobold
 1196	Tabard
 1197	Masse géante
+1198	Claymore
 1200	Grand bouclier en bois
 1201	Ecu terne
 1202	Pavois
 1203	Egide de Stormwind
 1205	Jus de melon
+1207	Murphstar
 1210	Oeil ténébreux
 1211	Harnais de guerre gnoll
 1212	Bave de gnoll
@@ -379,6 +383,7 @@ D.sourceNames.frFR = [==[
 2020	Griffeuse
 2021	Bouclier Carapace vert
 2023	Monstre - Lance, rouillée
+2024	Espadon
 2025	Hache ébarbée
 2026	Marteau en pierre
 2027	Cimeterre
@@ -453,7 +458,9 @@ D.sourceNames.frFR = [==[
 2168	Bottes de contremaître
 2175	Hache de guerre sombrepoil
 2194	Marteau diamant
+2207	Jambiya
 2208	Poignard
+2209	Kris
 2214	Targe en bois
 2215	Bouclier en bois
 2216	Targe simple
@@ -528,6 +535,7 @@ D.sourceNames.frFR = [==[
 2408	Patron : Gants élégants en cuir
 2409	Patron : Tunique noire en cuir
 2411	Bride d'étalon noir
+2413	Palomino
 2414	Bride de pinto
 2415	Etalon blanc
 2417	Lorica doublée
@@ -574,6 +582,7 @@ D.sourceNames.frFR = [==[
 2480	Grand gourdin
 2488	Glaive
 2489	Epée à deux mains
+2490	Tomahawk
 2491	Hache lourde
 2492	Trique
 2493	Maillet en bois
@@ -592,11 +601,15 @@ D.sourceNames.frFR = [==[
 2516	Balle légère
 2519	Balle lourde
 2520	Epée large
+2521	Flamberge
 2522	Croissant
+2523	Bullova
 2524	Matraque
 2525	Marteau de guerre
 2526	Main gauche
 2527	Bâton de combat
+2528	Falchion
+2529	Zweihander
 2530	Francisque
 2531	Grande hache
 2532	Etoile du matin
@@ -726,6 +739,7 @@ D.sourceNames.frFR = [==[
 3022	Chausses branchie-bleue
 3023	Tromblon de gros calibre
 3024	BKP 2700 "Massacreur"
+3025	BKP 42 "Ultra"
 3026	Arc renforcé
 3027	Arc courbe lourd
 3030	Flèche rasoir
@@ -3710,6 +3724,7 @@ D.sourceNames.frFR = [==[
 16168	Pêche céleste
 16169	Gâteau de riz sauvage
 16170	Mandu vapeur
+16171	Shinsollo
 16173	Test Coffret de résistance au Givre en tissu
 16174	Test Coffret de résistance au Givre en cuir
 16175	Test Coffret de résistance au Givre en mailles
@@ -4018,6 +4033,7 @@ D.sourceNames.frFR = [==[
 17026	Ronceterre sauvage
 17028	Bougie sanctifiée
 17029	Bougie sacrée
+17030	Ankh
 17031	Rune de téléportation
 17032	Rune des portails
 17033	Symbole de divinité
@@ -4939,6 +4955,7 @@ D.sourceNames.frFR = [==[
 21031	Kimchi de chou
 21033	Kimchi de radis
 21038	Boule de neige durcie
+21044	Reindeer Reins
 21071	Sagerelle crue
 21099	Recette : Sagerelle fumée
 21103	Le draconique pour les nuls
