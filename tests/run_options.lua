@@ -62,12 +62,12 @@ local function count(t)
     return n
 end
 
--- DESIGN §5.5: General 9 + Arrow 16 + Maps 8 + Routes 10 + Treasure 7 + Find/Sharing 4 = 54.
+-- DESIGN §5.5: General 9 + Arrow 16 + Maps 9 + Routes 11 + Treasure 7 + Find/Sharing 4 = 56.
 local keys = {
     root = { "arrowShown", "autoClosest", "corpseWaypoint", "persist", "minimapButton", "chatMessages", "useMetres", "addonWaypoints", "blizzardPin" },
     arrow = { "arrowScale", "arrowAlpha", "colorMode", "fadeOnCourse", "hideInCombat", "hideOnTaxi", "textScale", "textAlpha", "showTitle", "showDistance", "showETA", "textSeparate", "arrivalDistance", "autoClear", "arrivalSound", "autoNext" },
-    maps = { "worldPins", "worldCoords", "mapClick", "followMapPins", "followQuest", "minimapPins", "minimapEdge", "coordsBox" },
-    routes = { "routeApply", "routeSharing", "routeLowRated", "realRoutes", "travelFlights", "travelBoats", "travelHearth", "travelMapLine", "travelTrails", "travelShare" },
+    maps = { "worldPins", "worldCoords", "mapClick", "followMapPins", "followQuest", "questClickTrack", "minimapPins", "minimapEdge", "coordsBox" },
+    routes = { "routeApply", "routeSharing", "routeLowRated", "realRoutes", "travelPreference", "travelFlights", "travelBoats", "travelHearth", "travelMapLine", "travelTrails", "travelShare" },
     treasure = { "treasureHunt", "treasureChests", "treasureRares", "treasureOther", "treasureKnownSpots", "treasurePing", "treasureFocus" },
     find = { "learn", "findFaction", "findThisZone", "sharePrefix" },
 }
@@ -89,10 +89,10 @@ M.FireEvent("ADDON_LOADED", "WaypointTracker")
 M.FireEvent("PLAYER_LOGIN")
 local O, L = ns.Options, ns.L
 check(O.IsAvailable() and O.categoryID ~= nil, "native category is available after login")
-check(#M.settingsControls == 54 and count(M.settings) == 54, "all 54 settings have one native control")
+check(#M.settingsControls == 56 and count(M.settings) == 56, "all 56 settings have one native control")
 local category = M.settings.WAYPOINTTRACKER_arrowShown.cat
 check(category:GetID() == O.categoryID and #category.subcategories == 5, "root has five subcategories")
-check(registrations[category] == 54, "root registered after every control was added")
+check(registrations[category] == 56, "root registered after every control was added")
 for sub, list in pairs(keys) do
     for _, key in ipairs(list) do
         local setting = M.settings["WAYPOINTTRACKER_" .. key]
@@ -239,7 +239,7 @@ M.autoCancelPopup, M.autoAcceptPopup = false, true
 M.settingsNotified = {}
 reset.click()
 check(ns.Get("arrowScale") == ns.defaults.arrowScale and ns.Get("routeApply") == "ask", "confirmed reset restores defaults")
-check(count(M.settingsNotified) == 54, "reset notifies every registered proxy")
+check(count(M.settingsNotified) == 56, "reset notifies every registered proxy")
 M.autoAcceptPopup = false
 local countBefore = #M.settingsControls
 ns.Fire("LOGIN")
@@ -265,7 +265,7 @@ Settings.RegisterVerticalLayoutCategory = nil
 local fallback = isolated()
 local canvas = fallback.Options.canvas
 check(canvas and M.settingsCategory.frame == canvas and fallback.Options.IsAvailable(), "canvas fallback registers with Blizzard")
-check(canvas and canvas.scroll._template == "UIPanelScrollFrameTemplate" and count(canvas.controls) == 54, "canvas has the same 54 controls in a scroll frame")
+check(canvas and canvas.scroll._template == "UIPanelScrollFrameTemplate" and count(canvas.controls) == 56, "canvas has the same 56 controls in a scroll frame")
 canvas:Show()
 local function canvasButton(text)
     for _, frame in ipairs(M.frames) do
@@ -327,12 +327,12 @@ Settings.RegisterVerticalLayoutCategory = vertical
 local checkbox = Settings.CreateCheckbox
 Settings.CreateCheckbox = nil
 local partial = isolated()
-check(partial.Options.canvas and count(partial.Options.canvas.controls) == 54, "partial Settings API uses canvas")
+check(partial.Options.canvas and count(partial.Options.canvas.controls) == 56, "partial Settings API uses canvas")
 Settings.CreateCheckbox = checkbox
 local header = CreateSettingsListSectionHeaderInitializer
 CreateSettingsListSectionHeaderInitializer = nil
 local missingInitializer = isolated()
-check(missingInitializer.Options.canvas and count(missingInitializer.Options.canvas.controls) == 54, "missing native initializer uses full canvas")
+check(missingInitializer.Options.canvas and count(missingInitializer.Options.canvas.controls) == 56, "missing native initializer uses full canvas")
 CreateSettingsListSectionHeaderInitializer = header
 local mixin = MinimalSliderWithSteppersMixin
 MinimalSliderWithSteppersMixin = nil
@@ -377,7 +377,7 @@ CreateFrame = function(kind, name, parent, template)
 end
 local missingTemplates = isolated()
 local legacyCanvas = missingTemplates.Options.canvas
-check(legacyCanvas and legacyCanvas.scroll._template == nil and count(legacyCanvas.controls) == 54,
+check(legacyCanvas and legacyCanvas.scroll._template == nil and count(legacyCanvas.controls) == 56,
     "missing optional templates keep the full canvas")
 legacyCanvas.controls.routeApply.dropdown.next:Click()
 check(missingTemplates.Get("routeApply") == "replace", "canvas dropdown template fallback sets the next choice")

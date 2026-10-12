@@ -1969,6 +1969,22 @@ for k, n in pairs(M.unknownMethods) do
 end
 table.sort(unknown)
 print("Frame methods used but not mocked (check they exist in WoW): " .. table.concat(unknown, ", "))
+-- Run the runtime audit in isolation: its mocks and exits must not affect this
+-- play-through. CI and release checks both invoke this standard entrypoint.
+local function shellQuote(s)
+    return "'" .. s:gsub("'", "'\\''") .. "'"
+end
+local runtimeAudit = os.execute(shellQuote(arg and arg[-1] or "lua5.1") .. " tests/run_runtime_audit.lua")
+check(runtimeAudit == 0 or runtimeAudit == true, "offline runtime and planner audit gates")
+local questTracker = os.execute(shellQuote(arg and arg[-1] or "lua5.1") .. " tests/run_quest_tracker.lua")
+check(questTracker == 0 or questTracker == true, "quest tracker click, pooling and combat tests")
+local reviewRegression = os.execute(shellQuote(arg and arg[-1] or "lua5.1") .. " tests/run_review_regressions.lua")
+check(reviewRegression == 0 or reviewRegression == true, "review regressions and travel/quest/corpse interactions")
+local terrainIntegration = os.execute(shellQuote(arg and arg[-1] or "lua5.1") .. " tests/run_terrain_integration.lua")
+check(terrainIntegration == 0 or terrainIntegration == true, "terrain routing and passive ground verification")
+-- The standard play-through entrypoint also enforces the data audit gates.
+local dataAudit = os.execute(shellQuote(arg and arg[-1] or "lua5.1") .. " tests/run_data_audits.lua")
+check(dataAudit == 0 or dataAudit == true, "offline data audit gates")
 -- last, so "| tail -1" shows the result
 print(("%d passed, %d failed"):format(passed, failed))
 os.exit((failed == 0 and #M.errors == 0) and 0 or 1)
