@@ -464,7 +464,7 @@ function Net.SelfTest()
     copy.author = L.ROUTE_TEST_AUTHOR
     r = R.Validate(copy)
     r.src = "shared"
-    local pieces = SendRoute(r, UnitName("player"))
+    local pieces = SendRoute(r, R.Me())
     local chan = ChannelNumber()
     if chan then
         Enqueue("P^" .. testState.nonce, "CHANNEL", chan)

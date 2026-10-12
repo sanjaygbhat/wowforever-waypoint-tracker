@@ -458,6 +458,7 @@ D.sourceNames.esES = [==[
 2168	Botas de supervisor
 2175	Hacha de batalla Pellejo Negro
 2194	Martillo de diamante
+2207	Jambiya
 2208	Puñal
 2209	Puñal hindú
 2214	Rodela de madera
@@ -534,6 +535,8 @@ D.sourceNames.esES = [==[
 2408	Patrón: guantes de cuero refinado
 2409	Patrón: túnica de cuero oscuro
 2411	Brida de semental negro
+2413	Palomino
+2414	Pinto Bridle
 2415	Semental blanco
 2417	Jubón de anillas aumentado
 2418	Leotardos de anillas aumentados
@@ -558,6 +561,7 @@ D.sourceNames.esES = [==[
 2445	Escudo de metal grande
 2446	Escudo flor de cardo
 2448	Pavés pesado
+2450	Briarthorn
 2451	Escudo calentador con emblema
 2452	Cardoveloz
 2453	Hierba cardenal
@@ -576,7 +580,9 @@ D.sourceNames.esES = [==[
 2475	Guantes de cuero reforzado
 2479	Hacha ancha
 2480	Garrote grande
+2488	Gladius
 2489	Espada de dos manos
+2490	Tomahawk
 2491	Segur
 2492	Cayada
 2493	Marra de madera
@@ -595,16 +601,20 @@ D.sourceNames.esES = [==[
 2516	Tiro ligero
 2519	Tiro pesado
 2520	Sable
+2521	Flamberge
 2522	Hacha creciente
+2523	Bullova
 2524	Tranca
 2525	Martillo de guerra
 2526	Patoso mayor
 2527	Bastón de batalla
 2528	Bracamarte
 2529	Montante
+2530	Francisca
 2531	Gran hacha
 2532	Estrella de la mañana
 2533	Gran maza de guerra
+2534	Rondel
 2535	Bastón de guerra
 2553	Receta: elixir de agilidad menor
 2555	Receta: poción de velocidad
@@ -729,6 +739,7 @@ D.sourceNames.esES = [==[
 3022	Calzones branquiazules
 3023	Trabuco pesado grande
 3024	BKP 2700 "Déspota"
+3025	BKP 42 "Ultra"
 3026	Arco reforzado
 3027	Arco corvo pesado
 3030	Flecha cuchilla
@@ -1560,6 +1571,7 @@ D.sourceNames.esES = [==[
 5791	Diario de Henrig Soliceja
 5792	Medallón de Filonavaja
 5793	Corazón de Filonavaja
+5801	Kraul Guano
 5824	Tablilla de Voluntad
 5825	Colgante de Treshala
 5828	Anillo de Uber Resists (TEST)
@@ -3170,6 +3182,7 @@ D.sourceNames.esES = [==[
 13012	Brazales Yorgen
 13013	Manto de zahorí anciano
 13014	Hacha de Rin'ji
+13016	Killmaim
 13017	Hacha de batalla de destripador del infierno
 13018	Cuchilla de verdugo
 13019	Arco corto de garra de arpía
@@ -3711,6 +3724,7 @@ D.sourceNames.esES = [==[
 16168	Melocotón del cielo
 16169	Pastel de arroz salvaje
 16170	Mandú al vapor
+16171	Shinsollo
 16173	Test Escarcha Resist paño LockBox
 16174	Test Escarcha Resist cuero LockBox
 16175	Test Escarcha Resist Malla LockBox
@@ -4019,6 +4033,7 @@ D.sourceNames.esES = [==[
 17026	Raíz de espina salvaje
 17028	Vela sagrada
 17029	Vela sacra
+17030	Ankh
 17031	Runa de Teletransporte
 17032	Runa de Portales
 17033	Símbolo de Divinidad
@@ -4940,6 +4955,7 @@ D.sourceNames.esES = [==[
 21031	Kimchi de repollo
 21033	Rábano kimchi
 21038	Bola de nieve prieta
+21044	Reindeer Reins
 21071	Sabiola cruda
 21099	Receta: sabiola ahumada
 21103	Dracónico para torpes
@@ -5208,4 +5224,10 @@ D.sourceNames.esES = [==[
 23467	Hoja rápida de Gran Señor de la Guerra
 23468	Escrito sobre destrucción del Gran Señor de la Guerra
 23469	Escrito sobre curación del Gran Señor de la Guerra
+23578	Diet McWeaksauce
+23579	The McWeaksauce Classic
+23665	Leggings of Elemental Fury
+23668	Leggings of the Grand Crusader
+24101	Book of Ferocious Bite V
+24102	Manual of Eviscerate IX
 ]==]

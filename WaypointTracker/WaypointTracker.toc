@@ -44,6 +44,7 @@ Treasure.lua
 Places.lua
 Share.lua
 Follow.lua
+QuestTracker.lua
 Arrow.lua
 MapPins.lua
 Templates.xml
@@ -62,6 +63,7 @@ RouteMap.lua
 RoutePreview.lua
 RoutesUI.lua
 TravelData.lua
+Terrain.lua
 Travel.lua
 Trails.lua
 TravelMap.lua

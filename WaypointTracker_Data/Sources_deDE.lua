@@ -127,11 +127,14 @@ D.sourceNames.deDE = [==[
 1133	Horn des Winterwolfs
 1134	Horn des grauen Wolfs
 1175	Ein Goldzahn
+1177	Oil of Olaf
 1180	Rolle der Ausdauer
 1181	Rolle der Willenskraft
 1194	Bastardschwert
 1195	Bergbauschaufel eines Kobolds
+1196	Tabar
 1197	Riesiger Streitkolben
+1198	Claymore
 1200	Großer Holzschild
 1201	Glanzloser Langschild
 1202	Wallschild
@@ -384,6 +387,7 @@ D.sourceNames.deDE = [==[
 2025	Hakenaxt
 2026	Steinhammer
 2027	Krummsäbel
+2028	Hammer
 2029	Spaltbeil
 2030	Knorriger Stab
 2043	Ring der unglückseligen Geister
@@ -454,7 +458,9 @@ D.sourceNames.deDE = [==[
 2168	Großknecht-Stiefel
 2175	Schattenfellstreitaxt
 2194	Diamanthammer
+2207	Jambiya
 2208	Poignard
+2209	Kris
 2214	Holz-Rundschild
 2215	Holzschild
 2216	Einfacher Rundschild
@@ -529,6 +535,7 @@ D.sourceNames.deDE = [==[
 2408	Muster: Feine Lederhandschuhe
 2409	Muster: Dunkle Ledertunika
 2411	Rappenzaumzeug
+2413	Palomino
 2414	Schecke
 2415	Schimmel
 2417	Aufgebesserte Kettenweste
@@ -573,7 +580,9 @@ D.sourceNames.deDE = [==[
 2475	Verstärkte Lederhandschuhe
 2479	Breitaxt
 2480	Große Keule
+2488	Gladius
 2489	Zweihandschwert
+2490	Tomahawk
 2491	Große Axt
 2492	Knüppel
 2493	Hölzerner Schlaghammer
@@ -594,6 +603,7 @@ D.sourceNames.deDE = [==[
 2520	Breitschwert
 2521	Flamberg
 2522	Sichelaxt
+2523	Bullova
 2524	Schlagstock
 2525	Kriegshammer
 2526	Parierdolch
@@ -604,6 +614,7 @@ D.sourceNames.deDE = [==[
 2531	Großaxt
 2532	Morgenstern
 2533	Kriegsschlägel
+2534	Rondel
 2535	Kriegsstab
 2553	Rezept: Elixier der schwachen Beweglichkeit
 2555	Rezept: Hurtigkeitstrank
@@ -728,6 +739,7 @@ D.sourceNames.deDE = [==[
 3022	Bundhose der Blaukiemen
 3023	Großkalibrige Donnerbüchse
 3024	BKP 2700 "Vollstrecker"
+3025	BKP 42 "Ultra"
 3026	Verstärkter Bogen
 3027	Schwerer Doppelbogen
 3030	Schneidenpfeil
@@ -1562,6 +1574,7 @@ D.sourceNames.deDE = [==[
 5801	Kral-Guano
 5824	Schrifttafel des Willens
 5825	Treshalas Anhänger
+5828	Ring of Uber Resists (TEST)
 5829	Rasiermesserscharfer Schnabel
 5833	Induriumerz
 5839	Tagebuchseite
@@ -2837,6 +2850,7 @@ D.sourceNames.deDE = [==[
 10922	Wundgift IV
 10938	Geringe Magieessenz
 10940	Seltsamer Staub
+10999	Ironfel
 11020	Immergrünbeutel
 11022	Paket mit Tharlendrissamenkörnern
 11023	Ancona-Huhn
@@ -3694,6 +3708,10 @@ D.sourceNames.deDE = [==[
 16056	Bauplan: Fehlerloses Arkanitgewehr
 16059	Gewöhnliches braunes Hemd
 16060	Gewöhnliches weißes Hemd
+16068	Test Fire Resist Cloth LockBox
+16069	Test Fire Resist Leather LockBox
+16070	Test Fire Resist Mail LockBox
+16071	Test Fire Resist Plate LockBox
 16072	Expertenkochbuch
 16083	Expertenangeln - Der Barsch und du
 16084	Erste Hilfe für Experten - Verbinden, aber richtig
@@ -3706,6 +3724,23 @@ D.sourceNames.deDE = [==[
 16168	Himmlischer Pfirsich
 16169	Wilder Reiskuchen
 16170	Gedünsteter Mandu
+16171	Shinsollo
+16173	Test Frost Resist Cloth LockBox
+16174	Test Frost Resist Leather LockBox
+16175	Test Frost Resist Mail LockBox
+16176	Test Frost Resist Plate LockBox
+16177	Test Nature Resist Plate LockBox
+16178	Test Nature Resist Leather LockBox
+16179	Test Nature Resist Mail LockBox
+16180	Test Nature Resist Cloth LockBox
+16181	Test Shadow Resist Cloth LockBox
+16182	Test Shadow Resist Leather LockBox
+16183	Test Shadow Resist Mail LockBox
+16184	Test Shadow Resist Plate LockBox
+16185	Test Arcane Resist Plate LockBox
+16186	Test Arcane Resist Cloth LockBox
+16187	Test Arcane Resist Leather LockBox
+16188	Test Arcane Resist Mail LockBox
 16214	Formel: Armschiene - Große Intelligenz
 16215	Formel: Stiefel - Große Ausdauer
 16216	Formel: Umhang - Großer Widerstand
@@ -3998,6 +4033,7 @@ D.sourceNames.deDE = [==[
 17026	Wilder Dornwurz
 17028	Heilige Kerze
 17029	Hochheilige Kerze
+17030	Ankh
 17031	Rune der Teleportation
 17032	Rune der Portale
 17033	Symbol der Offenbarung
@@ -4919,6 +4955,7 @@ D.sourceNames.deDE = [==[
 21031	Weißkohlkimchi
 21033	Rettichkimchi
 21038	Festgeformter Schneeball
+21044	Reindeer Reins
 21071	Roher Weisenfisch
 21099	Rezept: Geräucherter Weisenfisch
 21103	Drachisch für Dummies

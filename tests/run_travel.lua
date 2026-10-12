@@ -25,12 +25,17 @@ C_Container = C_Container or {}
 C_Container.GetItemCooldown = function()
     return hearthCooldown, hearthCooldown > 0 and 3600 or 0, 1
 end
-local walkSpeed = 0
+local secretSpeed = {}
+local plainSecretValue = issecretvalue
+function issecretvalue(value)
+    return rawequal(value, secretSpeed) or plainSecretValue(value)
+end
+local walkSpeed, runSpeed, mounted = 0, 7, false
 function GetUnitSpeed()
-    return walkSpeed, 7, 7, 4.7
+    return walkSpeed, runSpeed, 7, 4.7
 end
 function IsMounted()
-    return false
+    return mounted
 end
 function GetServerTime()
     return math.floor(M.now) + 1700000000
@@ -146,9 +151,9 @@ m = Methods(path)
 check(path and m.zeppelin, "the Horde takes the zeppelin from Orgrimmar to Undercity")
 path = Travel.Search(Place("TAXI_23"), Place("TAXI_11"), Ctx({ faction = "Alliance", flights = false }))
 m = Methods(path)
-check(not m.zeppelin, "the Alliance doesn't take Horde zeppelins")
+check(path and m.zeppelin, "both factions can take the zeppelin; hostile approaches remain separate")
 -- no flights known: walking and boats only
-path = Travel.Search(Place("TAXI_2"), Place("TAXI_4"), Ctx({ flights = false })) -- Stormwind to Sentinel Hill
+path, total = Travel.Search(Place("TAXI_2"), Place("TAXI_4"), Ctx({ flights = false })) -- Stormwind to Sentinel Hill
 m = Methods(path)
 check(path and not m.taxi, "without flight paths it walks to Westfall")
 local leaves = false
@@ -158,6 +163,17 @@ for _, e in ipairs(path or {}) do
     end
 end
 check(leaves, "out through Stormwind's gate, not through the wall")
+local groundPath, groundTotal = Travel.Search(Place("TAXI_2"), Place("TAXI_4"), Ctx({ flights = false, boats = false }))
+check(groundPath and total <= groundTotal + 1e-6, "boats enabled preserve the short Stormwind gate route")
+for _, pair in ipairs({
+    { "BORDER_WETLANDS_TO_ARATHI_HIGHLANDS", "PASS_LOCH_MODAN_ALGAZ_OUTER" },
+    { "TAXI_6", "TAXI_8" }, -- Ironforge to Thelsamar
+}) do
+    local withBoats, boatTime = Travel.Search(Place(pair[1]), Place(pair[2]), Ctx({ flights = false }))
+    local ground, groundTime = Travel.Search(Place(pair[1]), Place(pair[2]), Ctx({ flights = false, boats = false }))
+    check(withBoats and ground and boatTime <= groundTime + 1e-6,
+        "boats preserve the nearby ground route: " .. pair[1] .. " > " .. pair[2])
+end
 
 -- ---------------------------------------------------------------------------
 -- A made-up world on the mock's maps
@@ -221,6 +237,22 @@ check(s and s.total and s.total > 0, "with the time for the whole way")
 M.Tick(0.2)
 check(#M.errors == 0, "the arrow follows it without errors: " .. tostring(M.errors[1]))
 
+-- A restricted speed must not break the arrow or write a trail. The sentinel
+-- is recognized by issecretvalue and raises on numeric comparisons in Lua 5.1.
+walkSpeed = secretSpeed
+local errorsBefore = #M.errors
+local ownBefore = Trails.Stats()
+M.Tick(0.5, 0.5)
+check(#M.errors == errorsBefore, "secret current speed raises no arrow or trail errors")
+check(Trails.Stats() == ownBefore, "secret current speed records no trail")
+walkSpeed, runSpeed, mounted = 0, secretSpeed, true
+local mountBefore = know.mountSpeed
+Travel.Invalidate()
+local speedOK, speedStep = pcall(Steer, westfall)
+check(speedOK and speedStep and speedStep.bearing, "secret run speed still allows planning")
+check(know.mountSpeed == mountBefore, "secret run speed is not saved as mount speed")
+runSpeed, mounted = 7, false
+
 -- past the crossing (but still in Elwynn on the map): the arrow doesn't turn back
 MoveTo(-1990, -600)
 Steer(westfall)
@@ -251,7 +283,9 @@ check(Steer(near) == nil, "same zone: the plain arrow")
 local tirisfal = WP.Add(18, 0.5, 0.5, { title = "Brill" })
 WP.SetActive(tirisfal, true)
 ns.Set("travelHearth", false)
-check(Steer(tirisfal) == nil, "no flight path found yet: no route")
+local unavailable = Steer(tirisfal)
+check(unavailable and unavailable.pin and unavailable.title == L.TRAVEL_NO_PLAN,
+    "no reachable flight destination: show no route instead of a straight fallback")
 taxiNodes = { { nodeID = 1, state = 0, slotIndex = 1 }, { nodeID = 2, state = 1, slotIndex = 2 } }
 M.FireEvent("TAXIMAP_OPENED", 1)
 check(Travel.KnowsFlight(1) == true and Travel.KnowsFlight(2) == true, "a flight master's map says which points are found")
@@ -295,13 +329,29 @@ check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar"), "go to the boat (" ..
 MoveTo(-1805, -2800)
 s = Steer(durotar)
 check(s and s.pin and s.title == L.TRAVEL_BOAT:format("Durotar"), "at the dock: take the boat (" .. tostring(s and s.title) .. ")")
+walkSpeed = secretSpeed
+local secretSamplesOK = true
+for i = 1, 8 do
+    M.now = M.now + 0.5
+    MoveTo(-1805 - i * 6, -2800 - i * 6)
+    secretSamplesOK = pcall(Travel.Steer, durotar) and secretSamplesOK
+end
+check(secretSamplesOK, "secret current speed does not break boat samples")
+check(not Travel.Riding(), "unknown walking speed is not evidence of boarding a boat")
 walkSpeed = 0
+MoveTo(-1805, -2800)
+Steer(durotar)
 for i = 1, 8 do
     M.now = M.now + 0.5
     MoveTo(-1805 - i * 6, -2800 - i * 6)
     s = Travel.Steer(durotar)
 end
 check(Travel.Riding() and s and s.title == L.TRAVEL_ON_BOAT:format("Durotar"), "aboard: on the way (" .. tostring(s and s.title) .. ")")
+walkSpeed = secretSpeed
+M.now = M.now + 0.5
+local ridingOK, ridingStep = pcall(Travel.Steer, durotar)
+check(ridingOK and ridingStep and Travel.Riding(), "secret speed aboard keeps the ride without errors")
+walkSpeed = 0
 local st = Trails.Store()
 check(st.boats["DOCK_E>DOCK_D"], "the time the boat left is written down")
 local wait = Trails.NextDeparture("DOCK_E>DOCK_D", 0)

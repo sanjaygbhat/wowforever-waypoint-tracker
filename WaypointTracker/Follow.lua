@@ -43,49 +43,91 @@ end)
 -- ---------------------------------------------------------------------------
 -- The quest you're tracking
 -- ---------------------------------------------------------------------------
-local questWp, questID
+local questWp, questID, clickedQuest
+local beforeDeath -- corpse navigation restores this after resurrection
+local Follow = {}
+ns.Follow = Follow
 
 local function ClearQuestWaypoint()
     if questWp and WP.IsValid(questWp) then
         WP.Remove(questWp, true)
     end
-    questWp, questID = nil, nil
+    questWp, questID, clickedQuest = nil, nil, nil
 end
 
-local function UpdateTrackedQuest()
-    if not ns.Get("followQuest") then
-        if questWp then
-            ClearQuestWaypoint()
-        end
-        return
-    end
-    local id = C_SuperTrack and C_SuperTrack.GetSuperTrackedQuestID and C_SuperTrack.GetSuperTrackedQuestID()
-    if not id or id == 0 then
-        ClearQuestWaypoint()
-        return
-    end
-    local m, x, y = Places.QuestPosition(id)
-    if not m then
-        return
-    end
+-- Explicit clicks and automatic super-tracking share one waypoint. A click
+-- works even when automatic following is off, and immediately takes the arrow.
+local function TrackQuest(id, explicit)
+    id = ns.Int(ns.Num(id))
+    if not id then return end
+    local ok, m, x, y = pcall(Places.QuestPosition, id)
+    if not ok then return end
+    m, x, y = ns.Int(ns.Num(m)), ns.Num(x), ns.Num(y)
+    if not m or not x or not y or x < 0 or x > 1 or y < 0 or y > 1 then return end
     local changedQuest = id ~= questID
     if questWp and WP.IsValid(questWp) and not changedQuest and questWp.m == m and math.abs(questWp.x - x) < 0.002 and math.abs(questWp.y - y) < 0.002 then
-        return
+        if explicit then WP.SetActive(questWp, true) end
+        return questWp
     end
     local wasActive = questWp and WP.GetActive() == questWp
+    local previous = questWp
+    local preference = not changedQuest and previous and previous.travelPreference
+    local chosen = not changedQuest and previous and previous.travelChosen
+    local travelTrip = not changedQuest and previous and previous.travelTrip
     if questWp and WP.IsValid(questWp) then
         WP.Remove(questWp, true, true)
     end
-    local title = C_QuestLog.GetTitleForQuestID and C_QuestLog.GetTitleForQuestID(id)
+    local title = C_QuestLog and C_QuestLog.GetTitleForQuestID and ns.Str(C_QuestLog.GetTitleForQuestID(id))
     questWp = WP.Add(m, x, y, {
         title = title,
         persistent = false,
         silent = true,
         source = "quest",
+        noReuse = true, -- Follow removes this object; never borrow a user's pin.
         -- a newly tracked quest takes the arrow; an update keeps what you had
-        setActive = (changedQuest and not (ns.IsPlayerDead and ns.IsPlayerDead())) or wasActive or WP.GetActive() == nil,
+        setActive = explicit or (changedQuest and not (ns.IsPlayerDead and ns.IsPlayerDead())) or wasActive or WP.GetActive() == nil,
     })
-    questID = id
+    questID = questWp and id or nil
+    if questWp then
+        questWp.travelPreference, questWp.travelChosen = preference or nil, chosen or nil
+        questWp.travelTrip = travelTrip or nil
+        if previous and beforeDeath == previous then beforeDeath = questWp end
+    end
+    return questWp
+end
+
+function Follow.TrackQuest(id)
+    local wp = TrackQuest(id, true)
+    if wp then
+        clickedQuest = questID
+        ns.Fire("QUEST_TRACKING_CHANGED")
+    end
+    return wp
+end
+
+function Follow.GetTrackedQuestID()
+    return questWp and WP.IsValid(questWp) and WP.GetActive() == questWp and questID or nil
+end
+
+local function UpdateTrackedQuest()
+    -- Removing an explicit waypoint must not recreate it at the next log event.
+    if clickedQuest and not (questWp and WP.IsValid(questWp)) then clickedQuest = nil end
+    if clickedQuest and C_QuestLog and C_QuestLog.GetLogIndexForQuestID then
+        local ok, index = pcall(C_QuestLog.GetLogIndexForQuestID, clickedQuest)
+        if ok and not (issecretvalue and issecretvalue(index)) then
+            index = ns.Num(index)
+            if not index or index == 0 then ClearQuestWaypoint() end
+        end
+    end
+    local id = clickedQuest
+    if not id and ns.Get("followQuest") then
+        id = C_SuperTrack and C_SuperTrack.GetSuperTrackedQuestID and ns.Num(C_SuperTrack.GetSuperTrackedQuestID())
+    end
+    if not id or id == 0 then
+        ClearQuestWaypoint()
+        return
+    end
+    TrackQuest(id)
 end
 
 -- Quest events come in bursts; look at most twice a second.
@@ -101,7 +143,16 @@ local function Schedule()
     end)
 end
 
-for _, event in ipairs({ "SUPER_TRACKING_CHANGED", "QUEST_LOG_UPDATE", "ZONE_CHANGED_NEW_AREA", "QUEST_TURNED_IN" }) do
+ns.RegisterEvent("SUPER_TRACKING_CHANGED", function()
+    if ns.Get("followQuest") then clickedQuest = nil end
+    Schedule()
+end)
+ns.RegisterEvent("QUEST_TURNED_IN", function(id)
+    id = ns.Num(id)
+    if id and id == clickedQuest then ClearQuestWaypoint() end
+    Schedule()
+end)
+for _, event in ipairs({ "QUEST_LOG_UPDATE", "ZONE_CHANGED_NEW_AREA" }) do
     ns.RegisterEvent(event, Schedule)
 end
 ns.On("LOGIN", Schedule)
@@ -117,7 +168,7 @@ end)
 -- meanwhile), and coming back to life removes it and puts back the waypoint
 -- you had.
 -- ---------------------------------------------------------------------------
-local corpseWp, beforeDeath, deathMap, reached
+local corpseWp, deathMap, reached
 
 local function HasCorpseWaypoint()
     return corpseWp ~= nil and WP.IsValid(corpseWp)
@@ -136,7 +187,7 @@ local function AddCorpse(m, x, y)
     if active and active.source ~= "corpse" then
         beforeDeath = active
     end
-    corpseWp = WP.Add(m, x, y, { title = L.CORPSE_NAME, source = "corpse", persistent = false, silent = true })
+    corpseWp = WP.Add(m, x, y, { title = L.CORPSE_NAME, source = "corpse", persistent = false, silent = true, noReuse = true })
 end
 
 local function OnDeath()
@@ -223,6 +274,12 @@ end
 ns.On("ARRIVED", function(wp)
     if wp == corpseWp then
         reached = true
+        -- Auto-clear would otherwise advance to the nearest unrelated pin,
+        -- leaving no corpse object for OnAlive to restore from. Restore now;
+        -- any destination the player selects afterwards remains their choice.
+        if WP.GetActive() == corpseWp and beforeDeath and WP.IsValid(beforeDeath) then
+            WP.SetActive(beforeDeath, true)
+        end
     end
 end)
 

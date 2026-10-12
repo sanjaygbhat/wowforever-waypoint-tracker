@@ -296,13 +296,21 @@ w.detail.up:Click()
 local scoreRow
 for _, row in ipairs(w.rows) do if row.route == chosen then scoreRow = row end end
 local plainScore = scoreRow and scoreRow.right:GetText():gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
-check(plainScore == "▲ 1", "an upvote adds only the vote score to the row")
+check(plainScore == "+ 1", "an upvote adds only the vote score with an ASCII marker to the row")
+w.detail.down:Click()
+local voteUp, voteDown = Routes.Score(chosen.id)
+check(voteUp == 0 and voteDown == 1 and Routes.MyVote(chosen.id) == -1,
+    "clicking the opposite button replaces the upvote with one downvote")
 w.detail.up:Click()
-check(Routes.MyVote(chosen.id) == 0 and w.detail.up:GetText() == "▲ 0", "clicking the same vote removes it")
+voteUp, voteDown = Routes.Score(chosen.id)
+check(voteUp == 1 and voteDown == 0 and w.detail.down:GetText() == "- 0",
+    "changing back replaces the downvote with one upvote")
+w.detail.up:Click()
+check(Routes.MyVote(chosen.id) == 0 and w.detail.up:GetText() == "+ 0", "clicking the same vote removes it")
 w.detail.down:Click()
 for _, row in ipairs(w.rows) do if row.route == chosen then scoreRow = row end end
 plainScore = scoreRow.right:GetText():gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
-check(plainScore == "▲ 0 ▼ 1", "negative votes add the down score without the stop count")
+check(plainScore == "+ 0 - 1", "negative votes add the down score with an ASCII marker without the stop count")
 w.detail.down:Click()
 local nativeRefresh, refreshCalls = w.map.Refresh, 0
 w.map.Refresh = function(self) refreshCalls = refreshCalls + 1; return nativeRefresh(self) end

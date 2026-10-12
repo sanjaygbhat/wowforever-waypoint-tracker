@@ -221,7 +221,7 @@ function WP.SetActive(wp, silent)
 end
 
 -- Add a waypoint. mapID + x/y from 0 to 1.
--- opts: title, persistent, silent, setActive (default true), source,
+-- opts: title, persistent, silent, setActive (default true), source, noReuse,
 --       arrivalDistance, callbacks (used by the addon bridge)
 function WP.Add(mapID, x, y, opts)
     opts = opts or {}
@@ -239,7 +239,7 @@ function WP.Add(mapID, x, y, opts)
 
     -- same spot twice? reuse the existing one
     for _, wp in ipairs(list) do
-        if wp.m == mapID and math.abs(wp.x - x) < 0.0005 and math.abs(wp.y - y) < 0.0005 and wp.title == title then
+        if not opts.noReuse and wp.m == mapID and math.abs(wp.x - x) < 0.0005 and math.abs(wp.y - y) < 0.0005 and wp.title == title then
             if opts.setActive ~= false then
                 WP.SetActive(wp, true)
             end

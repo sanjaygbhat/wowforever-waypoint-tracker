@@ -7,3 +7,11 @@ luac.out
 CLAUDE.md
 CLAUDE.local.md
 .claude/
+
+# Local sessions, generated audit outputs and backups
+**/.claude/
+**/.DS_Store
+**/._*
+*.bak
+*.backup
+*~

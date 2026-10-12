@@ -61,9 +61,11 @@ ns.defaults = {
     blizzardPin = false,
     followMapPins = true, -- the game's own map pin (and map pin links) move the arrow
     followQuest = false, -- point at the quest you track when you have no waypoint
+    questClickTrack = true, -- plain tracker clicks and the hover icon take the arrow
     corpseWaypoint = true, -- dying points the arrow at your body
     -- Real routes (beta, see Travel.lua): follow a way you can go, not the straight line
     realRoutes = false,
+    travelPreference = "safer",
     travelFlights = true,
     travelBoats = true,
     travelHearth = true,
@@ -242,9 +244,6 @@ end
 -- (Newer clients can hand addons "secret" values in some situations.)
 local issecretvalue = issecretvalue
 function ns.Num(v)
-    if v == nil then
-        return nil
-    end
     if issecretvalue and issecretvalue(v) then
         return nil
     end
@@ -268,7 +267,18 @@ end
 
 -- Returns v unless it is one of those secret values (then nil).
 function ns.Plain(v)
-    if v == nil or (issecretvalue and issecretvalue(v)) then
+    if issecretvalue and issecretvalue(v) then
+        return nil
+    end
+    return v
+end
+
+-- A normal string, safe to compare, format or pass on to another API.
+function ns.Str(v)
+    if issecretvalue and issecretvalue(v) then
+        return nil
+    end
+    if type(v) ~= "string" then
         return nil
     end
     return v
@@ -347,9 +357,14 @@ function ns.IsOtherArrowAddonPresent()
         return true
     end
     if C_AddOns and C_AddOns.GetAddOnEnableState then
-        local ok, state = pcall(C_AddOns.GetAddOnEnableState, "TomTom", UnitName("player"))
-        if ok and type(state) == "number" and state > 0 then
+        local player = UnitName and ns.Str(UnitName("player"))
+        -- Skip this lookup until the player's name is available.
+        if not player then return false end
+        local ok, state = pcall(C_AddOns.GetAddOnEnableState, "TomTom", player)
+        state = ns.Num(state)
+        if ok and state and state > 0 then
             local ok2, loadable = pcall(C_AddOns.IsAddOnLoadable, "TomTom")
+            loadable = ns.Plain(loadable)
             if not ok2 or loadable ~= false then
                 return true
             end
@@ -442,6 +457,12 @@ local function InitDatabase()
         st.showAdvanced = nil
         st.windowPos = nil
         st.coordsLocked = nil
+    end
+    -- Route preference keeps the saved enum: old Safer becomes safe with an
+    -- optional faster offer; old Fastest remains Always fastest. Per-trip
+    -- picker choices are discarded by the waypoint loader.
+    if db.settings.travelPreference ~= "fastest" and db.settings.travelPreference ~= "safer" then
+        db.settings.travelPreference = ns.defaults.travelPreference
     end
     db.version = 3
     ns.settings = db.settings

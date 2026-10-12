@@ -118,6 +118,7 @@ D.sourceNames.zhCN = [==[
 954	力量卷轴
 955	智力卷轴
 1017	干烤狼肉串
+1018	Chows Blade of DOOM! (Test)
 1041	黑狼号角
 1074	硬蜘蛛腿
 1077	迪菲亚法师之戒
@@ -381,6 +382,7 @@ D.sourceNames.zhCN = [==[
 2015	黑色金属战斧
 2020	空牙之刃
 2021	绿壳盾
+2023	Monster - Spear, Rusty
 2024	普通长剑
 2025	芒刺斧
 2026	巨型石锤
@@ -1572,6 +1574,7 @@ D.sourceNames.zhCN = [==[
 5801	沼泽蝙蝠的粪便
 5824	意志石板
 5825	塔莎拉的坠饰
+5828	Ring of Uber Resists (TEST)
 5829	锋利的鸟喙
 5833	精铁矿石
 5839	日记书页
@@ -2818,6 +2821,7 @@ D.sourceNames.zhCN = [==[
 10454	伊兰尼库斯精华
 10460	哈卡莱之血
 10505	实心炸药
+10555	Resist Test Item
 10601	结构图：增亮护目镜
 10602	结构图：致命瞄准镜
 10603	结构图：猫眼超级护目镜
@@ -3704,6 +3708,10 @@ D.sourceNames.zhCN = [==[
 16056	结构图：完美的奥金步枪
 16059	普通的棕衬衣
 16060	普通的白衬衣
+16068	Test Fire Resist Cloth LockBox
+16069	Test Fire Resist Leather LockBox
+16070	Test Fire Resist Mail LockBox
+16071	Test Fire Resist Plate LockBox
 16072	中级烹饪教材
 16083	中级钓鱼教材 - 鲈鱼与你
 16084	中级急救教材 - 绷带缚体
@@ -3717,6 +3725,22 @@ D.sourceNames.zhCN = [==[
 16169	粗米糕
 16170	肉包子
 16171	杂烩饭
+16173	Test Frost Resist Cloth LockBox
+16174	Test Frost Resist Leather LockBox
+16175	Test Frost Resist Mail LockBox
+16176	Test Frost Resist Plate LockBox
+16177	Test Nature Resist Plate LockBox
+16178	Test Nature Resist Leather LockBox
+16179	Test Nature Resist Mail LockBox
+16180	Test Nature Resist Cloth LockBox
+16181	Test Shadow Resist Cloth LockBox
+16182	Test Shadow Resist Leather LockBox
+16183	Test Shadow Resist Mail LockBox
+16184	Test Shadow Resist Plate LockBox
+16185	Test Arcane Resist Plate LockBox
+16186	Test Arcane Resist Cloth LockBox
+16187	Test Arcane Resist Leather LockBox
+16188	Test Arcane Resist Mail LockBox
 16214	公式：附魔护腕 - 强效智力
 16215	公式：附魔靴子 - 强效耐力
 16216	公式：附魔披风 - 强效抗性
@@ -4774,6 +4798,7 @@ D.sourceNames.zhCN = [==[
 20212	污染者的板甲护肩
 20214	心灵之牙
 20220	铁皮法杖
+20221	Foror's Fabled Steed
 20222	标准军粮浓缩军粮
 20223	污染者野战军粮
 20224	污染者标准军粮
@@ -4930,6 +4955,7 @@ D.sourceNames.zhCN = [==[
 21031	卷心菜饼
 21033	萝卜泡菜饼
 21038	大雪球
+21044	Reindeer Reins
 21071	新鲜的鼠尾鱼
 21099	食谱：烤鼠尾鱼
 21103	龙语傻瓜教程

@@ -5,6 +5,23 @@
 # checking in game; players' walked crossings (Trails.lua) correct the rest.
 
 # --- Northern Eastern Kingdoms
+# Bracers of Binding (557): block the east-pass -> Dalaran mountain chord,
+# and the westward chord from Tarren Mill through Darrow Hill. These are
+# conservative map-geometry estimates, NOT surveyed collision boundaries.
+# Sources: Data.lua NPC 2359 (Dalaran spawns x10.1-23.1, y54-80.6 on 1416),
+# NPC 2248 (Darrow Hill cave/yeti spawns x42.3-47.4, y25-34 on 1424), and the
+# Classic zone maps: https://warcraft.wiki.gg/wiki/Alterac_Mountains_(Classic)
+# https://warcraft.wiki.gg/wiki/Hillsbrad_Foothills_(Classic)
+# The ridge separator at Alterac x30, y50-78 is east of the Dalaran spawns
+# and west of Growless Cave (37.6,66.2); the Darrow separator is x44,y0-35 (north edge joins the mountain wall).
+# Both barrier extents and the western road bend at 38,36 need an in-game
+# walk check. That bend is south/west of the yeti spawn envelope; it keeps
+# the east-west leg below the hill before turning north to the EXISTING
+# Dalaran entrance (1416:21.9,82.8 / 1424:28.02,20.89), retained unchanged.
+# The eastern road bend 55.6,34.6 is Zixil's patrol anchor in Curated.lua,
+# NPC 3537. No fixed walk time: the router prices the actual bend distances.
+node	ROAD_HILLSBRAD_TARREN_JUNCTION	pass	easternkingdoms.hillsbrad_foothills	1424	55.6	34.6	Zixil patrol road anchor, Curated.lua NPC 3537
+node	ROAD_HILLSBRAD_DARROW_WEST	pass	easternkingdoms.hillsbrad_foothills	1424	38	36	Approximate road bend south-west of Darrow Hill; verify in game
 move	BORDER_HILLSBRAD_FOOTHILLS_TO_SILVERPINE_FOREST	1424	14.25	46.54
 move	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS	1416	51.25	68.19
 move	BORDER_WESTERN_PLAGUELANDS_TO_ALTERAC_MOUNTAINS	1422	43.7	85.24
@@ -36,6 +53,14 @@ link	PASS_WETLANDS_ALGAZ_INNER	PASS_WETLANDS_ALGAZ_OUTER	walk	0
 node	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS_DALARAN	border	easternkingdoms.hillsbrad_foothills	1424	28.02	20.89	Western Dalaran approach; projected from original city entrance anchor
 node	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS_DALARAN	border	easternkingdoms.alterac_mountains	1416	21.9	82.8	Existing Dalaran southern road entrance; approximate area boundary
 link	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS_DALARAN	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS_DALARAN	walk	0
+# Tarren Mill's southern foothills also appear on Alterac's overlapping map.
+# Client TaxiNodes #13 / UiMapAssignment (1.60.1.70338) place its FM at
+# Alterac 58.69,80.36 = Hillsbrad 60.21,18.75. The regression
+# approach at Alterac 48.05,82.21 = Hillsbrad 50.90,20.37 was misclassified
+# as mountain terrain, forcing a northward detour to the main pass.
+# Small estimated region around that approach and FM; not a surveyed zone
+# boundary. Excludes the north pass, Dalaran, Darrow Hill and Ravenholdt.
+region	1416	easternkingdoms.hillsbrad_foothills	53.37	81.29	6.5
 region	1416	easternkingdoms.alterac_mountains.ravenholdt	85	79	7.5
 node	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS_RAVENHOLDT	border	easternkingdoms.hillsbrad_foothills	1424	77.2	20.1	Ravenholdt mountain path near the cave and guard
 node	BORDER_ALTERAC_MOUNTAINS_TO_HILLSBRAD_FOOTHILLS_RAVENHOLDT	border	easternkingdoms.alterac_mountains.ravenholdt	1416	78.11	81.9	Same Ravenholdt path point on the Alterac map
@@ -211,3 +236,1291 @@ level	1457	55	60
 level	1458	55	60
 level	2521	1	13
 
+
+# Terrain integration: active static-clear pieces only; unresolved gaps stay in walkCandidates.
+# NEW supplemental travel_extra.tsv rows; build 1.60.1.70338.
+# Both CURRENT map-coordinate and world-fallback representations checked AFTER builder rounding.
+# Active rows are static-clear SUBSEGMENTS. Commented gaps prevent uncertified whole-chain activation.
+# Merge with existing extras; gate implicit walking/shortcuts using evidence before enabling.
+# Source and exact statuses: terrain-consumer-final.json. No new guessed barriers.
+# 0C3249CDBA7B BORDER_THE_BARRENS_TO_ASHENVALE>LIFT_GREAT_LIFT_BARRENS_TOP; consumer statuses {"PASSABLE": 16, "UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_0C3249CDBA7B_01	pass	kalimdor.the_barrens	1413	47.59	5.74	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_02	pass	kalimdor.the_barrens	1413	47.35	16.10	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_03	pass	kalimdor.the_barrens	1413	46.36	17.21	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_04	pass	kalimdor.the_barrens	1413	46.11	17.95	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_05	pass	kalimdor.the_barrens	1413	45.87	18.32	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_06	pass	kalimdor.the_barrens	1413	44.88	19.43	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_07	pass	kalimdor.the_barrens	1413	44.88	20.54	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_08	pass	kalimdor.the_barrens	1413	45.13	21.28	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_09	pass	kalimdor.the_barrens	1413	45.87	22.39	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_10	pass	kalimdor.the_barrens	1413	46.11	23.87	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_11	pass	kalimdor.the_barrens	1413	44.14	54.58	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_12	pass	kalimdor.the_barrens	1413	44.14	62.72	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_13	pass	kalimdor.the_barrens	1413	45.37	64.57	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_14	pass	kalimdor.the_barrens	1413	45.87	68.27	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_15	pass	kalimdor.the_barrens	1413	45.62	76.04	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_16	pass	kalimdor.the_barrens	1413	45.13	76.78	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_17	pass	kalimdor.the_barrens	1413	45.37	80.85	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_18	pass	kalimdor.the_barrens	1413	45.87	81.96	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_19	pass	kalimdor.the_barrens	1413	44.63	87.51	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_0C3249CDBA7B_20	pass	kalimdor.the_barrens	1413	44.14	91.95	CASC70338 0C3249CDBA7B; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_THE_BARRENS_TO_ASHENVALE	TERRAIN_0C3249CDBA7B_01	walk	0
+# UNCERTAIN	link	TERRAIN_0C3249CDBA7B_01	TERRAIN_0C3249CDBA7B_02	walk	0
+link	TERRAIN_0C3249CDBA7B_02	TERRAIN_0C3249CDBA7B_03	walk	0
+link	TERRAIN_0C3249CDBA7B_03	TERRAIN_0C3249CDBA7B_04	walk	0
+link	TERRAIN_0C3249CDBA7B_04	TERRAIN_0C3249CDBA7B_05	walk	0
+# UNCERTAIN	link	TERRAIN_0C3249CDBA7B_05	TERRAIN_0C3249CDBA7B_06	walk	0
+link	TERRAIN_0C3249CDBA7B_06	TERRAIN_0C3249CDBA7B_07	walk	0
+link	TERRAIN_0C3249CDBA7B_07	TERRAIN_0C3249CDBA7B_08	walk	0
+link	TERRAIN_0C3249CDBA7B_08	TERRAIN_0C3249CDBA7B_09	walk	0
+link	TERRAIN_0C3249CDBA7B_09	TERRAIN_0C3249CDBA7B_10	walk	0
+# UNCERTAIN	link	TERRAIN_0C3249CDBA7B_10	TERRAIN_0C3249CDBA7B_11	walk	0
+link	TERRAIN_0C3249CDBA7B_11	TERRAIN_0C3249CDBA7B_12	walk	0
+link	TERRAIN_0C3249CDBA7B_12	TERRAIN_0C3249CDBA7B_13	walk	0
+link	TERRAIN_0C3249CDBA7B_13	TERRAIN_0C3249CDBA7B_14	walk	0
+link	TERRAIN_0C3249CDBA7B_14	TERRAIN_0C3249CDBA7B_15	walk	0
+link	TERRAIN_0C3249CDBA7B_15	TERRAIN_0C3249CDBA7B_16	walk	0
+link	TERRAIN_0C3249CDBA7B_16	TERRAIN_0C3249CDBA7B_17	walk	0
+link	TERRAIN_0C3249CDBA7B_17	TERRAIN_0C3249CDBA7B_18	walk	0
+link	TERRAIN_0C3249CDBA7B_18	TERRAIN_0C3249CDBA7B_19	walk	0
+link	TERRAIN_0C3249CDBA7B_19	TERRAIN_0C3249CDBA7B_20	walk	0
+# UNCERTAIN	link	TERRAIN_0C3249CDBA7B_20	LIFT_GREAT_LIFT_BARRENS_TOP	walk	0
+# C08B6538829E BORDER_THE_BARRENS_TO_DUROTAR>LIFT_GREAT_LIFT_BARRENS_TOP; consumer statuses {"PASSABLE": 16, "UNCERTAIN": 5}
+node	TERRAIN_C08B6538829E_01	pass	kalimdor.the_barrens	1413	63.38	24.24	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_02	pass	kalimdor.the_barrens	1413	62.64	24.98	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_03	pass	kalimdor.the_barrens	1413	64.12	32.75	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_C08B6538829E_04	pass	kalimdor.the_barrens	1413	63.90	33.86	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_05	pass	kalimdor.the_barrens	1413	63.38	33.12	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_06	pass	kalimdor.the_barrens	1413	59.68	36.82	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_07	pass	kalimdor.the_barrens	1413	53.52	48.66	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_08	pass	kalimdor.the_barrens	1413	53.27	50.88	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_09	pass	kalimdor.the_barrens	1413	53.52	51.99	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_10	pass	kalimdor.the_barrens	1413	52.04	54.95	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_11	pass	kalimdor.the_barrens	1413	50.06	57.54	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_12	pass	kalimdor.the_barrens	1413	49.81	60.87	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_13	pass	kalimdor.the_barrens	1413	48.83	62.72	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_14	pass	kalimdor.the_barrens	1413	47.35	66.79	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_15	pass	kalimdor.the_barrens	1413	46.85	67.90	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_16	pass	kalimdor.the_barrens	1413	45.13	76.78	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_17	pass	kalimdor.the_barrens	1413	45.37	80.85	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_18	pass	kalimdor.the_barrens	1413	45.87	81.96	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_19	pass	kalimdor.the_barrens	1413	44.63	87.51	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C08B6538829E_20	pass	kalimdor.the_barrens	1413	44.14	91.95	CASC70338 C08B6538829E; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_THE_BARRENS_TO_DUROTAR	TERRAIN_C08B6538829E_01	walk	0
+# UNCERTAIN	link	TERRAIN_C08B6538829E_01	TERRAIN_C08B6538829E_02	walk	0
+link	TERRAIN_C08B6538829E_02	TERRAIN_C08B6538829E_03	walk	0
+# UNCERTAIN	link	TERRAIN_C08B6538829E_03	TERRAIN_C08B6538829E_04	walk	0
+# UNCERTAIN	link	TERRAIN_C08B6538829E_04	TERRAIN_C08B6538829E_05	walk	0
+link	TERRAIN_C08B6538829E_05	TERRAIN_C08B6538829E_06	walk	0
+# UNCERTAIN	link	TERRAIN_C08B6538829E_06	TERRAIN_C08B6538829E_07	walk	0
+link	TERRAIN_C08B6538829E_07	TERRAIN_C08B6538829E_08	walk	0
+link	TERRAIN_C08B6538829E_08	TERRAIN_C08B6538829E_09	walk	0
+link	TERRAIN_C08B6538829E_09	TERRAIN_C08B6538829E_10	walk	0
+link	TERRAIN_C08B6538829E_10	TERRAIN_C08B6538829E_11	walk	0
+link	TERRAIN_C08B6538829E_11	TERRAIN_C08B6538829E_12	walk	0
+link	TERRAIN_C08B6538829E_12	TERRAIN_C08B6538829E_13	walk	0
+link	TERRAIN_C08B6538829E_13	TERRAIN_C08B6538829E_14	walk	0
+link	TERRAIN_C08B6538829E_14	TERRAIN_C08B6538829E_15	walk	0
+link	TERRAIN_C08B6538829E_15	TERRAIN_C08B6538829E_16	walk	0
+link	TERRAIN_C08B6538829E_16	TERRAIN_C08B6538829E_17	walk	0
+link	TERRAIN_C08B6538829E_17	TERRAIN_C08B6538829E_18	walk	0
+link	TERRAIN_C08B6538829E_18	TERRAIN_C08B6538829E_19	walk	0
+link	TERRAIN_C08B6538829E_19	TERRAIN_C08B6538829E_20	walk	0
+# UNCERTAIN	link	TERRAIN_C08B6538829E_20	LIFT_GREAT_LIFT_BARRENS_TOP	walk	0
+# F4B2BB3FF48C BORDER_THE_BARRENS_TO_ASHENVALE>BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH; consumer statuses {"PASSABLE": 9, "UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_F4B2BB3FF48C_01	pass	kalimdor.the_barrens	1413	48.58	8.33	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_02	pass	kalimdor.the_barrens	1413	49.81	14.99	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_03	pass	kalimdor.the_barrens	1413	50.56	16.10	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_04	pass	kalimdor.the_barrens	1413	52.04	24.24	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_05	pass	kalimdor.the_barrens	1413	52.28	29.05	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_F4B2BB3FF48C_06	pass	kalimdor.the_barrens	1413	50.79	40.89	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_07	pass	kalimdor.the_barrens	1413	50.56	41.26	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_08	pass	kalimdor.the_barrens	1413	48.33	63.46	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_09	pass	kalimdor.the_barrens	1413	46.85	67.53	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_10	pass	kalimdor.the_barrens	1413	47.10	70.12	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_11	pass	kalimdor.the_barrens	1413	48.33	74.93	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_12	pass	kalimdor.the_barrens	1413	48.83	75.67	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F4B2BB3FF48C_13	pass	kalimdor.the_barrens	1413	49.57	76.41	CASC70338 F4B2BB3FF48C; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_THE_BARRENS_TO_ASHENVALE	TERRAIN_F4B2BB3FF48C_01	walk	0
+# UNCERTAIN	link	TERRAIN_F4B2BB3FF48C_01	TERRAIN_F4B2BB3FF48C_02	walk	0
+link	TERRAIN_F4B2BB3FF48C_02	TERRAIN_F4B2BB3FF48C_03	walk	0
+link	TERRAIN_F4B2BB3FF48C_03	TERRAIN_F4B2BB3FF48C_04	walk	0
+link	TERRAIN_F4B2BB3FF48C_04	TERRAIN_F4B2BB3FF48C_05	walk	0
+# UNCERTAIN	link	TERRAIN_F4B2BB3FF48C_05	TERRAIN_F4B2BB3FF48C_06	walk	0
+# UNCERTAIN	link	TERRAIN_F4B2BB3FF48C_06	TERRAIN_F4B2BB3FF48C_07	walk	0
+link	TERRAIN_F4B2BB3FF48C_07	TERRAIN_F4B2BB3FF48C_08	walk	0
+link	TERRAIN_F4B2BB3FF48C_08	TERRAIN_F4B2BB3FF48C_09	walk	0
+link	TERRAIN_F4B2BB3FF48C_09	TERRAIN_F4B2BB3FF48C_10	walk	0
+link	TERRAIN_F4B2BB3FF48C_10	TERRAIN_F4B2BB3FF48C_11	walk	0
+link	TERRAIN_F4B2BB3FF48C_11	TERRAIN_F4B2BB3FF48C_12	walk	0
+link	TERRAIN_F4B2BB3FF48C_12	TERRAIN_F4B2BB3FF48C_13	walk	0
+# UNCERTAIN	link	TERRAIN_F4B2BB3FF48C_13	BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH	walk	0
+# F578E0FF472D BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS>LIFT_GREAT_LIFT_BARRENS_TOP; consumer statuses {"PASSABLE": 9, "UNCERTAIN": 6}
+node	TERRAIN_F578E0FF472D_01	pass	kalimdor.the_barrens	1413	38.22	28.68	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_02	pass	kalimdor.the_barrens	1413	39.21	29.42	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_03	pass	kalimdor.the_barrens	1413	41.92	33.86	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_04	pass	kalimdor.the_barrens	1413	41.92	34.22	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_F578E0FF472D_05	pass	kalimdor.the_barrens	1413	42.41	34.97	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_06	pass	kalimdor.the_barrens	1413	42.66	36.45	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_07	pass	kalimdor.the_barrens	1413	42.41	37.56	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_08	pass	kalimdor.the_barrens	1413	43.15	39.41	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_09	pass	kalimdor.the_barrens	1413	43.89	43.48	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_10	pass	kalimdor.the_barrens	1413	44.14	62.72	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_11	pass	kalimdor.the_barrens	1413	45.37	64.57	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F578E0FF472D_12	pass	kalimdor.the_barrens	1413	45.37	67.90	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_F578E0FF472D_13	pass	kalimdor.the_barrens	1413	44.64	83.05	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_F578E0FF472D_14	pass	kalimdor.the_barrens	1413	44.14	91.95	CASC70338 F578E0FF472D; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS	TERRAIN_F578E0FF472D_01	walk	0
+link	TERRAIN_F578E0FF472D_01	TERRAIN_F578E0FF472D_02	walk	0
+# UNCERTAIN	link	TERRAIN_F578E0FF472D_02	TERRAIN_F578E0FF472D_03	walk	0
+link	TERRAIN_F578E0FF472D_03	TERRAIN_F578E0FF472D_04	walk	0
+# UNCERTAIN	link	TERRAIN_F578E0FF472D_04	TERRAIN_F578E0FF472D_05	walk	0
+# UNCERTAIN	link	TERRAIN_F578E0FF472D_05	TERRAIN_F578E0FF472D_06	walk	0
+link	TERRAIN_F578E0FF472D_06	TERRAIN_F578E0FF472D_07	walk	0
+link	TERRAIN_F578E0FF472D_07	TERRAIN_F578E0FF472D_08	walk	0
+link	TERRAIN_F578E0FF472D_08	TERRAIN_F578E0FF472D_09	walk	0
+link	TERRAIN_F578E0FF472D_09	TERRAIN_F578E0FF472D_10	walk	0
+link	TERRAIN_F578E0FF472D_10	TERRAIN_F578E0FF472D_11	walk	0
+link	TERRAIN_F578E0FF472D_11	TERRAIN_F578E0FF472D_12	walk	0
+# UNCERTAIN	link	TERRAIN_F578E0FF472D_12	TERRAIN_F578E0FF472D_13	walk	0
+# UNCERTAIN	link	TERRAIN_F578E0FF472D_13	TERRAIN_F578E0FF472D_14	walk	0
+# UNCERTAIN	link	TERRAIN_F578E0FF472D_14	LIFT_GREAT_LIFT_BARRENS_TOP	walk	0
+# 9F03B81D1A61 TAXI_80>LIFT_GREAT_LIFT_BARRENS_TOP; consumer statuses {"PASSABLE": 14, "UNCERTAIN": 4}
+node	TERRAIN_9F03B81D1A61_01	pass	kalimdor.the_barrens	1413	59.68	39.41	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_02	pass	kalimdor.the_barrens	1413	59.44	39.78	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_03	pass	kalimdor.the_barrens	1413	59.44	40.15	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_04	pass	kalimdor.the_barrens	1413	57.46	42.74	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_05	pass	kalimdor.the_barrens	1413	53.27	49.77	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_06	pass	kalimdor.the_barrens	1413	53.52	51.99	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_07	pass	kalimdor.the_barrens	1413	52.04	54.95	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_08	pass	kalimdor.the_barrens	1413	50.06	57.54	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_09	pass	kalimdor.the_barrens	1413	49.81	60.87	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_10	pass	kalimdor.the_barrens	1413	48.83	62.72	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_11	pass	kalimdor.the_barrens	1413	47.35	66.79	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_12	pass	kalimdor.the_barrens	1413	46.85	67.90	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_13	pass	kalimdor.the_barrens	1413	45.13	76.78	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_14	pass	kalimdor.the_barrens	1413	45.37	80.85	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_15	pass	kalimdor.the_barrens	1413	45.87	81.96	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_16	pass	kalimdor.the_barrens	1413	44.63	87.51	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9F03B81D1A61_17	pass	kalimdor.the_barrens	1413	44.14	91.95	CASC70338 9F03B81D1A61; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_80	TERRAIN_9F03B81D1A61_01	walk	0
+link	TERRAIN_9F03B81D1A61_01	TERRAIN_9F03B81D1A61_02	walk	0
+# UNCERTAIN	link	TERRAIN_9F03B81D1A61_02	TERRAIN_9F03B81D1A61_03	walk	0
+link	TERRAIN_9F03B81D1A61_03	TERRAIN_9F03B81D1A61_04	walk	0
+# UNCERTAIN	link	TERRAIN_9F03B81D1A61_04	TERRAIN_9F03B81D1A61_05	walk	0
+link	TERRAIN_9F03B81D1A61_05	TERRAIN_9F03B81D1A61_06	walk	0
+link	TERRAIN_9F03B81D1A61_06	TERRAIN_9F03B81D1A61_07	walk	0
+link	TERRAIN_9F03B81D1A61_07	TERRAIN_9F03B81D1A61_08	walk	0
+link	TERRAIN_9F03B81D1A61_08	TERRAIN_9F03B81D1A61_09	walk	0
+link	TERRAIN_9F03B81D1A61_09	TERRAIN_9F03B81D1A61_10	walk	0
+link	TERRAIN_9F03B81D1A61_10	TERRAIN_9F03B81D1A61_11	walk	0
+link	TERRAIN_9F03B81D1A61_11	TERRAIN_9F03B81D1A61_12	walk	0
+link	TERRAIN_9F03B81D1A61_12	TERRAIN_9F03B81D1A61_13	walk	0
+link	TERRAIN_9F03B81D1A61_13	TERRAIN_9F03B81D1A61_14	walk	0
+link	TERRAIN_9F03B81D1A61_14	TERRAIN_9F03B81D1A61_15	walk	0
+link	TERRAIN_9F03B81D1A61_15	TERRAIN_9F03B81D1A61_16	walk	0
+link	TERRAIN_9F03B81D1A61_16	TERRAIN_9F03B81D1A61_17	walk	0
+# UNCERTAIN	link	TERRAIN_9F03B81D1A61_17	LIFT_GREAT_LIFT_BARRENS_TOP	walk	0
+# 50AABE530599 DOCK_RATCHET>LIFT_GREAT_LIFT_BARRENS_TOP; consumer statuses {"PASSABLE": 14, "UNCERTAIN": 4}
+node	TERRAIN_50AABE530599_01	pass	kalimdor.the_barrens	1413	61.16	37.93	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_02	pass	kalimdor.the_barrens	1413	59.44	39.78	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_03	pass	kalimdor.the_barrens	1413	59.44	40.15	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_04	pass	kalimdor.the_barrens	1413	57.46	42.74	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_05	pass	kalimdor.the_barrens	1413	53.27	49.77	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_06	pass	kalimdor.the_barrens	1413	53.52	51.99	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_07	pass	kalimdor.the_barrens	1413	52.04	54.95	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_08	pass	kalimdor.the_barrens	1413	50.06	57.54	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_09	pass	kalimdor.the_barrens	1413	49.81	60.87	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_10	pass	kalimdor.the_barrens	1413	48.83	62.72	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_11	pass	kalimdor.the_barrens	1413	47.35	66.79	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_12	pass	kalimdor.the_barrens	1413	46.85	67.90	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_13	pass	kalimdor.the_barrens	1413	45.13	76.78	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_14	pass	kalimdor.the_barrens	1413	45.37	80.85	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_15	pass	kalimdor.the_barrens	1413	45.87	81.96	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_16	pass	kalimdor.the_barrens	1413	44.63	87.51	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_50AABE530599_17	pass	kalimdor.the_barrens	1413	44.14	91.95	CASC70338 50AABE530599; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	DOCK_RATCHET	TERRAIN_50AABE530599_01	walk	0
+link	TERRAIN_50AABE530599_01	TERRAIN_50AABE530599_02	walk	0
+# UNCERTAIN	link	TERRAIN_50AABE530599_02	TERRAIN_50AABE530599_03	walk	0
+link	TERRAIN_50AABE530599_03	TERRAIN_50AABE530599_04	walk	0
+# UNCERTAIN	link	TERRAIN_50AABE530599_04	TERRAIN_50AABE530599_05	walk	0
+link	TERRAIN_50AABE530599_05	TERRAIN_50AABE530599_06	walk	0
+link	TERRAIN_50AABE530599_06	TERRAIN_50AABE530599_07	walk	0
+link	TERRAIN_50AABE530599_07	TERRAIN_50AABE530599_08	walk	0
+link	TERRAIN_50AABE530599_08	TERRAIN_50AABE530599_09	walk	0
+link	TERRAIN_50AABE530599_09	TERRAIN_50AABE530599_10	walk	0
+link	TERRAIN_50AABE530599_10	TERRAIN_50AABE530599_11	walk	0
+link	TERRAIN_50AABE530599_11	TERRAIN_50AABE530599_12	walk	0
+link	TERRAIN_50AABE530599_12	TERRAIN_50AABE530599_13	walk	0
+link	TERRAIN_50AABE530599_13	TERRAIN_50AABE530599_14	walk	0
+link	TERRAIN_50AABE530599_14	TERRAIN_50AABE530599_15	walk	0
+link	TERRAIN_50AABE530599_15	TERRAIN_50AABE530599_16	walk	0
+link	TERRAIN_50AABE530599_16	TERRAIN_50AABE530599_17	walk	0
+# UNCERTAIN	link	TERRAIN_50AABE530599_17	LIFT_GREAT_LIFT_BARRENS_TOP	walk	0
+# 259517010044 BORDER_ASHENVALE_TO_AZSHARA>BORDER_ASHENVALE_TO_DARKSHORE; consumer statuses {"PASSABLE": 3, "UNCERTAIN": 7}
+node	TERRAIN_259517010044_01	pass	kalimdor.ashenvale	1440	72.40	48.08	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_259517010044_02	pass	kalimdor.ashenvale	1440	71.97	49.38	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_259517010044_03	pass	kalimdor.ashenvale	1440	68.93	50.68	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_259517010044_04	pass	kalimdor.ashenvale	1440	66.76	48.73	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_259517010044_05	pass	kalimdor.ashenvale	1440	57.66	33.77	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_259517010044_06	pass	kalimdor.ashenvale	1440	53.32	25.31	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_259517010044_07	pass	kalimdor.ashenvale	1440	41.62	22.06	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_259517010044_08	pass	kalimdor.ashenvale	1440	32.51	22.06	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_259517010044_09	pass	kalimdor.ashenvale	1440	28.61	14.25	CASC70338 259517010044; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_AZSHARA	TERRAIN_259517010044_01	walk	0
+link	TERRAIN_259517010044_01	TERRAIN_259517010044_02	walk	0
+link	TERRAIN_259517010044_02	TERRAIN_259517010044_03	walk	0
+link	TERRAIN_259517010044_03	TERRAIN_259517010044_04	walk	0
+# UNCERTAIN	link	TERRAIN_259517010044_04	TERRAIN_259517010044_05	walk	0
+# UNCERTAIN	link	TERRAIN_259517010044_05	TERRAIN_259517010044_06	walk	0
+# UNCERTAIN	link	TERRAIN_259517010044_06	TERRAIN_259517010044_07	walk	0
+# UNCERTAIN	link	TERRAIN_259517010044_07	TERRAIN_259517010044_08	walk	0
+# UNCERTAIN	link	TERRAIN_259517010044_08	TERRAIN_259517010044_09	walk	0
+# UNCERTAIN	link	TERRAIN_259517010044_09	BORDER_ASHENVALE_TO_DARKSHORE	walk	0
+# 69068B512F62 BORDER_STONETALON_MOUNTAINS_TO_THE_BARRENS>TAXI_33; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 6}
+node	TERRAIN_69068B512F62_01	pass	kalimdor.stonetalon_mountains	1442	83.36	97.25	CASC70338 69068B512F62; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_69068B512F62_02	pass	kalimdor.stonetalon_mountains	1442	82.85	96.48	CASC70338 69068B512F62; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_69068B512F62_03	pass	kalimdor.stonetalon_mountains	1442	63.40	81.13	CASC70338 69068B512F62; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_69068B512F62_04	pass	kalimdor.stonetalon_mountains	1442	58.79	71.15	CASC70338 69068B512F62; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_69068B512F62_05	pass	kalimdor.stonetalon_mountains	1442	50.09	45.04	CASC70338 69068B512F62; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_69068B512F62_06	pass	kalimdor.stonetalon_mountains	1442	44.45	18.17	CASC70338 69068B512F62; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_69068B512F62_07	pass	kalimdor.stonetalon_mountains	1442	43.43	16.63	CASC70338 69068B512F62; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_STONETALON_MOUNTAINS_TO_THE_BARRENS	TERRAIN_69068B512F62_01	walk	0
+# UNCERTAIN	link	TERRAIN_69068B512F62_01	TERRAIN_69068B512F62_02	walk	0
+# UNCERTAIN	link	TERRAIN_69068B512F62_02	TERRAIN_69068B512F62_03	walk	0
+# UNCERTAIN	link	TERRAIN_69068B512F62_03	TERRAIN_69068B512F62_04	walk	0
+# UNCERTAIN	link	TERRAIN_69068B512F62_04	TERRAIN_69068B512F62_05	walk	0
+# UNCERTAIN	link	TERRAIN_69068B512F62_05	TERRAIN_69068B512F62_06	walk	0
+link	TERRAIN_69068B512F62_06	TERRAIN_69068B512F62_07	walk	0
+# UNCERTAIN	link	TERRAIN_69068B512F62_07	TAXI_33	walk	0
+# 27BA9C23626A BORDER_ASHENVALE_TO_DARKSHORE>BORDER_ASHENVALE_TO_THE_BARRENS; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 6}
+node	TERRAIN_27BA9C23626A_01	pass	kalimdor.ashenvale	1440	39.45	40.27	CASC70338 27BA9C23626A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_27BA9C23626A_02	pass	kalimdor.ashenvale	1440	39.88	40.92	CASC70338 27BA9C23626A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_27BA9C23626A_03	pass	kalimdor.ashenvale	1440	43.79	51.98	CASC70338 27BA9C23626A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_27BA9C23626A_04	pass	kalimdor.ashenvale	1440	45.52	55.88	CASC70338 27BA9C23626A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_27BA9C23626A_05	pass	kalimdor.ashenvale	1440	47.25	55.88	CASC70338 27BA9C23626A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_27BA9C23626A_06	pass	kalimdor.ashenvale	1440	48.12	57.18	CASC70338 27BA9C23626A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_27BA9C23626A_07	pass	kalimdor.ashenvale	1440	59.83	79.95	CASC70338 27BA9C23626A; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_DARKSHORE	TERRAIN_27BA9C23626A_01	walk	0
+link	TERRAIN_27BA9C23626A_01	TERRAIN_27BA9C23626A_02	walk	0
+# UNCERTAIN	link	TERRAIN_27BA9C23626A_02	TERRAIN_27BA9C23626A_03	walk	0
+# UNCERTAIN	link	TERRAIN_27BA9C23626A_03	TERRAIN_27BA9C23626A_04	walk	0
+link	TERRAIN_27BA9C23626A_04	TERRAIN_27BA9C23626A_05	walk	0
+# UNCERTAIN	link	TERRAIN_27BA9C23626A_05	TERRAIN_27BA9C23626A_06	walk	0
+# UNCERTAIN	link	TERRAIN_27BA9C23626A_06	TERRAIN_27BA9C23626A_07	walk	0
+# UNCERTAIN	link	TERRAIN_27BA9C23626A_07	BORDER_ASHENVALE_TO_THE_BARRENS	walk	0
+# E411E00F1F09 BORDER_FERALAS_TO_DESOLACE>TAXI_31; consumer statuses {"UNCERTAIN": 6}
+# PROPOSAL	node	TERRAIN_E411E00F1F09_01	pass	kalimdor.feralas	1444	45.56	2.88	CASC70338 E411E00F1F09; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E411E00F1F09_02	pass	kalimdor.feralas	1444	45.92	4.50	CASC70338 E411E00F1F09; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E411E00F1F09_03	pass	kalimdor.feralas	1444	53.48	21.76	CASC70338 E411E00F1F09; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E411E00F1F09_04	pass	kalimdor.feralas	1444	53.47	22.30	CASC70338 E411E00F1F09; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E411E00F1F09_05	pass	kalimdor.feralas	1444	56.00	26.08	CASC70338 E411E00F1F09; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_FERALAS_TO_DESOLACE	TERRAIN_E411E00F1F09_01	walk	0
+# UNCERTAIN	link	TERRAIN_E411E00F1F09_01	TERRAIN_E411E00F1F09_02	walk	0
+# UNCERTAIN	link	TERRAIN_E411E00F1F09_02	TERRAIN_E411E00F1F09_03	walk	0
+# UNCERTAIN	link	TERRAIN_E411E00F1F09_03	TERRAIN_E411E00F1F09_04	walk	0
+# UNCERTAIN	link	TERRAIN_E411E00F1F09_04	TERRAIN_E411E00F1F09_05	walk	0
+# UNCERTAIN	link	TERRAIN_E411E00F1F09_05	TAXI_31	walk	0
+# A879DD03641A TAXI_77>BORDER_THE_BARRENS_TO_ASHENVALE; consumer statuses {"PASSABLE": 4, "UNCERTAIN": 7}
+# PROPOSAL	node	TERRAIN_A879DD03641A_01	pass	kalimdor.the_barrens	1413	43.65	24.24	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A879DD03641A_02	pass	kalimdor.the_barrens	1413	44.14	22.02	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A879DD03641A_03	pass	kalimdor.the_barrens	1413	44.39	19.43	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A879DD03641A_04	pass	kalimdor.the_barrens	1413	45.37	16.10	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A879DD03641A_05	pass	kalimdor.the_barrens	1413	45.87	14.99	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A879DD03641A_06	pass	kalimdor.the_barrens	1413	46.85	13.51	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A879DD03641A_07	pass	kalimdor.the_barrens	1413	47.59	10.55	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A879DD03641A_08	pass	kalimdor.the_barrens	1413	47.35	6.86	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A879DD03641A_09	pass	kalimdor.the_barrens	1413	47.59	6.11	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A879DD03641A_10	pass	kalimdor.the_barrens	1413	47.59	5.74	CASC70338 A879DD03641A; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_77	TERRAIN_A879DD03641A_01	walk	0
+# UNCERTAIN	link	TERRAIN_A879DD03641A_01	TERRAIN_A879DD03641A_02	walk	0
+link	TERRAIN_A879DD03641A_02	TERRAIN_A879DD03641A_03	walk	0
+link	TERRAIN_A879DD03641A_03	TERRAIN_A879DD03641A_04	walk	0
+link	TERRAIN_A879DD03641A_04	TERRAIN_A879DD03641A_05	walk	0
+link	TERRAIN_A879DD03641A_05	TERRAIN_A879DD03641A_06	walk	0
+# UNCERTAIN	link	TERRAIN_A879DD03641A_06	TERRAIN_A879DD03641A_07	walk	0
+# UNCERTAIN	link	TERRAIN_A879DD03641A_07	TERRAIN_A879DD03641A_08	walk	0
+# UNCERTAIN	link	TERRAIN_A879DD03641A_08	TERRAIN_A879DD03641A_09	walk	0
+# UNCERTAIN	link	TERRAIN_A879DD03641A_09	TERRAIN_A879DD03641A_10	walk	0
+# UNCERTAIN	link	TERRAIN_A879DD03641A_10	BORDER_THE_BARRENS_TO_ASHENVALE	walk	0
+# 402840E43460 BORDER_FERALAS_TO_DESOLACE>BORDER_FERALAS_TO_THOUSAND_NEEDLES; consumer statuses {"UNCERTAIN": 6}
+# PROPOSAL	node	TERRAIN_402840E43460_01	pass	kalimdor.feralas	1444	45.56	2.88	CASC70338 402840E43460; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_402840E43460_02	pass	kalimdor.feralas	1444	45.92	4.50	CASC70338 402840E43460; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_402840E43460_03	pass	kalimdor.feralas	1444	53.48	21.76	CASC70338 402840E43460; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_402840E43460_04	pass	kalimdor.feralas	1444	53.47	22.30	CASC70338 402840E43460; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_402840E43460_05	pass	kalimdor.feralas	1444	56.00	26.08	CASC70338 402840E43460; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_FERALAS_TO_DESOLACE	TERRAIN_402840E43460_01	walk	0
+# UNCERTAIN	link	TERRAIN_402840E43460_01	TERRAIN_402840E43460_02	walk	0
+# UNCERTAIN	link	TERRAIN_402840E43460_02	TERRAIN_402840E43460_03	walk	0
+# UNCERTAIN	link	TERRAIN_402840E43460_03	TERRAIN_402840E43460_04	walk	0
+# UNCERTAIN	link	TERRAIN_402840E43460_04	TERRAIN_402840E43460_05	walk	0
+# UNCERTAIN	link	TERRAIN_402840E43460_05	BORDER_FERALAS_TO_THOUSAND_NEEDLES	walk	0
+# 341185DCA365 TAXI_28>BORDER_ASHENVALE_TO_AZSHARA; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 10}
+# PROPOSAL	node	TERRAIN_341185DCA365_01	pass	kalimdor.ashenvale	1440	35.98	48.73	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_341185DCA365_02	pass	kalimdor.ashenvale	1440	37.72	46.12	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_341185DCA365_03	pass	kalimdor.ashenvale	1440	39.45	46.78	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_341185DCA365_04	pass	kalimdor.ashenvale	1440	45.95	50.68	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_341185DCA365_05	pass	kalimdor.ashenvale	1440	50.12	50.81	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_341185DCA365_06	pass	kalimdor.ashenvale	1440	57.31	50.55	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_341185DCA365_07	pass	kalimdor.ashenvale	1440	57.66	50.68	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_341185DCA365_08	pass	kalimdor.ashenvale	1440	58.96	51.33	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_341185DCA365_09	pass	kalimdor.ashenvale	1440	60.26	50.68	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_341185DCA365_10	pass	kalimdor.ashenvale	1440	85.84	46.12	CASC70338 341185DCA365; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_28	TERRAIN_341185DCA365_01	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_01	TERRAIN_341185DCA365_02	walk	0
+link	TERRAIN_341185DCA365_02	TERRAIN_341185DCA365_03	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_03	TERRAIN_341185DCA365_04	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_04	TERRAIN_341185DCA365_05	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_05	TERRAIN_341185DCA365_06	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_06	TERRAIN_341185DCA365_07	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_07	TERRAIN_341185DCA365_08	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_08	TERRAIN_341185DCA365_09	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_09	TERRAIN_341185DCA365_10	walk	0
+# UNCERTAIN	link	TERRAIN_341185DCA365_10	BORDER_ASHENVALE_TO_AZSHARA	walk	0
+# 6C81854A6048 BORDER_STONETALON_MOUNTAINS_TO_MULGORE>TAXI_33; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 3}
+# PROPOSAL	node	TERRAIN_6C81854A6048_01	pass	kalimdor.stonetalon_mountains	1442	50.08	45.04	CASC70338 6C81854A6048; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_6C81854A6048_02	pass	kalimdor.stonetalon_mountains	1442	44.45	18.17	CASC70338 6C81854A6048; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_6C81854A6048_03	pass	kalimdor.stonetalon_mountains	1442	43.43	16.63	CASC70338 6C81854A6048; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_STONETALON_MOUNTAINS_TO_MULGORE	TERRAIN_6C81854A6048_01	walk	0
+# UNCERTAIN	link	TERRAIN_6C81854A6048_01	TERRAIN_6C81854A6048_02	walk	0
+link	TERRAIN_6C81854A6048_02	TERRAIN_6C81854A6048_03	walk	0
+# UNCERTAIN	link	TERRAIN_6C81854A6048_03	TAXI_33	walk	0
+# 2AC03372F000 BORDER_FELWOOD_TO_ASHENVALE>BORDER_FELWOOD_TO_MOONGLADE; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_2AC03372F000_01	pass	kalimdor.felwood	1448	42.46	64.13	CASC70338 2AC03372F000; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_2AC03372F000_02	pass	kalimdor.felwood	1448	41.59	51.09	CASC70338 2AC03372F000; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_2AC03372F000_03	pass	kalimdor.felwood	1448	42.02	50.43	CASC70338 2AC03372F000; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_2AC03372F000_04	pass	kalimdor.felwood	1448	52.03	28.91	CASC70338 2AC03372F000; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_2AC03372F000_05	pass	kalimdor.felwood	1448	64.20	8.70	CASC70338 2AC03372F000; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_FELWOOD_TO_ASHENVALE	TERRAIN_2AC03372F000_01	walk	0
+# UNCERTAIN	link	TERRAIN_2AC03372F000_01	TERRAIN_2AC03372F000_02	walk	0
+link	TERRAIN_2AC03372F000_02	TERRAIN_2AC03372F000_03	walk	0
+# UNCERTAIN	link	TERRAIN_2AC03372F000_03	TERRAIN_2AC03372F000_04	walk	0
+# UNCERTAIN	link	TERRAIN_2AC03372F000_04	TERRAIN_2AC03372F000_05	walk	0
+# UNCERTAIN	link	TERRAIN_2AC03372F000_05	BORDER_FELWOOD_TO_MOONGLADE	walk	0
+# DC24F8571AB7 BORDER_FELWOOD_TO_ASHENVALE>BORDER_FELWOOD_TO_WINTERSPRING; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_DC24F8571AB7_01	pass	kalimdor.felwood	1448	42.46	64.13	CASC70338 DC24F8571AB7; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_DC24F8571AB7_02	pass	kalimdor.felwood	1448	41.59	51.09	CASC70338 DC24F8571AB7; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_DC24F8571AB7_03	pass	kalimdor.felwood	1448	42.02	50.43	CASC70338 DC24F8571AB7; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_DC24F8571AB7_04	pass	kalimdor.felwood	1448	52.03	28.91	CASC70338 DC24F8571AB7; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_DC24F8571AB7_05	pass	kalimdor.felwood	1448	64.20	8.70	CASC70338 DC24F8571AB7; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_FELWOOD_TO_ASHENVALE	TERRAIN_DC24F8571AB7_01	walk	0
+# UNCERTAIN	link	TERRAIN_DC24F8571AB7_01	TERRAIN_DC24F8571AB7_02	walk	0
+link	TERRAIN_DC24F8571AB7_02	TERRAIN_DC24F8571AB7_03	walk	0
+# UNCERTAIN	link	TERRAIN_DC24F8571AB7_03	TERRAIN_DC24F8571AB7_04	walk	0
+# UNCERTAIN	link	TERRAIN_DC24F8571AB7_04	TERRAIN_DC24F8571AB7_05	walk	0
+# UNCERTAIN	link	TERRAIN_DC24F8571AB7_05	BORDER_FELWOOD_TO_WINTERSPRING	walk	0
+# AF8F5D673F3C BORDER_THE_BARRENS_TO_DUROTAR_ORGRIMMAR_WEST>BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS; consumer statuses {"PASSABLE": 15, "UNCERTAIN": 6}
+# PROPOSAL	node	TERRAIN_AF8F5D673F3C_01	pass	kalimdor.the_barrens	1413	63.14	4.25	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_02	pass	kalimdor.the_barrens	1413	62.64	4.26	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_03	pass	kalimdor.the_barrens	1413	62.40	4.63	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_04	pass	kalimdor.the_barrens	1413	62.39	5.73	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_05	pass	kalimdor.the_barrens	1413	61.90	5.74	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_06	pass	kalimdor.the_barrens	1413	61.66	6.11	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_07	pass	kalimdor.the_barrens	1413	61.66	7.22	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_AF8F5D673F3C_08	pass	kalimdor.the_barrens	1413	61.65	7.59	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_09	pass	kalimdor.the_barrens	1413	57.46	8.70	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_10	pass	kalimdor.the_barrens	1413	57.46	9.44	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_11	pass	kalimdor.the_barrens	1413	56.72	9.44	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_12	pass	kalimdor.the_barrens	1413	55.74	10.18	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_13	pass	kalimdor.the_barrens	1413	55.49	10.18	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_14	pass	kalimdor.the_barrens	1413	49.32	14.99	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_15	pass	kalimdor.the_barrens	1413	49.07	14.62	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_16	pass	kalimdor.the_barrens	1413	44.63	15.73	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_17	pass	kalimdor.the_barrens	1413	44.14	16.47	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_18	pass	kalimdor.the_barrens	1413	43.65	19.06	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_19	pass	kalimdor.the_barrens	1413	39.70	24.24	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AF8F5D673F3C_20	pass	kalimdor.the_barrens	1413	39.45	24.24	CASC70338 AF8F5D673F3C; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_THE_BARRENS_TO_DUROTAR_ORGRIMMAR_WEST	TERRAIN_AF8F5D673F3C_01	walk	0
+# UNCERTAIN	link	TERRAIN_AF8F5D673F3C_01	TERRAIN_AF8F5D673F3C_02	walk	0
+link	TERRAIN_AF8F5D673F3C_02	TERRAIN_AF8F5D673F3C_03	walk	0
+link	TERRAIN_AF8F5D673F3C_03	TERRAIN_AF8F5D673F3C_04	walk	0
+link	TERRAIN_AF8F5D673F3C_04	TERRAIN_AF8F5D673F3C_05	walk	0
+link	TERRAIN_AF8F5D673F3C_05	TERRAIN_AF8F5D673F3C_06	walk	0
+link	TERRAIN_AF8F5D673F3C_06	TERRAIN_AF8F5D673F3C_07	walk	0
+# UNCERTAIN	link	TERRAIN_AF8F5D673F3C_07	TERRAIN_AF8F5D673F3C_08	walk	0
+# UNCERTAIN	link	TERRAIN_AF8F5D673F3C_08	TERRAIN_AF8F5D673F3C_09	walk	0
+link	TERRAIN_AF8F5D673F3C_09	TERRAIN_AF8F5D673F3C_10	walk	0
+link	TERRAIN_AF8F5D673F3C_10	TERRAIN_AF8F5D673F3C_11	walk	0
+link	TERRAIN_AF8F5D673F3C_11	TERRAIN_AF8F5D673F3C_12	walk	0
+link	TERRAIN_AF8F5D673F3C_12	TERRAIN_AF8F5D673F3C_13	walk	0
+link	TERRAIN_AF8F5D673F3C_13	TERRAIN_AF8F5D673F3C_14	walk	0
+link	TERRAIN_AF8F5D673F3C_14	TERRAIN_AF8F5D673F3C_15	walk	0
+# UNCERTAIN	link	TERRAIN_AF8F5D673F3C_15	TERRAIN_AF8F5D673F3C_16	walk	0
+link	TERRAIN_AF8F5D673F3C_16	TERRAIN_AF8F5D673F3C_17	walk	0
+link	TERRAIN_AF8F5D673F3C_17	TERRAIN_AF8F5D673F3C_18	walk	0
+link	TERRAIN_AF8F5D673F3C_18	TERRAIN_AF8F5D673F3C_19	walk	0
+link	TERRAIN_AF8F5D673F3C_19	TERRAIN_AF8F5D673F3C_20	walk	0
+# UNCERTAIN	link	TERRAIN_AF8F5D673F3C_20	BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS	walk	0
+# FF86D9A7B6BF BORDER_ASHENVALE_TO_AZSHARA>BORDER_ASHENVALE_TO_STONETALON_MOUNTAINS; consumer statuses {"PASSABLE": 7, "UNCERTAIN": 3}
+node	TERRAIN_FF86D9A7B6BF_01	pass	kalimdor.ashenvale	1440	72.40	48.08	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_02	pass	kalimdor.ashenvale	1440	71.97	49.38	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_03	pass	kalimdor.ashenvale	1440	68.93	50.68	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_04	pass	kalimdor.ashenvale	1440	66.76	50.68	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_05	pass	kalimdor.ashenvale	1440	55.92	62.38	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_06	pass	kalimdor.ashenvale	1440	55.49	62.38	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_07	pass	kalimdor.ashenvale	1440	53.76	63.04	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_08	pass	kalimdor.ashenvale	1440	52.89	63.69	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_FF86D9A7B6BF_09	pass	kalimdor.ashenvale	1440	52.46	63.04	CASC70338 FF86D9A7B6BF; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_AZSHARA	TERRAIN_FF86D9A7B6BF_01	walk	0
+link	TERRAIN_FF86D9A7B6BF_01	TERRAIN_FF86D9A7B6BF_02	walk	0
+link	TERRAIN_FF86D9A7B6BF_02	TERRAIN_FF86D9A7B6BF_03	walk	0
+link	TERRAIN_FF86D9A7B6BF_03	TERRAIN_FF86D9A7B6BF_04	walk	0
+# UNCERTAIN	link	TERRAIN_FF86D9A7B6BF_04	TERRAIN_FF86D9A7B6BF_05	walk	0
+link	TERRAIN_FF86D9A7B6BF_05	TERRAIN_FF86D9A7B6BF_06	walk	0
+link	TERRAIN_FF86D9A7B6BF_06	TERRAIN_FF86D9A7B6BF_07	walk	0
+link	TERRAIN_FF86D9A7B6BF_07	TERRAIN_FF86D9A7B6BF_08	walk	0
+link	TERRAIN_FF86D9A7B6BF_08	TERRAIN_FF86D9A7B6BF_09	walk	0
+# UNCERTAIN	link	TERRAIN_FF86D9A7B6BF_09	BORDER_ASHENVALE_TO_STONETALON_MOUNTAINS	walk	0
+# 246A3E38CDDB TAXI_80>BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH; consumer statuses {"PASSABLE": 11, "UNCERTAIN": 4}
+node	TERRAIN_246A3E38CDDB_01	pass	kalimdor.the_barrens	1413	59.68	39.41	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_02	pass	kalimdor.the_barrens	1413	59.44	39.78	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_03	pass	kalimdor.the_barrens	1413	59.44	40.15	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_04	pass	kalimdor.the_barrens	1413	57.46	42.74	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_05	pass	kalimdor.the_barrens	1413	55.98	44.96	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_06	pass	kalimdor.the_barrens	1413	53.52	52.36	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_07	pass	kalimdor.the_barrens	1413	49.81	57.91	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_08	pass	kalimdor.the_barrens	1413	49.81	60.87	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_09	pass	kalimdor.the_barrens	1413	47.35	66.05	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_10	pass	kalimdor.the_barrens	1413	46.85	67.90	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_11	pass	kalimdor.the_barrens	1413	47.10	70.12	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_12	pass	kalimdor.the_barrens	1413	48.33	74.93	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_13	pass	kalimdor.the_barrens	1413	48.83	75.67	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_246A3E38CDDB_14	pass	kalimdor.the_barrens	1413	49.57	76.41	CASC70338 246A3E38CDDB; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_80	TERRAIN_246A3E38CDDB_01	walk	0
+link	TERRAIN_246A3E38CDDB_01	TERRAIN_246A3E38CDDB_02	walk	0
+# UNCERTAIN	link	TERRAIN_246A3E38CDDB_02	TERRAIN_246A3E38CDDB_03	walk	0
+link	TERRAIN_246A3E38CDDB_03	TERRAIN_246A3E38CDDB_04	walk	0
+# UNCERTAIN	link	TERRAIN_246A3E38CDDB_04	TERRAIN_246A3E38CDDB_05	walk	0
+link	TERRAIN_246A3E38CDDB_05	TERRAIN_246A3E38CDDB_06	walk	0
+link	TERRAIN_246A3E38CDDB_06	TERRAIN_246A3E38CDDB_07	walk	0
+link	TERRAIN_246A3E38CDDB_07	TERRAIN_246A3E38CDDB_08	walk	0
+link	TERRAIN_246A3E38CDDB_08	TERRAIN_246A3E38CDDB_09	walk	0
+link	TERRAIN_246A3E38CDDB_09	TERRAIN_246A3E38CDDB_10	walk	0
+link	TERRAIN_246A3E38CDDB_10	TERRAIN_246A3E38CDDB_11	walk	0
+link	TERRAIN_246A3E38CDDB_11	TERRAIN_246A3E38CDDB_12	walk	0
+link	TERRAIN_246A3E38CDDB_12	TERRAIN_246A3E38CDDB_13	walk	0
+link	TERRAIN_246A3E38CDDB_13	TERRAIN_246A3E38CDDB_14	walk	0
+# UNCERTAIN	link	TERRAIN_246A3E38CDDB_14	BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH	walk	0
+# A4B6A06F8D8C BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH>DOCK_RATCHET; consumer statuses {"PASSABLE": 11, "UNCERTAIN": 14}
+node	TERRAIN_A4B6A06F8D8C_01	pass	kalimdor.the_barrens	1413	50.31	74.19	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_02	pass	kalimdor.the_barrens	1413	50.26	74.04	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_03	pass	kalimdor.the_barrens	1413	50.31	73.08	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_04	pass	kalimdor.the_barrens	1413	50.80	71.97	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A4B6A06F8D8C_05	pass	kalimdor.the_barrens	1413	50.80	70.86	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_06	pass	kalimdor.the_barrens	1413	50.80	66.79	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_07	pass	kalimdor.the_barrens	1413	50.56	65.68	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_08	pass	kalimdor.the_barrens	1413	50.80	64.57	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_09	pass	kalimdor.the_barrens	1413	52.04	61.98	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_10	pass	kalimdor.the_barrens	1413	53.76	59.02	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_11	pass	kalimdor.the_barrens	1413	54.50	58.28	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_12	pass	kalimdor.the_barrens	1413	55.00	57.17	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_13	pass	kalimdor.the_barrens	1413	55.00	55.69	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A4B6A06F8D8C_14	pass	kalimdor.the_barrens	1413	54.75	55.69	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A4B6A06F8D8C_15	pass	kalimdor.the_barrens	1413	54.26	54.21	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A4B6A06F8D8C_16	pass	kalimdor.the_barrens	1413	54.26	52.73	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_17	pass	kalimdor.the_barrens	1413	56.23	44.59	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_18	pass	kalimdor.the_barrens	1413	56.48	44.22	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A4B6A06F8D8C_19	pass	kalimdor.the_barrens	1413	59.44	40.15	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_20	pass	kalimdor.the_barrens	1413	59.44	39.77	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_21	pass	kalimdor.the_barrens	1413	59.93	39.41	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_22	pass	kalimdor.the_barrens	1413	60.42	39.41	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_23	pass	kalimdor.the_barrens	1413	62.15	37.93	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A4B6A06F8D8C_24	pass	kalimdor.the_barrens	1413	62.64	38.30	CASC70338 A4B6A06F8D8C; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_THE_BARRENS_TO_DUSTWALLOW_MARSH	TERRAIN_A4B6A06F8D8C_01	walk	0
+link	TERRAIN_A4B6A06F8D8C_01	TERRAIN_A4B6A06F8D8C_02	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_02	TERRAIN_A4B6A06F8D8C_03	walk	0
+link	TERRAIN_A4B6A06F8D8C_03	TERRAIN_A4B6A06F8D8C_04	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_04	TERRAIN_A4B6A06F8D8C_05	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_05	TERRAIN_A4B6A06F8D8C_06	walk	0
+link	TERRAIN_A4B6A06F8D8C_06	TERRAIN_A4B6A06F8D8C_07	walk	0
+link	TERRAIN_A4B6A06F8D8C_07	TERRAIN_A4B6A06F8D8C_08	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_08	TERRAIN_A4B6A06F8D8C_09	walk	0
+link	TERRAIN_A4B6A06F8D8C_09	TERRAIN_A4B6A06F8D8C_10	walk	0
+link	TERRAIN_A4B6A06F8D8C_10	TERRAIN_A4B6A06F8D8C_11	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_11	TERRAIN_A4B6A06F8D8C_12	walk	0
+link	TERRAIN_A4B6A06F8D8C_12	TERRAIN_A4B6A06F8D8C_13	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_13	TERRAIN_A4B6A06F8D8C_14	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_14	TERRAIN_A4B6A06F8D8C_15	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_15	TERRAIN_A4B6A06F8D8C_16	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_16	TERRAIN_A4B6A06F8D8C_17	walk	0
+link	TERRAIN_A4B6A06F8D8C_17	TERRAIN_A4B6A06F8D8C_18	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_18	TERRAIN_A4B6A06F8D8C_19	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_19	TERRAIN_A4B6A06F8D8C_20	walk	0
+link	TERRAIN_A4B6A06F8D8C_20	TERRAIN_A4B6A06F8D8C_21	walk	0
+link	TERRAIN_A4B6A06F8D8C_21	TERRAIN_A4B6A06F8D8C_22	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_22	TERRAIN_A4B6A06F8D8C_23	walk	0
+link	TERRAIN_A4B6A06F8D8C_23	TERRAIN_A4B6A06F8D8C_24	walk	0
+# UNCERTAIN	link	TERRAIN_A4B6A06F8D8C_24	DOCK_RATCHET	walk	0
+# 772E94EC95D9 BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS>DOCK_RATCHET; consumer statuses {"PASSABLE": 6, "UNCERTAIN": 5}
+node	TERRAIN_772E94EC95D9_01	pass	kalimdor.the_barrens	1413	39.21	29.05	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_772E94EC95D9_02	pass	kalimdor.the_barrens	1413	42.91	28.68	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_772E94EC95D9_03	pass	kalimdor.the_barrens	1413	44.14	28.68	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_772E94EC95D9_04	pass	kalimdor.the_barrens	1413	48.33	28.31	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_772E94EC95D9_05	pass	kalimdor.the_barrens	1413	51.30	32.75	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_772E94EC95D9_06	pass	kalimdor.the_barrens	1413	57.96	36.45	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_772E94EC95D9_07	pass	kalimdor.the_barrens	1413	58.94	37.56	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_772E94EC95D9_08	pass	kalimdor.the_barrens	1413	59.44	37.56	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_772E94EC95D9_09	pass	kalimdor.the_barrens	1413	59.93	38.30	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_772E94EC95D9_10	pass	kalimdor.the_barrens	1413	63.14	38.30	CASC70338 772E94EC95D9; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS	TERRAIN_772E94EC95D9_01	walk	0
+# UNCERTAIN	link	TERRAIN_772E94EC95D9_01	TERRAIN_772E94EC95D9_02	walk	0
+link	TERRAIN_772E94EC95D9_02	TERRAIN_772E94EC95D9_03	walk	0
+# UNCERTAIN	link	TERRAIN_772E94EC95D9_03	TERRAIN_772E94EC95D9_04	walk	0
+link	TERRAIN_772E94EC95D9_04	TERRAIN_772E94EC95D9_05	walk	0
+link	TERRAIN_772E94EC95D9_05	TERRAIN_772E94EC95D9_06	walk	0
+link	TERRAIN_772E94EC95D9_06	TERRAIN_772E94EC95D9_07	walk	0
+link	TERRAIN_772E94EC95D9_07	TERRAIN_772E94EC95D9_08	walk	0
+# UNCERTAIN	link	TERRAIN_772E94EC95D9_08	TERRAIN_772E94EC95D9_09	walk	0
+# UNCERTAIN	link	TERRAIN_772E94EC95D9_09	TERRAIN_772E94EC95D9_10	walk	0
+# UNCERTAIN	link	TERRAIN_772E94EC95D9_10	DOCK_RATCHET	walk	0
+# A30530671DF5 BORDER_FERALAS_TO_DESOLACE>TAXI_42; consumer statuses {"UNCERTAIN": 6}
+# PROPOSAL	node	TERRAIN_A30530671DF5_01	pass	kalimdor.feralas	1444	45.56	2.88	CASC70338 A30530671DF5; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A30530671DF5_02	pass	kalimdor.feralas	1444	45.92	4.50	CASC70338 A30530671DF5; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A30530671DF5_03	pass	kalimdor.feralas	1444	53.48	21.76	CASC70338 A30530671DF5; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A30530671DF5_04	pass	kalimdor.feralas	1444	53.47	22.30	CASC70338 A30530671DF5; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A30530671DF5_05	pass	kalimdor.feralas	1444	56.00	26.08	CASC70338 A30530671DF5; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_FERALAS_TO_DESOLACE	TERRAIN_A30530671DF5_01	walk	0
+# UNCERTAIN	link	TERRAIN_A30530671DF5_01	TERRAIN_A30530671DF5_02	walk	0
+# UNCERTAIN	link	TERRAIN_A30530671DF5_02	TERRAIN_A30530671DF5_03	walk	0
+# UNCERTAIN	link	TERRAIN_A30530671DF5_03	TERRAIN_A30530671DF5_04	walk	0
+# UNCERTAIN	link	TERRAIN_A30530671DF5_04	TERRAIN_A30530671DF5_05	walk	0
+# UNCERTAIN	link	TERRAIN_A30530671DF5_05	TAXI_42	walk	0
+# 16B07B6F4E79 BORDER_DESOLACE_TO_FERALAS>BORDER_DESOLACE_TO_STONETALON_MOUNTAINS; consumer statuses {"PASSABLE": 11, "UNCERTAIN": 6}
+node	TERRAIN_16B07B6F4E79_01	pass	kalimdor.desolace	1443	42.45	96.80	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_02	pass	kalimdor.desolace	1443	41.89	95.97	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_03	pass	kalimdor.desolace	1443	41.33	89.30	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_04	pass	kalimdor.desolace	1443	40.78	80.14	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_05	pass	kalimdor.desolace	1443	43.00	70.12	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_06	pass	kalimdor.desolace	1443	41.89	65.11	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_07	pass	kalimdor.desolace	1443	45.78	39.26	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_08	pass	kalimdor.desolace	1443	46.90	37.60	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_16B07B6F4E79_09	pass	kalimdor.desolace	1443	53.57	24.25	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_16B07B6F4E79_10	pass	kalimdor.desolace	1443	53.90	22.25	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_16B07B6F4E79_11	pass	kalimdor.desolace	1443	54.12	21.75	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_12	pass	kalimdor.desolace	1443	54.69	22.59	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_13	pass	kalimdor.desolace	1443	55.24	21.75	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_14	pass	kalimdor.desolace	1443	55.79	18.42	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_15	pass	kalimdor.desolace	1443	55.79	14.25	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_16B07B6F4E79_16	pass	kalimdor.desolace	1443	53.57	8.41	CASC70338 16B07B6F4E79; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_DESOLACE_TO_FERALAS	TERRAIN_16B07B6F4E79_01	walk	0
+link	TERRAIN_16B07B6F4E79_01	TERRAIN_16B07B6F4E79_02	walk	0
+# UNCERTAIN	link	TERRAIN_16B07B6F4E79_02	TERRAIN_16B07B6F4E79_03	walk	0
+link	TERRAIN_16B07B6F4E79_03	TERRAIN_16B07B6F4E79_04	walk	0
+# UNCERTAIN	link	TERRAIN_16B07B6F4E79_04	TERRAIN_16B07B6F4E79_05	walk	0
+link	TERRAIN_16B07B6F4E79_05	TERRAIN_16B07B6F4E79_06	walk	0
+link	TERRAIN_16B07B6F4E79_06	TERRAIN_16B07B6F4E79_07	walk	0
+link	TERRAIN_16B07B6F4E79_07	TERRAIN_16B07B6F4E79_08	walk	0
+# UNCERTAIN	link	TERRAIN_16B07B6F4E79_08	TERRAIN_16B07B6F4E79_09	walk	0
+# UNCERTAIN	link	TERRAIN_16B07B6F4E79_09	TERRAIN_16B07B6F4E79_10	walk	0
+# UNCERTAIN	link	TERRAIN_16B07B6F4E79_10	TERRAIN_16B07B6F4E79_11	walk	0
+# UNCERTAIN	link	TERRAIN_16B07B6F4E79_11	TERRAIN_16B07B6F4E79_12	walk	0
+link	TERRAIN_16B07B6F4E79_12	TERRAIN_16B07B6F4E79_13	walk	0
+link	TERRAIN_16B07B6F4E79_13	TERRAIN_16B07B6F4E79_14	walk	0
+link	TERRAIN_16B07B6F4E79_14	TERRAIN_16B07B6F4E79_15	walk	0
+link	TERRAIN_16B07B6F4E79_15	TERRAIN_16B07B6F4E79_16	walk	0
+link	TERRAIN_16B07B6F4E79_16	BORDER_DESOLACE_TO_STONETALON_MOUNTAINS	walk	0
+# 26FDFD4789F9 TAXI_80>BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 3}
+# PROPOSAL	node	TERRAIN_26FDFD4789F9_01	pass	kalimdor.the_barrens	1413	59.44	38.30	CASC70338 26FDFD4789F9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_26FDFD4789F9_02	pass	kalimdor.the_barrens	1413	47.35	27.94	CASC70338 26FDFD4789F9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_26FDFD4789F9_03	pass	kalimdor.the_barrens	1413	45.62	27.94	CASC70338 26FDFD4789F9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_26FDFD4789F9_04	pass	kalimdor.the_barrens	1413	38.96	29.05	CASC70338 26FDFD4789F9; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_80	TERRAIN_26FDFD4789F9_01	walk	0
+# UNCERTAIN	link	TERRAIN_26FDFD4789F9_01	TERRAIN_26FDFD4789F9_02	walk	0
+link	TERRAIN_26FDFD4789F9_02	TERRAIN_26FDFD4789F9_03	walk	0
+# UNCERTAIN	link	TERRAIN_26FDFD4789F9_03	TERRAIN_26FDFD4789F9_04	walk	0
+link	TERRAIN_26FDFD4789F9_04	BORDER_THE_BARRENS_TO_STONETALON_MOUNTAINS	walk	0
+# D8D69E250777 BORDER_THE_BARRENS_TO_ASHENVALE>DOCK_RATCHET; consumer statuses {"PASSABLE": 10, "UNCERTAIN": 11}
+# PROPOSAL	node	TERRAIN_D8D69E250777_01	pass	kalimdor.the_barrens	1413	48.83	5.74	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_02	pass	kalimdor.the_barrens	1413	49.81	5.74	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_03	pass	kalimdor.the_barrens	1413	50.31	6.85	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_04	pass	kalimdor.the_barrens	1413	50.80	7.59	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_05	pass	kalimdor.the_barrens	1413	50.80	8.33	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_06	pass	kalimdor.the_barrens	1413	51.05	8.70	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_07	pass	kalimdor.the_barrens	1413	51.54	8.70	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D8D69E250777_08	pass	kalimdor.the_barrens	1413	52.28	9.81	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_09	pass	kalimdor.the_barrens	1413	52.04	10.18	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_10	pass	kalimdor.the_barrens	1413	52.28	10.55	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_11	pass	kalimdor.the_barrens	1413	58.70	21.65	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_12	pass	kalimdor.the_barrens	1413	59.68	22.76	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_13	pass	kalimdor.the_barrens	1413	60.18	22.76	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_14	pass	kalimdor.the_barrens	1413	60.67	23.50	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_15	pass	kalimdor.the_barrens	1413	60.67	23.87	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_16	pass	kalimdor.the_barrens	1413	64.62	33.86	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D8D69E250777_17	pass	kalimdor.the_barrens	1413	64.37	34.24	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D8D69E250777_18	pass	kalimdor.the_barrens	1413	63.38	36.45	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D8D69E250777_19	pass	kalimdor.the_barrens	1413	63.14	37.19	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D8D69E250777_20	pass	kalimdor.the_barrens	1413	63.14	37.93	CASC70338 D8D69E250777; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_THE_BARRENS_TO_ASHENVALE	TERRAIN_D8D69E250777_01	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_01	TERRAIN_D8D69E250777_02	walk	0
+link	TERRAIN_D8D69E250777_02	TERRAIN_D8D69E250777_03	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_03	TERRAIN_D8D69E250777_04	walk	0
+link	TERRAIN_D8D69E250777_04	TERRAIN_D8D69E250777_05	walk	0
+link	TERRAIN_D8D69E250777_05	TERRAIN_D8D69E250777_06	walk	0
+link	TERRAIN_D8D69E250777_06	TERRAIN_D8D69E250777_07	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_07	TERRAIN_D8D69E250777_08	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_08	TERRAIN_D8D69E250777_09	walk	0
+link	TERRAIN_D8D69E250777_09	TERRAIN_D8D69E250777_10	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_10	TERRAIN_D8D69E250777_11	walk	0
+link	TERRAIN_D8D69E250777_11	TERRAIN_D8D69E250777_12	walk	0
+link	TERRAIN_D8D69E250777_12	TERRAIN_D8D69E250777_13	walk	0
+link	TERRAIN_D8D69E250777_13	TERRAIN_D8D69E250777_14	walk	0
+link	TERRAIN_D8D69E250777_14	TERRAIN_D8D69E250777_15	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_15	TERRAIN_D8D69E250777_16	walk	0
+link	TERRAIN_D8D69E250777_16	TERRAIN_D8D69E250777_17	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_17	TERRAIN_D8D69E250777_18	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_18	TERRAIN_D8D69E250777_19	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_19	TERRAIN_D8D69E250777_20	walk	0
+# UNCERTAIN	link	TERRAIN_D8D69E250777_20	DOCK_RATCHET	walk	0
+# 61D48A1D3A22 BORDER_WINTERSPRING_TO_FELWOOD>PASS_WINTERSPRING_DARKWHISPER_N_OUTSIDE; consumer statuses {"UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_61D48A1D3A22_01	pass	kalimdor.winterspring	1452	53.64	56.16	CASC70338 61D48A1D3A22; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_61D48A1D3A22_02	pass	kalimdor.winterspring	1452	55.75	59.33	CASC70338 61D48A1D3A22; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_61D48A1D3A22_03	pass	kalimdor.winterspring	1452	56.11	61.97	CASC70338 61D48A1D3A22; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_61D48A1D3A22_04	pass	kalimdor.winterspring	1452	56.10	64.61	CASC70338 61D48A1D3A22; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_WINTERSPRING_TO_FELWOOD	TERRAIN_61D48A1D3A22_01	walk	0
+# UNCERTAIN	link	TERRAIN_61D48A1D3A22_01	TERRAIN_61D48A1D3A22_02	walk	0
+# UNCERTAIN	link	TERRAIN_61D48A1D3A22_02	TERRAIN_61D48A1D3A22_03	walk	0
+# UNCERTAIN	link	TERRAIN_61D48A1D3A22_03	TERRAIN_61D48A1D3A22_04	walk	0
+# UNCERTAIN	link	TERRAIN_61D48A1D3A22_04	PASS_WINTERSPRING_DARKWHISPER_N_OUTSIDE	walk	0
+# 6EE1078ACEB6 BORDER_WINTERSPRING_TO_MOONGLADE>PASS_WINTERSPRING_DARKWHISPER_N_OUTSIDE; consumer statuses {"UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_6EE1078ACEB6_01	pass	kalimdor.winterspring	1452	53.64	56.16	CASC70338 6EE1078ACEB6; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_6EE1078ACEB6_02	pass	kalimdor.winterspring	1452	55.75	59.33	CASC70338 6EE1078ACEB6; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_6EE1078ACEB6_03	pass	kalimdor.winterspring	1452	56.11	61.97	CASC70338 6EE1078ACEB6; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_6EE1078ACEB6_04	pass	kalimdor.winterspring	1452	56.10	64.61	CASC70338 6EE1078ACEB6; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_WINTERSPRING_TO_MOONGLADE	TERRAIN_6EE1078ACEB6_01	walk	0
+# UNCERTAIN	link	TERRAIN_6EE1078ACEB6_01	TERRAIN_6EE1078ACEB6_02	walk	0
+# UNCERTAIN	link	TERRAIN_6EE1078ACEB6_02	TERRAIN_6EE1078ACEB6_03	walk	0
+# UNCERTAIN	link	TERRAIN_6EE1078ACEB6_03	TERRAIN_6EE1078ACEB6_04	walk	0
+# UNCERTAIN	link	TERRAIN_6EE1078ACEB6_04	PASS_WINTERSPRING_DARKWHISPER_N_OUTSIDE	walk	0
+# 053525676516 BORDER_MULGORE_TO_DESOLACE>BORDER_MULGORE_TO_THE_BARRENS; consumer statuses {"PASSABLE": 12, "UNCERTAIN": 9}
+node	TERRAIN_053525676516_01	pass	kalimdor.mulgore	1412	32.36	22.04	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_02	pass	kalimdor.mulgore	1412	32.57	21.13	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_03	pass	kalimdor.mulgore	1412	34.39	20.21	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_04	pass	kalimdor.mulgore	1412	36.43	17.78	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_05	pass	kalimdor.mulgore	1412	37.24	17.47	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_06	pass	kalimdor.mulgore	1412	37.85	16.56	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_07	pass	kalimdor.mulgore	1412	38.25	15.34	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_08	pass	kalimdor.mulgore	1412	39.07	15.95	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_09	pass	kalimdor.mulgore	1412	39.47	15.95	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_053525676516_10	pass	kalimdor.mulgore	1412	39.68	15.95	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_053525676516_11	pass	kalimdor.mulgore	1412	39.68	16.25	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_053525676516_12	pass	kalimdor.mulgore	1412	39.47	16.56	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_053525676516_13	pass	kalimdor.mulgore	1412	39.47	16.86	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_14	pass	kalimdor.mulgore	1412	40.28	17.78	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_15	pass	kalimdor.mulgore	1412	42.11	22.65	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_16	pass	kalimdor.mulgore	1412	51.66	39.72	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_17	pass	kalimdor.mulgore	1412	52.67	48.55	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_053525676516_18	pass	kalimdor.mulgore	1412	54.50	54.04	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_053525676516_19	pass	kalimdor.mulgore	1412	60.19	61.05	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_053525676516_20	pass	kalimdor.mulgore	1412	60.80	61.05	CASC70338 053525676516; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_MULGORE_TO_DESOLACE	TERRAIN_053525676516_01	walk	0
+link	TERRAIN_053525676516_01	TERRAIN_053525676516_02	walk	0
+link	TERRAIN_053525676516_02	TERRAIN_053525676516_03	walk	0
+link	TERRAIN_053525676516_03	TERRAIN_053525676516_04	walk	0
+link	TERRAIN_053525676516_04	TERRAIN_053525676516_05	walk	0
+link	TERRAIN_053525676516_05	TERRAIN_053525676516_06	walk	0
+link	TERRAIN_053525676516_06	TERRAIN_053525676516_07	walk	0
+link	TERRAIN_053525676516_07	TERRAIN_053525676516_08	walk	0
+link	TERRAIN_053525676516_08	TERRAIN_053525676516_09	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_09	TERRAIN_053525676516_10	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_10	TERRAIN_053525676516_11	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_11	TERRAIN_053525676516_12	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_12	TERRAIN_053525676516_13	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_13	TERRAIN_053525676516_14	walk	0
+link	TERRAIN_053525676516_14	TERRAIN_053525676516_15	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_15	TERRAIN_053525676516_16	walk	0
+link	TERRAIN_053525676516_16	TERRAIN_053525676516_17	walk	0
+link	TERRAIN_053525676516_17	TERRAIN_053525676516_18	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_18	TERRAIN_053525676516_19	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_19	TERRAIN_053525676516_20	walk	0
+# UNCERTAIN	link	TERRAIN_053525676516_20	BORDER_MULGORE_TO_THE_BARRENS	walk	0
+# CFC22450A907 BORDER_THE_BARRENS_TO_MULGORE>DOCK_RATCHET; consumer statuses {"PASSABLE": 4, "UNCERTAIN": 3}
+node	TERRAIN_CFC22450A907_01	pass	kalimdor.the_barrens	1413	41.67	58.28	CASC70338 CFC22450A907; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_CFC22450A907_02	pass	kalimdor.the_barrens	1413	59.44	39.77	CASC70338 CFC22450A907; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_CFC22450A907_03	pass	kalimdor.the_barrens	1413	59.93	39.41	CASC70338 CFC22450A907; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_CFC22450A907_04	pass	kalimdor.the_barrens	1413	60.42	39.41	CASC70338 CFC22450A907; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_CFC22450A907_05	pass	kalimdor.the_barrens	1413	62.15	37.93	CASC70338 CFC22450A907; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_CFC22450A907_06	pass	kalimdor.the_barrens	1413	62.64	38.30	CASC70338 CFC22450A907; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_THE_BARRENS_TO_MULGORE	TERRAIN_CFC22450A907_01	walk	0
+# UNCERTAIN	link	TERRAIN_CFC22450A907_01	TERRAIN_CFC22450A907_02	walk	0
+link	TERRAIN_CFC22450A907_02	TERRAIN_CFC22450A907_03	walk	0
+link	TERRAIN_CFC22450A907_03	TERRAIN_CFC22450A907_04	walk	0
+# UNCERTAIN	link	TERRAIN_CFC22450A907_04	TERRAIN_CFC22450A907_05	walk	0
+link	TERRAIN_CFC22450A907_05	TERRAIN_CFC22450A907_06	walk	0
+# UNCERTAIN	link	TERRAIN_CFC22450A907_06	DOCK_RATCHET	walk	0
+# E95B73A45978 BORDER_FELWOOD_TO_ASHENVALE>TAXI_65; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_E95B73A45978_01	pass	kalimdor.felwood	1448	42.46	64.13	CASC70338 E95B73A45978; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_E95B73A45978_02	pass	kalimdor.felwood	1448	41.59	51.09	CASC70338 E95B73A45978; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_E95B73A45978_03	pass	kalimdor.felwood	1448	42.02	50.43	CASC70338 E95B73A45978; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E95B73A45978_04	pass	kalimdor.felwood	1448	52.03	28.91	CASC70338 E95B73A45978; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E95B73A45978_05	pass	kalimdor.felwood	1448	57.25	25.00	CASC70338 E95B73A45978; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_FELWOOD_TO_ASHENVALE	TERRAIN_E95B73A45978_01	walk	0
+# UNCERTAIN	link	TERRAIN_E95B73A45978_01	TERRAIN_E95B73A45978_02	walk	0
+link	TERRAIN_E95B73A45978_02	TERRAIN_E95B73A45978_03	walk	0
+# UNCERTAIN	link	TERRAIN_E95B73A45978_03	TERRAIN_E95B73A45978_04	walk	0
+# UNCERTAIN	link	TERRAIN_E95B73A45978_04	TERRAIN_E95B73A45978_05	walk	0
+# UNCERTAIN	link	TERRAIN_E95B73A45978_05	TAXI_65	walk	0
+# 9055391BDE3F BORDER_MULGORE_TO_STONETALON_MOUNTAINS>BORDER_MULGORE_TO_THE_BARRENS; consumer statuses {"PASSABLE": 10, "UNCERTAIN": 5}
+node	TERRAIN_9055391BDE3F_01	pass	kalimdor.mulgore	1412	60.19	13.81	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_02	pass	kalimdor.mulgore	1412	61.41	15.03	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_03	pass	kalimdor.mulgore	1412	62.63	15.03	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_9055391BDE3F_04	pass	kalimdor.mulgore	1412	67.50	24.78	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_05	pass	kalimdor.mulgore	1412	67.91	27.22	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_06	pass	kalimdor.mulgore	1412	67.50	29.05	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_07	pass	kalimdor.mulgore	1412	68.72	32.10	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_08	pass	kalimdor.mulgore	1412	69.13	36.97	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_09	pass	kalimdor.mulgore	1412	68.72	38.19	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_10	pass	kalimdor.mulgore	1412	69.13	38.80	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_11	pass	kalimdor.mulgore	1412	69.94	46.11	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_12	pass	kalimdor.mulgore	1412	69.94	53.43	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_9055391BDE3F_13	pass	kalimdor.mulgore	1412	68.72	60.13	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_9055391BDE3F_14	pass	kalimdor.mulgore	1412	66.28	63.18	CASC70338 9055391BDE3F; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_MULGORE_TO_STONETALON_MOUNTAINS	TERRAIN_9055391BDE3F_01	walk	0
+link	TERRAIN_9055391BDE3F_01	TERRAIN_9055391BDE3F_02	walk	0
+link	TERRAIN_9055391BDE3F_02	TERRAIN_9055391BDE3F_03	walk	0
+# UNCERTAIN	link	TERRAIN_9055391BDE3F_03	TERRAIN_9055391BDE3F_04	walk	0
+# UNCERTAIN	link	TERRAIN_9055391BDE3F_04	TERRAIN_9055391BDE3F_05	walk	0
+link	TERRAIN_9055391BDE3F_05	TERRAIN_9055391BDE3F_06	walk	0
+link	TERRAIN_9055391BDE3F_06	TERRAIN_9055391BDE3F_07	walk	0
+link	TERRAIN_9055391BDE3F_07	TERRAIN_9055391BDE3F_08	walk	0
+link	TERRAIN_9055391BDE3F_08	TERRAIN_9055391BDE3F_09	walk	0
+link	TERRAIN_9055391BDE3F_09	TERRAIN_9055391BDE3F_10	walk	0
+link	TERRAIN_9055391BDE3F_10	TERRAIN_9055391BDE3F_11	walk	0
+link	TERRAIN_9055391BDE3F_11	TERRAIN_9055391BDE3F_12	walk	0
+# UNCERTAIN	link	TERRAIN_9055391BDE3F_12	TERRAIN_9055391BDE3F_13	walk	0
+# UNCERTAIN	link	TERRAIN_9055391BDE3F_13	TERRAIN_9055391BDE3F_14	walk	0
+link	TERRAIN_9055391BDE3F_14	BORDER_MULGORE_TO_THE_BARRENS	walk	0
+# E6C7A3734B62 TAXI_48>BORDER_FELWOOD_TO_MOONGLADE; consumer statuses {"UNCERTAIN": 4}
+# PROPOSAL	node	TERRAIN_E6C7A3734B62_01	pass	kalimdor.felwood	1448	51.59	30.22	CASC70338 E6C7A3734B62; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E6C7A3734B62_02	pass	kalimdor.felwood	1448	52.03	28.91	CASC70338 E6C7A3734B62; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_E6C7A3734B62_03	pass	kalimdor.felwood	1448	64.20	8.70	CASC70338 E6C7A3734B62; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_48	TERRAIN_E6C7A3734B62_01	walk	0
+# UNCERTAIN	link	TERRAIN_E6C7A3734B62_01	TERRAIN_E6C7A3734B62_02	walk	0
+# UNCERTAIN	link	TERRAIN_E6C7A3734B62_02	TERRAIN_E6C7A3734B62_03	walk	0
+# UNCERTAIN	link	TERRAIN_E6C7A3734B62_03	BORDER_FELWOOD_TO_MOONGLADE	walk	0
+# 7A53709DCF6D BORDER_DESOLACE_TO_FERALAS>BORDER_DESOLACE_TO_MULGORE; consumer statuses {"PASSABLE": 10, "UNCERTAIN": 7}
+node	TERRAIN_7A53709DCF6D_01	pass	kalimdor.desolace	1443	42.45	96.80	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_02	pass	kalimdor.desolace	1443	41.89	95.97	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_03	pass	kalimdor.desolace	1443	41.33	89.30	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_04	pass	kalimdor.desolace	1443	42.45	85.96	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_05	pass	kalimdor.desolace	1443	44.67	85.96	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_06	pass	kalimdor.desolace	1443	45.23	86.80	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_07	pass	kalimdor.desolace	1443	48.01	82.63	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_08	pass	kalimdor.desolace	1443	69.69	44.27	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_09	pass	kalimdor.desolace	1443	70.25	41.77	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_10	pass	kalimdor.desolace	1443	71.36	40.10	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_11	pass	kalimdor.desolace	1443	72.47	38.43	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_12	pass	kalimdor.desolace	1443	73.03	35.93	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_7A53709DCF6D_13	pass	kalimdor.desolace	1443	76.92	35.09	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_7A53709DCF6D_14	pass	kalimdor.desolace	1443	78.02	34.28	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_7A53709DCF6D_15	pass	kalimdor.desolace	1443	78.04	35.09	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7A53709DCF6D_16	pass	kalimdor.desolace	1443	79.70	36.76	CASC70338 7A53709DCF6D; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_DESOLACE_TO_FERALAS	TERRAIN_7A53709DCF6D_01	walk	0
+link	TERRAIN_7A53709DCF6D_01	TERRAIN_7A53709DCF6D_02	walk	0
+# UNCERTAIN	link	TERRAIN_7A53709DCF6D_02	TERRAIN_7A53709DCF6D_03	walk	0
+link	TERRAIN_7A53709DCF6D_03	TERRAIN_7A53709DCF6D_04	walk	0
+link	TERRAIN_7A53709DCF6D_04	TERRAIN_7A53709DCF6D_05	walk	0
+link	TERRAIN_7A53709DCF6D_05	TERRAIN_7A53709DCF6D_06	walk	0
+link	TERRAIN_7A53709DCF6D_06	TERRAIN_7A53709DCF6D_07	walk	0
+# UNCERTAIN	link	TERRAIN_7A53709DCF6D_07	TERRAIN_7A53709DCF6D_08	walk	0
+link	TERRAIN_7A53709DCF6D_08	TERRAIN_7A53709DCF6D_09	walk	0
+link	TERRAIN_7A53709DCF6D_09	TERRAIN_7A53709DCF6D_10	walk	0
+# UNCERTAIN	link	TERRAIN_7A53709DCF6D_10	TERRAIN_7A53709DCF6D_11	walk	0
+link	TERRAIN_7A53709DCF6D_11	TERRAIN_7A53709DCF6D_12	walk	0
+# UNCERTAIN	link	TERRAIN_7A53709DCF6D_12	TERRAIN_7A53709DCF6D_13	walk	0
+# UNCERTAIN	link	TERRAIN_7A53709DCF6D_13	TERRAIN_7A53709DCF6D_14	walk	0
+# UNCERTAIN	link	TERRAIN_7A53709DCF6D_14	TERRAIN_7A53709DCF6D_15	walk	0
+# UNCERTAIN	link	TERRAIN_7A53709DCF6D_15	TERRAIN_7A53709DCF6D_16	walk	0
+link	TERRAIN_7A53709DCF6D_16	BORDER_DESOLACE_TO_MULGORE	walk	0
+# AAA6E7331A66 BORDER_DARKSHORE_TO_ASHENVALE>DOCK_AUBERDINE_STORMWIND; consumer statuses {"UNCERTAIN": 3}
+# PROPOSAL	node	TERRAIN_AAA6E7331A66_01	pass	kalimdor.darkshore	1439	36.13	44.27	CASC70338 AAA6E7331A66; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_AAA6E7331A66_02	pass	kalimdor.darkshore	1439	34.99	43.13	CASC70338 AAA6E7331A66; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_DARKSHORE_TO_ASHENVALE	TERRAIN_AAA6E7331A66_01	walk	0
+# UNCERTAIN	link	TERRAIN_AAA6E7331A66_01	TERRAIN_AAA6E7331A66_02	walk	0
+# UNCERTAIN	link	TERRAIN_AAA6E7331A66_02	DOCK_AUBERDINE_STORMWIND	walk	0
+# 1C731F28E27E BORDER_DARKSHORE_TO_ASHENVALE>DOCK_AUBERDINE_RUTTHERAN; consumer statuses {"UNCERTAIN": 2}
+# PROPOSAL	node	TERRAIN_1C731F28E27E_01	pass	kalimdor.darkshore	1439	36.13	44.27	CASC70338 1C731F28E27E; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_DARKSHORE_TO_ASHENVALE	TERRAIN_1C731F28E27E_01	walk	0
+# UNCERTAIN	link	TERRAIN_1C731F28E27E_01	DOCK_AUBERDINE_RUTTHERAN	walk	0
+# 941E4EE6F69A BORDER_ASHENVALE_TO_THE_BARRENS>TAXI_28; consumer statuses {"UNCERTAIN": 6}
+# PROPOSAL	node	TERRAIN_941E4EE6F69A_01	pass	kalimdor.ashenvale	1440	58.96	79.30	CASC70338 941E4EE6F69A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_941E4EE6F69A_02	pass	kalimdor.ashenvale	1440	58.53	79.30	CASC70338 941E4EE6F69A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_941E4EE6F69A_03	pass	kalimdor.ashenvale	1440	53.32	69.54	CASC70338 941E4EE6F69A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_941E4EE6F69A_04	pass	kalimdor.ashenvale	1440	38.58	55.23	CASC70338 941E4EE6F69A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_941E4EE6F69A_05	pass	kalimdor.ashenvale	1440	37.28	53.28	CASC70338 941E4EE6F69A; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_THE_BARRENS	TERRAIN_941E4EE6F69A_01	walk	0
+# UNCERTAIN	link	TERRAIN_941E4EE6F69A_01	TERRAIN_941E4EE6F69A_02	walk	0
+# UNCERTAIN	link	TERRAIN_941E4EE6F69A_02	TERRAIN_941E4EE6F69A_03	walk	0
+# UNCERTAIN	link	TERRAIN_941E4EE6F69A_03	TERRAIN_941E4EE6F69A_04	walk	0
+# UNCERTAIN	link	TERRAIN_941E4EE6F69A_04	TERRAIN_941E4EE6F69A_05	walk	0
+# UNCERTAIN	link	TERRAIN_941E4EE6F69A_05	TAXI_28	walk	0
+# A82D507E5E82 BORDER_ASHENVALE_TO_FELWOOD>BORDER_ASHENVALE_TO_THE_BARRENS; consumer statuses {"PASSABLE": 4, "UNCERTAIN": 4}
+node	TERRAIN_A82D507E5E82_01	pass	kalimdor.ashenvale	1440	65.90	60.43	CASC70338 A82D507E5E82; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A82D507E5E82_02	pass	kalimdor.ashenvale	1440	67.20	63.04	CASC70338 A82D507E5E82; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A82D507E5E82_03	pass	kalimdor.ashenvale	1440	67.63	63.04	CASC70338 A82D507E5E82; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_A82D507E5E82_04	pass	kalimdor.ashenvale	1440	68.06	63.04	CASC70338 A82D507E5E82; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A82D507E5E82_05	pass	kalimdor.ashenvale	1440	68.50	75.39	CASC70338 A82D507E5E82; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A82D507E5E82_06	pass	kalimdor.ashenvale	1440	67.63	78.64	CASC70338 A82D507E5E82; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_A82D507E5E82_07	pass	kalimdor.ashenvale	1440	68.06	81.90	CASC70338 A82D507E5E82; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_FELWOOD	TERRAIN_A82D507E5E82_01	walk	0
+link	TERRAIN_A82D507E5E82_01	TERRAIN_A82D507E5E82_02	walk	0
+link	TERRAIN_A82D507E5E82_02	TERRAIN_A82D507E5E82_03	walk	0
+# UNCERTAIN	link	TERRAIN_A82D507E5E82_03	TERRAIN_A82D507E5E82_04	walk	0
+# UNCERTAIN	link	TERRAIN_A82D507E5E82_04	TERRAIN_A82D507E5E82_05	walk	0
+link	TERRAIN_A82D507E5E82_05	TERRAIN_A82D507E5E82_06	walk	0
+link	TERRAIN_A82D507E5E82_06	TERRAIN_A82D507E5E82_07	walk	0
+# UNCERTAIN	link	TERRAIN_A82D507E5E82_07	BORDER_ASHENVALE_TO_THE_BARRENS	walk	0
+# 956CFEACC0D3 BORDER_RIVERGLADES_TO_REDRIDGE_MOUNTAINS>TAXI_3203; consumer statuses {"PASSABLE": 12, "UNCERTAIN": 11}
+node	TERRAIN_956CFEACC0D3_01	pass	easternkingdoms.riverglades	2548	13.57	78.35	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_956CFEACC0D3_02	pass	easternkingdoms.riverglades	2548	14.10	79.12	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_03	pass	easternkingdoms.riverglades	2548	14.60	76.80	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_04	pass	easternkingdoms.riverglades	2548	13.57	74.48	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_05	pass	easternkingdoms.riverglades	2548	14.60	71.39	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_06	pass	easternkingdoms.riverglades	2548	17.70	68.30	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_07	pass	easternkingdoms.riverglades	2548	19.24	68.30	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_956CFEACC0D3_08	pass	easternkingdoms.riverglades	2548	27.39	60.26	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_09	pass	easternkingdoms.riverglades	2548	28.52	59.79	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_10	pass	easternkingdoms.riverglades	2548	30.58	61.34	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_11	pass	easternkingdoms.riverglades	2548	32.65	65.98	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_12	pass	easternkingdoms.riverglades	2548	35.74	68.30	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_13	pass	easternkingdoms.riverglades	2548	36.25	67.53	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_14	pass	easternkingdoms.riverglades	2548	43.47	58.25	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_15	pass	easternkingdoms.riverglades	2548	45.02	57.47	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_16	pass	easternkingdoms.riverglades	2548	45.53	57.47	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_956CFEACC0D3_17	pass	easternkingdoms.riverglades	2548	46.05	57.47	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_18	pass	easternkingdoms.riverglades	2548	46.56	58.25	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_19	pass	easternkingdoms.riverglades	2548	50.17	55.93	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_20	pass	easternkingdoms.riverglades	2548	50.69	55.93	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_21	pass	easternkingdoms.riverglades	2548	57.39	48.97	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_956CFEACC0D3_22	pass	easternkingdoms.riverglades	2548	57.90	48.20	CASC70338 956CFEACC0D3; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_RIVERGLADES_TO_REDRIDGE_MOUNTAINS	TERRAIN_956CFEACC0D3_01	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_01	TERRAIN_956CFEACC0D3_02	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_02	TERRAIN_956CFEACC0D3_03	walk	0
+link	TERRAIN_956CFEACC0D3_03	TERRAIN_956CFEACC0D3_04	walk	0
+link	TERRAIN_956CFEACC0D3_04	TERRAIN_956CFEACC0D3_05	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_05	TERRAIN_956CFEACC0D3_06	walk	0
+link	TERRAIN_956CFEACC0D3_06	TERRAIN_956CFEACC0D3_07	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_07	TERRAIN_956CFEACC0D3_08	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_08	TERRAIN_956CFEACC0D3_09	walk	0
+link	TERRAIN_956CFEACC0D3_09	TERRAIN_956CFEACC0D3_10	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_10	TERRAIN_956CFEACC0D3_11	walk	0
+link	TERRAIN_956CFEACC0D3_11	TERRAIN_956CFEACC0D3_12	walk	0
+link	TERRAIN_956CFEACC0D3_12	TERRAIN_956CFEACC0D3_13	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_13	TERRAIN_956CFEACC0D3_14	walk	0
+link	TERRAIN_956CFEACC0D3_14	TERRAIN_956CFEACC0D3_15	walk	0
+link	TERRAIN_956CFEACC0D3_15	TERRAIN_956CFEACC0D3_16	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_16	TERRAIN_956CFEACC0D3_17	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_17	TERRAIN_956CFEACC0D3_18	walk	0
+link	TERRAIN_956CFEACC0D3_18	TERRAIN_956CFEACC0D3_19	walk	0
+link	TERRAIN_956CFEACC0D3_19	TERRAIN_956CFEACC0D3_20	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_20	TERRAIN_956CFEACC0D3_21	walk	0
+link	TERRAIN_956CFEACC0D3_21	TERRAIN_956CFEACC0D3_22	walk	0
+# UNCERTAIN	link	TERRAIN_956CFEACC0D3_22	TAXI_3203	walk	0
+# EC824B023758 BORDER_WETLANDS_TO_ARATHI_HIGHLANDS>DOCK_MENETHIL_THERAMORE; consumer statuses {"PASSABLE": 3, "UNCERTAIN": 3}
+node	TERRAIN_EC824B023758_01	pass	easternkingdoms.wetlands	1437	50.43	23.66	CASC70338 EC824B023758; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_EC824B023758_02	pass	easternkingdoms.wetlands	1437	48.61	26.38	CASC70338 EC824B023758; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_EC824B023758_03	pass	easternkingdoms.wetlands	1437	45.59	27.29	CASC70338 EC824B023758; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_EC824B023758_04	pass	easternkingdoms.wetlands	1437	41.96	30.91	CASC70338 EC824B023758; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_EC824B023758_05	pass	easternkingdoms.wetlands	1437	13.55	49.96	CASC70338 EC824B023758; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_WETLANDS_TO_ARATHI_HIGHLANDS	TERRAIN_EC824B023758_01	walk	0
+link	TERRAIN_EC824B023758_01	TERRAIN_EC824B023758_02	walk	0
+link	TERRAIN_EC824B023758_02	TERRAIN_EC824B023758_03	walk	0
+link	TERRAIN_EC824B023758_03	TERRAIN_EC824B023758_04	walk	0
+# UNCERTAIN	link	TERRAIN_EC824B023758_04	TERRAIN_EC824B023758_05	walk	0
+# UNCERTAIN	link	TERRAIN_EC824B023758_05	DOCK_MENETHIL_THERAMORE	walk	0
+# 77B1DD7FD8CA BORDER_STONETALON_MOUNTAINS_TO_THE_BARRENS>PASS_STONETALON_CHARRED_VALE_SUN_ROCK_OUTSIDE; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 4}
+node	TERRAIN_77B1DD7FD8CA_01	pass	kalimdor.stonetalon_mountains	1442	83.36	97.25	CASC70338 77B1DD7FD8CA; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_77B1DD7FD8CA_02	pass	kalimdor.stonetalon_mountains	1442	82.85	96.48	CASC70338 77B1DD7FD8CA; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_77B1DD7FD8CA_03	pass	kalimdor.stonetalon_mountains	1442	57.76	76.52	CASC70338 77B1DD7FD8CA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_77B1DD7FD8CA_04	pass	kalimdor.stonetalon_mountains	1442	47.53	67.31	CASC70338 77B1DD7FD8CA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_77B1DD7FD8CA_05	pass	kalimdor.stonetalon_mountains	1442	46.50	67.31	CASC70338 77B1DD7FD8CA; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_STONETALON_MOUNTAINS_TO_THE_BARRENS	TERRAIN_77B1DD7FD8CA_01	walk	0
+# UNCERTAIN	link	TERRAIN_77B1DD7FD8CA_01	TERRAIN_77B1DD7FD8CA_02	walk	0
+# UNCERTAIN	link	TERRAIN_77B1DD7FD8CA_02	TERRAIN_77B1DD7FD8CA_03	walk	0
+# UNCERTAIN	link	TERRAIN_77B1DD7FD8CA_03	TERRAIN_77B1DD7FD8CA_04	walk	0
+link	TERRAIN_77B1DD7FD8CA_04	TERRAIN_77B1DD7FD8CA_05	walk	0
+# UNCERTAIN	link	TERRAIN_77B1DD7FD8CA_05	PASS_STONETALON_CHARRED_VALE_SUN_ROCK_OUTSIDE	walk	0
+# 7E7BFF2C3B22 TAXI_77>DOCK_RATCHET; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 3}
+node	TERRAIN_7E7BFF2C3B22_01	pass	kalimdor.the_barrens	1413	59.68	39.41	CASC70338 7E7BFF2C3B22; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7E7BFF2C3B22_02	pass	kalimdor.the_barrens	1413	60.42	39.41	CASC70338 7E7BFF2C3B22; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7E7BFF2C3B22_03	pass	kalimdor.the_barrens	1413	62.15	37.93	CASC70338 7E7BFF2C3B22; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_7E7BFF2C3B22_04	pass	kalimdor.the_barrens	1413	62.64	38.30	CASC70338 7E7BFF2C3B22; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_77	TERRAIN_7E7BFF2C3B22_01	walk	0
+link	TERRAIN_7E7BFF2C3B22_01	TERRAIN_7E7BFF2C3B22_02	walk	0
+# UNCERTAIN	link	TERRAIN_7E7BFF2C3B22_02	TERRAIN_7E7BFF2C3B22_03	walk	0
+link	TERRAIN_7E7BFF2C3B22_03	TERRAIN_7E7BFF2C3B22_04	walk	0
+# UNCERTAIN	link	TERRAIN_7E7BFF2C3B22_04	DOCK_RATCHET	walk	0
+# 031A66B82F59 BORDER_ASHENVALE_TO_DARKSHORE>BORDER_ASHENVALE_TO_STONETALON_MOUNTAINS; consumer statuses {"PASSABLE": 4, "UNCERTAIN": 4}
+node	TERRAIN_031A66B82F59_01	pass	kalimdor.ashenvale	1440	32.51	38.97	CASC70338 031A66B82F59; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_031A66B82F59_02	pass	kalimdor.ashenvale	1440	32.51	40.92	CASC70338 031A66B82F59; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_031A66B82F59_03	pass	kalimdor.ashenvale	1440	32.08	42.87	CASC70338 031A66B82F59; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_031A66B82F59_04	pass	kalimdor.ashenvale	1440	31.21	44.17	CASC70338 031A66B82F59; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_031A66B82F59_05	pass	kalimdor.ashenvale	1440	32.95	52.63	CASC70338 031A66B82F59; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_031A66B82F59_06	pass	kalimdor.ashenvale	1440	33.82	53.28	CASC70338 031A66B82F59; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_031A66B82F59_07	pass	kalimdor.ashenvale	1440	42.05	69.54	CASC70338 031A66B82F59; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_DARKSHORE	TERRAIN_031A66B82F59_01	walk	0
+link	TERRAIN_031A66B82F59_01	TERRAIN_031A66B82F59_02	walk	0
+link	TERRAIN_031A66B82F59_02	TERRAIN_031A66B82F59_03	walk	0
+link	TERRAIN_031A66B82F59_03	TERRAIN_031A66B82F59_04	walk	0
+# UNCERTAIN	link	TERRAIN_031A66B82F59_04	TERRAIN_031A66B82F59_05	walk	0
+link	TERRAIN_031A66B82F59_05	TERRAIN_031A66B82F59_06	walk	0
+# UNCERTAIN	link	TERRAIN_031A66B82F59_06	TERRAIN_031A66B82F59_07	walk	0
+# UNCERTAIN	link	TERRAIN_031A66B82F59_07	BORDER_ASHENVALE_TO_STONETALON_MOUNTAINS	walk	0
+# 666DB79FD327 BORDER_ASHENVALE_TO_AZSHARA>BORDER_ASHENVALE_TO_FELWOOD; consumer statuses {"PASSABLE": 3, "UNCERTAIN": 3}
+node	TERRAIN_666DB79FD327_01	pass	kalimdor.ashenvale	1440	72.40	48.08	CASC70338 666DB79FD327; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_666DB79FD327_02	pass	kalimdor.ashenvale	1440	71.97	49.38	CASC70338 666DB79FD327; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_666DB79FD327_03	pass	kalimdor.ashenvale	1440	68.93	50.68	CASC70338 666DB79FD327; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_666DB79FD327_04	pass	kalimdor.ashenvale	1440	66.76	48.73	CASC70338 666DB79FD327; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_666DB79FD327_05	pass	kalimdor.ashenvale	1440	57.66	33.77	CASC70338 666DB79FD327; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_AZSHARA	TERRAIN_666DB79FD327_01	walk	0
+link	TERRAIN_666DB79FD327_01	TERRAIN_666DB79FD327_02	walk	0
+link	TERRAIN_666DB79FD327_02	TERRAIN_666DB79FD327_03	walk	0
+link	TERRAIN_666DB79FD327_03	TERRAIN_666DB79FD327_04	walk	0
+# UNCERTAIN	link	TERRAIN_666DB79FD327_04	TERRAIN_666DB79FD327_05	walk	0
+# UNCERTAIN	link	TERRAIN_666DB79FD327_05	BORDER_ASHENVALE_TO_FELWOOD	walk	0
+# 3B45EB96DA45 BORDER_DARKSHORE_TO_ASHENVALE>DOCK_AUBERDINE_MENETHIL; consumer statuses {"UNCERTAIN": 3}
+# PROPOSAL	node	TERRAIN_3B45EB96DA45_01	pass	kalimdor.darkshore	1439	36.13	44.27	CASC70338 3B45EB96DA45; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_3B45EB96DA45_02	pass	kalimdor.darkshore	1439	35.75	43.70	CASC70338 3B45EB96DA45; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_DARKSHORE_TO_ASHENVALE	TERRAIN_3B45EB96DA45_01	walk	0
+# UNCERTAIN	link	TERRAIN_3B45EB96DA45_01	TERRAIN_3B45EB96DA45_02	walk	0
+# UNCERTAIN	link	TERRAIN_3B45EB96DA45_02	DOCK_AUBERDINE_MENETHIL	walk	0
+# D5DEE2D9F918 DOCK_MENETHIL>BORDER_WETLANDS_TO_ARATHI_HIGHLANDS; consumer statuses {"PASSABLE": 8, "UNCERTAIN": 4}
+# PROPOSAL	node	TERRAIN_D5DEE2D9F918_01	pass	easternkingdoms.wetlands	1437	9.92	53.59	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_02	pass	easternkingdoms.wetlands	1437	27.46	30.91	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_03	pass	easternkingdoms.wetlands	1437	34.11	30.91	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_04	pass	easternkingdoms.wetlands	1437	36.52	30.01	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_05	pass	easternkingdoms.wetlands	1437	37.73	30.91	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_06	pass	easternkingdoms.wetlands	1437	40.76	30.01	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_07	pass	easternkingdoms.wetlands	1437	48.61	26.38	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_08	pass	easternkingdoms.wetlands	1437	50.43	23.66	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_09	pass	easternkingdoms.wetlands	1437	50.43	17.31	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_10	pass	easternkingdoms.wetlands	1437	51.03	15.50	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D5DEE2D9F918_11	pass	easternkingdoms.wetlands	1437	51.03	12.77	CASC70338 D5DEE2D9F918; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	DOCK_MENETHIL	TERRAIN_D5DEE2D9F918_01	walk	0
+# UNCERTAIN	link	TERRAIN_D5DEE2D9F918_01	TERRAIN_D5DEE2D9F918_02	walk	0
+link	TERRAIN_D5DEE2D9F918_02	TERRAIN_D5DEE2D9F918_03	walk	0
+link	TERRAIN_D5DEE2D9F918_03	TERRAIN_D5DEE2D9F918_04	walk	0
+link	TERRAIN_D5DEE2D9F918_04	TERRAIN_D5DEE2D9F918_05	walk	0
+link	TERRAIN_D5DEE2D9F918_05	TERRAIN_D5DEE2D9F918_06	walk	0
+# UNCERTAIN	link	TERRAIN_D5DEE2D9F918_06	TERRAIN_D5DEE2D9F918_07	walk	0
+link	TERRAIN_D5DEE2D9F918_07	TERRAIN_D5DEE2D9F918_08	walk	0
+link	TERRAIN_D5DEE2D9F918_08	TERRAIN_D5DEE2D9F918_09	walk	0
+link	TERRAIN_D5DEE2D9F918_09	TERRAIN_D5DEE2D9F918_10	walk	0
+link	TERRAIN_D5DEE2D9F918_10	TERRAIN_D5DEE2D9F918_11	walk	0
+# UNCERTAIN	link	TERRAIN_D5DEE2D9F918_11	BORDER_WETLANDS_TO_ARATHI_HIGHLANDS	walk	0
+# 64E32E1EF7B4 BORDER_DARKSHORE_TO_ASHENVALE_TWILIGHT_SHORE>DOCK_AUBERDINE_RUTTHERAN; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 5}
+node	TERRAIN_64E32E1EF7B4_01	pass	kalimdor.darkshore	1439	28.88	91.22	CASC70338 64E32E1EF7B4; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_64E32E1EF7B4_02	pass	kalimdor.darkshore	1439	32.32	88.93	CASC70338 64E32E1EF7B4; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_64E32E1EF7B4_03	pass	kalimdor.darkshore	1439	35.75	80.34	CASC70338 64E32E1EF7B4; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_64E32E1EF7B4_04	pass	kalimdor.darkshore	1439	36.90	66.60	CASC70338 64E32E1EF7B4; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_64E32E1EF7B4_05	pass	kalimdor.darkshore	1439	36.13	44.27	CASC70338 64E32E1EF7B4; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_DARKSHORE_TO_ASHENVALE_TWILIGHT_SHORE	TERRAIN_64E32E1EF7B4_01	walk	0
+# UNCERTAIN	link	TERRAIN_64E32E1EF7B4_01	TERRAIN_64E32E1EF7B4_02	walk	0
+# UNCERTAIN	link	TERRAIN_64E32E1EF7B4_02	TERRAIN_64E32E1EF7B4_03	walk	0
+# UNCERTAIN	link	TERRAIN_64E32E1EF7B4_03	TERRAIN_64E32E1EF7B4_04	walk	0
+# UNCERTAIN	link	TERRAIN_64E32E1EF7B4_04	TERRAIN_64E32E1EF7B4_05	walk	0
+# UNCERTAIN	link	TERRAIN_64E32E1EF7B4_05	DOCK_AUBERDINE_RUTTHERAN	walk	0
+# 3620E7BCA293 BORDER_STONETALON_MOUNTAINS_TO_ASHENVALE>TAXI_33; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 5}
+# PROPOSAL	node	TERRAIN_3620E7BCA293_01	pass	kalimdor.stonetalon_mountains	1442	54.69	32.76	CASC70338 3620E7BCA293; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_3620E7BCA293_02	pass	kalimdor.stonetalon_mountains	1442	47.53	31.22	CASC70338 3620E7BCA293; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_3620E7BCA293_03	pass	kalimdor.stonetalon_mountains	1442	46.50	28.15	CASC70338 3620E7BCA293; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_3620E7BCA293_04	pass	kalimdor.stonetalon_mountains	1442	44.45	18.17	CASC70338 3620E7BCA293; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_3620E7BCA293_05	pass	kalimdor.stonetalon_mountains	1442	43.43	16.63	CASC70338 3620E7BCA293; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_STONETALON_MOUNTAINS_TO_ASHENVALE	TERRAIN_3620E7BCA293_01	walk	0
+# UNCERTAIN	link	TERRAIN_3620E7BCA293_01	TERRAIN_3620E7BCA293_02	walk	0
+# UNCERTAIN	link	TERRAIN_3620E7BCA293_02	TERRAIN_3620E7BCA293_03	walk	0
+# UNCERTAIN	link	TERRAIN_3620E7BCA293_03	TERRAIN_3620E7BCA293_04	walk	0
+link	TERRAIN_3620E7BCA293_04	TERRAIN_3620E7BCA293_05	walk	0
+# UNCERTAIN	link	TERRAIN_3620E7BCA293_05	TAXI_33	walk	0
+# 88C2B1C3AD2D BORDER_THE_BARRENS_TO_MULGORE>LIFT_GREAT_LIFT_BARRENS_TOP; consumer statuses {"PASSABLE": 4, "UNCERTAIN": 3}
+node	TERRAIN_88C2B1C3AD2D_01	pass	kalimdor.the_barrens	1413	42.17	59.02	CASC70338 88C2B1C3AD2D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_88C2B1C3AD2D_02	pass	kalimdor.the_barrens	1413	44.14	61.61	CASC70338 88C2B1C3AD2D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_88C2B1C3AD2D_03	pass	kalimdor.the_barrens	1413	45.37	64.57	CASC70338 88C2B1C3AD2D; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_88C2B1C3AD2D_04	pass	kalimdor.the_barrens	1413	45.37	67.90	CASC70338 88C2B1C3AD2D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_88C2B1C3AD2D_05	pass	kalimdor.the_barrens	1413	44.64	83.05	CASC70338 88C2B1C3AD2D; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_88C2B1C3AD2D_06	pass	kalimdor.the_barrens	1413	44.14	91.95	CASC70338 88C2B1C3AD2D; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_THE_BARRENS_TO_MULGORE	TERRAIN_88C2B1C3AD2D_01	walk	0
+link	TERRAIN_88C2B1C3AD2D_01	TERRAIN_88C2B1C3AD2D_02	walk	0
+link	TERRAIN_88C2B1C3AD2D_02	TERRAIN_88C2B1C3AD2D_03	walk	0
+link	TERRAIN_88C2B1C3AD2D_03	TERRAIN_88C2B1C3AD2D_04	walk	0
+# UNCERTAIN	link	TERRAIN_88C2B1C3AD2D_04	TERRAIN_88C2B1C3AD2D_05	walk	0
+# UNCERTAIN	link	TERRAIN_88C2B1C3AD2D_05	TERRAIN_88C2B1C3AD2D_06	walk	0
+# UNCERTAIN	link	TERRAIN_88C2B1C3AD2D_06	LIFT_GREAT_LIFT_BARRENS_TOP	walk	0
+# F31B7B290E26 TAXI_77>LIFT_GREAT_LIFT_BARRENS_TOP; consumer statuses {"PASSABLE": 8, "UNCERTAIN": 2}
+node	TERRAIN_F31B7B290E26_01	pass	kalimdor.the_barrens	1413	44.14	60.13	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_02	pass	kalimdor.the_barrens	1413	45.37	64.94	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_03	pass	kalimdor.the_barrens	1413	45.87	68.27	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_04	pass	kalimdor.the_barrens	1413	45.62	76.04	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_05	pass	kalimdor.the_barrens	1413	45.13	76.78	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_06	pass	kalimdor.the_barrens	1413	45.37	80.85	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_07	pass	kalimdor.the_barrens	1413	45.87	81.96	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_08	pass	kalimdor.the_barrens	1413	44.63	87.51	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F31B7B290E26_09	pass	kalimdor.the_barrens	1413	44.14	91.95	CASC70338 F31B7B290E26; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_77	TERRAIN_F31B7B290E26_01	walk	0
+link	TERRAIN_F31B7B290E26_01	TERRAIN_F31B7B290E26_02	walk	0
+link	TERRAIN_F31B7B290E26_02	TERRAIN_F31B7B290E26_03	walk	0
+link	TERRAIN_F31B7B290E26_03	TERRAIN_F31B7B290E26_04	walk	0
+link	TERRAIN_F31B7B290E26_04	TERRAIN_F31B7B290E26_05	walk	0
+link	TERRAIN_F31B7B290E26_05	TERRAIN_F31B7B290E26_06	walk	0
+link	TERRAIN_F31B7B290E26_06	TERRAIN_F31B7B290E26_07	walk	0
+link	TERRAIN_F31B7B290E26_07	TERRAIN_F31B7B290E26_08	walk	0
+link	TERRAIN_F31B7B290E26_08	TERRAIN_F31B7B290E26_09	walk	0
+# UNCERTAIN	link	TERRAIN_F31B7B290E26_09	LIFT_GREAT_LIFT_BARRENS_TOP	walk	0
+# 258DDF878D5E TAXI_52>BORDER_WINTERSPRING_TO_FELWOOD; consumer statuses {"PASSABLE": 5, "UNCERTAIN": 4}
+node	TERRAIN_258DDF878D5E_01	pass	kalimdor.winterspring	1452	58.57	36.62	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_258DDF878D5E_02	pass	kalimdor.winterspring	1452	57.86	35.56	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_258DDF878D5E_03	pass	kalimdor.winterspring	1452	57.51	35.56	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_258DDF878D5E_04	pass	kalimdor.winterspring	1452	50.47	37.68	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_258DDF878D5E_05	pass	kalimdor.winterspring	1452	49.41	37.15	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_258DDF878D5E_06	pass	kalimdor.winterspring	1452	46.95	37.15	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_258DDF878D5E_07	pass	kalimdor.winterspring	1452	46.60	37.68	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_258DDF878D5E_08	pass	kalimdor.winterspring	1452	44.84	37.15	CASC70338 258DDF878D5E; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	TAXI_52	TERRAIN_258DDF878D5E_01	walk	0
+link	TERRAIN_258DDF878D5E_01	TERRAIN_258DDF878D5E_02	walk	0
+link	TERRAIN_258DDF878D5E_02	TERRAIN_258DDF878D5E_03	walk	0
+# UNCERTAIN	link	TERRAIN_258DDF878D5E_03	TERRAIN_258DDF878D5E_04	walk	0
+link	TERRAIN_258DDF878D5E_04	TERRAIN_258DDF878D5E_05	walk	0
+# UNCERTAIN	link	TERRAIN_258DDF878D5E_05	TERRAIN_258DDF878D5E_06	walk	0
+link	TERRAIN_258DDF878D5E_06	TERRAIN_258DDF878D5E_07	walk	0
+link	TERRAIN_258DDF878D5E_07	TERRAIN_258DDF878D5E_08	walk	0
+# UNCERTAIN	link	TERRAIN_258DDF878D5E_08	BORDER_WINTERSPRING_TO_FELWOOD	walk	0
+# 050BD63C65D9 BORDER_DESOLACE_TO_SHENDRALAS_2>PASS_NIJELS_POINT_RAMP_LOW; consumer statuses {"PASSABLE": 7, "UNCERTAIN": 3}
+node	TERRAIN_050BD63C65D9_01	pass	kalimdor.desolace	1443	59.68	75.12	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_02	pass	kalimdor.desolace	1443	62.47	70.95	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_03	pass	kalimdor.desolace	1443	62.47	68.45	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_04	pass	kalimdor.desolace	1443	63.02	42.60	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_05	pass	kalimdor.desolace	1443	63.58	40.93	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_06	pass	kalimdor.desolace	1443	64.13	30.92	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_07	pass	kalimdor.desolace	1443	64.14	30.09	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_08	pass	kalimdor.desolace	1443	65.25	26.75	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_050BD63C65D9_09	pass	kalimdor.desolace	1443	66.36	17.58	CASC70338 050BD63C65D9; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_DESOLACE_TO_SHENDRALAS_2	TERRAIN_050BD63C65D9_01	walk	0
+link	TERRAIN_050BD63C65D9_01	TERRAIN_050BD63C65D9_02	walk	0
+link	TERRAIN_050BD63C65D9_02	TERRAIN_050BD63C65D9_03	walk	0
+# UNCERTAIN	link	TERRAIN_050BD63C65D9_03	TERRAIN_050BD63C65D9_04	walk	0
+link	TERRAIN_050BD63C65D9_04	TERRAIN_050BD63C65D9_05	walk	0
+link	TERRAIN_050BD63C65D9_05	TERRAIN_050BD63C65D9_06	walk	0
+link	TERRAIN_050BD63C65D9_06	TERRAIN_050BD63C65D9_07	walk	0
+# UNCERTAIN	link	TERRAIN_050BD63C65D9_07	TERRAIN_050BD63C65D9_08	walk	0
+link	TERRAIN_050BD63C65D9_08	TERRAIN_050BD63C65D9_09	walk	0
+link	TERRAIN_050BD63C65D9_09	PASS_NIJELS_POINT_RAMP_LOW	walk	0
+# B7B004A41D8C BORDER_WETLANDS_TO_ARATHI_HIGHLANDS>TAXI_7; consumer statuses {"PASSABLE": 3, "UNCERTAIN": 4}
+node	TERRAIN_B7B004A41D8C_01	pass	easternkingdoms.wetlands	1437	50.43	23.66	CASC70338 B7B004A41D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_B7B004A41D8C_02	pass	easternkingdoms.wetlands	1437	48.61	26.38	CASC70338 B7B004A41D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_B7B004A41D8C_03	pass	easternkingdoms.wetlands	1437	45.59	27.29	CASC70338 B7B004A41D8C; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_B7B004A41D8C_04	pass	easternkingdoms.wetlands	1437	41.96	30.91	CASC70338 B7B004A41D8C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_B7B004A41D8C_05	pass	easternkingdoms.wetlands	1437	13.55	49.96	CASC70338 B7B004A41D8C; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_B7B004A41D8C_06	pass	easternkingdoms.wetlands	1437	9.92	56.31	CASC70338 B7B004A41D8C; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_WETLANDS_TO_ARATHI_HIGHLANDS	TERRAIN_B7B004A41D8C_01	walk	0
+link	TERRAIN_B7B004A41D8C_01	TERRAIN_B7B004A41D8C_02	walk	0
+link	TERRAIN_B7B004A41D8C_02	TERRAIN_B7B004A41D8C_03	walk	0
+link	TERRAIN_B7B004A41D8C_03	TERRAIN_B7B004A41D8C_04	walk	0
+# UNCERTAIN	link	TERRAIN_B7B004A41D8C_04	TERRAIN_B7B004A41D8C_05	walk	0
+# UNCERTAIN	link	TERRAIN_B7B004A41D8C_05	TERRAIN_B7B004A41D8C_06	walk	0
+# UNCERTAIN	link	TERRAIN_B7B004A41D8C_06	TAXI_7	walk	0
+# 04C94FB67798 BORDER_DUSKWOOD_TO_WESTFALL>BORDER_DUSKWOOD_TO_DEADWIND_PASS; consumer statuses {"UNCERTAIN": 2}
+# PROPOSAL	node	TERRAIN_04C94FB67798_01	pass	easternkingdoms.duskwood	1431	88.27	40.74	CASC70338 04C94FB67798; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_DUSKWOOD_TO_WESTFALL	TERRAIN_04C94FB67798_01	walk	0
+# UNCERTAIN	link	TERRAIN_04C94FB67798_01	BORDER_DUSKWOOD_TO_DEADWIND_PASS	walk	0
+# C5383EBB3482 BORDER_ELWYNN_FOREST_TO_REDRIDGE_MOUNTAINS>ENTRANCE_C1429_318_488; consumer statuses {"PASSABLE": 1, "UNCERTAIN": 3}
+node	TERRAIN_C5383EBB3482_01	pass	easternkingdoms.elwynn_forest	1429	91.06	72.82	CASC70338 C5383EBB3482; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_C5383EBB3482_02	pass	easternkingdoms.elwynn_forest	1429	90.34	71.74	CASC70338 C5383EBB3482; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_C5383EBB3482_03	pass	easternkingdoms.elwynn_forest	1429	50.72	58.78	CASC70338 C5383EBB3482; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ELWYNN_FOREST_TO_REDRIDGE_MOUNTAINS	TERRAIN_C5383EBB3482_01	walk	0
+link	TERRAIN_C5383EBB3482_01	TERRAIN_C5383EBB3482_02	walk	0
+# UNCERTAIN	link	TERRAIN_C5383EBB3482_02	TERRAIN_C5383EBB3482_03	walk	0
+# UNCERTAIN	link	TERRAIN_C5383EBB3482_03	ENTRANCE_C1429_318_488	walk	0
+# 4A00B99B3274 BORDER_HILLSBRAD_FOOTHILLS_TO_ARATHI_HIGHLANDS>BORDER_HILLSBRAD_FOOTHILLS_TO_SILVERPINE_FOREST; consumer statuses {"PASSABLE": 3, "UNCERTAIN": 3}
+node	TERRAIN_4A00B99B3274_01	pass	easternkingdoms.hillsbrad_foothills	1424	63.80	50.39	CASC70338 4A00B99B3274; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_4A00B99B3274_02	pass	easternkingdoms.hillsbrad_foothills	1424	59.11	55.08	CASC70338 4A00B99B3274; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_4A00B99B3274_03	pass	easternkingdoms.hillsbrad_foothills	1424	55.99	55.08	CASC70338 4A00B99B3274; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_4A00B99B3274_04	pass	easternkingdoms.hillsbrad_foothills	1424	41.15	48.05	CASC70338 4A00B99B3274; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_4A00B99B3274_05	pass	easternkingdoms.hillsbrad_foothills	1424	35.68	49.22	CASC70338 4A00B99B3274; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_HILLSBRAD_FOOTHILLS_TO_ARATHI_HIGHLANDS	TERRAIN_4A00B99B3274_01	walk	0
+link	TERRAIN_4A00B99B3274_01	TERRAIN_4A00B99B3274_02	walk	0
+link	TERRAIN_4A00B99B3274_02	TERRAIN_4A00B99B3274_03	walk	0
+# UNCERTAIN	link	TERRAIN_4A00B99B3274_03	TERRAIN_4A00B99B3274_04	walk	0
+link	TERRAIN_4A00B99B3274_04	TERRAIN_4A00B99B3274_05	walk	0
+# UNCERTAIN	link	TERRAIN_4A00B99B3274_05	BORDER_HILLSBRAD_FOOTHILLS_TO_SILVERPINE_FOREST	walk	0
+# 61C48C99FAB6 BORDER_ASHENVALE_TO_AZSHARA>BORDER_ASHENVALE_TO_THE_BARRENS; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 4}
+node	TERRAIN_61C48C99FAB6_01	pass	kalimdor.ashenvale	1440	86.27	60.43	CASC70338 61C48C99FAB6; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_61C48C99FAB6_02	pass	kalimdor.ashenvale	1440	86.27	61.08	CASC70338 61C48C99FAB6; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_61C48C99FAB6_03	pass	kalimdor.ashenvale	1440	81.94	69.54	CASC70338 61C48C99FAB6; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_61C48C99FAB6_04	pass	kalimdor.ashenvale	1440	80.20	70.19	CASC70338 61C48C99FAB6; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_61C48C99FAB6_05	pass	kalimdor.ashenvale	1440	78.03	72.14	CASC70338 61C48C99FAB6; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_ASHENVALE_TO_AZSHARA	TERRAIN_61C48C99FAB6_01	walk	0
+link	TERRAIN_61C48C99FAB6_01	TERRAIN_61C48C99FAB6_02	walk	0
+# UNCERTAIN	link	TERRAIN_61C48C99FAB6_02	TERRAIN_61C48C99FAB6_03	walk	0
+link	TERRAIN_61C48C99FAB6_03	TERRAIN_61C48C99FAB6_04	walk	0
+# UNCERTAIN	link	TERRAIN_61C48C99FAB6_04	TERRAIN_61C48C99FAB6_05	walk	0
+# UNCERTAIN	link	TERRAIN_61C48C99FAB6_05	BORDER_ASHENVALE_TO_THE_BARRENS	walk	0
+# D4B51E420548 BORDER_RIVERGLADES_TO_BADLANDS>BORDER_RIVERGLADES_TO_SWAMP_OF_SORROWS; consumer statuses {"PASSABLE": 5, "UNCERTAIN": 9}
+node	TERRAIN_D4B51E420548_01	pass	easternkingdoms.riverglades	2548	32.13	31.96	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D4B51E420548_02	pass	easternkingdoms.riverglades	2548	31.10	33.51	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D4B51E420548_03	pass	easternkingdoms.riverglades	2548	30.58	35.05	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D4B51E420548_04	pass	easternkingdoms.riverglades	2548	29.55	48.20	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D4B51E420548_05	pass	easternkingdoms.riverglades	2548	29.55	48.97	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D4B51E420548_06	pass	easternkingdoms.riverglades	2548	31.10	65.21	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D4B51E420548_07	pass	easternkingdoms.riverglades	2548	32.13	65.98	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D4B51E420548_08	pass	easternkingdoms.riverglades	2548	33.17	68.30	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D4B51E420548_09	pass	easternkingdoms.riverglades	2548	32.65	76.80	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D4B51E420548_10	pass	easternkingdoms.riverglades	2548	34.19	81.44	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_D4B51E420548_11	pass	easternkingdoms.riverglades	2548	34.19	82.99	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D4B51E420548_12	pass	easternkingdoms.riverglades	2548	35.22	89.95	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_D4B51E420548_13	pass	easternkingdoms.riverglades	2548	36.25	91.49	CASC70338 D4B51E420548; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_RIVERGLADES_TO_BADLANDS	TERRAIN_D4B51E420548_01	walk	0
+link	TERRAIN_D4B51E420548_01	TERRAIN_D4B51E420548_02	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_02	TERRAIN_D4B51E420548_03	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_03	TERRAIN_D4B51E420548_04	walk	0
+link	TERRAIN_D4B51E420548_04	TERRAIN_D4B51E420548_05	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_05	TERRAIN_D4B51E420548_06	walk	0
+link	TERRAIN_D4B51E420548_06	TERRAIN_D4B51E420548_07	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_07	TERRAIN_D4B51E420548_08	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_08	TERRAIN_D4B51E420548_09	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_09	TERRAIN_D4B51E420548_10	walk	0
+link	TERRAIN_D4B51E420548_10	TERRAIN_D4B51E420548_11	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_11	TERRAIN_D4B51E420548_12	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_12	TERRAIN_D4B51E420548_13	walk	0
+# UNCERTAIN	link	TERRAIN_D4B51E420548_13	BORDER_RIVERGLADES_TO_SWAMP_OF_SORROWS	walk	0
+# BC0D50A0FCDA BORDER_MULGORE_TO_THE_BARRENS>ENTRANCE_C1412_359_364; consumer statuses {"PASSABLE": 7, "UNCERTAIN": 1}
+node	TERRAIN_BC0D50A0FCDA_01	pass	kalimdor.mulgore	1412	60.60	62.57	CASC70338 BC0D50A0FCDA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_BC0D50A0FCDA_02	pass	kalimdor.mulgore	1412	50.85	49.16	CASC70338 BC0D50A0FCDA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_BC0D50A0FCDA_03	pass	kalimdor.mulgore	1412	50.44	49.16	CASC70338 BC0D50A0FCDA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_BC0D50A0FCDA_04	pass	kalimdor.mulgore	1412	48.41	46.11	CASC70338 BC0D50A0FCDA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_BC0D50A0FCDA_05	pass	kalimdor.mulgore	1412	45.16	46.72	CASC70338 BC0D50A0FCDA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_BC0D50A0FCDA_06	pass	kalimdor.mulgore	1412	40.28	44.90	CASC70338 BC0D50A0FCDA; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_BC0D50A0FCDA_07	pass	kalimdor.mulgore	1412	37.44	39.41	CASC70338 BC0D50A0FCDA; static-clear subsegments only; terrain-consumer-final.json
+link	BORDER_MULGORE_TO_THE_BARRENS	TERRAIN_BC0D50A0FCDA_01	walk	0
+link	TERRAIN_BC0D50A0FCDA_01	TERRAIN_BC0D50A0FCDA_02	walk	0
+link	TERRAIN_BC0D50A0FCDA_02	TERRAIN_BC0D50A0FCDA_03	walk	0
+link	TERRAIN_BC0D50A0FCDA_03	TERRAIN_BC0D50A0FCDA_04	walk	0
+link	TERRAIN_BC0D50A0FCDA_04	TERRAIN_BC0D50A0FCDA_05	walk	0
+link	TERRAIN_BC0D50A0FCDA_05	TERRAIN_BC0D50A0FCDA_06	walk	0
+link	TERRAIN_BC0D50A0FCDA_06	TERRAIN_BC0D50A0FCDA_07	walk	0
+# UNCERTAIN	link	TERRAIN_BC0D50A0FCDA_07	ENTRANCE_C1412_359_364	walk	0
+# F079C909AA2A BORDER_WINTERSPRING_TO_MOONGLADE>TAXI_53; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 4}
+node	TERRAIN_F079C909AA2A_01	pass	kalimdor.winterspring	1452	49.41	37.15	CASC70338 F079C909AA2A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F079C909AA2A_02	pass	kalimdor.winterspring	1452	50.82	37.68	CASC70338 F079C909AA2A; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_F079C909AA2A_03	pass	kalimdor.winterspring	1452	57.16	36.62	CASC70338 F079C909AA2A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F079C909AA2A_04	pass	kalimdor.winterspring	1452	57.86	36.62	CASC70338 F079C909AA2A; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_F079C909AA2A_05	pass	kalimdor.winterspring	1452	58.57	37.68	CASC70338 F079C909AA2A; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_WINTERSPRING_TO_MOONGLADE	TERRAIN_F079C909AA2A_01	walk	0
+link	TERRAIN_F079C909AA2A_01	TERRAIN_F079C909AA2A_02	walk	0
+# UNCERTAIN	link	TERRAIN_F079C909AA2A_02	TERRAIN_F079C909AA2A_03	walk	0
+# UNCERTAIN	link	TERRAIN_F079C909AA2A_03	TERRAIN_F079C909AA2A_04	walk	0
+link	TERRAIN_F079C909AA2A_04	TERRAIN_F079C909AA2A_05	walk	0
+# UNCERTAIN	link	TERRAIN_F079C909AA2A_05	TAXI_53	walk	0
+# EC39ED682F21 BORDER_DUSKWOOD_TO_REDRIDGE_MOUNTAINS>BORDER_DUSKWOOD_TO_STRANGLETHORN_VALE; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 7}
+# PROPOSAL	node	TERRAIN_EC39ED682F21_01	pass	easternkingdoms.duskwood	1431	46.60	85.19	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_EC39ED682F21_02	pass	easternkingdoms.duskwood	1431	46.60	85.74	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_EC39ED682F21_03	pass	easternkingdoms.duskwood	1431	44.75	89.35	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_EC39ED682F21_04	pass	easternkingdoms.duskwood	1431	43.83	92.13	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_EC39ED682F21_05	pass	easternkingdoms.duskwood	1431	41.98	92.13	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_EC39ED682F21_06	pass	easternkingdoms.duskwood	1431	41.05	93.52	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_EC39ED682F21_07	pass	easternkingdoms.duskwood	1431	41.98	96.30	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_EC39ED682F21_08	pass	easternkingdoms.duskwood	1431	42.90	97.69	CASC70338 EC39ED682F21; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_DUSKWOOD_TO_REDRIDGE_MOUNTAINS	TERRAIN_EC39ED682F21_01	walk	0
+# UNCERTAIN	link	TERRAIN_EC39ED682F21_01	TERRAIN_EC39ED682F21_02	walk	0
+# UNCERTAIN	link	TERRAIN_EC39ED682F21_02	TERRAIN_EC39ED682F21_03	walk	0
+# UNCERTAIN	link	TERRAIN_EC39ED682F21_03	TERRAIN_EC39ED682F21_04	walk	0
+# UNCERTAIN	link	TERRAIN_EC39ED682F21_04	TERRAIN_EC39ED682F21_05	walk	0
+link	TERRAIN_EC39ED682F21_05	TERRAIN_EC39ED682F21_06	walk	0
+# UNCERTAIN	link	TERRAIN_EC39ED682F21_06	TERRAIN_EC39ED682F21_07	walk	0
+# UNCERTAIN	link	TERRAIN_EC39ED682F21_07	TERRAIN_EC39ED682F21_08	walk	0
+link	TERRAIN_EC39ED682F21_08	BORDER_DUSKWOOD_TO_STRANGLETHORN_VALE	walk	0
+# 8707D7D0C0AF BORDER_THOUSAND_NEEDLES_TO_FERALAS>LIFT_FREEWIND_POST_BOTTOM; consumer statuses {"PASSABLE": 10, "UNCERTAIN": 10}
+# PROPOSAL	node	TERRAIN_8707D7D0C0AF_01	pass	kalimdor.thousand_needles	1441	14.02	19.89	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_02	pass	kalimdor.thousand_needles	1441	15.44	19.46	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_03	pass	kalimdor.thousand_needles	1441	15.72	19.46	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_8707D7D0C0AF_04	pass	kalimdor.thousand_needles	1441	17.42	19.46	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_8707D7D0C0AF_05	pass	kalimdor.thousand_needles	1441	23.11	24.15	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_06	pass	kalimdor.thousand_needles	1441	24.24	26.70	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_07	pass	kalimdor.thousand_needles	1441	25.09	28.41	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_08	pass	kalimdor.thousand_needles	1441	27.65	28.84	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_09	pass	kalimdor.thousand_needles	1441	27.94	29.26	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_10	pass	kalimdor.thousand_needles	1441	31.34	39.06	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_11	pass	kalimdor.thousand_needles	1441	32.46	40.76	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_12	pass	kalimdor.thousand_needles	1441	34.19	42.47	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_13	pass	kalimdor.thousand_needles	1441	37.31	44.60	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_14	pass	kalimdor.thousand_needles	1441	39.02	44.60	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_15	pass	kalimdor.thousand_needles	1441	40.44	45.88	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_16	pass	kalimdor.thousand_needles	1441	41.00	45.88	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_17	pass	kalimdor.thousand_needles	1441	41.29	45.45	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_8707D7D0C0AF_18	pass	kalimdor.thousand_needles	1441	41.86	45.88	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_8707D7D0C0AF_19	pass	kalimdor.thousand_needles	1441	45.55	46.73	CASC70338 8707D7D0C0AF; static-clear subsegments only; terrain-consumer-final.json
+# UNCERTAIN	link	BORDER_THOUSAND_NEEDLES_TO_FERALAS	TERRAIN_8707D7D0C0AF_01	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_01	TERRAIN_8707D7D0C0AF_02	walk	0
+link	TERRAIN_8707D7D0C0AF_02	TERRAIN_8707D7D0C0AF_03	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_03	TERRAIN_8707D7D0C0AF_04	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_04	TERRAIN_8707D7D0C0AF_05	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_05	TERRAIN_8707D7D0C0AF_06	walk	0
+link	TERRAIN_8707D7D0C0AF_06	TERRAIN_8707D7D0C0AF_07	walk	0
+link	TERRAIN_8707D7D0C0AF_07	TERRAIN_8707D7D0C0AF_08	walk	0
+link	TERRAIN_8707D7D0C0AF_08	TERRAIN_8707D7D0C0AF_09	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_09	TERRAIN_8707D7D0C0AF_10	walk	0
+link	TERRAIN_8707D7D0C0AF_10	TERRAIN_8707D7D0C0AF_11	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_11	TERRAIN_8707D7D0C0AF_12	walk	0
+link	TERRAIN_8707D7D0C0AF_12	TERRAIN_8707D7D0C0AF_13	walk	0
+link	TERRAIN_8707D7D0C0AF_13	TERRAIN_8707D7D0C0AF_14	walk	0
+link	TERRAIN_8707D7D0C0AF_14	TERRAIN_8707D7D0C0AF_15	walk	0
+link	TERRAIN_8707D7D0C0AF_15	TERRAIN_8707D7D0C0AF_16	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_16	TERRAIN_8707D7D0C0AF_17	walk	0
+link	TERRAIN_8707D7D0C0AF_17	TERRAIN_8707D7D0C0AF_18	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_18	TERRAIN_8707D7D0C0AF_19	walk	0
+# UNCERTAIN	link	TERRAIN_8707D7D0C0AF_19	LIFT_FREEWIND_POST_BOTTOM	walk	0
+# 430F7FCE5CAB ROAD_HILLSBRAD_DARROW_WEST>TAXI_13; consumer statuses {"PASSABLE": 5, "UNCERTAIN": 1}
+node	TERRAIN_430F7FCE5CAB_01	pass	easternkingdoms.hillsbrad_foothills	1424	44.27	36.33	CASC70338 430F7FCE5CAB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_430F7FCE5CAB_02	pass	easternkingdoms.hillsbrad_foothills	1424	47.40	35.16	CASC70338 430F7FCE5CAB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_430F7FCE5CAB_03	pass	easternkingdoms.hillsbrad_foothills	1424	55.21	28.13	CASC70338 430F7FCE5CAB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_430F7FCE5CAB_04	pass	easternkingdoms.hillsbrad_foothills	1424	58.33	22.27	CASC70338 430F7FCE5CAB; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_430F7FCE5CAB_05	pass	easternkingdoms.hillsbrad_foothills	1424	59.11	21.09	CASC70338 430F7FCE5CAB; static-clear subsegments only; terrain-consumer-final.json
+link	ROAD_HILLSBRAD_DARROW_WEST	TERRAIN_430F7FCE5CAB_01	walk	0
+link	TERRAIN_430F7FCE5CAB_01	TERRAIN_430F7FCE5CAB_02	walk	0
+link	TERRAIN_430F7FCE5CAB_02	TERRAIN_430F7FCE5CAB_03	walk	0
+link	TERRAIN_430F7FCE5CAB_03	TERRAIN_430F7FCE5CAB_04	walk	0
+link	TERRAIN_430F7FCE5CAB_04	TERRAIN_430F7FCE5CAB_05	walk	0
+# UNCERTAIN	link	TERRAIN_430F7FCE5CAB_05	TAXI_13	walk	0
+# E4C003088D8B ROAD_HILLSBRAD_DARROW_WEST>TAXI_14; consumer statuses {"PASSABLE": 2, "UNCERTAIN": 1}
+node	TERRAIN_E4C003088D8B_01	pass	easternkingdoms.hillsbrad_foothills	1424	40.36	37.50	CASC70338 E4C003088D8B; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_E4C003088D8B_02	pass	easternkingdoms.hillsbrad_foothills	1424	41.15	39.84	CASC70338 E4C003088D8B; static-clear subsegments only; terrain-consumer-final.json
+link	ROAD_HILLSBRAD_DARROW_WEST	TERRAIN_E4C003088D8B_01	walk	0
+link	TERRAIN_E4C003088D8B_01	TERRAIN_E4C003088D8B_02	walk	0
+# UNCERTAIN	link	TERRAIN_E4C003088D8B_02	TAXI_14	walk	0
+# AC5664B29109 ROAD_HILLSBRAD_DARROW_WEST>BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS; consumer statuses {"PASSABLE": 5, "UNCERTAIN": 3}
+node	TERRAIN_AC5664B29109_01	pass	easternkingdoms.hillsbrad_foothills	1424	39.19	23.44	CASC70338 AC5664B29109; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AC5664B29109_02	pass	easternkingdoms.hillsbrad_foothills	1424	39.97	22.27	CASC70338 AC5664B29109; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AC5664B29109_03	pass	easternkingdoms.hillsbrad_foothills	1424	44.27	21.09	CASC70338 AC5664B29109; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AC5664B29109_04	pass	easternkingdoms.hillsbrad_foothills	1424	47.79	15.82	CASC70338 AC5664B29109; static-clear subsegments only; terrain-consumer-final.json
+node	TERRAIN_AC5664B29109_05	pass	easternkingdoms.hillsbrad_foothills	1424	49.74	15.82	CASC70338 AC5664B29109; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_AC5664B29109_06	pass	easternkingdoms.hillsbrad_foothills	1424	50.13	15.23	CASC70338 AC5664B29109; static-clear subsegments only; terrain-consumer-final.json
+# PROPOSAL	node	TERRAIN_AC5664B29109_07	pass	easternkingdoms.hillsbrad_foothills	1424	52.08	9.96	CASC70338 AC5664B29109; static-clear subsegments only; terrain-consumer-final.json
+link	ROAD_HILLSBRAD_DARROW_WEST	TERRAIN_AC5664B29109_01	walk	0
+link	TERRAIN_AC5664B29109_01	TERRAIN_AC5664B29109_02	walk	0
+link	TERRAIN_AC5664B29109_02	TERRAIN_AC5664B29109_03	walk	0
+link	TERRAIN_AC5664B29109_03	TERRAIN_AC5664B29109_04	walk	0
+link	TERRAIN_AC5664B29109_04	TERRAIN_AC5664B29109_05	walk	0
+# UNCERTAIN	link	TERRAIN_AC5664B29109_05	TERRAIN_AC5664B29109_06	walk	0
+# UNCERTAIN	link	TERRAIN_AC5664B29109_06	TERRAIN_AC5664B29109_07	walk	0
+# UNCERTAIN	link	TERRAIN_AC5664B29109_07	BORDER_HILLSBRAD_FOOTHILLS_TO_ALTERAC_MOUNTAINS	walk	0
+
+# Client activation centers; these are not reverse landings or boarding platforms.
+move	PORTAL_DARNASSUS_RUTTHERAN	1457	29.132860876975847	41.21068209839386
+move	PORTAL_RUTTHERAN_DARNASSUS	1438	55.87161418498159	89.33598066298343
+move	TRAM_IRONFORGE	1455	78.02289880628179	51.367749649710234
+move	TRAM_STORMWIND	1453	69.57618559527094	30.270035577587805
+
+# Measured local blocked crossing chords; no continuous wall extent is asserted.
+barrier	1416	28.571428540288203	50.0	31.428571459711797	50.0	barrier-1-crossing-00
+barrier	1416	28.571428540288203	55.60000000000001	31.428571459711797	55.60000000000001	barrier-1-crossing-02
+barrier	1416	28.571428540288203	58.4	31.428571459711797	58.4	barrier-1-crossing-03
+barrier	1416	28.571428540288203	61.20000000000001	31.428571459711797	61.20000000000001	barrier-1-crossing-04
+barrier	1416	28.571428540288203	64.0	31.428571459711797	64.0	barrier-1-crossing-05
+barrier	1416	28.571428540288203	66.8	31.428571459711797	66.8	barrier-1-crossing-06
+barrier	1416	28.571428540288203	75.20000000000002	31.428571459711797	75.20000000000002	barrier-1-crossing-09
+barrier	1424	42.74999995231629	0.0	45.250000047683706	0.0	barrier-2-crossing-00
+barrier	1424	42.74999995231629	3.5000000000000018	45.250000047683706	3.5000000000000018	barrier-2-crossing-01
+barrier	1424	42.74999995231629	10.499999999999998	45.250000047683706	10.499999999999998	barrier-2-crossing-03
+barrier	1424	42.74999995231629	14.000000000000002	45.250000047683706	14.000000000000002	barrier-2-crossing-04
+barrier	1424	42.74999995231629	17.5	45.250000047683706	17.5	barrier-2-crossing-05
+barrier	1424	42.74999995231629	24.5	45.250000047683706	24.5	barrier-2-crossing-07
+barrier	1424	42.74999995231629	28.000000000000004	45.250000047683706	28.000000000000004	barrier-2-crossing-08
+barrier	1424	42.74999995231629	31.499999999999993	45.250000047683706	31.499999999999993	barrier-2-crossing-09

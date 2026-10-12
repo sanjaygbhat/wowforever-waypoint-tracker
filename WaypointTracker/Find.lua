@@ -117,10 +117,9 @@ local function WaypointToNearest(entries, title)
     if not e then
         return nil
     end
-    if e.name == "" then
-        return DB.GoTo(e, p, title or Geo.GetMapName(p.m))
-    end
-    return DB.GoTo(e, p, title and (title .. " - " .. e.name) or e.name)
+    local name = e.name == "" and (title or Geo.GetMapName(p.m)) or (title and (title .. " - " .. e.name) or e.name)
+    local wp = DB.GoTo(e, p, name)
+    return wp
 end
 
 local function GoToNearest(entries, title)
