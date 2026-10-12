@@ -19,8 +19,8 @@ end
 local function ScoreText(id)
     local up, down = R().Score(id)
     if up == 0 and down == 0 then return "" end
-    return ("|cff40ff40▲ %d|r"):format(up)
-        .. (down > 0 and (" |cffff6060▼ %d|r"):format(down) or "")
+    return ("|cff40ff40+ %d|r"):format(up)
+        .. (down > 0 and (" |cffff6060- %d|r"):format(down) or "")
 end
 local TABS = {
     { value = "all", text = L.ROUTES_SOURCE_ALL },
@@ -115,7 +115,7 @@ local function RefreshList()
     local here = C_Map and C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
     results = {}
     local dist, levels = {}, {}
-    local level = UnitLevel and tonumber(UnitLevel("player"))
+    local level = UnitLevel and ns.Num(UnitLevel("player"))
     for _, r in ipairs(R().All()) do
         if Matches(r, q, here) then
             results[#results + 1] = r
@@ -287,8 +287,8 @@ RefreshDetail = function()
     local mine = R().IsMine(r)
     local my = R().MyVote(r.id)
     local up, down = R().Score(r.id)
-    detail.up:SetText("▲ " .. up)
-    detail.down:SetText("▼ " .. down)
+    detail.up:SetText("+ " .. up)
+    detail.down:SetText("- " .. down)
     detail.votes:SetText(my ~= 0 and (my > 0 and L.ROUTES_YOU_UP or L.ROUTES_YOU_DOWN) or "")
     detail.up:SetEnabled(not mine)
     detail.down:SetEnabled(not mine)
@@ -854,8 +854,9 @@ local function ShareMenu(r, justSaved)
         end
         root:CreateDivider()
         local send = root:CreateButton(L.ROUTE_SEND_TARGET, function()
-            local name = UnitIsPlayer and UnitIsPlayer("target") and UnitName and UnitName("target")
-            if not name or name == UnitName("player") then Status(L.ROUTE_SEND_NO_TARGET); return end
+            local name = UnitIsPlayer and ns.Plain(UnitIsPlayer("target")) and R().UnitIdentity("target")
+            local isSelf = UnitIsUnit and ns.Plain(UnitIsUnit("target", "player"))
+            if not name or isSelf then Status(L.ROUTE_SEND_NO_TARGET); return end
             if ns.RoutesNet and ns.RoutesNet.SendTo and ns.RoutesNet.SendTo(r.id, name) then
                 Status(L.ROUTE_SENT:format(r.name, name), true)
             end

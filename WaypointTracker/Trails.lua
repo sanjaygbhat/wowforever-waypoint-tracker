@@ -213,7 +213,7 @@ local function Walking()
     if IsSwimming and IsSwimming() then
         return false
     end
-    if not GetUnitSpeed or (GetUnitSpeed("player") or 0) <= 0 then
+    if not GetUnitSpeed or (ns.Num(GetUnitSpeed("player")) or 0) <= 0 then
         return false
     end
     return not OnBoard()
@@ -531,18 +531,11 @@ function Trails.Steer(here, target)
     local now = GetTime()
     local same = cache and cache.key == key
     local path = same and cache.path
-    -- still on it? find where
-    local at
-    if path then
-        for i, k in ipairs(path) do
-            local x, y = Unkey(k)
-            if abs(x - pcx) <= 2 and abs(y - pcy) <= 2 then
-                at = i
-            end
-        end
-    end
+    local projection = path and T.ProjectPolyline(cache.points, here, nil, nil, cache.progress)
+    local moved = same and (pcx ~= cache.pcx or pcy ~= cache.pcy)
     local wait = same and (cache.path and SEARCH_AGAIN or NO_PATH_AGAIN) or 0
-    if not at and (not same or now - cache.at > wait) then
+    if not same or ((not projection or projection.distance > CELL * 2)
+        and (now - cache.at >= wait or (moved and now - cache.at >= SAMPLE_EVERY))) then
         path = nil
         local sx, sy = Snap(cont, pcx, pcy)
         local gx, gy = Snap(cont, tcx, tcy)
@@ -552,24 +545,20 @@ function Trails.Steer(here, target)
                 path = nil -- a long way round: the straight line may well be fine
             end
         end
-        cache = { key = key, path = path, at = now }
-        at = path and 1 or nil
+        cache = { key = key, path = path, at = now, pcx = pcx, pcy = pcy, points = {} }
+        for _, k in ipairs(path or {}) do
+            local x, y = Unkey(k)
+            cache.points[#cache.points + 1] = { cont = cont, wx = (x + .5) * CELL, wy = (y + .5) * CELL }
+        end
+        projection = path and T.ProjectPolyline(cache.points, here)
     end
-    if not (path and at) then
+    if not projection or projection.distance > CELL * 2 then
         return nil
     end
-    -- point at a square a little way along the path
-    local aim = path[#path]
-    local walked = 0
-    for i = at + 1, #path do
-        walked = walked + CELL
-        aim = path[i]
-        if walked >= LOOKAHEAD then
-            break
-        end
-    end
-    local x, y = Unkey(aim)
-    local dNorth, dWest = (x + 0.5) * CELL - here.wx, (y + 0.5) * CELL - here.wy
+    cache.progress = projection.progress
+    local aim = T.LookAhead(cache.points, projection, LOOKAHEAD)
+    if not T.CanWalk(here, aim) then return nil end
+    local dNorth, dWest = aim.wx - here.wx, aim.wy - here.wy
     return math.atan2(dWest, dNorth)
 end
 

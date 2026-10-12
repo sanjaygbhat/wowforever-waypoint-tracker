@@ -119,7 +119,7 @@ local function FlightTarget()
     local plan = T and T.Enabled() and T.Current()
     local t = plan and plan.target
     local how = t and type(t.via) == "table" and t.via
-    if not (how and how.method == "taxi") then
+    if not (how and how.method == "taxi" and not how.dialogue) then
         return nil
     end
     return (T.RideEnd(plan.path, plan.index))

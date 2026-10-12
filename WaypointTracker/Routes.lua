@@ -126,6 +126,7 @@ end
 
 -- "Name-Realm", the way addon messages name their sender
 function Routes.FullName(name)
+    name = ns.Plain(name)
     if type(name) ~= "string" or name == "" then
         return nil
     end
@@ -136,8 +137,31 @@ function Routes.FullName(name)
     return realm ~= "" and (name .. "-" .. realm) or name
 end
 
+function Routes.UnitIdentity(unit)
+    -- The client helper knows Forever's surname format. It can concatenate
+    -- restricted names internally, so catch failures and guard its data return.
+    if GetUnitName then
+        local ok, name = pcall(GetUnitName, unit, true)
+        name = ns.Plain(name)
+        if ok and type(name) == "string" and name ~= "" then
+            return Routes.FullName(name)
+        end
+    end
+    if UnitName then
+        local ok, name, surname = pcall(UnitName, unit)
+        name, surname = ns.Plain(name), ns.Plain(surname)
+        if ok and type(name) == "string" and name ~= "" then
+            -- On this client the second return is a surname, never a realm.
+            if type(surname) == "string" and surname ~= "" then
+                name = name .. " " .. surname
+            end
+            return Routes.FullName(name)
+        end
+    end
+end
+
 function Routes.Me()
-    return Routes.FullName(UnitName("player")) or "?"
+    return Routes.UnitIdentity("player") or "?"
 end
 
 -- the name without the realm when it's yours, for showing
@@ -417,6 +441,9 @@ function Routes.Keep(r, via, fromAuthor)
     if not (st and r and r.author) then
         return nil
     end
+    if r.author ~= Routes.SUGGESTED_AUTHOR then
+        r.author = Routes.FullName(r.author)
+    end
     -- suggested routes are made on your own computer, never taken from others
     if st.blocked[r.author] or r.author == Routes.SUGGESTED_AUTHOR or r.id:find("-", 1, true) then
         return nil
@@ -473,7 +500,11 @@ end
 -- Stop seeing routes from this player.
 function Routes.Block(author)
     local st = Store()
-    if not (st and type(author) == "string") or author == Routes.Me() or author == Routes.SUGGESTED_AUTHOR then
+    if not st or author == Routes.SUGGESTED_AUTHOR then
+        return
+    end
+    author = Routes.FullName(author)
+    if not author or author == Routes.Me() then
         return
     end
     st.blocked[author] = true
@@ -537,7 +568,10 @@ end
 function Routes.MyVote(id)
     local st = Store()
     local v = st and st.votes[id]
-    return type(v) == "table" and v.v or 0
+    local me = Routes.Me()
+    if type(v) == "table" and v.by == me then return v.v end
+    local t = Tally(id)
+    return t and t[me] or 0
 end
 
 -- v: 1 (up), -1 (down) or 0 (take it back)
@@ -569,7 +603,8 @@ end
 
 -- what another player said about their own vote
 function Routes.HeardVote(id, voter, v)
-    if not Routes.ValidID(id) or type(voter) ~= "string" then
+    voter = Routes.FullName(voter)
+    if not Routes.ValidID(id) or not voter then
         return
     end
     v = tonumber(v)
@@ -598,6 +633,11 @@ end
 -- Your votes this character cast, for telling players who come online.
 function Routes.MyVotes()
     local st, me, out = Store(), Routes.Me(), {}
+    -- The account-wide local record can belong to an alt; the tally keeps each
+    -- character's choice even when another character votes on the same route.
+    for id, t in pairs(st and st.tally or {}) do
+        if t[me] == 1 or t[me] == -1 then out[id] = t[me] end
+    end
     for id, v in pairs(st and st.votes or {}) do
         if type(v) == "table" and v.by == me then
             out[id] = v.v
@@ -1408,7 +1448,7 @@ ns.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", function(unit, _, spellID)
     local name = SpellName(spellID)
     local kind = name and gatherNames[name]
     if kind then
-        local title = kind == "skinning" and UnitName and UnitName("target") or Routes.CategoryLabel(kind)
+        local title = kind == "skinning" and UnitName and ns.Str(UnitName("target")) or Routes.CategoryLabel(kind)
         Routes.RecordAdd(title, kind)
     end
 end)
@@ -1429,6 +1469,32 @@ ns.On("INIT", function()
     if not st then
         return
     end
+    local me = Routes.Me()
+    local first = UnitName and ns.Plain(UnitName("player"))
+    local aliases = {}
+    if me ~= "?" then
+        aliases[Routes.ShortName(me)] = true
+        if type(first) == "string" and first ~= "" then
+            aliases[first], aliases[Routes.FullName(first)] = true, true
+        end
+    end
+    local function Identity(name)
+        if aliases[name] then return me end
+        return Routes.FullName(name)
+    end
+    local function MigrateKeys(old)
+        local out = {}
+        -- An existing canonical record wins over an ambiguous legacy echo.
+        for name, value in pairs(old) do
+            if Identity(name) == name then out[name] = value end
+        end
+        for name, value in pairs(old) do
+            local full = Identity(name)
+            if full and out[full] == nil then out[full] = value end
+        end
+        return out
+    end
+    st.blocked = MigrateKeys(st.blocked)
     for id, r in pairs(st.list) do
         local ok = type(r) == "table" and Routes.Validate(r)
         if ok and ok.id == id then
@@ -1436,6 +1502,10 @@ ns.On("INIT", function()
             ok.src = (src == "mine" or src == "suggested") and src or "shared"
             ok.public = src == "mine" and public ~= false or nil
             ok.via, ok.fromAuthor, ok.got = Clean(via, 60), fromAuthor and true or nil, ns.Int(got)
+            if ok.author and ok.author ~= Routes.SUGGESTED_AUTHOR then
+                -- Only our own routes establish that a first-name alias is us.
+                ok.author = src == "mine" and Identity(ok.author) or Routes.FullName(ok.author)
+            end
             st.list[id] = ok
         else
             st.list[id] = nil
@@ -1444,11 +1514,25 @@ ns.On("INIT", function()
     for id, v in pairs(st.votes) do
         if not (Routes.ValidID(id) and type(v) == "table" and (v.v == 1 or v.v == -1)) then
             st.votes[id] = nil
+        else
+            v.by = Identity(v.by)
         end
     end
     for id, t in pairs(st.tally) do
         if not (Routes.ValidID(id) and type(t) == "table") then
             st.tally[id] = nil
+        else
+            st.tally[id] = MigrateKeys(t)
+        end
+    end
+    -- Merge our old first-name vote and its echoed full-name vote. The saved
+    -- local choice is authoritative if an old echo still has the opposite vote.
+    for id, v in pairs(st.votes) do
+        if v.by == me then
+            local t = Tally(id, true)
+            if t then
+                t[me] = v.v
+            end
         end
     end
 end)

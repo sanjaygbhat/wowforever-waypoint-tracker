@@ -1321,7 +1321,7 @@ function DB.Nearby(kinds, opts, limit)
     end
 
     if kinds.quest then
-        local level = UnitLevel and tonumber(UnitLevel("player")) or 1
+        local level = UnitLevel and ns.Num(UnitLevel("player")) or 1
         local function closest(ids, tbl)
             local best
             for _, id in ipairs(ids or {}) do

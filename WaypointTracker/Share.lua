@@ -106,11 +106,9 @@ function Share.Channels()
     -- whisper your target (skipped wherever the game hides unit names)
     pcall(function()
         if Plain(UnitExists("target")) and Plain(UnitIsPlayer("target")) and not Plain(UnitIsUnit("target", "player")) then
-            local name, realm = UnitName("target")
-            name, realm = Plain(name), Plain(realm)
+            local name = ns.Routes and ns.Routes.UnitIdentity("target")
             if name then
-                local full = (realm and realm ~= "") and (name .. "-" .. realm) or name
-                list[#list + 1] = { L.SHARE_WHISPER:format(name), "/w " .. full }
+                list[#list + 1] = { L.SHARE_WHISPER:format(ns.Routes.ShortName(name)), "/w " .. name }
             end
         end
     end)
