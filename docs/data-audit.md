@@ -58,12 +58,29 @@ change log for translation verification.
 
 ## Reference coverage
 
-`WaypointTracker_Data/ReferenceData.lua` appends 2,432 verified named definitions
+`WaypointTracker_Data/ReferenceData.lua` appends 2,430 verified named definitions
 to the curated layer, without positions, factions or guessed services. They
 retain quest/item relationships and can display the existing no-location
 result. Independent name fixtures and `tests/check_reference_data.lua` check
 every supplied definition and verify that the seven quarantined coordinates
 do not erase the three valid Classic fallbacks.
+
+Deepmoss Matriarch (4264) and Grenka Bloodscreech (4490) now have player-observed
+positions in `Forever.lua`. They are no longer reference-only targets in
+`tools/reference_ids.tsv`; regenerating the supplement preserves those
+discoveries without treating their positions as invented reference locations.
+
+The `data-refresh` integration also introduced 43 references with no target
+definition or verified name in any bundled layer: 28 objectives, two quest
+givers and 13 item sources. `tools/corrections_quests.tsv` retains every
+original field and records the exact omitted IDs and reason. Only these
+unresolved edges are omitted from the active curated Find fields; existing
+defined targets, quest areas, owner discoveries, the immutable Classic data
+and the reviewed source-recovery overlay remain intact. This is an internal
+completeness repair, not evidence that the IDs do not exist in Forever.
+Restore an edge when its identity can be sourced; never invent a display
+name, coordinate or substitute target to satisfy the validator. The four
+previously audited unresolved relationships below retain their exact ledger.
 
 `tools/nonroutable_references.tsv` retains the four unresolved identity
 relationships after the reviewed source-recovery overlay. The original

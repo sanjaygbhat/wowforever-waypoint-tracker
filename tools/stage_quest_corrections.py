@@ -14,7 +14,8 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 FIELDS = {"N": {"spots": 6, "fac": 7}, "O": {"spots": 3},
-          "Q": {"giver": 4, "ender": 5, "area": 6}}
+          "Q": {"giver": 4, "ender": 5, "area": 6, "needs": 9},
+          "I": {"drops": 3}}
 
 
 def corrected(source, corrections):

@@ -42,6 +42,20 @@ for _, kind in ipairs({ "units", "objects", "items" }) do
     dofile("tools/fixtures/reference-pfquest/db/enUS/" .. kind .. ".lua")
 end
 local source = assert(io.open("WaypointTracker_Data/ReferenceData.lua")):read("*a")
+-- Owner discoveries promote these targets out of the location-free supplement.
+-- Keep the ordinary supplement assertion below strict for every remaining ID.
+for _, spec in ipairs({ { 4264, "Deepmoss Matriarch", 1442, .647, .605 },
+    { 4490, "Grenka Bloodscreech", 1441, .262, .559 } }) do
+    assert(not source:find("\nN\t" .. spec[1] .. "\t", 1, true), "observed target still reference-only: " .. spec[1])
+    local e = assert(ns.DB.units[spec[1]], "observed definition missing: " .. spec[1])
+    assert(e.name == spec[2], "observed name differs: " .. spec[1])
+    local points = ns.DB.Points(e)
+    assert(#points == 1, "observed position lost: " .. spec[1])
+    local p = points[1]
+    assert(p.m == spec[3] and math.abs(p.x - spec[4]) < 1e-8
+        and math.abs(p.y - spec[5]) < 1e-8, "observed position changed: " .. spec[1])
+    checked = checked + 1
+end
 local tables = { N = ns.DB.units, O = ns.DB.objects, I = ns.DB.items }
 local names = { N = pfDB.units.enUS, O = pfDB.objects.enUS, I = pfDB.items.enUS }
 for kind, id, name in source:gmatch("([NOI])\t(%d+)\t([^\t\n]+)") do

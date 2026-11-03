@@ -1422,7 +1422,6 @@ N	4178	Shaia
 N	4179	Freillania					
 N	4237	Urthoniir					
 N	4239	Lewin Starfeather					
-N	4264	Deepmoss Matriarch					
 N	4274	Fenrus the Devourer					
 N	4275	Archmage Arugal					
 N	4279	Odo the Blindwatcher					
@@ -1462,7 +1461,6 @@ N	4438	Razorfen Spearhide
 N	4440	Razorfen Totemic					
 N	4442	Razorfen Defender					
 N	4443	Wazza					
-N	4490	Grenka Bloodscreech					
 N	4508	Willix the Importer					
 N	4511	Agam'ar					
 N	4512	Rotting Agam'ar					

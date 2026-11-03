@@ -65,7 +65,8 @@ class QuestCorrections(unittest.TestCase):
                 k:v for k,v in live.items() if k not in cls.additions}, 'reapplied fields differ from published records'
 
     def test_only_reviewed_fields_change(self):
-        fields = {"spots": {"N": 6, "O": 3}, "fac": {"N": 7}, "giver": {"Q": 4}}
+        fields = {"spots": {"N": 6, "O": 3}, "fac": {"N": 7}, "giver": {"Q": 4},
+                  "needs": {"Q": 9}, "drops": {"I": 3}}
         expected = {}
         for c in self.corrections:
             if c["field"] != "record":
@@ -87,6 +88,16 @@ class QuestCorrections(unittest.TestCase):
     def test_source_supported_forever_changes_survive(self):
         self.assertEqual(self.before["N5891"], self.after["N5891"])
         self.assertEqual(self.before["N6568"], self.after["N6568"])
+
+    def test_refreshed_relationships_keep_defined_targets(self):
+        self.assertEqual(self.after["Q667"][9], "U2610")
+        self.assertEqual(self.after["Q88756"][9], "I280806")
+        self.assertEqual(self.after["Q92683"][9], "I253666,I253595,O578959")
+        self.assertEqual(self.after["Q92947"][4], "U252383")
+        self.assertEqual(self.after["Q93835"][4], "U252383")
+        self.assertEqual(self.after["Q98197"][9], "I279821,I279822")
+        self.assertEqual(self.after["Q98310"][9], "I280394,I280395,I280396,I280397,I280398")
+        self.assertEqual(self.after["I273815"][3], "U270201")
 
     def test_new_objects_have_no_fabricated_positions(self):
         self.assertEqual(len(self.additions), 40)
