@@ -16,6 +16,12 @@ as a standalone test. The optional InFlight timing comparison is excluded
 from the required gate because that independent dataset is not bundled; the
 ordinary client path, geometry, fare and runtime checks remain required.
 
+The terrain validator caches invariant blocked-chord geometry and excludes
+terrain-only nodes before enumerating ordinary graph pairs. Probe coverage,
+order, verdicts and the 60-second gate limit remain unchanged.
+`tests/check_terrain_geometry.py` checks boundary cases and compares the cached
+predicate against the original audited oracle.
+
 ## Pinned sources and generation
 
 `tools/fixtures/manifest.json` records fixture checksums and source provenance.

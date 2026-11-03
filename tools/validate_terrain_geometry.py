@@ -119,6 +119,37 @@ def circle_span(p, q, region):
     return (lo, hi) if lo < hi else None
 
 
+def compile_blocked_chords(chords):
+    """Cache fixed chord geometry, preserving source order within each continent."""
+    compiled = defaultdict(list)
+    for a, b in chords:
+        dx, dy = b[1] - a[1], b[2] - a[2]
+        length2 = dx * dx + dy * dy
+        if not length2:
+            continue
+        compiled[a[0]].append((a, dx, dy, length2, math.sqrt(length2),
+            min(a[1], b[1]) - 3, max(a[1], b[1]) + 3,
+            min(a[2], b[2]) - 3, max(a[2], b[2]) + 3))
+    return compiled
+
+
+def terrain_blocked(p, q, compiled):
+    if p[0] != q[0]:
+        return False
+    for a, dx, dy, length2, length, left, right, bottom, top in compiled.get(p[0], ()):
+        if not (left <= p[1] <= right and bottom <= p[2] <= top
+                and left <= q[1] <= right and bottom <= q[2] <= top):
+            continue
+        def project_point(point):
+            t = max(0, min(1, ((point[1]-a[1])*dx+(point[2]-a[2])*dy)/length2))
+            return t, (point[1]-a[1]-t*dx)**2+(point[2]-a[2]-t*dy)**2
+        tp, dp = project_point(p)
+        tq, dq = project_point(q)
+        if dp <= 9 and dq <= 9 and abs(tp-tq)*length > 30:
+            return True
+    return False
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache", type=Path, default=ROOT / "tools/fixtures/travel")
@@ -255,22 +286,9 @@ def main():
             for offset in (8, 14):
                 endpoints.append(world(assignments[int(f[offset+3])], float(f[offset+4])/100, float(f[offset+5])/100))
             blocked_chords.append(endpoints)
-    def terrain_blocked(p, q):
-        for a,b in blocked_chords:
-            if p[0] != a[0] or q[0] != a[0]: continue
-            dx,dy = b[1]-a[1],b[2]-a[2]
-            length2 = dx*dx+dy*dy
-            if not length2: continue
-            # Fast rejection before projecting densely generated grid probes.
-            if not all(min(a[k],b[k])-3 <= point[k] <= max(a[k],b[k])+3 for point in (p,q) for k in (1,2)): continue
-            def project_point(point):
-                t = max(0,min(1,((point[1]-a[1])*dx+(point[2]-a[2])*dy)/length2))
-                return t,(point[1]-a[1]-t*dx)**2+(point[2]-a[2]-t*dy)**2
-            tp,dp = project_point(p);tq,dq = project_point(q)
-            if dp <= 9 and dq <= 9 and abs(tp-tq)*math.sqrt(length2) > 30: return True
-        return False
+    compiled_chords = compile_blocked_chords(blocked_chords)
     def allowed(p, q):
-        return p[0] == q[0] and not terrain_blocked(p,q) and not any(intersects(p, q, r, s) for _, _, r, s in barriers)
+        return p[0] == q[0] and not terrain_blocked(p, q, compiled_chords) and not any(intersects(p, q, r, s) for _, _, r, s in barriers)
     def probe(p, q, label):
         expected = int(allowed(p, q))
         runtime_input.append("\t".join(map(str, ["P", *p, *q, expected, label])))
@@ -306,9 +324,10 @@ def main():
             probe(start, end, f"WaypointTracker/TravelData.lua:{line} barrier edge case {i}")
             counts["barrier_edge_cases"] += 1
     # All same-area pairs, across different/overlapping maps as well as one map.
-    for a, b in itertools.combinations(sorted(nodes.values(), key=lambda n: n["id"]), 2):
-        if a["id"].startswith("TERRAIN_") or b["id"].startswith("TERRAIN_"):
-            continue # indexed adjacent corridors cannot infer all-to-all edges
+    # Indexed adjacent corridors cannot infer all-to-all edges. Filter before
+    # constructing pairs; the eligible pairs and their order stay identical.
+    graph_nodes = sorted((n for n in nodes.values() if not n["id"].startswith("TERRAIN_")), key=lambda n: n["id"])
+    for a, b in itertools.combinations(graph_nodes, 2):
         if a["area"] != b["area"] or a["city"] != b["city"]:
             continue
         counts["graph_pairs"] += 1
