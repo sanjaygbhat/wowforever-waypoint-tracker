@@ -337,5 +337,221 @@
     "source_sha256": "98bbd02ed910f528f744162c9e0b993f04a0215e48afa88c78711b6f634f137d",
     "source": "https://github.com/shagu/pfQuest/blob/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db/enUS/items.lua",
     "selection": "complete source item ID set (MIT)"
+  },
+  "client/AreaPOI-1.60.1.70755-deDE.csv": {
+    "source_sha256": "109ea26aa654b57d24ab84dd164f71ba34c584aab3fd0cda8884e6e2e60cc80c",
+    "sha256": "109ea26aa654b57d24ab84dd164f71ba34c584aab3fd0cda8884e6e2e60cc80c",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=deDE",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-enUS.csv": {
+    "source_sha256": "073b941fa518af9b43970425f581ac274f2b70d7324bf0e7622509415e44a22d",
+    "sha256": "073b941fa518af9b43970425f581ac274f2b70d7324bf0e7622509415e44a22d",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-esES.csv": {
+    "source_sha256": "69dc4be060838a1adb49cc59ca36987da1badd48a18c62cb5fcc14b84e439d5f",
+    "sha256": "69dc4be060838a1adb49cc59ca36987da1badd48a18c62cb5fcc14b84e439d5f",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=esES",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-esMX.csv": {
+    "source_sha256": "a35b42dc85c427287fc4c93bcca8d46253ceb8c9d0fbc3bc0a81ba4ea2b16cd8",
+    "sha256": "a35b42dc85c427287fc4c93bcca8d46253ceb8c9d0fbc3bc0a81ba4ea2b16cd8",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=esMX",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-frFR.csv": {
+    "source_sha256": "359d4224bdcb1392bbee06e0ee1fb8ec50cdb3691d4ce89a06f0d35c962cd827",
+    "sha256": "359d4224bdcb1392bbee06e0ee1fb8ec50cdb3691d4ce89a06f0d35c962cd827",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=frFR",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-koKR.csv": {
+    "source_sha256": "56c20ec13b53c5e39b5eba8811060ac57c4f6d08596ad8f1154303a7ba399d94",
+    "sha256": "56c20ec13b53c5e39b5eba8811060ac57c4f6d08596ad8f1154303a7ba399d94",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=koKR",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-ptBR.csv": {
+    "source_sha256": "2234aeee1267777263f007bece1b413f979b24b097843e262c65e7f11d438993",
+    "sha256": "2234aeee1267777263f007bece1b413f979b24b097843e262c65e7f11d438993",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=ptBR",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-ruRU.csv": {
+    "source_sha256": "7bb26736cab869e8c05dd2f4556ad82e3e44fb1f75d4c8b92822f1e391bc681b",
+    "sha256": "7bb26736cab869e8c05dd2f4556ad82e3e44fb1f75d4c8b92822f1e391bc681b",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=ruRU",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-zhCN.csv": {
+    "source_sha256": "b3bdae09c851fd67bfe08403ae07a7eaf2dec0e24899b6c40ce80ef7cb01069f",
+    "sha256": "b3bdae09c851fd67bfe08403ae07a7eaf2dec0e24899b6c40ce80ef7cb01069f",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=zhCN",
+    "selection": "full extraction"
+  },
+  "client/AreaPOI-1.60.1.70755-zhTW.csv": {
+    "source_sha256": "d4ae174eb040cac260a31a8fbe7d065b641b92db40401affbbe9fd5954bd6b7b",
+    "sha256": "d4ae174eb040cac260a31a8fbe7d065b641b92db40401affbbe9fd5954bd6b7b",
+    "source": "https://wago.tools/db2/AreaPOI/csv?build=1.60.1.70755&locale=zhTW",
+    "selection": "full extraction"
+  },
+  "client/Item-1.60.1.70755-enUS.csv.gz": {
+    "source_sha256": "4f1a1eb5b4c99d9497b8104ebbc7e18d1d01bfd9ea2aca8bdc0b7a1fc9b1a9f5",
+    "sha256": "3ff09a52f2cd0f3357128da1e5e6c2c35b44814e66f71fe6b72d2835d1f1dc41",
+    "source": "https://wago.tools/db2/Item/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-deDE.csv.gz": {
+    "source_sha256": "d620cd6469a04b4258aa9ef2322f5dc8bbe954dfa8e8e3150f31c4bb5978ef29",
+    "sha256": "6c610d04bd798a3fa7dfa08fcea5b651b4c5234c26128152bfc763b99c7a2586",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=deDE",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-enUS.csv.gz": {
+    "source_sha256": "099f086589145f0be35837badd8c73c6d5bcde6fc7b3794d25d6fa7abf9b3931",
+    "sha256": "996c61be8483192d0edfcc226845979d4b9659dedbb7bdcced72ab7b887b3a07",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-esES.csv.gz": {
+    "source_sha256": "de3550d80e69dbae2ae3146e60feee2e6770b990bd3628fd85a50519cc7c15c8",
+    "sha256": "fa5553eb07e51b2608f383068ff2a9b417fb5457f5fa2b5cfda389078967142e",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=esES",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-esMX.csv.gz": {
+    "source_sha256": "87d94d29f87ff3ba089a5517b2000a64a8f20e9fc918333741814b3baeef85b9",
+    "sha256": "37647d0f43b7c337861a48a7ed93f4225834c72e79df25ed96b503d45c9f00af",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=esMX",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-frFR.csv.gz": {
+    "source_sha256": "0533306f8eb63ab27801ef83ab1e1a81c9d1a4051892afb2716e9ddbf3952e8e",
+    "sha256": "72650e50abdaff5c128b08109d0217d7612931175bf9e56cbe49dd5f0a2c9810",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=frFR",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-koKR.csv.gz": {
+    "source_sha256": "5607bdc8a411ba9aaabc33aabb7e4dd323cab5282a054595f97c4c27f7ab86f0",
+    "sha256": "2c39248a0f4a284555a3a5fa2b7446621648a7b7eecaf43ff48802ce49bb1022",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=koKR",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-ptBR.csv.gz": {
+    "source_sha256": "1983e5e30d518a8a857d7e92349e70c94b0b92f297d233340f0e3eaf6286f821",
+    "sha256": "fe5de65e392eed3d4df3496390689a9a047ea840709ff02542f5158c40d95d61",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=ptBR",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-ruRU.csv.gz": {
+    "source_sha256": "ee88141ffecf325845643e9e2f643c1a6045270bb8ee8982b5fb84848262c0db",
+    "sha256": "d68e89191b4d991c0875d57bc53c536aa64e5f78a08d7b0a84d7a3ca66f97bfd",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=ruRU",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-zhCN.csv.gz": {
+    "source_sha256": "5796d2f2b0a31237a431763336021021566f34d93591fc5906ffceaa1805f0fa",
+    "sha256": "fcc75f7c648c9683c6f33231418ff7713c9c84d9ca4c772dfedebca49cf0d082",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=zhCN",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/ItemSparse-1.60.1.70755-zhTW.csv.gz": {
+    "source_sha256": "5bb68b050627956cd10a5b372468cc6903a22464d48d9933c3436a7033d212b3",
+    "sha256": "6729d0bed39e957c64de095f3d3540aa00d26ef677d17f4aeeee98debbe0bb5a",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70755&locale=zhTW",
+    "selection": "shipped item IDs, reduced columns"
+  },
+  "client/QuestPOIBlob-1.60.1.70755-enUS.csv": {
+    "source_sha256": "1528a4982cccac2713fcf9a7fc2ec168f057f893ef92368723f52ea81e0c02d9",
+    "sha256": "1528a4982cccac2713fcf9a7fc2ec168f057f893ef92368723f52ea81e0c02d9",
+    "source": "https://wago.tools/db2/QuestPOIBlob/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "full extraction"
+  },
+  "client/QuestPOIPoint-1.60.1.70755-enUS.csv": {
+    "source_sha256": "eb20fac60ae0c4ef3590f7b4c247dff6215f3a479db149c3d4c76310026d7d9e",
+    "sha256": "eb20fac60ae0c4ef3590f7b4c247dff6215f3a479db149c3d4c76310026d7d9e",
+    "source": "https://wago.tools/db2/QuestPOIPoint/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "full extraction"
+  },
+  "client/QuestV2-1.60.1.70755-enUS.csv": {
+    "source_sha256": "6e552ddbec22f043dd6103408ff7596b8ac94ba1f404d6eb164fe13e85099edd",
+    "sha256": "6e552ddbec22f043dd6103408ff7596b8ac94ba1f404d6eb164fe13e85099edd",
+    "source": "https://wago.tools/db2/QuestV2/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-deDE.csv": {
+    "source_sha256": "3dd86fc965a4dd979de629107079c0be7ffbfe59299d3cc5e22062a611555f37",
+    "sha256": "3dd86fc965a4dd979de629107079c0be7ffbfe59299d3cc5e22062a611555f37",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=deDE",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-enUS.csv": {
+    "source_sha256": "4360793e0edfbb8de62d12d87a69260b6a1bc6314b1e506b141c33e8802d8249",
+    "sha256": "4360793e0edfbb8de62d12d87a69260b6a1bc6314b1e506b141c33e8802d8249",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-esES.csv": {
+    "source_sha256": "d69384110b75be0b36e5d43322b78932fef4403c9acabd57e40d9f4d718e3c14",
+    "sha256": "d69384110b75be0b36e5d43322b78932fef4403c9acabd57e40d9f4d718e3c14",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=esES",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-esMX.csv": {
+    "source_sha256": "b1bcfa03b34623a508eae67396d645db16ee851fcc04ffb82093a3f504ccc9aa",
+    "sha256": "b1bcfa03b34623a508eae67396d645db16ee851fcc04ffb82093a3f504ccc9aa",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=esMX",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-frFR.csv": {
+    "source_sha256": "0ce664c131f042d02942de3d00b9f60516a434829aca2695565de7b25244b2ae",
+    "sha256": "0ce664c131f042d02942de3d00b9f60516a434829aca2695565de7b25244b2ae",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=frFR",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-koKR.csv": {
+    "source_sha256": "f99d09670c58e22cde8f2f2537e96c0ffbc364f4b44d6e715b7d2461d46e421a",
+    "sha256": "f99d09670c58e22cde8f2f2537e96c0ffbc364f4b44d6e715b7d2461d46e421a",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=koKR",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-ptBR.csv": {
+    "source_sha256": "3d1c389c9c31835be4bbbdd67f4999fc67afb1d6f2ab4539146b7b14c0462777",
+    "sha256": "3d1c389c9c31835be4bbbdd67f4999fc67afb1d6f2ab4539146b7b14c0462777",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=ptBR",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-ruRU.csv": {
+    "source_sha256": "8430ec4b85014ffb886d46a4caf88d2634b28e26ee5ac7d11769ecab7df12999",
+    "sha256": "8430ec4b85014ffb886d46a4caf88d2634b28e26ee5ac7d11769ecab7df12999",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=ruRU",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-zhCN.csv": {
+    "source_sha256": "31d33d135eb97b6b561f74fb3563b68fd163274ce9fbebd228f2161a1499ce09",
+    "sha256": "31d33d135eb97b6b561f74fb3563b68fd163274ce9fbebd228f2161a1499ce09",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=zhCN",
+    "selection": "full extraction"
+  },
+  "client/TaxiNodes-1.60.1.70755-zhTW.csv": {
+    "source_sha256": "8fe76186d53f921d8577d24bb9367f5bb1c5d4ec01709dc68da2833230e575a7",
+    "sha256": "8fe76186d53f921d8577d24bb9367f5bb1c5d4ec01709dc68da2833230e575a7",
+    "source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=zhTW",
+    "selection": "full extraction"
+  },
+  "client/UiMap-1.60.1.70755-enUS.csv": {
+    "source_sha256": "1f4aac70eaac015b1d2d0ea0faf6e3d7fb2cf7afdf45e5bb6772d9b80a72346b",
+    "sha256": "1f4aac70eaac015b1d2d0ea0faf6e3d7fb2cf7afdf45e5bb6772d9b80a72346b",
+    "source": "https://wago.tools/db2/UiMap/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "full extraction"
+  },
+  "client/UiMapAssignment-1.60.1.70755-enUS.csv": {
+    "source_sha256": "79267e8be8034e47daab14350411b3acc0b1f64e86efc9d821a217497254ca0a",
+    "sha256": "79267e8be8034e47daab14350411b3acc0b1f64e86efc9d821a217497254ca0a",
+    "source": "https://wago.tools/db2/UiMapAssignment/csv?build=1.60.1.70755&locale=enUS",
+    "selection": "full extraction"
   }
 }
