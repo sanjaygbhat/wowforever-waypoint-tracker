@@ -15,7 +15,7 @@ ns.defaults = {
     -- arrow
     arrowShown = true,
     -- routes
-    routeSharing = true, -- share routes and votes with other players of the addon
+    routeSharing = false, -- opt-in beta: share routes and votes with other players of the addon
     routeApply = "ask", -- "ask" | "replace" | "add"
     routeThisZone = false,
     routeLowRated = false, -- show routes most players voted down
@@ -464,7 +464,13 @@ local function InitDatabase()
     if db.settings.travelPreference ~= "fastest" and db.settings.travelPreference ~= "safer" then
         db.settings.travelPreference = ns.defaults.travelPreference
     end
-    db.version = 3
+    -- 3 -> 4: route sharing was on by default in 1.2.0. Ask everyone to
+    -- opt into the beta once, including profiles that omitted the old default.
+    -- Settings are account-wide; character data has no settings override.
+    if (db.version or 1) < 4 then
+        db.settings.routeSharing = false
+    end
+    db.version = 4
     ns.settings = db.settings
 
     if type(WaypointTrackerCharDB) ~= "table" then

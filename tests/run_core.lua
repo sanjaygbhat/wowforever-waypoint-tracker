@@ -25,6 +25,22 @@ local function init(settings, version)
 end
 
 check(ns.defaults.routeApply == "ask", "routes ask by default")
+check(ns.defaults.routeSharing == false and ns.Get("routeSharing") == false, "route sharing beta defaults off before initialization")
+local fresh = init({})
+check(fresh.routeSharing == false and WaypointTrackerDB.version == 4, "fresh sparse profile starts with sharing off at version 4")
+for _, settings in ipairs({ {}, { routeSharing = true }, { routeSharing = false } }) do
+    local migrated = init(settings, 3)
+    check(migrated.routeSharing == false, "1.2.0 account profile opts out, whether defaults were saved or omitted")
+    ns.Set("routeSharing", true)
+    -- Simulate another character loading the same account-wide settings.
+    WaypointTrackerCharDB = { waypoints = {} }
+    ns.eventFrame:RunScript("OnEvent", "ADDON_LOADED", "WaypointTracker")
+    check(ns.Get("routeSharing") == true and ns.settings == WaypointTrackerDB.settings,
+        "version 4 keeps a later opt-in across reloads and characters")
+    check(WaypointTrackerCharDB.settings == nil, "character state has no separate sharing profile")
+end
+check(init({ routeSharing = true }, 4).routeSharing == true, "existing version 4 opt-in is preserved")
+check(init({}, 4).routeSharing == false, "version 4 sparse profile still defaults off")
 check(ns.defaults.routeAsk == nil and ns.defaults.showAdvanced == nil and ns.defaults.windowPos == nil and ns.defaults.coordsLocked == nil, "retired defaults are gone")
 
 for _, case in ipairs({
@@ -43,7 +59,7 @@ for _, case in ipairs({
     local st = init(case.settings, 2)
     check(st.routeApply == case.want, "old route choice becomes " .. case.want)
     check(st.routeAsk == nil and st.showAdvanced == nil and st.windowPos == nil and st.coordsLocked == nil, "retired settings deleted")
-    check(WaypointTrackerDB.version == 3, "settings version 3")
+    check(WaypointTrackerDB.version == 4, "settings version 4")
 end
 
 local st = init({ arrowAlpha = 1, fadeOnCourse = false, arrowLocked = true,
@@ -51,7 +67,7 @@ local st = init({ arrowAlpha = 1, fadeOnCourse = false, arrowLocked = true,
 check(st.arrowAlpha == 0.8 and st.fadeOnCourse == true, "version 1 arrow look still migrates")
 check(st.arrowPos == nil and st.arrowLocked == nil, "version 1 arrow position still resets")
 check(st.coordsLocked == nil, "version 1 also retires the coordinates lock")
-check(st.routeApply == "add" and WaypointTrackerDB.version == 3, "version 1 advances through both migrations")
+check(st.routeApply == "add" and WaypointTrackerDB.version == 4, "version 1 advances through all migrations")
 
 for _, choice in ipairs({ "ask", "replace", "add" }) do
     st = init({ routeApply = choice }, 3)

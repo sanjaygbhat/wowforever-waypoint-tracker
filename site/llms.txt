@@ -18,7 +18,8 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 - Other addons that send waypoints to an arrow (quest guides, treasure maps) send them to Waypoint Tracker with nothing to set up.
 - Treasure hunt (`/wp treasure`, off until turned on): a ping (sound, on-screen message, blinking taskbar) the moment a chest, rare spawn or other minimap marker appears near the player; the arrow points at it, follows a wandering rare, and the waypoint goes once it's taken, killed or gone. Optionally walks the player between known chest spawn spots. `/wp treasure status` lists what it sees and recent finds.
 - One window has Waypoints, Find and Routes tabs. Editors and imports are pages with Back. `/wp settings` opens Blizzard Settings; `/wp editmode` enters Edit Mode for the arrow, its text, coordinates and route recorder. Left-click the minimap button opens the window; right-click opens the quick menu; Shift + left-click adds a waypoint here.
-- Real routes (beta), new in this release, guides through passes and gates using flight paths and transport when quicker. Enable it in the Routes notice, quick menu or Settings > Routes.
+- Route sharing & votes (beta) is off by default. Enable it in Settings → Routes or from the Routes tab with Enable (beta) to exchange shared route lists and votes with other Waypoint Tracker players in guild, group and the addon channel. Updating from 1.2.0 turns it off once; later opt-ins persist. Local routes, following, text import/export and local votes still work. Learned-path sharing has a separate setting.
+- Real routes (beta) guides through passes and gates using flight paths and transport when quicker. Enable it in the Routes notice, quick menu or Settings > Routes.
 - The arrow moves with the game's Edit Mode and never catches mouse clicks.
 
 ## Common questions it answers

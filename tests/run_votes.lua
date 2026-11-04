@@ -12,6 +12,7 @@ GetUnitName = function() return full end
 WaypointTrackerDB = nil
 local ns = M.LoadAddon("WaypointTracker", "WaypointTracker")
 M.FireEvent("ADDON_LOADED", "WaypointTracker")
+ns.Set("routeSharing", true) -- This test exercises opted-in network sharing.
 M.FireEvent("PLAYER_LOGIN")
 M.FireEvent("PLAYER_ENTERING_WORLD")
 local R, Net = ns.Routes, ns.RoutesNet

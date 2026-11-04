@@ -252,7 +252,11 @@ check(nativeOptionsOpen and M.settingsOpened ~= nil or openedRoutesSettings == "
 if not nativeOptionsOpen then ns.Options.Open = nil end
 ns.Set("routeSharing", false)
 check(w.net:GetText() == L.ROUTES_SHARING_OFF_LINE, "sharing footer reports sharing off")
-ns.Set("routeSharing", true)
+local printedBeforeEnable = #M.printed
+check(w.sharingEnable:IsShown() and w.sharingEnable:GetText() == L.ROUTES_SHARING_ENABLE, "sharing off offers an in-tab beta opt-in")
+w.sharingEnable:Click()
+check(ns.Get("routeSharing") and not w.sharingEnable:IsShown() and #M.printed == printedBeforeEnable,
+    "Routes tab opt-in enables sharing, hides its button and keeps chat quiet")
 check(w.net:GetText() == L.ROUTES_SHARING_LINE:format(ns.RoutesNet.Status().peers), "sharing footer reports peers")
 check(w.notice:IsShown() and w.notice.text:GetText() == L.TRAVEL_NEW_WINDOW, "Real routes notice explains the feature without a slash command")
 w.notice.enable:Click()
@@ -560,6 +564,18 @@ check(w.status:GetText() == L.ROUTE_SAVED:format(saved.name), "Save sets the sta
 check(w.search:GetText() == "" and w.cat:GetText() == L.ROUTES_ALL_CATEGORIES, "Save clears filters that could hide the saved route")
 check(M.lastMenu.items[1].text == L.ROUTE_SHARE_SAVED_TITLE, "Save opens the sharing menu with the saved title")
 
+-- Network opt-out keeps the text pages and manual chat choices available.
+ns.Set("routeSharing", false)
+UI.ShowShare(saved)
+local offMenu = M.lastMenu
+check(item(offMenu, L.ROUTES_SHARING_ENABLE) and not item(offMenu, L.ROUTE_SEND_TARGET)
+    and item(offMenu, L.ROUTE_COPY) and item(offMenu, L.ROUTE_SHARE_POST:format(ns.Share.Channels()[1][1])),
+    "sharing off replaces the network Send action with beta opt-in and retains manual sharing")
+local quietBeforeMenuEnable = #M.printed
+item(offMenu, L.ROUTES_SHARING_ENABLE).fn()
+check(ns.Get("routeSharing") and #M.printed == quietBeforeMenuEnable,
+    "sharing menu opts in without chat output")
+
 UI.ShowText("copy", Routes.Serialize(saved))
 text = UI.Frames().text
 check(text.edit:GetText() == Routes.Serialize(saved) and not text.action:IsShown(), "Copy page contains exactly the serialized route")
@@ -590,7 +606,7 @@ if ns.Get("sharePrefix") then msg = ns.Share.PREFIX .. " " .. msg end
 check(M.chatText == channels[1][2] .. " " .. msg, "Post opens chat with channel prefix and route pin")
 local sent
 local originalSend = ns.RoutesNet.SendTo
-ns.RoutesNet.SendTo = function(id, name) sent = { id, name }; return true end
+ns.RoutesNet.SendTo = function(id, name) sent = { id, name }; return 1 end
 M.units.target = { player = true, name = "Friend" }
 item(menu, L.ROUTE_SEND_TARGET).fn()
 check(sent and sent[1] == saved.id and sent[2] == "Friend", "Send targets the selected player")
