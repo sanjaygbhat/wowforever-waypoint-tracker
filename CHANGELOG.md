@@ -1,9 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
-### 1.2.0
-
+- Ready for the WoW Forever launch (client 1.60.1, interface 16001).
 - One window for Waypoints, Find and Routes. Editors, imports and help open as pages inside the tabs, with Back to return.
 - Ready-made route names describe what you get or do; levels and faction restrictions move into the details and tooltips. Two-line rows show the map and category, and For my level sorting puts suitable routes first.
 - Click a route for an area, continent or world map preview with stop pins and route lines. Click the preview to open it on the world map, with Set This Route and Back to Routes. Set uses your existing replace-or-add choice; closing the map clears the preview.

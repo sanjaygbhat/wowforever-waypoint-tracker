@@ -6,7 +6,7 @@
 
 Nothing to configure. Free, open source, in 9 languages. Made for World of Warcraft: Forever, and addons with "Send to TomTom" buttons work with it as-is.
 
-Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find** and **Routes** tabs. Right-click for the quick menu; Shift + left-click adds a waypoint where you stand. Editors and imports stay inside the tabs, with **Back** to return. Use **Settings** for Blizzard Settings and **Esc → Edit Mode** to place the arrow, text, coordinates box and route recorder.
+Version **1.2.0** supports the live WoW Forever client. Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find** and **Routes** tabs. Right-click for the quick menu; Shift + left-click adds a waypoint where you stand. Editors and imports stay inside the tabs, with **Back** to return. Use **Settings** for Blizzard Settings and **Esc → Edit Mode** to place the arrow, text, coordinates box and route recorder.
 
 ![Features](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/h-features.png)
 
@@ -55,8 +55,6 @@ Find covers the classic world and WoW Forever's new content: Mount Hyjal, Riverg
 
 Right-click any waypoint and choose **Share**, or type `/wp share` to share where you stand. Pick Party, Raid, Guild, Say or a whisper, and your chat opens with a clickable map pin ready to send. Friends don't need the addon to use it.
 
-TODO: replace the old window screenshot with the three tabs, Blizzard Settings and Edit Mode.
-
 ## Routes
 
 Follow, create, record, import and share lists of stops in the **Routes** tab. Ready-made names say what you get or do; the map and category sit beneath the name, with levels and faction restrictions in the details and tooltips. **For my level** puts suitable routes first.
@@ -87,7 +85,7 @@ The ping comes the moment one appears, and the taskbar icon blinks if you're in 
 
 ## Install
 
-1. In the **Wago app**, choose your WoW Forever install and click Install. (By hand: unzip into `Interface\AddOns` in your WoW Forever folder; during the beta that's `World of Warcraft\_classic_beta_\Interface\AddOns`.)
+1. In the **Wago app**, choose your WoW Forever install and click Install. (By hand: unzip into `Interface\AddOns` in your WoW Forever folder; on Windows, use `World of Warcraft\_forever_\Interface\AddOns\`, or `World of Warcraft/_forever_/Interface/AddOns/` on macOS.)
 2. Keep both folders enabled: **WaypointTracker** and **WaypointTracker_Data** (Find's database, which loads only when you first open Find).
 3. In the game, type `/wp`.
 

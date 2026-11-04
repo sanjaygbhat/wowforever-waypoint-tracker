@@ -69,5 +69,3 @@ Click the preview or a pin to open the route on the normal world map, outside co
 **Start Route** or a row double-click also starts the route. While running, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** contains Copy text, Edit and Delete for your routes, or Copy text, Remove and Hide This Author for shared routes. Ready-made routes offer Copy text.
 
 **Real routes (beta)** is new in this release. The arrow guides you through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone or teleports when quicker. Turn it on from the Routes tab notice, the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
-
-TODO: capture the three tabs, area/continent/world route previews, the world-map preview bar, Blizzard Settings and all four Edit Mode selection boxes.

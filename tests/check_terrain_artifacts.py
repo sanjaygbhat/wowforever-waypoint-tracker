@@ -41,8 +41,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(c['input_sha256'],digest(ROOT/'docs/terrain-calibrated-final.json'))
         self.assertEqual(c['output_tsv_sha256'],digest(ROOT/'tools/terrain_detours_final.tsv'))
         self.assertEqual(c['tool_sha256'],digest(ROOT/'tools/validate_terrain_detour_export.py'))
-        for p in ['tools/verify_legs_calibrated.py','tools/verify_legs_casc.py','tools/verify_legs_terrain.py']:
-            self.assertEqual(self.analysis['read_input_sha256'][p],digest(ROOT/p))
+        # These are the tools executed for the historical pinned-build evidence.
+        # Maintenance of the current offline CLI must not rewrite its provenance.
+        executed_tools = {
+            'tools/verify_legs_calibrated.py': '4c37de8b0752ada59b78eaf9bb4a04f49d8f8511eb45e08ceaab1755fbc7283d',
+            'tools/verify_legs_casc.py': '481fb5ebbca79ab7964645142171e4a08bad872e70512127d9a84ac30fc909b2',
+            'tools/verify_legs_terrain.py': '336db28dbd80150196e234aa29253c6f66662d1299fd20627e9310cf61c8f517',
+        }
+        for p, checksum in executed_tools.items():
+            self.assertEqual(self.analysis['read_input_sha256'][p], checksum)
     def test_every_active_link_has_both_coordinate_proofs_and_no_uncertain_activation(self):
         nodes={r[1]:r for r in self.rows if r[0]=='node'}
         links={(r[1],r[2]) for r in self.rows if r[0]=='link'};expected=set()

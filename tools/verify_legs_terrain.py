@@ -25,7 +25,7 @@ import struct
 import sys
 import time
 
-from verify_legs_casc import EvidenceUnavailable, LocalCASC, chunks, require
+from verify_legs_casc import EvidenceUnavailable, LocalCASC, client_arguments, chunks, require
 
 ROOT = Path(__file__).resolve().parents[1]
 TILE = 1600 / 3
@@ -622,9 +622,10 @@ def main():
     ap.add_argument('--replacements',action='store_true')
     ap.add_argument('--search-limit',type=int,default=60000)
     ap.add_argument('--force-new-artifact',action='store_true',help='Replace only this tool\'s prior schema-tagged artifact')
+    client_arguments(ap)
     args=ap.parse_args()
     if args.saved is None:
-        snapshots=list((Path(args.install)/'_classic_beta_/WTF/Account').glob('*/SavedVariables/WaypointTracker.lua'))
+        snapshots=list((Path(args.install)/args.folder/'WTF/Account').glob('*/SavedVariables/WaypointTracker.lua'))
         args.saved=str(max(snapshots,key=lambda p:p.stat().st_mtime)) if snapshots else ''
     if args.output.exists():
         require(args.force_new_artifact and json.loads(args.output.read_text()).get('schema')=='wt-terrain-evidence-v1',
@@ -640,7 +641,7 @@ def main():
             'tools/fixtures/travel/UiMapAssignment.csv','tools/fixtures/travel/Map.csv']
     hashes={p:sha(ROOT/p) for p in inputs}
     legs,barriers,maps=load_inputs()
-    casc=LocalCASC(args.install)
+    casc=LocalCASC(args.install, product=args.product)
     require(casc.build['Version!STRING:0']=='1.60.1.70338',
             'map fixtures require build 1.60.1.70338; refresh/pin fixtures before another build')
     world=World(casc)
