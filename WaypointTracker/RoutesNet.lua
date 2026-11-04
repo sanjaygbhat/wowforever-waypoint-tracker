@@ -63,24 +63,49 @@ local function Enqueue(msg, chat, target)
     queue[#queue + 1] = { msg = msg, chat = chat, target = target }
 end
 
-local THROTTLED = { [3] = true, [8] = true } -- Enum.SendAddonMessageResult: AddonMessageThrottle, ChannelThrottle
+local MAX_RETRIES, LOCKDOWN_DELAY, THROTTLE_DELAY = 5, 5, 2
+local retryAt, failureShown = 0, false
+
+local function SendFailed()
+    if not failureShown then
+        failureShown = true
+        ns.Print(L.ROUTE_SEND_FAILED, true)
+    end
+end
 
 local function Pump(elapsed)
     tokens = math.min(MAX_TOKENS, tokens + elapsed / REGEN)
+    if GetTime() < retryAt then return end
     if not (C_ChatInfo and C_ChatInfo.SendAddonMessage) then
+        if queue[1] then SendFailed() end
         wipe(queue)
         return
     end
     while tokens >= 1 and queue[1] do
         local q = table.remove(queue, 1)
         local ok, result = pcall(C_ChatInfo.SendAddonMessage, PREFIX, q.msg, q.chat, q.target)
-        if ok and (result == nil or result == true or result == 0) then
-            tokens = tokens - 1
+        local results = Enum and Enum.SendAddonMessageResult or {}
+        tokens = tokens - 1
+        if ok and (result == nil or result == true or result == (results.Success or 0)) then
             stats.sent = stats.sent + 1
-        elseif ok and THROTTLED[result] then
-            table.insert(queue, 1, q) -- try again in a moment
+        elseif ok and (result == (results.AddonMessageThrottle or 3)
+                or result == (results.ChannelThrottle or 8)
+                or result == (results.AddOnMessageLockdown or 11)) then
+            q.retries = (q.retries or 0) + 1
+            if q.retries <= MAX_RETRIES then
+                table.insert(queue, 1, q)
+            else
+                -- Stop the entire pending batch after persistent restrictions;
+                -- do not immediately retry each remaining route fragment.
+                wipe(queue)
+                SendFailed()
+            end
+            local lockdown = result == (results.AddOnMessageLockdown or 11)
+            retryAt = GetTime() + (lockdown and LOCKDOWN_DELAY or THROTTLE_DELAY)
             tokens = 0
             break
+        else
+            SendFailed()
         end
     end
 end

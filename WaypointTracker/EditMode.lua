@@ -12,7 +12,9 @@ local function ActiveLayoutName()
     local m = EditModeManagerFrame
     if not (m and m.GetActiveLayoutInfo) then return nil end
     local ok, info = pcall(m.GetActiveLayoutInfo, m)
-    return ok and type(info) == "table" and info.layoutName or nil
+    if ok and type(info) == "table" then
+        return info.layoutName, ns.Plain(info.interfaceStyle)
+    end
 end
 
 function EditMode.IsActive()
@@ -25,6 +27,16 @@ function EditMode.SavedPosition(key)
     if layout and type(layouts) == "table" and type(layouts[layout]) == "table" then
         return layouts[layout]
     end
+    local legacy = EditMode.legacyLayout
+    if legacy and type(layouts) == "table" and layouts[layout] == nil and type(layouts[legacy]) == "table" then
+        -- Copy lazily for each input style, keeping the old position available
+        -- for styles not yet visited and clients without interfaceStyle.
+        local pos = {}
+        for k, v in pairs(layouts[legacy]) do pos[k] = v end
+        layouts[layout] = pos
+        ns.Set(key .. "Layouts", layouts)
+        return pos
+    end
     return ns.Get(key .. "Pos")
 end
 
@@ -32,7 +44,12 @@ function EditMode.SavePosition(key, pos)
     if EditMode.layout then
         local layouts = ns.Get(key .. "Layouts")
         layouts = type(layouts) == "table" and layouts or {}
-        layouts[EditMode.layout] = pos
+        -- A reset must not import the legacy position again on the next read.
+        if pos == nil and EditMode.legacyLayout then
+            layouts[EditMode.layout] = false
+        else
+            layouts[EditMode.layout] = pos
+        end
         ns.Set(key .. "Layouts", layouts)
     end
     ns.Set(key .. "Pos", pos)
@@ -56,8 +73,10 @@ function EditMode.ApplyPosition(key)
     if spec.onApply then spec.onApply(f) end
 end
 
-function EditMode.SetLayout(name)
-    EditMode.layout = name
+function EditMode.SetLayout(name, style)
+    local styled = name and (type(style) == "number" or type(style) == "string")
+    EditMode.legacyLayout = styled and name or nil
+    EditMode.layout = styled and ("style:" .. tostring(style) .. ":" .. name) or name
     for key in pairs(systems) do EditMode.ApplyPosition(key) end
     EditMode.PlaceDialog()
 end

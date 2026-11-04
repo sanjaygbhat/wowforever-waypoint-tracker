@@ -318,6 +318,56 @@ hearthCooldown = M.now
 s = Steer(tirisfal)
 check(not (s and s.title == L.TRAVEL_HEARTH:format("Brill")), "not while it's cooling down")
 hearthCooldown = 0
+-- Live Forever can disable the deprecated spell/item globals entirely.
+local legacyCount, legacyPlayer, legacyKnown = GetItemCount, IsPlayerSpell, IsSpellKnown
+local oldItem, oldBook, oldBank, oldSpell = C_Item, C_SpellBook, Enum.SpellBookSpellBank, C_Spell
+GetItemCount, IsPlayerSpell, IsSpellKnown = nil, nil, nil
+C_Item = { GetItemCount = function(id) check(id == 6948, "modern item count receives hearthstone ID"); return 1 end }
+Enum.SpellBookSpellBank = { Player = 0, Pet = 1 }
+local knownSpells = {}
+C_SpellBook = { IsSpellKnown = function(id, bank)
+    check(bank == 0, "modern spell query uses Player bank, including enum value zero")
+    return knownSpells[id] or false
+end }
+C_Spell = { GetSpellCooldown = function() return { startTime = 0, duration = 0 } end }
+local routes, context = Travel.Routes
+Travel.Routes = function(_, _, c) context = c; return {} end
+local function ReadContext() Travel.Choices(tirisfal); return context end
+check(#ReadContext().jumps == 1, "modern item API alone enables hearthstone travel")
+GetItemCount = function() error("deprecated item API must not run") end
+check(#ReadContext().jumps == 1, "modern item API takes precedence over legacy global")
+C_Item.GetItemCount = function() return 0 end
+check(#ReadContext().jumps == 0, "modern zero count disables hearthstone")
+knownSpells[556], knownSpells[1225490] = true, true
+local c = ReadContext()
+check(#c.jumps == 1, "Astral Recall works without deprecated spell globals")
+check(c.flightFactor == 1 / 1.2, "modern Frequent Flier knowledge affects flight ETA")
+knownSpells = {}
+IsPlayerSpell = function() return true end
+check(#ReadContext().jumps == 0 and context.flightFactor == 1, "modern false is authoritative over legacy true")
+C_SpellBook = nil
+check(#ReadContext().jumps > 0, "legacy IsPlayerSpell works when modern API is absent")
+C_SpellBook = { IsSpellKnown = function() error("unavailable modern API") end }
+check(#ReadContext().jumps > 0, "throwing modern spell API can use the legacy shim")
+C_SpellBook = { IsSpellKnown = function() error("Player bank missing: must not query") end }
+Enum.SpellBookSpellBank = nil
+check(#ReadContext().jumps > 0, "missing Player bank uses legacy spell knowledge")
+C_SpellBook = nil
+IsPlayerSpell = nil
+IsSpellKnown = function(id) return id == 556 end
+check(#ReadContext().jumps == 1, "legacy IsSpellKnown works when IsPlayerSpell is absent")
+IsSpellKnown = function() error("unavailable legacy shim") end
+check(#ReadContext().jumps == 0, "a throwing legacy shim does not break planning")
+C_Item = nil
+GetItemCount = legacyCount
+check(#ReadContext().jumps == 1, "legacy GetItemCount still enables hearthstone")
+GetItemCount = nil
+check(#ReadContext().jumps == 0, "absent item and spell APIs safely disable hearth travel")
+C_Item = { GetItemCount = function() error("unavailable item API") end }
+check(#ReadContext().jumps == 0, "throwing item API safely disables hearth travel")
+Travel.Routes = routes
+GetItemCount, IsPlayerSpell, IsSpellKnown = legacyCount, legacyPlayer, legacyKnown
+C_Item, C_SpellBook, Enum.SpellBookSpellBank, C_Spell = oldItem, oldBook, oldBank, oldSpell
 ns.Set("travelHearth", false)
 
 -- over the sea by boat, and noticing the boat has left with you

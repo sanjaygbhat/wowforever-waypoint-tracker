@@ -482,7 +482,13 @@ local function Ready(start, duration)
 end
 
 local function HearthReady()
-    if not GetItemCount or GetItemCount(HEARTHSTONE) == 0 then
+    local count = (C_Item and C_Item.GetItemCount) or GetItemCount
+    if not count then
+        return false
+    end
+    local ok, owned = pcall(count, HEARTHSTONE)
+    owned = ok and ns.Num(owned)
+    if not owned or owned <= 0 then
         return false
     end
     local cd = (C_Container and C_Container.GetItemCooldown) or GetItemCooldown
@@ -494,11 +500,20 @@ local function HearthReady()
 end
 
 local function Knows(spell)
+    local bank = Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player
+    if C_SpellBook and C_SpellBook.IsSpellKnown and bank ~= nil then
+        local ok, known = pcall(C_SpellBook.IsSpellKnown, spell, bank)
+        if ok then return ns.Plain(known) and true or false end
+    end
     if IsPlayerSpell then
         local ok, known = pcall(IsPlayerSpell, spell)
-        return ok and known or false
+        if ok then return ns.Plain(known) and true or false end
     end
-    return IsSpellKnown and IsSpellKnown(spell) or false
+    if IsSpellKnown then
+        local ok, known = pcall(IsSpellKnown, spell)
+        return ok and ns.Plain(known) and true or false
+    end
+    return false
 end
 
 local function SpellReady(spell)
