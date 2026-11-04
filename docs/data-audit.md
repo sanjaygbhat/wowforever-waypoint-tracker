@@ -64,7 +64,7 @@ change log for translation verification.
 
 ## Reference coverage
 
-`WaypointTracker_Data/ReferenceData.lua` appends 2,430 verified named definitions
+`WaypointTracker_Data/ReferenceData.lua` appends 2,428 verified named definitions
 to the curated layer, without positions, factions or guessed services. They
 retain quest/item relationships and can display the existing no-location
 result. Independent name fixtures and `tests/check_reference_data.lua` check
@@ -75,6 +75,13 @@ Deepmoss Matriarch (4264) and Grenka Bloodscreech (4490) now have player-observe
 positions in `Forever.lua`. They are no longer reference-only targets in
 `tools/reference_ids.tsv`; regenerating the supplement preserves those
 discoveries without treating their positions as invented reference locations.
+
+Issue #10's WTL1 export adds player-observed locations for Shadowy Assassin
+(2434), Cyclonian (6239), Summoned Incubus (185335) and Ornery Galestrider
+(251707). All four are retired from `tools/reference_ids.tsv`; the first two
+also leave `ReferenceData.lua` (the latter two lacked verified names in its
+pinned source). The strict no-location assertion still applies to every
+remaining supplement definition, with separate regressions for observed IDs.
 
 The `data-refresh` integration also introduced 43 references with no target
 definition or verified name in any bundled layer: 28 objectives, two quest
@@ -92,6 +99,43 @@ previously audited unresolved relationships below retain their exact ledger.
 relationships after the reviewed source-recovery overlay. The original
 quest/item relationships and routing data are restored; unresolved placement
 remains visible to the existing audit rather than being removed by a pruner.
+
+## Merging player discoveries
+
+The original public issue #10 export (2026-10-18, WTL1 enUS 1.1.1) is retained
+at `tools/fixtures/discoveries/issue-10.wtl`, with its checksum and source in the
+fixture manifest. Replay it without changing files:
+
+```sh
+python3 tools/merge_discoveries.py tools/fixtures/discoveries/issue-10.wtl --check
+python3 tests/check_merge_discoveries.py
+```
+
+Omit `--check` to apply an export; `--report PATH` records JSON counts and each
+rejected row's line, ID and reason. The tool writes only `Forever.lua`, keeping
+the curated, client and immutable Classic layers intact. Existing nonempty
+fields win; services and typed relationships are combined. Existing positions
+remain intact, including older close pairs. New observations use Learn.lua's
+one-per-1%-cell deduplication, 30 positions per map and 20 maps per entry.
+Quest area positions are copied only from explicit player observations; no
+quest location is inferred from a giver, objective or another data layer.
+Malformed rows, unknown UiMaps, out-of-range coordinates and invalid entry IDs
+are rejected whole. Creature IDs use the same 1..2147483647 sanity range as
+`Learn.ParseGUID`/`Core.Int`; unsupported service names are ignored as in game.
+
+The initial issue #10 merge accepted all 959 records: 315 NPCs, 156 quests,
+21 objects, 466 items and one mailbox record. It added 234 NPC, 117 quest,
+21 object and 260 item entries to the community layer, plus 1,068 positions
+(907 NPC, 95 object, 63 quest-area, three mailbox). Of these, 357 positions
+extend existing entries; 210 observations deduplicate and 129 exceed existing
+storage limits. No records were rejected. Counts describe additions to the community layer.
+
+After a merge, compare positioned NPC/object IDs against
+`tools/reference_ids.tsv`. Remove newly observed IDs from that list and run
+`lua5.1 tools/build_reference_data.lua`, following the `f342f28` reconciliation.
+Add observed-position assertions to `tests/check_reference_data.lua`; never
+weaken the no-location check for the remaining supplement. Replaying the
+export must be byte-identical and add no entries or positions.
 
 ## Restored data and public evidence
 

@@ -42,18 +42,28 @@ for _, kind in ipairs({ "units", "objects", "items" }) do
     dofile("tools/fixtures/reference-pfquest/db/enUS/" .. kind .. ".lua")
 end
 local source = assert(io.open("WaypointTracker_Data/ReferenceData.lua")):read("*a")
--- Owner discoveries promote these targets out of the location-free supplement.
+-- Player discoveries promote these targets out of the location-free supplement.
 -- Keep the ordinary supplement assertion below strict for every remaining ID.
 for _, spec in ipairs({ { 4264, "Deepmoss Matriarch", 1442, .647, .605 },
-    { 4490, "Grenka Bloodscreech", 1441, .262, .559 } }) do
+    { 4490, "Grenka Bloodscreech", 1441, .262, .559 },
+    { 2434, "Shadowy Assassin", 1424, .447, .528 },
+    { 6239, "Cyclonian", 1416, .790, .637 },
+    { 185335, "Summoned Incubus", 1454, .500, .502 },
+    { 251707, "Ornery Galestrider", 2521, .504, .759, 2, .533, .722 } }) do
     assert(not source:find("\nN\t" .. spec[1] .. "\t", 1, true), "observed target still reference-only: " .. spec[1])
     local e = assert(ns.DB.units[spec[1]], "observed definition missing: " .. spec[1])
     assert(e.name == spec[2], "observed name differs: " .. spec[1])
     local points = ns.DB.Points(e)
-    assert(#points == 1, "observed position lost: " .. spec[1])
-    local p = points[1]
-    assert(p.m == spec[3] and math.abs(p.x - spec[4]) < 1e-8
-        and math.abs(p.y - spec[5]) < 1e-8, "observed position changed: " .. spec[1])
+    assert(#points == (spec[6] or 1), "observed position lost: " .. spec[1])
+    local function hasSpot(x, y)
+        for _, p in ipairs(points) do
+            if p.m == spec[3] and math.abs(p.x - x) < 1e-8
+                and math.abs(p.y - y) < 1e-8 then return true end
+        end
+        return false
+    end
+    assert(hasSpot(spec[4], spec[5]), "observed position changed: " .. spec[1])
+    if spec[7] then assert(hasSpot(spec[7], spec[8]), "prior observation lost: " .. spec[1]) end
     checked = checked + 1
 end
 local tables = { N = ns.DB.units, O = ns.DB.objects, I = ns.DB.items }
