@@ -2,7 +2,10 @@
 
 ## 1.2.0
 
-- Ready for the WoW Forever launch (client 1.60.1, interface 16001).
+- Ready for the WoW Forever launch (client 1.60.1, interface 16001). Install into `_forever_\Interface\AddOns`.
+- Find's quest markers, flight paths, towns and item names come from the live launch build (1.60.1.70755), with refreshed All The Things quest data.
+- Works with the live client's newer spell, item, chat and Edit Mode behaviour: known teleports and your hearthstone are detected reliably, route sharing pauses and retries while the game restricts addon messages, and the arrow, text and other screen elements remember their place separately for each Edit Mode layout style.
+- Real routes (beta) uses the corrected Steamwheedle Port and Powderfuse boat docks and no longer sends Horde characters through Dalaran.
 - Players' discoveries add 234 NPCs, 117 quests, 21 objects and the stock and drops of 260 items, with more observed locations for existing entries.
 - One window for Waypoints, Find and Routes. Editors, imports and help open as pages inside the tabs, with Back to return.
 - Ready-made route names describe what you get or do; levels and faction restrictions move into the details and tooltips. Two-line rows show the map and category, and For my level sorting puts suitable routes first.
