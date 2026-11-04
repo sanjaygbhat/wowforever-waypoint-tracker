@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+- Route sharing & votes (beta) is now off by default, including when updating from 1.2.0. Enable it in Settings → Routes or with Enable (beta) in the Routes tab; your opt-in is remembered.
+- While it is off, no route lists or votes are sent or received. Ready-made and personal routes, following, text import/export and local votes still work. Real routes (beta) keeps its separate walked-path sharing setting.
+- Routes and Settings clearly label the sharing beta in every supported language.
+
 ## 1.2.0
 
 - Ready for the WoW Forever launch (client 1.60.1, interface 16001). Install into `_forever_\Interface\AddOns`.

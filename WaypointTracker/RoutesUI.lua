@@ -183,7 +183,18 @@ local function RefreshList()
     local s = ns.RoutesNet and ns.RoutesNet.Status()
     netText:SetText(ns.Get("routeSharing") and L.ROUTES_SHARING_LINE:format(s and s.peers or 0) or L.ROUTES_SHARING_OFF_LINE)
     local w = RoutesUI.widgets
-    if w then w.source:Refresh(); w.cat:Refresh(); w.sort:Refresh() end
+    if w then
+        w.sharingEnable:SetShown(not ns.Get("routeSharing"))
+        local footer = netText:GetParent()
+        footer:ClearAllPoints()
+        footer:SetPoint("LEFT", countText, "RIGHT", 8, 0)
+        if ns.Get("routeSharing") then
+            footer:SetPoint("RIGHT", frame, "RIGHT", -30, 0)
+        else
+            footer:SetPoint("RIGHT", w.sharingEnable, "LEFT", -6, 0)
+        end
+        w.source:Refresh(); w.cat:Refresh(); w.sort:Refresh()
+    end
 end
 RoutesUI.Refresh = RefreshList
 
@@ -594,6 +605,10 @@ local function Build(content)
         if ns.Options and ns.Options.Open then ns.Options.Open("routes") end
     end))
     Widgets.Tooltip(footer, L.SETTINGS, L.ROUTES_SHARING_DESC)
+    local sharingEnable = Widgets.Button(frame, L.ROUTES_SHARING_ENABLE, nil, 22)
+    sharingEnable:SetPoint("RIGHT", frame, "BOTTOMRIGHT", -36, 17)
+    sharingEnable:SetScript("OnClick", ns.Safe(function() ns.Set("routeSharing", true) end))
+    Widgets.Tooltip(sharingEnable, L.ROUTES_SHARING, L.ROUTES_SHARING_DESC)
     local okHelp, help = pcall(CreateFrame, "Button", nil, frame, "UIPanelInfoButton")
     if not okHelp then help = Widgets.Button(frame, "?", 24, 24) end
     help:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 8)
@@ -604,7 +619,7 @@ local function Build(content)
         source = source, rows = rows, detail = detail, search = searchBox.edit, new = tab.leftButton,
         import = tab.leftButton2, help = help, cat = cat, sort = sort, zoneOnly = zoneOnly,
         empty = emptyText, net = netText, status = frame.status, list = list, notice = frame.notice,
-        map = detail.map, more = detail.more, meta2 = detail.meta2,
+        map = detail.map, more = detail.more, meta2 = detail.meta2, sharingEnable = sharingEnable,
     }
     Layout()
     RefreshList()
@@ -853,19 +868,23 @@ local function ShareMenu(r, justSaved)
             end)
         end
         root:CreateDivider()
-        local send = root:CreateButton(L.ROUTE_SEND_TARGET, function()
-            local name = UnitIsPlayer and ns.Plain(UnitIsPlayer("target")) and R().UnitIdentity("target")
-            local isSelf = UnitIsUnit and ns.Plain(UnitIsUnit("target", "player"))
-            if not name or isSelf then Status(L.ROUTE_SEND_NO_TARGET); return end
-            if ns.RoutesNet and ns.RoutesNet.SendTo and ns.RoutesNet.SendTo(r.id, name) then
-                Status(L.ROUTE_SENT:format(r.name, name), true)
-            end
-        end)
-        if send and send.SetTooltip then
-            send:SetTooltip(function(tt)
-                if GameTooltip_SetTitle then GameTooltip_SetTitle(tt, L.ROUTE_SEND_TARGET) end
-                if GameTooltip_AddNormalLine then GameTooltip_AddNormalLine(tt, L.ROUTE_SEND_TARGET_DESC) end
+        if not ns.Get("routeSharing") then
+            root:CreateButton(L.ROUTES_SHARING_ENABLE, function() ns.Set("routeSharing", true) end)
+        else
+            local send = root:CreateButton(L.ROUTE_SEND_TARGET, function()
+                local name = UnitIsPlayer and ns.Plain(UnitIsPlayer("target")) and R().UnitIdentity("target")
+                local isSelf = UnitIsUnit and ns.Plain(UnitIsUnit("target", "player"))
+                if not name or isSelf then Status(L.ROUTE_SEND_NO_TARGET); return end
+                if ns.RoutesNet and ns.RoutesNet.SendTo and ns.RoutesNet.SendTo(r.id, name) > 0 then
+                    Status(L.ROUTE_SENT:format(r.name, name), true)
+                end
             end)
+            if send and send.SetTooltip then
+                send:SetTooltip(function(tt)
+                    if GameTooltip_SetTitle then GameTooltip_SetTitle(tt, L.ROUTE_SEND_TARGET) end
+                    if GameTooltip_AddNormalLine then GameTooltip_AddNormalLine(tt, L.ROUTE_SEND_TARGET_DESC) end
+                end)
+            end
         end
         root:CreateButton(L.ROUTE_COPY, function() ShowText("copy", R().Serialize(r)) end)
     end

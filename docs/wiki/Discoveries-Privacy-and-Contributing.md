@@ -8,7 +8,7 @@ During play, Waypoint Tracker notices NPCs and enemies, their titles and locatio
 
 Only new or changed information is kept locally. Learning is the **Learn NPCs, quests and objects as I play** setting under **Find** in **Settings → Find & Sharing**.
 
-Routes and votes can be shared in game with other players when route sharing is enabled. Real routes (beta) has a separate switch for sharing learned paths in **Settings → Routes**. Discovery exports remain a manual choice.
+Route sharing & votes (beta) is off by default. Enable it in **Settings → Routes** or from the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; your later opt-in is remembered. Local routes, following, text import/export and local votes work while it is off. Real routes (beta) has a separate switch for sharing learned paths in **Settings → Routes**. Discovery exports remain a manual choice.
 
 ## What stays private
 

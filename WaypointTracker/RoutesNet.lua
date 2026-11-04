@@ -56,11 +56,20 @@ end
 -- ---------------------------------------------------------------------------
 -- Sending
 -- ---------------------------------------------------------------------------
-local function Enqueue(msg, chat, target, batch)
-    if #msg > 255 then
+local function Enqueue(msg, chat, target, batch, travel)
+    if not (travel and TravelSharing() or not travel and Sharing()) or #msg > 255 then
         return
     end
-    queue[#queue + 1] = { msg = msg, chat = chat, target = target, batch = batch or {} }
+    queue[#queue + 1] = { msg = msg, chat = chat, target = target, batch = batch or {}, travel = travel }
+end
+
+local function PruneQueue()
+    for i = #queue, 1, -1 do
+        local q = queue[i]
+        if not (q.travel and TravelSharing() or not q.travel and Sharing()) then
+            table.remove(queue, i)
+        end
+    end
 end
 
 local MAX_RETRIES, LOCKDOWN_DELAY, THROTTLE_DELAY = 5, 5, 2
@@ -74,6 +83,7 @@ local function SendFailed()
 end
 
 local function Pump(elapsed)
+    PruneQueue()
     tokens = math.min(MAX_TOKENS, tokens + elapsed / REGEN)
     if GetTime() < retryAt then return end
     if not (C_ChatInfo and C_ChatInfo.SendAddonMessage) then
@@ -128,19 +138,19 @@ local function ChannelNumber()
 end
 
 -- to everyone we can reach: the channel, the guild, the group
-local function Broadcast(msg, batch)
+local function Broadcast(msg, batch, travel)
     batch = batch or {}
     local chan = ChannelNumber()
     if chan then
-        Enqueue(msg, "CHANNEL", chan, batch)
+        Enqueue(msg, "CHANNEL", chan, batch, travel)
     end
     if IsInGuild and IsInGuild() then
-        Enqueue(msg, "GUILD", nil, batch)
+        Enqueue(msg, "GUILD", nil, batch, travel)
     end
     if IsInRaid and IsInRaid() then
-        Enqueue(msg, "RAID", nil, batch)
+        Enqueue(msg, "RAID", nil, batch, travel)
     elseif IsInGroup and IsInGroup() then
-        Enqueue(msg, "PARTY", nil, batch)
+        Enqueue(msg, "PARTY", nil, batch, travel)
     end
 end
 
@@ -158,6 +168,7 @@ end
 
 -- the whole route, in pieces, to one player
 local function SendRoute(r, target)
+    if not Sharing() then return 0 end
     local text = Routes().Serialize(r)
     if #text > MAX_TEXT then
         return 0
@@ -255,7 +266,7 @@ function Net.Share(msg)
     if not TravelSharing() or #queue > 6 then
         return false
     end
-    Broadcast(msg)
+    Broadcast(msg, nil, true)
     return true
 end
 
@@ -352,6 +363,7 @@ handlers.H = function()
     end
     helloAnswered = GetTime()
     C_Timer.After(2 + math.random() * 10, function()
+        if not Sharing() then return end
         AnnounceMine()
         SendMyVotes()
     end)
@@ -411,6 +423,7 @@ end
 
 -- Send a whole route to one player (your target, or a name).
 function Net.SendTo(id, name)
+    if not Sharing() then return 0 end
     local r = Routes().Get(id)
     if not r or type(name) ~= "string" or name == "" then
         return 0
@@ -431,6 +444,29 @@ local function HideChannel()
 end
 
 local joinedOnce = false
+local function Leave()
+    if ChannelNumber() and LeaveChannelByName then
+        pcall(LeaveChannelByName, Net.CHANNEL)
+    end
+    joinedOnce = false
+end
+
+local function ReconcileChannel()
+    if not WantChannel() then
+        Leave()
+        return
+    end
+    if ChannelNumber() then
+        HideChannel()
+        if not joinedOnce and Sharing() then
+            joinedOnce = true
+            Broadcast("H")
+            AnnounceMine()
+            SendMyVotes()
+        end
+    end
+end
+
 local function Join()
     if not WantChannel() then
         return
@@ -438,24 +474,7 @@ local function Join()
     if not ChannelNumber() and JoinTemporaryChannel then
         pcall(JoinTemporaryChannel, Net.CHANNEL)
     end
-    C_Timer.After(2, function()
-        if ChannelNumber() then
-            HideChannel()
-            if not joinedOnce and Sharing() then
-                joinedOnce = true
-                Broadcast("H")
-                AnnounceMine()
-                SendMyVotes()
-            end
-        end
-    end)
-end
-
-local function Leave()
-    if ChannelNumber() and LeaveChannelByName then
-        pcall(LeaveChannelByName, Net.CHANNEL)
-    end
-    joinedOnce = false
+    C_Timer.After(2, ReconcileChannel)
 end
 
 function Net.Status()
@@ -480,6 +499,10 @@ end
 -- and pings the channel, then says what came back.
 -- ---------------------------------------------------------------------------
 function Net.SelfTest()
+    if not Sharing() then
+        ns.Print(L.ROUTE_TEST_SHARING_OFF, true)
+        return
+    end
     local R = Routes()
     local m, x, y = ns.Geo.GetPlayerMapPosition()
     if not m then
@@ -565,6 +588,9 @@ ns.RegisterEvent("CHAT_MSG_ADDON", function(prefix, msg, chat, sender)
     Net.OnMessage(prefix, msg, chat, sender)
 end)
 
+-- A join can complete after the two-second fallback, even after opting out.
+ns.RegisterEvent("CHAT_MSG_CHANNEL_NOTICE", ReconcileChannel)
+
 ns.On("ROUTE_VOTED", function(id, v)
     if Sharing() then
         Broadcast(("V^%s^%d"):format(id, v))
@@ -576,7 +602,15 @@ ns.On("ROUTE_SAVED", function(id)
 end)
 
 ns.On("SETTING_CHANGED", function(key)
-    if key == "routeSharing" or key == "realRoutes" or key == "travelShare" then
+    if key == nil or key == "routeSharing" or key == "realRoutes" or key == "travelShare" then
+        PruneQueue()
+        if not Sharing() then
+            wipe(incoming)
+            wipe(requested)
+            testState = nil
+            loopbackUntil = 0
+            joinedOnce = false
+        end
         if WantChannel() then
             Join()
         else

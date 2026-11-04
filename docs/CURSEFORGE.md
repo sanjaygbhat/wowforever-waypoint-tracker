@@ -6,7 +6,7 @@
 
 Nothing to configure. Free, open source, in 9 languages. Made for World of Warcraft: Forever, and addons with "Send to TomTom" buttons work with it as-is.
 
-Version **1.2.0** supports the live WoW Forever client. Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find** and **Routes** tabs. Right-click for the quick menu; Shift + left-click adds a waypoint where you stand. Editors and imports stay inside the tabs, with **Back** to return. Use **Settings** for Blizzard Settings and **Esc → Edit Mode** to place the arrow, text, coordinates box and route recorder.
+Version **1.2.1** supports the live WoW Forever client. Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find** and **Routes** tabs. Right-click for the quick menu; Shift + left-click adds a waypoint where you stand. Editors and imports stay inside the tabs, with **Back** to return. Use **Settings** for Blizzard Settings and **Esc → Edit Mode** to place the arrow, text, coordinates box and route recorder.
 
 ![Features](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/h-features.png)
 
@@ -61,7 +61,9 @@ Follow, create, record, import and share lists of stops in the **Routes** tab. R
 
 Click a route for a preview on the right: area, continent or world map, with stop pins and route lines. Click the preview to open it on the normal world map, outside combat. **Set This Route** starts it, asking whether to replace or add to existing waypoints unless you chose a preference in Settings. **Back to Routes** returns to your selection. Closing the map ends the preview. Details include a numbered stop list; **More...** holds editing, copying and removal actions.
 
-**Real routes (beta)** is new in this release: the arrow guides you through passes and gates and uses flight paths, boats, zeppelins, the tram, hearthstone or teleports when quicker. Turn it on in the Routes notice, quick menu or **Settings → Routes**. Open a flight master's map to learn your available flights.
+**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Learned-path sharing for Real routes (beta) has a separate setting.
+
+**Real routes (beta)**: the arrow guides you through passes and gates and uses flight paths, boats, zeppelins, the tram, hearthstone or teleports when quicker. Turn it on in the Routes notice, quick menu or **Settings → Routes**. Open a flight master's map to learn your available flights.
 
 ![Treasure hunt](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/h-treasure.png)
 
@@ -123,7 +125,7 @@ Every command and setting: [Commands & Options](https://github.com/sanjaygbhat/w
 
 **How do I find an NPC or quest giver?** Type `/wp find` and a name, or an NPC title like `blacksmith`, then double-click a result.
 
-**Does it send my data anywhere?** Discovery exports are manual. Routes, votes and learned travel paths can be shared in game; control that in **Settings → Routes**. Share discoveries to improve Find for everyone ([how](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)).
+**Does it send my data anywhere?** Discovery exports are manual. Route sharing & votes (beta) is off by default; enable it in **Settings → Routes** or from the **Routes** tab. Learned travel paths have a separate sharing switch in **Settings → Routes**. Share discoveries to improve Find for everyone ([how](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)).
 
 **Which languages?** English, Deutsch, Français, Español, Português, Русский, 한국어, 简体中文 and 繁體中文, following your game client.
 

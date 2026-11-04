@@ -14,7 +14,7 @@ Open `/wp` or left-click the minimap button for one window with **Waypoints**, *
 | `/wp routes next` · `/wp routes skip` | Skip the current route stop |
 | `/wp routes record` · `/wp routes new` · `/wp routes create` | Start recording, or finish recording and open the editor |
 | `/wp routes add` · `/wp routes stop` | Add a recording stop here, or stop following a route |
-| `/wp routes test` · `/wp routes fast` · `/wp routes status` | Test route sharing, toggle the shorter feedback delay, or show sharing status |
+| `/wp routes test` · `/wp routes fast` · `/wp routes status` | Test Route sharing & votes (beta), toggle the shorter feedback delay, or show sharing status |
 | `/wp settings` · `/wp options` · `/wp config` | Open Blizzard Settings for Waypoint Tracker |
 | `/wp editmode` | Enter the game's Edit Mode |
 | `/way [zone] x y [name]` | Set a waypoint; leave the zone out to use your current zone |
@@ -44,7 +44,7 @@ Open **Settings → AddOns → Waypoint Tracker**, press **Settings** in the win
 | Maps — World map | Pins, coordinates, Ctrl + right-click to add, follow the game's map pins, point to the tracked quest |
 | Maps — Minimap | Pins and keeping the arrow's waypoint on the minimap edge |
 | Maps — Coordinates box | Show a box with your coordinates; move it in Edit Mode |
-| Routes | When starting a route: ask, replace existing waypoints or add to them; share routes and votes; show low-rated routes |
+| Routes | When starting a route: ask, replace existing waypoints or add to them; Route sharing & votes (beta), off by default; show low-rated routes |
 | Routes — Real routes (beta) | Enable Real routes; flight paths; boats, zeppelins and the tram; hearthstone and teleports; map route line; learn walked paths; share paths |
 | Treasure Hunt (beta) | Enable treasure hunt; chests, rares and other markers; known chest spots; pings; point the arrow at finds |
 | Find & Sharing — Find | Learn NPCs, quests and objects as you play; only your faction; only this zone |
@@ -68,4 +68,6 @@ Click the preview or a pin to open the route on the normal world map, outside co
 
 **Start Route** or a row double-click also starts the route. While running, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** contains Copy text, Edit and Delete for your routes, or Copy text, Remove and Hide This Author for shared routes. Ready-made routes offer Copy text.
 
-**Real routes (beta)** is new in this release. The arrow guides you through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone or teleports when quicker. Turn it on from the Routes tab notice, the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
+**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Learned-path sharing for Real routes (beta) has a separate setting.
+
+**Real routes (beta)** guides you through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone or teleports when quicker. Turn it on from the Routes tab notice, the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.

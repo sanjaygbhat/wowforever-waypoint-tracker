@@ -8,6 +8,7 @@ GetUnitName = function() return 'TestPlayer TestSurname-TestRealm' end
 GetNormalizedRealmName = function() return 'TestRealm' end
 local ns = M.LoadAddon('WaypointTracker', 'WaypointTracker')
 M.FireEvent('ADDON_LOADED', 'WaypointTracker')
+ns.Set("routeSharing", true) -- This test exercises opted-in network sharing.
 M.FireEvent('PLAYER_LOGIN')
 M.FireEvent('PLAYER_ENTERING_WORLD')
 assert(ns.DB.Load(), 'bundled database must load before selecting a seed')
