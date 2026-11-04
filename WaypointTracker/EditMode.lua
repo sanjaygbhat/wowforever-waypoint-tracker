@@ -24,6 +24,10 @@ end
 function EditMode.SavedPosition(key)
     local layouts = ns.Get(key .. "Layouts")
     local layout = EditMode.layout
+    -- A reset belongs to this layout, even after another style updates keyPos.
+    if layout and type(layouts) == "table" and layouts[layout] == false then
+        return nil
+    end
     if layout and type(layouts) == "table" and type(layouts[layout]) == "table" then
         return layouts[layout]
     end

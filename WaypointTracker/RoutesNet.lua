@@ -29,7 +29,7 @@ local PEER_MEMORY = 1800 -- seconds a player counts as "seen"
 
 local stats = { sent = 0, got = 0, routes = 0, votes = 0 }
 local peers = {} -- sender -> when we last heard from them
-local queue = {} -- messages waiting: { msg, chat, target }
+local queue = {} -- messages waiting: { msg, chat, target, batch }
 local tokens, MAX_TOKENS, REGEN = 8, 8, 1.1 -- the game lets an addon send ~1 message a second, in short bursts
 local requested = {} -- id .. "#" .. v -> when we asked
 local incoming = {} -- sender .. id .. v -> { total, parts, at }
@@ -56,11 +56,11 @@ end
 -- ---------------------------------------------------------------------------
 -- Sending
 -- ---------------------------------------------------------------------------
-local function Enqueue(msg, chat, target)
+local function Enqueue(msg, chat, target, batch)
     if #msg > 255 then
         return
     end
-    queue[#queue + 1] = { msg = msg, chat = chat, target = target }
+    queue[#queue + 1] = { msg = msg, chat = chat, target = target, batch = batch or {} }
 end
 
 local MAX_RETRIES, LOCKDOWN_DELAY, THROTTLE_DELAY = 5, 5, 2
@@ -95,9 +95,17 @@ local function Pump(elapsed)
             if q.retries <= MAX_RETRIES then
                 table.insert(queue, 1, q)
             else
-                -- Stop the entire pending batch after persistent restrictions;
-                -- do not immediately retry each remaining route fragment.
-                wipe(queue)
+                -- Abandon this transmission's remaining fragments only at its
+                -- destination. ChannelThrottle restricts that channel, so also
+                -- drop pending announcements there without losing other sends.
+                local channel = q.chat == "CHANNEL" and result == (results.ChannelThrottle or 8)
+                for i = #queue, 1, -1 do
+                    local pending = queue[i]
+                    if pending.chat == q.chat and pending.target == q.target
+                            and (channel or pending.batch == q.batch) then
+                        table.remove(queue, i)
+                    end
+                end
                 SendFailed()
             end
             local lockdown = result == (results.AddOnMessageLockdown or 11)
@@ -120,18 +128,19 @@ local function ChannelNumber()
 end
 
 -- to everyone we can reach: the channel, the guild, the group
-local function Broadcast(msg)
+local function Broadcast(msg, batch)
+    batch = batch or {}
     local chan = ChannelNumber()
     if chan then
-        Enqueue(msg, "CHANNEL", chan)
+        Enqueue(msg, "CHANNEL", chan, batch)
     end
     if IsInGuild and IsInGuild() then
-        Enqueue(msg, "GUILD")
+        Enqueue(msg, "GUILD", nil, batch)
     end
     if IsInRaid and IsInRaid() then
-        Enqueue(msg, "RAID")
+        Enqueue(msg, "RAID", nil, batch)
     elseif IsInGroup and IsInGroup() then
-        Enqueue(msg, "PARTY")
+        Enqueue(msg, "PARTY", nil, batch)
     end
 end
 
@@ -154,8 +163,9 @@ local function SendRoute(r, target)
         return 0
     end
     local total = math.ceil(#text / CHUNK)
+    local batch = {}
     for i = 1, total do
-        Enqueue(("R^%s^%d^%d^%d^%s"):format(r.id, r.v or 1, i, total, text:sub((i - 1) * CHUNK + 1, i * CHUNK)), "WHISPER", target)
+        Enqueue(("R^%s^%d^%d^%d^%s"):format(r.id, r.v or 1, i, total, text:sub((i - 1) * CHUNK + 1, i * CHUNK)), "WHISPER", target, batch)
     end
     return total
 end
@@ -191,13 +201,14 @@ end
 
 local function SendMyVotes(chat, target)
     local parts, len = {}, 2
+    local batch = {}
     local function flush()
         if #parts > 0 then
             local msg = "W^" .. table.concat(parts, ",")
             if chat then
-                Enqueue(msg, chat, target)
+                Enqueue(msg, chat, target, batch)
             else
-                Broadcast(msg)
+                Broadcast(msg, batch)
             end
             parts, len = {}, 2
         end
