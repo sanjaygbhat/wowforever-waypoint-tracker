@@ -747,6 +747,41 @@
       "status": "native-name",
       "source": "/Applications/World of Warcraft/_classic_beta_/World of Warcraft Beta.app/Contents/MacOS/World of Warcraft; exact NUL-terminated API registration name in build 1.60.1.70338 (static evidence, not a live callable check)",
       "binary_offset": 65906261
+    },
+    "C_SpellBook.IsSpellKnown": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/SpellBookDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
+    },
+    "C_Item.GetItemCount": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
+    },
+    "Enum.SpellBookSpellBank.Player": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/SpellBookConstantsDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
+    },
+    "Enum.SendAddonMessageResult.Success": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatConstantsDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
+    },
+    "Enum.SendAddonMessageResult.AddonMessageThrottle": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatConstantsDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
+    },
+    "Enum.SendAddonMessageResult.ChannelThrottle": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatConstantsDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
+    },
+    "Enum.SendAddonMessageResult.AddOnMessageLockdown": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatConstantsDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
     }
   },
   "native_binary_sha256": "0d89aed141d61541513aad0f02946f5cb76bc74e967ec35139811e280d488620"
