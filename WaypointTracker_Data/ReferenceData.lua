@@ -1356,7 +1356,6 @@ N	2149	Dark Iron Raider
 N	2158	Gravelflint Scout					
 N	2159	Gravelflint Bonesnapper					
 N	2286	Bow Guy					
-N	2434	Shadowy Assassin					
 N	2673	Target Dummy					
 N	2674	Advanced Target Dummy					
 N	2748	Archaedas					
@@ -1595,7 +1594,6 @@ N	6233	Mechanized Sentry
 N	6234	Mechanized Guardian					
 N	6235	Electrocutioner 6000					
 N	6238	Big Will					
-N	6239	Cyclonian					
 N	6243	Gelihast					
 N	6329	Irradiated Pillager					
 N	6388	Zanzil Skeleton					

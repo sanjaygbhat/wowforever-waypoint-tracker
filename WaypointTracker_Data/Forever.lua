@@ -6,24 +6,28 @@ WaypointTrackerData = WaypointTrackerData or {}
 WaypointTrackerData.forever = [==[
 WTL1	community	1
 I	85	Dirty Leather Vest		U4558
-I	117	Tough Jerky		U4879,U4954,U5870,U6929,U7731
-I	118	Minor Healing Potion	O106319
-I	159	Refreshing Spring Water		U12033,U2140,U2401,U248198,U3400,U4553,U4879,U6739,U6741,U6929,U7731
+I	117	Tough Jerky	U3098,U3101,U3116,U3117,U3197,U3198,U3205,U3206	U254089,U3368,U3489,U3881,U3882,U3933,U4879,U4954,U5870,U6928,U6929,U7731
+I	118	Minor Healing Potion	O106319,U256996,U3111,U3112,U3120,U3197
+I	159	Refreshing Spring Water	U275662,U3101,U3103,U3119,U3128,U3195,U3206,U3207	U12033,U2140,U2401,U248198,U254089,U2820,U3158,U3186,U3400,U3881,U3882,U4553,U4879,U6739,U6741,U6928,U6929,U7731
 I	193	Tattered Cloth Vest		U4558
 I	194	Tattered Cloth Pants		U4558
 I	195	Tattered Cloth Boots		U4558
 I	209	Dirty Leather Pants		U4558
 I	210	Dirty Leather Boots		U4558
 I	414	Dalaran Sharp	O111095,U1912,U1913,U2063,U3384,U3385
-I	422	Dwarven Mild	O3715,U2260,U2261,U2265,U2267,U2268,U2269,U2360,U2387
+I	422	Dwarven Mild	O3698,O3715,U2260,U2261,U2265,U2267,U2268,U2269,U2360,U2387
 I	711	Tattered Cloth Gloves		U4558
 I	714	Dirty Leather Gloves		U4558
 I	730	Murloc Eye	U1767,U1768
-I	765	Silverleaf	O2849
-I	774	Malachite	O3763,U1782
+I	765	Silverleaf	O1617,O2849,O656161
+I	768	Lumberjack Axe	U3197
+I	771	Chipped Boar Tusk	U3100
+I	774	Malachite	O3763,U1782,U3115,U3122,U3131,U3197
 I	783	Light Hide	O111095,O3715
+I	785	Mageroyal	O1620
 I	814	Flask of Oil	U3993
-I	818	Tigerseye	O3763
+I	818	Tigerseye	O3763,U275662
+I	828	Small Blue Pouch	U3098
 I	837	Heavy Weave Armor		U4558
 I	838	Heavy Weave Pants		U4558
 I	839	Heavy Weave Gloves		U4558
@@ -32,53 +36,82 @@ I	843	Tanned Leather Boots		U4558
 I	844	Tanned Leather Gloves		U4558
 I	845	Tanned Leather Pants		U4558
 I	846	Tanned Leather Jerkin		U4558
-I	851	Cutlass		U2997,U3314
+I	851	Cutlass		U2997,U3314,U3361
 I	852	Mace		U2997,U3314,U3360
 I	853	Hatchet		U2997,U3314,U3409
 I	854	Quarter Staff		U2997,U3314,U3360,U3409
 I	858	Lesser Healing Potion	O106319,O2849,O3715,U11915,U1953,U2068,U3260,U3283
-I	878	Fist-sized Spinneret	U2349,U2563
+I	878	Fist-sized Spinneret	U2348,U2349,U2563,U264081
+I	922	Dacian Falx		U3361
+I	923	Longsword		U3361
 I	924	Maul		U3360
 I	925	Flail		U3360
 I	926	Battle Axe		U3409
 I	927	Double Axe		U3409
 I	928	Long Staff		U3360,U3409
-I	929	Healing Potion	U2267,U2269,U3762,U3921,U6213
+I	929	Healing Potion	U12856,U2267,U2269,U3758,U3762,U3921,U3922,U3924,U6213
 I	954	Scroll of Strength	U3283,U4023
-I	955	Scroll of Intellect	U2065
+I	955	Scroll of Intellect	U2065,U3273
 I	1074	Hard Spider Leg Tip	U2563
-I	1081	Crisp Spider Meat	U11921,U264079
-I	1179	Ice Cold Milk	O111095,U11915,U1782,U1889,U1912,U1924,U1953,U1974,U2053,U2060,U3285,U3381,U3386,U3467	U2140,U2401,U4879,U6739,U6741,U6929,U7731
+I	1081	Crisp Spider Meat	U11921,U264079,U264081,U264083
+I	1179	Ice Cold Milk	O111095,U11915,U1782,U1889,U1912,U1924,U1953,U1974,U2053,U2060,U3285,U3381,U3386,U3467	U2140,U2401,U254089,U3881,U3882,U4879,U6739,U6741,U6928,U6929,U7731
 I	1180	Scroll of Stamina	U1892
-I	1181	Scroll of Spirit	U11912,U1767,U3284
+I	1181	Scroll of Spirit	U11912,U1767,U252068,U3117,U3284
 I	1194	Bastard Sword		U2997,U3314
 I	1196	Tabar		U2997,U3314,U3409
 I	1197	Giant Mace		U2997,U3314,U3360
-I	1198	Claymore		U2997,U3314
+I	1198	Claymore		U2997,U3314,U3361
 I	1200	Large Wooden Shield		U4559
 I	1202	Wall Shield		U4559
-I	1205	Melon Juice	O3715,U12856,U2260,U2261,U2267,U2268,U2335,U2371,U3376,U3759,U4023,U4056,U4057	U2401,U4879,U6739,U6741,U6929,U7731
+I	1205	Melon Juice	O3715,U12856,U2260,U2261,U2267,U2268,U2335,U2371,U3376,U3759,U3923,U3925,U3926,U4023,U4056,U4057	U15125,U2401,U254089,U2820,U3881,U3882,U4879,U6739,U6741,U6928,U6929,U7731
 I	1210	Shadowgem	U1942,U1943,U3283,U3381,U4263
+I	1364	Ragged Leather Vest	U3101
+I	1366	Ragged Leather Pants	U3101,U3183
+I	1367	Ragged Leather Boots	U3101
+I	1368	Ragged Leather Gloves	U3101,U3124
+I	1369	Ragged Leather Belt	U3101,U3102
+I	1370	Ragged Leather Bracers	U3128
+I	1372	Ragged Cloak	U3101,U3102
+I	1374	Frayed Shoes	U3101,U3102,U3124
+I	1377	Frayed Gloves	U3101,U3102
+I	1378	Frayed Pants	U3101,U3102
+I	1380	Frayed Robe	U3101
+I	1411	Withered Staff	U3104,U3129
+I	1412	Crude Bastard Sword	U3116,U3195
+I	1413	Feeble Sword	U275663,U3195,U3197
+I	1414	Cracked Sledge	U251662,U252068,U3205
+I	1415	Carpenter's Mallet	U3128
+I	1417	Beaten Battle Axe	U3129
+I	1419	Worn Leather Boots	U252068,U3207
+I	1420	Worn Leather Bracers	U3104
+I	1421	Worn Hide Cloak	U3111
+I	1422	Worn Leather Gloves	U3206
+I	1423	Worn Leather Pants	U3195
+I	1429	Patchwork Cloak	U256996,U275662,U3198
+I	1431	Patchwork Pants	U252068,U3128
 I	1464	Buzzard Talon	U2578
-I	1475	Small Venom Sac	U11921,U264083,U4005,U4007
-I	1478	Scroll of Protection II	U2373
+I	1475	Small Venom Sac	U11921,U264079,U264081,U264083,U4005,U4007
+I	1478	Scroll of Protection II	U2373,U2374
 I	1497	Calico Cloak	U1779,U1914,U3381
+I	1498	Calico Gloves	U3204
 I	1499	Calico Pants	U3284,U3383
+I	1501	Calico Tunic	U3198
 I	1502	Warped Leather Belt	U11911,U1914
 I	1503	Warped Leather Boots	U1779
 I	1504	Warped Leather Bracers	U3382
-I	1506	Warped Leather Gloves	U3284
+I	1506	Warped Leather Gloves	U3198,U3284
 I	1507	Warped Leather Pants	U1892
-I	1510	Heavy Hammer	U1953
+I	1510	Heavy Hammer	U1953,U275666
 I	1512	Crude Battle Axe	U1893,U2068
-I	1513	Old Greatsword	U1782
+I	1513	Old Greatsword	U1782,U3204
 I	1514	Rusty Warhammer	U1892
 I	1515	Rough Wooden Staff	U1782,U2060
-I	1645	Moonberry Juice		U2401,U4879,U6739,U6741,U6929,U7731
+I	1645	Moonberry Juice		U15125,U2401,U254089,U2820,U3881,U3882,U4879,U6739,U6741,U6928,U6929,U7731
 I	1696	Curved Raptor Talon	U2559
-I	1708	Sweet Nectar	U2249,U2251,U2562	U2401,U4879,U6739,U6741,U6929,U7731
+I	1705	Lesser Moonstone	U264079
+I	1708	Sweet Nectar	U2249,U2251,U2562	U15125,U2401,U254089,U2820,U3881,U3882,U4879,U6739,U6741,U6928,U6929,U7731
 I	1710	Greater Healing Potion	U2248,U2249
-I	1712	Scroll of Spirit II	U3763
+I	1712	Scroll of Spirit II	U3763,U3926
 I	1731	Worn Mail Boots	U1779
 I	1732	Worn Mail Bracers	U1767,U3385
 I	1735	Worn Mail Pants	U1924
@@ -88,6 +121,7 @@ I	1741	Laced Cloak	U1888
 I	1742	Laced Mail Gloves	U1942
 I	1743	Laced Mail Pants	U11918
 I	1744	Laced Mail Shoulderpads	U2261,U3283
+I	1746	Linked Chain Belt	U3924
 I	1748	Linked Chain Bracers	U2360
 I	1750	Linked Chain Gloves	U2261
 I	1759	Reinforced Chain Pants	U3758
@@ -96,6 +130,8 @@ I	1761	Reinforced Chain Vest	U2344
 I	1764	Canvas Shoes	O2849,U1924,U1955,U3638
 I	1766	Canvas Cloak	O111095,U11915,U1956,U3385,U3989
 I	1769	Canvas Shoulderpads	O111095,U3717,U3991
+I	1772	Brocade Shoes	U3758
+I	1775	Brocade Gloves	U3921
 I	1776	Brocade Pants	U12856
 I	1777	Brocade Shoulderpads	U2332,U3749
 I	1778	Brocade Vest	U4022
@@ -105,11 +141,14 @@ I	1783	Cross-stitched Gloves	U2346
 I	1788	Patched Leather Boots	U1955
 I	1790	Patched Cloak	U3385
 I	1792	Patched Leather Pants	U3386
-I	1796	Rawhide Boots	U2332
+I	1796	Rawhide Boots	U2332,U3987
 I	1798	Rawhide Cloak	O3715,U3376
 I	1800	Rawhide Pants	U1947
 I	1801	Rawhide Shoulderpads	U3376
+I	1802	Rawhide Tunic	U3762
 I	1804	Tough Leather Boots	U4050
+I	1805	Tough Leather Bracers	U3763
+I	1807	Tough Leather Gloves	U3763
 I	1811	Blunt Claymore	U1954
 I	1812	Short-handled Battle Axe	U1940
 I	1813	Chipped Quarterstaff	O3661
@@ -118,98 +157,159 @@ I	1816	Unbalanced Axe	U3638
 I	1817	Stock Shortsword	U11913
 I	1818	Standard Claymore	U3457
 I	1820	Wooden Maul	U4025
-I	1821	Warped Blade	U1973,U3374
+I	1821	Warped Blade	U1973,U3374,U3922,U3925
+I	1822	Cedar Walking Stick	U3924,U3925
 I	1823	Bludgeoning Cudgel	O3715,U2265
 I	1824	Shiny War Axe	U3375
 I	1827	Meat Cleaver	U3758
 I	1828	Stone War Axe	U4061
-I	1829	Short Cutlass	U2344
+I	1829	Short Cutlass	U2344,U3758
+I	1830	Long Bastard Sword	U2369
 I	1835	Dirty Leather Belt		U4558
 I	1836	Dirty Leather Bracers		U4558
 I	1843	Tanned Leather Belt		U4558
 I	1844	Tanned Leather Bracers		U4558
-I	2024	Espadon		U2997
+I	2024	Espadon		U2997,U3361
 I	2025	Bearded Axe		U2997,U3409
 I	2026	Rock Hammer		U2997,U3360
-I	2027	Scimitar		U2997
+I	2027	Scimitar		U2997,U3361
 I	2028	Hammer		U2997,U3360
 I	2029	Cleaver		U2997,U3409
 I	2030	Gnarled Staff		U2997,U3360,U3409
+I	2070	Darnassian Bleu	U3128,U3129
 I	2078	Northern Shortsword of Stamina	U3385
 I	2130	Club		U2997,U3314
 I	2131	Shortsword		U2997,U3314
 I	2132	Short Staff		U2997,U3314
 I	2134	Hand Axe		U2997,U3314
+I	2138	Sharpened Letter Opener	U3129
 I	2139	Dirk		U2997,U3314
-I	2207	Jambiya		U2997,U3314
-I	2208	Poniard		U2997
+I	2141	Cuirboulli Vest		U3315
+I	2142	Cuirboulli Belt		U3315
+I	2143	Cuirboulli Boots		U3315
+I	2144	Cuirboulli Bracers		U3315
+I	2145	Cuirboulli Gloves		U3315
+I	2146	Cuirboulli Pants		U3315
+I	2156	Padded Boots		U3315
+I	2158	Padded Gloves		U3315
+I	2159	Padded Pants		U3315
+I	2160	Padded Armor		U3315
+I	2207	Jambiya		U2997,U3314,U3361
+I	2208	Poniard		U2997,U3361
+I	2209	Kris		U3361
+I	2210	Battered Buckler	U3102
+I	2211	Bent Large Shield	U3102,U3124
+I	2212	Cracked Buckler	U3198
+I	2213	Worn Large Shield	U3197
 I	2216	Simple Buckler	U3988
 I	2221	Targe Shield	U4056,U4061
-I	2287	Haunch of Meat	O2849,U11910,U11912,U1779,U3282,U3283,U3989,U3991	U4879,U4954,U5870,U6929,U7731
+I	2287	Haunch of Meat	O2849,U11910,U11912,U1779,U3282,U3283,U3989,U3991	U254089,U3368,U3489,U3881,U3882,U3933,U4879,U4954,U5870,U6928,U6929,U7731
 I	2289	Scroll of Strength II	U2248
-I	2290	Scroll of Intellect II	U4050
-I	2318	Light Leather	O3715
-I	2320	Coarse Thread		U12043,U3364,U4561,U4775
-I	2321	Fine Thread		U12043,U3364,U4561,U4775
-I	2324	Bleach		U12043,U3364,U4561,U4775
-I	2325	Black Dye		U3364,U4561
-I	2364	Woven Vest		U4558
-I	2366	Woven Pants		U4558
-I	2367	Woven Boots		U4558
-I	2369	Woven Gloves		U4558
-I	2370	Battered Leather Harness		U4558
-I	2371	Battered Leather Belt		U4558
-I	2372	Battered Leather Pants		U4558
-I	2373	Battered Leather Boots		U4558
-I	2374	Battered Leather Bracers		U4558
-I	2375	Battered Leather Gloves		U4558
-I	2376	Worn Heater Shield		U4559
+I	2290	Scroll of Intellect II	U2375,U4050
+I	2318	Light Leather	O3715,U2351,U2354,U3721
+I	2319	Medium Leather	U2351,U2384,U2385,U2408
+I	2320	Coarse Thread		U12043,U2394,U2821,U3168,U3364,U3367,U4561,U4577,U4775
+I	2321	Fine Thread		U12043,U2394,U2821,U3364,U3367,U4561,U4577,U4775
+I	2324	Bleach		U12043,U2394,U3168,U3364,U3367,U4561,U4577,U4775
+I	2325	Black Dye		U2821,U3364,U3367,U4561,U4577
+I	2364	Woven Vest		U3166,U4558
+I	2366	Woven Pants		U3166,U4558
+I	2367	Woven Boots		U3166,U4558
+I	2369	Woven Gloves		U3166,U4558
+I	2370	Battered Leather Harness		U3166,U4558
+I	2371	Battered Leather Belt		U3166,U4558
+I	2372	Battered Leather Pants		U3166,U4558
+I	2373	Battered Leather Boots		U3166,U4558
+I	2374	Battered Leather Bracers		U3166,U4558
+I	2375	Battered Leather Gloves		U3166,U4558
+I	2376	Worn Heater Shield		U3167,U4559
 I	2386	Rusted Chain Vest		U4559
 I	2387	Rusted Chain Belt		U4559
 I	2388	Rusted Chain Leggings		U4559
 I	2389	Rusted Chain Boots		U4559
 I	2390	Rusted Chain Bracers		U4559
 I	2391	Rusted Chain Gloves		U4559
-I	2398	Light Chain Armor		U4559
-I	2399	Light Chain Belt		U4559
-I	2400	Light Chain Leggings		U4559
-I	2401	Light Chain Boots		U4559
-I	2402	Light Chain Bracers		U4559
-I	2403	Light Chain Gloves		U4559
-I	2447	Peacebloom	O2849,U1955
+I	2398	Light Chain Armor		U3167,U4559
+I	2399	Light Chain Belt		U3167,U4559
+I	2400	Light Chain Leggings		U3167,U4559
+I	2401	Light Chain Boots		U3167,U4559
+I	2402	Light Chain Bracers		U3167,U4559
+I	2403	Light Chain Gloves		U3167,U4559
+I	2429	Russet Vest		U3315
+I	2431	Russet Pants		U3315
+I	2432	Russet Boots		U3315
+I	2434	Russet Gloves		U3315
+I	2435	Embroidered Armor		U3315
+I	2437	Embroidered Pants		U3315
+I	2438	Embroidered Boots		U3315
+I	2440	Embroidered Gloves		U3315
+I	2447	Peacebloom	O2849,O656160,U1955
 I	2452	Swiftthistle	U1955
 I	2453	Bruiseweed	U1956
 I	2455	Minor Mana Potion	U1782,U1939,U2054,U3283,U3988,U3989,U3991
+I	2463	Studded Doublet		U3315
+I	2464	Studded Belt		U3315
+I	2465	Studded Pants		U3315
+I	2467	Studded Boots		U3315
+I	2468	Studded Bracers		U3315
+I	2469	Studded Gloves		U3315
+I	2470	Reinforced Leather Vest		U3315
+I	2471	Reinforced Leather Belt		U3315
+I	2472	Reinforced Leather Pants		U3315
+I	2473	Reinforced Leather Boots		U3315
+I	2474	Reinforced Leather Bracers		U3315
+I	2475	Reinforced Leather Gloves		U3315
 I	2479	Broad Axe		U2997,U3314
 I	2480	Large Club		U2997,U3314
-I	2488	Gladius		U2997,U3314
-I	2489	Two-handed Sword		U2997,U3314
-I	2490	Tomahawk		U2997,U3314
-I	2491	Large Axe		U2997,U3314
-I	2492	Cudgel		U2997,U3314
-I	2493	Wooden Mallet		U2997,U3314
-I	2494	Stiletto		U2997,U3314
-I	2495	Walking Stick		U2997,U3314,U3409
-I	2507	Laminated Recurve Bow		U3409
+I	2488	Gladius		U2997,U3163,U3314
+I	2489	Two-handed Sword		U2997,U3163,U3314
+I	2490	Tomahawk		U2997,U3163,U3314
+I	2491	Large Axe		U2997,U3163,U3314
+I	2492	Cudgel		U2997,U3163,U3314
+I	2493	Wooden Mallet		U2997,U3163,U3314
+I	2494	Stiletto		U2997,U3163,U3314
+I	2495	Walking Stick		U2997,U3163,U3314,U3409
+I	2506	Hornwood Recurve Bow		U3165
+I	2507	Laminated Recurve Bow		U3165,U3409
 I	2509	Ornate Blunderbuss		U2997,U3322,U4603
 I	2510	Solid Blunderbuss		U4603
 I	2511	Hunter's Boomstick		U2997,U3322
-I	2512	Rough Arrow		U2140,U3015,U3409,U9555
-I	2515	Sharp Arrow		U2140,U2401,U3015,U3409,U9555
-I	2516	Light Shot		U2140,U2997,U3322,U4603
-I	2519	Heavy Shot		U2140,U2401,U2997,U3322,U4603
+I	2512	Rough Arrow		U2140,U3015,U3158,U3165,U3186,U3409,U9555
+I	2515	Sharp Arrow		U2140,U2401,U2820,U3015,U3165,U3409,U9555
+I	2516	Light Shot		U2140,U2997,U3158,U3186,U3322,U4603
+I	2519	Heavy Shot		U2140,U2401,U2820,U2997,U3322,U4603
+I	2520	Broadsword		U3361
 I	2521	Flamberge		U4043
 I	2523	Bullova		U4043
 I	2525	War Hammer		U4043
+I	2526	Main Gauche		U3361
+I	2528	Falchion		U3361
 I	2529	Zweihander		U4043
 I	2531	Great Axe		U4043
 I	2533	War Maul		U4043
+I	2534	Rondel		U3361
 I	2589	Linen Cloth	U11910,U11911,U11912,U11913,U1867,U1888,U1892,U1893,U1912,U1913,U1914,U1915,U1939,U1940,U1942,U1943,U1973,U1974,U2060,U2062,U2261,U2267,U2332,U2403,U261368,U3258,U3263,U3282,U3283,U3375,U3381,U3382,U3385,U3386,U3924,U3988,U3989,U4024,U4053,U4788
 I	2592	Wool Cloth	U1889,U1913,U1915,U1940,U1942,U1943,U1973,U1974,U2053,U2054,U2260,U2261,U2265,U2267,U2269,U2360,U2372,U2427,U2449,U262119,U3263,U3283,U3374,U3375,U3386,U3454,U3455,U3467,U3921,U3922,U3924,U3925,U3926,U3989,U3991,U3992,U4022,U4025,U4026,U4053
-I	2604	Red Dye		U3364,U4561,U4775
-I	2605	Green Dye		U3364,U4561,U4775
-I	2678	Mild Spices		U12033,U12043,U248198,U3400,U4553,U4561,U4775
-I	2692	Hot Spices		U12033,U12043,U248198,U3400,U4553,U4561,U4775
+I	2604	Red Dye		U2394,U2821,U3168,U3364,U3367,U4561,U4577,U4775
+I	2605	Green Dye		U3364,U3367,U4561,U4577,U4775
+I	2612	Plain Robe		U3315
+I	2613	Double-Stitched Robes		U3315
+I	2614	Robe of Apprenticeship		U3315
+I	2615	Chromatic Robe		U3315
+I	2616	Shimmering Silk Robes		U3315
+I	2617	Burning Robes		U3315
+I	2618	Silver Dress Robes		U3315
+I	2642	Loose Chain Boots	U3115
+I	2645	Loose Chain Gloves	U252068
+I	2648	Loose Chain Vest	U3198
+I	2649	Flimsy Chain Belt	U3098,U3101
+I	2650	Flimsy Chain Boots	U3101
+I	2653	Flimsy Chain Gloves	U3101
+I	2656	Flimsy Chain Vest	U3124
+I	2674	Crawler Meat	U3812,U3814
+I	2675	Crawler Claw	U3812,U3814
+I	2678	Mild Spices		U12033,U12043,U248198,U2821,U3168,U3367,U3400,U4553,U4561,U4775
+I	2692	Hot Spices		U12033,U12043,U248198,U2821,U3367,U3400,U4553,U4561,U4775
 I	2763	Fisherman Knife	U1782,U1912
 I	2764	Small Dagger	U2261
 I	2765	Hunting Knife	U2261
@@ -223,45 +323,61 @@ I	2835	Rough Stone	O103713,O3715,O3763
 I	2836	Coarse Stone	O103711,O3764
 I	2838	Heavy Stone	U2269,U4120
 I	2842	Silver Bar	O2849
-I	2880	Weak Flux		U12043,U2999,U3356,U3358,U3413,U4561,U4597,U4775
-I	2901	Mining Pick		U12043,U2999,U3356,U3358,U3413,U4561,U4597,U4775
-I	2928	Dust of Decay		U12043,U4561,U4775
+I	2880	Weak Flux		U12043,U2821,U2999,U3167,U3168,U3356,U3358,U3367,U3413,U4561,U4597,U4775
+I	2901	Mining Pick		U12043,U2821,U2999,U3158,U3167,U3168,U3356,U3358,U3367,U3413,U4561,U4597,U4775
+I	2928	Dust of Decay		U12043,U2821,U3367,U4561,U4775
+I	2934	Ruined Leather Scraps	U251245
 I	2940	Bloody Bear Paw	U2354,U3809
-I	2946	Balanced Throwing Dagger		U2140,U3409
-I	2947	Small Throwing Knife		U2140,U3409
+I	2946	Balanced Throwing Dagger		U2140,U3186,U3409
+I	2947	Small Throwing Knife		U2140,U3158,U3186,U3409
 I	2980	Veteran Gloves	U2066
+I	3010	Fine Sand	U3812,U3814
+I	3013	Scroll of Protection	U252068,U3118,U3204
 I	3021	Ranger Bow	U4061
 I	3023	Large Bore Blunderbuss		U3322,U4603
 I	3024	BKP 2700 "Enforcer"		U3322,U4603
 I	3026	Reinforced Bow		U3015,U3409,U9555
 I	3027	Heavy Recurve Bow		U3015,U9555
-I	3030	Razor Arrow		U2401,U3015,U9555
-I	3033	Solid Shot		U2401,U3322,U4603
+I	3030	Razor Arrow		U2401,U2820,U3015,U9555
+I	3033	Solid Shot		U2401,U2820,U3322,U4603
 I	3036	Heavy Shortbow	U1893
-I	3107	Keen Throwing Knife		U2401,U3409
-I	3108	Heavy Throwing Dagger		U2401,U3409
-I	3111	Crude Throwing Axe		U2140,U3409
-I	3131	Weighted Throwing Axe		U2140,U3409
-I	3135	Sharp Throwing Axe		U2401,U3409
-I	3137	Deadly Throwing Axe		U2401,U3409
+I	3107	Keen Throwing Knife		U2401,U2820,U3409
+I	3108	Heavy Throwing Dagger		U2401,U2820,U3409
+I	3111	Crude Throwing Axe		U2140,U3158,U3186,U3409
+I	3131	Weighted Throwing Axe		U2140,U3186,U3409
+I	3135	Sharp Throwing Axe		U2401,U2820,U3409
+I	3137	Deadly Throwing Axe		U2401,U2820,U3409
 I	3167	Thick Spider Hair	U264079,U264083,U4263
-I	3174	Spider Ichor	U264083
+I	3171	Broken Boar Tusk	U3099,U3100,U3225
+I	3174	Spider Ichor	U264079,U264083
 I	3180	Flecked Raptor Scale	U3256
+I	3182	Spider's Silk	U264081
 I	3184	Hook Dagger of Healing	U3944
+I	3186	Viking Sword of the Tiger	U264079
+I	3189	Wood Chopper	U252068
 I	3192	Short Bastard Sword of the Eagle	U1769
 I	3198	Battering Hammer of Shadow Protection	U2260
+I	3201	Barbarian War Axe of the Knight	U3762
+I	3206	Cavalier Two-hander of the Bandit	U2344
+I	3210	Brutal War Axe of Spirit	U2371
 I	3211	Burnished Bracers	U2261
 I	3218	Pyrewood Shackle	U1892,U1893,U1896
+I	3279	Battle Chain Boots	U3244
+I	3282	Battle Chain Pants	U3118
+I	3284	Tribal Boots	U3198
 I	3301	Sharp Canine	U1923
 I	3309	Barbaric Loincloth	U3283
 I	3355	Wild Steelbloom	O3715
-I	3371	Empty Vial		U12043,U3014,U4561,U4615,U4775
-I	3372	Leaded Vial		U12043,U3014,U4561,U4615,U4775
+I	3363	Frayed Belt	U3101
+I	3371	Empty Vial		U12043,U2821,U3014,U3168,U3348,U3367,U4561,U4615,U4775
+I	3372	Leaded Vial		U12043,U2821,U3014,U3348,U3367,U4561,U4615,U4775
+I	3373	Patchwork Bracers	U256996,U275662,U3197
+I	3374	Calico Belt	U3272
 I	3375	Calico Bracers	U1767
 I	3376	Canvas Belt	U1940
 I	3377	Canvas Bracers	U3283,U3385
 I	3378	Brocade Belt	U3925
-I	3385	Lesser Mana Potion	O3715,U2267,U2503,U2554,U2564,U3763,U4026
+I	3385	Lesser Mana Potion	O3715,U2267,U2375,U2503,U2554,U2564,U3763,U4026
 I	3402	Soft Patch of Fur	U4248
 I	3419	Red Rose		U3014
 I	3420	Black Rose		U3014
@@ -269,137 +385,197 @@ I	3422	Beautiful Wildflowers		U3014
 I	3423	Bouquet of White Roses		U3014
 I	3424	Bouquet of Black Roses		U3014
 I	3428	Common Gray Shirt		U4558
-I	3466	Strong Flux		U2999,U3356,U3358,U3413,U4561,U4597,U4775
+I	3466	Strong Flux		U2821,U2999,U3167,U3356,U3358,U3367,U3413,U4561,U4597,U4775
+I	3587	Embroidered Belt		U3315
+I	3588	Embroidered Bracers		U3315
 I	3589	Heavy Weave Belt		U4558
 I	3590	Heavy Weave Bracers		U4558
+I	3591	Padded Belt		U3315
+I	3592	Padded Bracers		U3315
+I	3593	Russet Belt		U3315
+I	3594	Russet Bracers		U3315
 I	3595	Tattered Cloth Belt		U4558
 I	3596	Tattered Cloth Bracers		U4558
-I	3606	Woven Belt		U4558
-I	3607	Woven Bracers		U4558
+I	3606	Woven Belt		U3166,U4558
+I	3607	Woven Bracers		U3166,U4558
+I	3642	Ancestral Bracers	U3127
+I	3649	Tribal Buckler	U3131
 I	3669	Gelatinous Goo	U3638
-I	3670	Large Slimy Bone	U3638
-I	3674	Decomposed Boot	U3638,U4020
-I	3676	Slimy Ichor	U3638
+I	3670	Large Slimy Bone	U3638,U3928
+I	3674	Decomposed Boot	U3638,U3928,U4020
+I	3676	Slimy Ichor	U3638,U3928
+I	3682	Recipe: Curiously Tasty Omelet		U2821
 I	3685	Raptor Egg	U2559
 I	3692	Hillsbrad Human Skull	U2266,U2267,U2268,U2269,U2387,U2428,U2448
-I	3702	Bear Gall Bladder	U2354
-I	3713	Soothing Spices		U12033,U248198,U3400,U4553,U4561,U4775
-I	3730	Big Bear Meat	U2354,U2356
-I	3770	Mutton Chop	U4025,U4073,U4100	U4879,U4954,U5870,U6929,U7731
-I	3771	Wild Hog Shank	U2248,U2249,U2556	U4879,U4954,U5870,U6929,U7731
+I	3702	Bear Gall Bladder	U2351,U2354,U2356
+I	3712	Turtle Meat	U2408
+I	3713	Soothing Spices		U12033,U248198,U3367,U3400,U4553,U4561,U4775
+I	3730	Big Bear Meat	U2351,U2354,U2356,U3809
+I	3731	Lion Meat	U2384
+I	3735	Recipe: Hot Lion Chops		U3489
+I	3770	Mutton Chop	O3696,U3758,U3759,U3762,U4025,U4073,U4100	U15125,U254089,U3368,U3489,U3881,U3882,U3933,U4879,U4954,U5870,U6928,U6929,U7731
+I	3771	Wild Hog Shank	U2248,U2249,U2556	U15125,U254089,U3368,U3489,U3881,U3882,U3933,U4879,U4954,U5870,U6928,U6929,U7731
 I	3781	Broad Claymore	U2249
 I	3784	Metal Stave	U2555
 I	3787	Stone Club	U2249
 I	3799	Interlaced Vest	U2556
 I	3808	Double Mail Belt	U2249
 I	3814	Double Mail Shoulderpads	U2555
-I	3857	Coal	U4023	U2999,U3356,U3358,U4561,U4597,U4775
+I	3857	Coal	U4023	U2821,U2999,U3167,U3356,U3358,U3367,U4561,U4597,U4775
 I	3868	Plans: Frost Tiger Blade	U2251
+I	3889	Russet Hat		U3315
+I	3890	Studded Hat		U3315
+I	3892	Embroidered Hat		U3315
+I	3893	Reinforced Leather Cap		U3315
 I	3931	Poisoned Spider Fang	U264081,U4005,U4006,U4007
-I	4289	Salt		U12043,U4561,U4775
-I	4291	Silken Thread		U3364,U4561,U4775
+I	4232	Medium Hide	U2406,U2408
+I	4234	Heavy Leather	U12676,U2408
+I	4235	Heavy Hide	U2408
+I	4289	Salt		U12043,U2821,U3168,U3367,U4561,U4775
+I	4291	Silken Thread		U2394,U2821,U3364,U3367,U4561,U4577,U4775
 I	4293	Pattern: Hillman's Leather Vest	U1779
 I	4294	Pattern: Hillman's Belt	U3461
-I	4306	Silk Cloth	U12856,U2244,U2261,U2267,U2269,U2305,U2344,U2346,U2373,U2554,U2555,U2556,U2562,U2564,U3374,U3377,U3759,U3762,U3763,U3802,U3803,U3921,U3993,U4026,U4050,U4056,U4061,U4095,U4100,U4101,U6668,U8518
+I	4306	Silk Cloth	U12856,U12918,U2244,U2261,U2267,U2269,U2305,U2344,U2346,U2373,U2554,U2555,U2556,U2562,U2564,U3374,U3377,U3746,U3758,U3759,U3762,U3763,U3802,U3803,U3921,U3922,U3924,U3925,U3993,U4026,U4050,U4056,U4061,U4095,U4100,U4101,U6668,U8518
 I	4337	Thick Spider's Silk	U2563
-I	4340	Gray Dye		U3364,U4561
-I	4341	Yellow Dye		U3364,U4561
-I	4342	Purple Dye		U3364,U4561
+I	4340	Gray Dye		U2394,U2821,U3364,U3367,U4561,U4577
+I	4341	Yellow Dye		U2821,U3364,U3367,U4561,U4577
+I	4342	Purple Dye		U2821,U3364,U3367,U4561,U4577
 I	4357	Rough Blasting Powder		U3413
 I	4359	Handful of Copper Bolts	U3471
 I	4363	Copper Modulator	O19020
 I	4364	Coarse Blasting Powder	O19020	U3413
 I	4377	Heavy Blasting Powder	O19020
 I	4382	Bronze Framework		U3413
-I	4399	Wooden Stock		U3413,U4561,U4775
-I	4400	Heavy Stock		U3413,U4561,U4775
-I	4428	Spider Palp	U2349
+I	4399	Wooden Stock		U2821,U3367,U3413,U4561,U4775
+I	4400	Heavy Stock		U2821,U3367,U3413,U4561,U4775
+I	4409	Schematic: Small Seaforium Charge	U3231
+I	4428	Spider Palp	U2349,U2350
 I	4461	Raptor Hide	U2559
-I	4470	Simple Wood		U12033,U2140,U2401,U248198,U3400,U4553,U5758
-I	4471	Flint and Tinder		U12033,U2140,U2401,U248198,U3400,U4553
-I	4496	Small Brown Pouch		U2140
-I	4497	Heavy Brown Bag		U2401
-I	4498	Brown Leather Satchel		U2140,U2401
-I	4536	Shiny Red Apple		U12033,U248198,U3400,U4553,U4561,U4775
+I	4470	Simple Wood		U12033,U2140,U2401,U248198,U2820,U3186,U3400,U4553,U5758
+I	4471	Flint and Tinder		U12033,U2140,U2401,U248198,U2820,U3186,U3400,U4553
+I	4496	Small Brown Pouch		U2140,U3186
+I	4497	Heavy Brown Bag		U2401,U2820
+I	4498	Brown Leather Satchel		U2140,U2401,U2820,U3186
+I	4536	Shiny Red Apple	U3111,U3112	U12033,U248198,U3168,U3367,U3400,U4553,U4561,U4775
 I	4537	Tel'Abim Banana	U11917,U3260
-I	4538	Snapvine Watermelon	O3715,U2266,U3921,U3925,U3926,U4061
-I	4541	Freshly Baked Bread	O3693
-I	4542	Moist Cornbread	O3715,U2344,U3374,U3376,U3378
-I	4555	Thick Scaly Tail	U3461
+I	4538	Snapvine Watermelon	O3715,U2266,U3921,U3924,U3925,U3926,U4061	U15125
+I	4539	Goldenbark Apple		U15125
+I	4540	Tough Hunk of Bread	U256996	U3003,U3158
+I	4541	Freshly Baked Bread	O3693	U3003
+I	4542	Moist Cornbread	O3715,U2344,U3374,U3376,U3378	U3003
+I	4544	Mulgore Spice Bread		U3003
+I	4555	Thick Scaly Tail	U2408,U3461
 I	4556	Speckled Shell Fragment	U2408
-I	4567	Merc Sword of Healing	U3633
+I	4562	Severing Axe of Holy Wrath	U3117
+I	4563	Billy Club	U3123
+I	4564	Spiked Club of Magic	U3131
+I	4567	Merc Sword of Healing	U3242,U3633
 I	4571	War Knife of the Tiger	U3282,U3286
 I	4585	Dripping Spider Mandible	U2563
-I	4599	Cured Ham Steak		U4879,U4954,U5870,U6929,U7731
+I	4599	Cured Ham Steak		U15125,U254089,U3368,U3489,U3881,U3882,U3933,U4879,U4954,U5870,U6928,U6929,U7731
+I	4601	Soft Banana Bread		U3003
+I	4602	Moon Harvest Pumpkin		U15125
 I	4603	Raw Spotted Yellowtail		U12962
-I	4604	Forest Mushroom Cap		U6739,U6741
-I	4605	Red-speckled Mushroom	O111095,U1942,U1943,U1953,U1974	U6739,U6741
-I	4606	Spongy Morel		U6739,U6741
-I	4607	Delicious Cave Mold		U6739,U6741
-I	4608	Raw Black Truffle		U6739,U6741
+I	4604	Forest Mushroom Cap	U275662,U275663	U254089,U3544,U6739,U6741
+I	4605	Red-speckled Mushroom	O111095,U1942,U1943,U1953,U1974	U254089,U3544,U6739,U6741
+I	4606	Spongy Morel		U15125,U254089,U3544,U6739,U6741
+I	4607	Delicious Cave Mold		U15125,U254089,U3544,U6739,U6741
+I	4608	Raw Black Truffle		U15125,U254089,U3544,U6739,U6741
 I	4680	Brackwater Cloak	U3284
 I	4712	Glimmering Mail Girdle	U2344
-I	4775	Cracked Bill	U3245
-I	4776	Ruffled Feather	U3245
+I	4775	Cracked Bill	U3115,U3116,U3117,U3245,U3246
+I	4776	Ruffled Feather	U3117,U3245,U3246
 I	4784	Lifeless Stone	U4499
+I	4813	Small Leather Collar	U3121
+I	4814	Discolored Fang	U3121
 I	4828	Nightwind Belt		U3537
 I	4829	Dreamer's Belt		U3537
-I	4878	Broken Bloodstained Bow	U3255
-I	5042	Red Ribboned Wrapping Paper		U2140
-I	5115	Broken Wishbone	U4023,U4024
+I	4837	Strength of Will		U3537
+I	4865	Ruined Pelt	U3098,U3102
+I	4867	Broken Scorpid Leg	U3124,U3125,U3126,U3127
+I	4872	Dry Scorpid Eye	U3126,U3127
+I	4873	Dry Hardened Barnacle	U3103,U3107,U3108
+I	4874	Clean Fishbones	U3107,U3812
+I	4875	Slimy Bone	U3110
+I	4876	Bloody Leather Boot	U3110
+I	4877	Stone Arrowhead	U3122,U3123
+I	4878	Broken Bloodstained Bow	U3123,U3255
+I	4879	Squashed Rabbit Carcass	U3130,U3131
+I	4880	Broken Spear	U3130,U3131
+I	4881	Aged Envelope	O3239
+I	4882	Benedict's Key	U3192
+I	4903	Eye of Burning Shadow	U3204
+I	4926	Chen's Empty Keg	O3238
+I	5042	Red Ribboned Wrapping Paper		U2140,U3186
+I	5114	Severed Talon	U3245,U3246
+I	5115	Broken Wishbone	U3246,U4023,U4024
 I	5116	Long Tail Feather	U4023,U4025
 I	5117	Vibrant Plume	U4100,U4101
+I	5119	Fine Loose Hair	U3242
+I	5123	Steel Arrowhead	U3254,U3255
 I	5124	Small Raptor Tooth	U3256
 I	5135	Thin Black Claw	U2384
 I	5136	Torn Furry Ear	U2384,U4011
 I	5137	Bright Eyeball	U10992,U4124
-I	5439	Small Quiver		U3015,U3409,U9555
+I	5439	Small Quiver		U3015,U3165,U3409,U9555
 I	5441	Small Shot Pouch		U2997,U3322,U4603
 I	5446	Broken Elemental Bracer	U3917
-I	5447	Damaged Elemental Bracer	U3917
+I	5447	Damaged Elemental Bracer	U12759,U3917
 I	5448	Fractured Elemental Bracer	U3917
 I	5451	Crushed Elemental Bracer	U3917
-I	5465	Small Spider Leg	U264083,U4263
-I	5523	Small Barnacled Clam	U1768,U3461,U3712,U3713,U3715,U3717
-I	5524	Thick-shelled Clam	U2369,U2375
+I	5465	Small Spider Leg	U264079,U264083,U4263
+I	5466	Scorpid Stinger	U3125,U3126,U3127
+I	5483	Recipe: Scorpid Surprise		U3881
+I	5523	Small Barnacled Clam	U1768,U3461,U3712,U3713,U3715,U3717,U3812,U3814
+I	5524	Thick-shelled Clam	U2369,U2374,U2375,U2408
 I	5565	Infernal Stone		U4562,U8361
+I	5569	Seaweed	U3814
+I	5572	Small Green Pouch	U3225
 I	5574	White Leather Bag	U1915
 I	5575	Large Green Sack	U2269
 I	5601	Hatched Egg Sac	O19541
 I	5602	Sticky Spider Webbing	O19541
 I	5635	Sharp Claw	U1924,U2354,U2384,U3256,U4025
+I	5642	Recipe: Free Action Potion		U3348
 I	5741	Rock Chip	U4499
-I	5772	Pattern: Red Woolen Bag		U3364,U3537
-I	5785	Thick Murloc Scale	U2375
+I	5772	Pattern: Red Woolen Bag		U3364,U3537,U4577
+I	5785	Thick Murloc Scale	U2374,U2375
 I	5786	Pattern: Murloc Scale Belt	U3385
 I	5843	Grenka's Claw	U4490
 I	5844	Fragments of Rok'Alim	U4499
 I	5860	Legacy of the Aspects	O20725
-I	5956	Blacksmith Hammer		U12043,U2999,U3356,U3413,U4561,U4597,U4775
+I	5956	Blacksmith Hammer		U12043,U2999,U3168,U3356,U3367,U3413,U4561,U4597,U4775
+I	5973	Pattern: Barbaric Leggings		U2821
 I	5976	Guild Tabard		U5190
-I	6217	Copper Rod		U12043,U4561,U4775,U5758
-I	6256	Fishing Pole		U12043,U12962,U4561,U4775
-I	6260	Blue Dye		U3364,U4561,U4775
-I	6261	Orange Dye		U3364
+I	6217	Copper Rod		U12043,U2821,U3168,U3367,U4561,U4775,U5758
+I	6256	Fishing Pole		U12043,U12962,U2821,U3168,U3367,U4561,U4775
+I	6260	Blue Dye		U2394,U3168,U3364,U3367,U4561,U4577,U4775
+I	6261	Orange Dye		U3364,U4577
 I	6270	Pattern: Blue Linen Vest		U3364
-I	6274	Pattern: Blue Overalls		U3364
+I	6274	Pattern: Blue Overalls		U2394,U3364
+I	6275	Pattern: Greater Adept's Robe		U4577
 I	6289	Raw Longjaw Mud Snapper	U1767	U12962
-I	6303	Raw Slitherskin Mackerel		U12962
-I	6308	Raw Bristle Whisker Catfish	U3717	U12962
+I	6297	Old Skull	U251662
+I	6303	Raw Slitherskin Mackerel	U3103,U3104	U12962
+I	6308	Raw Bristle Whisker Catfish	U2371,U2408,U3717	U12962
 I	6330	Recipe: Bristle Whisker Catfish		U4553
 I	6342	Formula: Enchant Chest - Minor Intellect		U5758
 I	6349	Formula: Enchant 2H Weapon - Lesser Intellect		U5758
+I	6361	Raw Rainbow Fin Albacore	U3461
 I	6362	Raw Rockscale Cod		U12962
+I	6365	Strong Fishing Pole		U12962
 I	6368	Recipe: Rainbow Fin Albacore		U4553
 I	6369	Recipe: Rockscale Cod		U12033,U12962
 I	6377	Formula: Enchant Boots - Minor Agility		U3537
 I	6390	Pattern: Stylish Blue Shirt	U11915
+I	6401	Pattern: Dark Silk Shirt		U2394
 I	6444	Forked Tongue	U3631
 I	6445	Brittle Molting	U3631
 I	6471	Perfect Deviate Scale	U3631
-I	6529	Shiny Bauble		U12043,U12962,U4561,U4775
-I	6530	Nightcrawlers	U1974	U12043,U12962,U4561,U4775
-I	6532	Bright Baubles		U12962,U4561,U4775
+I	6520	Pioneer Cloak	U5808
+I	6529	Shiny Bauble		U12043,U12962,U3168,U3367,U4561,U4775
+I	6530	Nightcrawlers	U1974,U264096	U12043,U12962,U2821,U3367,U4561,U4775
+I	6532	Bright Baubles		U12962,U2821,U3367,U4561,U4775
 I	6533	Aquadynamic Fish Attractor		U12962
 I	6539	Willow Belt of the Owl	U1896
 I	6543	Willow Bracers of Stamina	U1893
@@ -408,19 +584,30 @@ I	6585	Scouting Cloak of the Boar	U1942
 I	6586	Scouting Gloves of Nature Protection	U2266
 I	6594	Battleforge Girdle of Agility	U2344
 I	6601	Dervish Boots of Defense	U2270
-I	7005	Skinning Knife		U12043,U4561,U4775
+I	7005	Skinning Knife		U12043,U2821,U3158,U3168,U3367,U4561,U4775
 I	7072	Naga Scale	U2371
+I	7073	Broken Fang	U3102
+I	7074	Chipped Claw	U3102
+I	7098	Splintered Tusk	U3098
+I	7099	Severed Pincer	U3124
+I	7100	Sticky Ichor	U3124
+I	7101	Bug Eye	U3124,U3281
 I	7362	Pattern: Earthen Leather Shoulders		U3537
 I	7370	Elder's Sash of the Physician	U2345
 I	7410	Infiltrator Bracers of Stamina	U2249
 I	7420	Phalanx Headguard of the Beast	U2346
 I	7446	Sentinel Cloak of Stamina	U2555
-I	8343	Heavy Silken Thread		U3364,U4561
+I	8180	Hunting Bow	U3205
+I	8181	Hunting Rifle	U3197
+I	8182	Pellet Rifle	U3195
+I	8343	Heavy Silken Thread		U2394,U2821,U3364,U3367,U4561,U4577
 I	8746	Interlaced Cowl	U2371
-I	8766	Morning Glory Dew		U4879,U6739,U6741,U6929,U7731
-I	8925	Crystal Vial		U3014,U4615
-I	8948	Dried King Bolete		U6739,U6741
-I	8952	Roasted Quail		U4879,U4954,U5870,U6929,U7731
+I	8766	Morning Glory Dew		U15125,U254089,U3881,U3882,U4879,U6739,U6741,U6928,U6929,U7731
+I	8925	Crystal Vial		U2821,U3014,U3348,U4615
+I	8948	Dried King Bolete		U15125,U254089,U3544,U6739,U6741
+I	8950	Homemade Cherry Pie		U3003
+I	8952	Roasted Quail		U15125,U254089,U3368,U3489,U3881,U3882,U3933,U4879,U4954,U5870,U6928,U6929,U7731
+I	8953	Deep Fried Plantains		U15125
 I	8959	Raw Spinefin Halibut		U12962
 I	9451	Bubbling Water	U3917
 I	9762	Cadet Gauntlets	U1782
@@ -428,9 +615,12 @@ I	9765	Cadet Vest of Power	U1782
 I	9813	Fortified Gauntlets of the Monkey	U2267
 I	9838	Banded Cloak of the Owl	U2344
 I	10284	Simple Flour		U12033,U248198,U3400,U4553
-I	10290	Pink Dye		U3364
+I	10290	Pink Dye		U3364,U4577
 I	10314	Pattern: Lavender Mageweave Shirt		U3364
 I	10317	Pattern: Pink Mageweave Shirt		U3364
+I	10321	Pattern: Tuxedo Shirt		U4577
+I	10323	Pattern: Tuxedo Pants		U4577
+I	10326	Pattern: Tuxedo Jacket		U4577
 I	10393	Cockroach		U8403
 I	10407	Raider's Shoulderpads	U2283
 I	10647	Engineer's Ink		U3413,U4581
@@ -439,55 +629,79 @@ I	10938	Lesser Magic Essence		U5758
 I	10940	Strange Dust		U5758
 I	11039	Formula: Enchant Cloak - Minor Agility		U12043
 I	11101	Formula: Enchant Bracer - Lesser Strength		U12043
-I	11284	Accurate Slugs		U2401,U3322,U4603
-I	11285	Jagged Arrow		U2401,U3015,U9555
-I	11291	Star Wood		U12033,U2401,U248198,U3400,U4553,U5758
+I	11163	Formula: Enchant Bracer - Lesser Deflection		U2821
+I	11284	Accurate Slugs		U2401,U2820,U3322,U4603
+I	11285	Jagged Arrow		U2401,U2820,U3015,U9555
+I	11291	Star Wood		U12033,U2401,U248198,U2820,U3400,U4553,U5758
 I	11307	Massive Longbow		U3015
-I	11362	Medium Quiver		U3015,U3409,U9555
-I	11406	Rotting Bear Carcass	U2354
+I	11362	Medium Quiver		U3015,U3165,U3409,U9555
+I	11406	Rotting Bear Carcass	U2351,U2354,U3810
+I	12037	Mystery Meat	U12676
 I	12162	Plans: Hardened Iron Shortsword		U3356
 I	12184	Raptor Flesh	U2559
-I	12228	Recipe: Roast Raptor		U4879
+I	12228	Recipe: Roast Raptor		U2821,U4879
 I	12232	Recipe: Carrion Surprise		U4879
+I	12255	Pale Leggings		U3315
+I	13478	Recipe: Elixir of Superior Defense		U3348
+I	14089	Beaded Gloves	U3117
 I	14167	Buccaneer's Cape of Magic	U2054
+I	14179	Watcher's Cape of Nature Protection	U12856
 I	14194	Raincaller Cord of Stamina	U4056
 I	14198	Thistlefur Cloak of the Wolf	U4101
-I	14341	Rune Thread		U3364
+I	14341	Rune Thread		U3364,U4577
 I	14364	Mystic's Slippers	U3283,U4007
+I	14365	Mystic's Cape	U3242
 I	14563	Prospector's Cloak	U3283
+I	14742	Hulking Boots	U12856
 I	14745	Hulking Cloak	U3374
+I	14755	Slayer's Sash	U264083
+I	15009	Primal Leggings of the Boar	U3131
+I	15010	Primal Wraps of Stamina	U3131
 I	15012	Lupine Slippers of the Gorilla	U3282,U3381
 I	15013	Lupine Cuffs	U3382
 I	15014	Lupine Buckler of the Eagle	U3461
 I	15016	Lupine Handwraps of the Falcon	U3467
 I	15128	Robust Tunic of Agility	U4101
+I	15249	Polished Zweihander of the Knight	U3759
 I	15268	Twin-bladed Axe of the Tiger	U261368
 I	15300	Grizzly Gloves	U3381
-I	15326	Gleaming Throwing Axe		U2401,U3409
-I	15327	Wicked Throwing Dagger		U2401,U3409
+I	15326	Gleaming Throwing Axe		U2401,U2820,U3409
+I	15327	Wicked Throwing Dagger		U2401,U2820,U3409
 I	15338	Wrangler's Mantle of the Bandit	U4050
+I	15481	War Torn Greaves	U3118
+I	15484	War Torn Handgrips	U3246
 I	15485	War Torn Pants of the Falcon	U3284
 I	15491	Bloodspattered Gloves of Nature Protection	U3385
 I	15520	Spiked Chain Gauntlets of the Eagle	U4052
+I	15525	Sentry's Slippers of Shadow Protection	U264079
+I	15903	Right-Handed Claw		U3361
+I	15904	Right-Handed Blades		U3361
+I	15905	Right-Handed Brass Knuckles		U3361
+I	15906	Left-Handed Brass Knuckles		U3361
+I	15907	Left-Handed Claw		U3361
+I	15909	Left-Handed Blades		U3361
+I	15969	Beaded Orb of Nature's Wrath	U3123
 I	16041	Schematic: Thorium Grenade		U3413
 I	16042	Schematic: Thorium Widget		U3413
 I	16059	Common Brown Shirt		U4558
 I	16060	Common White Shirt		U4558
 I	16072	Expert Cookbook		U12033
 I	16217	Formula: Enchant Shield - Greater Stamina		U4561
+I	16305	Sharptalon's Claw	U12676
 I	16408	Befouled Water Globe	U12759
 I	16583	Demonic Figurine		U4562,U8361
-I	16645	Shredder Operating Manual - Page 1	U3802
-I	16646	Shredder Operating Manual - Page 2	U3762
-I	16647	Shredder Operating Manual - Page 3	U3750,U3758,U3759
+I	16645	Shredder Operating Manual - Page 1	U12856,U3802,U3924
+I	16646	Shredder Operating Manual - Page 2	U3762,U3922
+I	16647	Shredder Operating Manual - Page 3	U3750,U3758,U3759,U3921
 I	16648	Shredder Operating Manual - Page 4	U3763,U3924
-I	16649	Shredder Operating Manual - Page 5	U3762,U3922
-I	16650	Shredder Operating Manual - Page 6	U3750,U3926
-I	16651	Shredder Operating Manual - Page 7	U3715,U3763,U3921
-I	16653	Shredder Operating Manual - Page 9	U3713,U3762
+I	16649	Shredder Operating Manual - Page 5	U3758,U3762,U3922,U3925,U3928
+I	16650	Shredder Operating Manual - Page 6	U3750,U3926,U3928
+I	16651	Shredder Operating Manual - Page 7	U12856,U3715,U3763,U3921,U3922
+I	16652	Shredder Operating Manual - Page 8	U3921,U3924
+I	16653	Shredder Operating Manual - Page 9	U3713,U3762,U3924,U3925
 I	16654	Shredder Operating Manual - Page 10	U3763,U3803,U3917,U3924
-I	16655	Shredder Operating Manual - Page 11	U3924,U3925
-I	16656	Shredder Operating Manual - Page 12	U12856,U3713,U3759,U3925
+I	16655	Shredder Operating Manual - Page 11	U12856,U3922,U3924,U3925
+I	16656	Shredder Operating Manual - Page 12	U12856,U3713,U3750,U3759,U3924,U3925
 I	16976	Murgut's Totem	O178227
 I	17020	Arcane Powder		U4562,U8361
 I	17021	Wild Berries		U4562,U8361
@@ -503,14 +717,14 @@ I	17035	Stranglethorn Seed		U4562,U8361
 I	17036	Ashwood Seed		U4562,U8361
 I	17037	Hornbeam Seed		U4562,U8361
 I	17038	Ironwood Seed		U4562,U8361
-I	17056	Light Feather	U4024,U4025,U4026,U4027,U4100,U4101
-I	17057	Shiny Fish Scales	U2375
-I	17058	Fish Oil	U2369,U2371,U2374,U2375
+I	17056	Light Feather	U3244,U3246,U4024,U4025,U4026,U4027,U4100,U4101
+I	17057	Shiny Fish Scales	U14277,U2369,U2371,U2374,U2375,U3814
+I	17058	Fish Oil	U14277,U2369,U2371,U2374,U2375,U2377
 I	17062	Recipe: Mithril Head Trout		U12033,U12962
 I	17183	Dented Buckler		U4559
-I	17185	Round Buckler		U4559
+I	17185	Round Buckler		U3167,U4559
 I	17187	Banded Buckler		U4559
-I	18256	Imbued Vial		U3014
+I	18256	Imbued Vial		U3014,U3348
 I	18567	Elemental Flux		U2999,U3356,U4597
 I	18647	Schematic: Red Firework		U3413
 I	20075	Recipe: Heavy Crocolisk Stew		U4879
@@ -522,20 +736,26 @@ I	21177	Symbol of Kings		U4562,U8361
 I	21219	Recipe: Sagefish Delight		U12033,U248198,U3400,U4553
 I	22250	Herb Pouch		U4615
 I	22307	Pattern: Enchanted Mageweave Pouch		U5758
-I	211780	Scroll: KWYJIBO	U3381
-I	211784	Scroll: WUBBA WUBBA	U3922
-I	211853	Scroll: VOCE WELL	O3715,U1943
-I	211854	Scroll: OMIT KESA	O3715
+I	211780	Scroll: KWYJIBO	U3112,U3197,U3381
+I	211784	Scroll: WUBBA WUBBA	U3758,U3922
+I	211785	Scroll: CWAL	U3130
+I	211853	Scroll: VOCE WELL	O3715,U1943,U3750
+I	211854	Scroll: OMIT KESA	O3715,U3925
+I	211855	Scroll: STHENIC LUNATE	U2375
 I	216483	Witherbark Mallet	U2554,U2555
 I	247786	Mote of Magic		U5758
 I	248682	Waylaid Crate: Apprentice Herbs	U3712
 I	248685	Waylaid Crate: Apprentice Curiosities	U3713
+I	248687	Waylaid Crate: Journeyman Ore	U2369,U3763
 I	248688	Waylaid Crate: Journeyman Textiles	U4025
-I	248689	Waylaid Crate: Journeyman Curiosities	U3374,U4023
+I	248689	Waylaid Crate: Journeyman Curiosities	U3374,U3917,U4023
 I	248690	Waylaid Crate: Earthly Expert Herbs	U2564
 I	248703	Waylaid Crate: Apprentice Ingots	U3386
+I	248705	Waylaid Crate: Journeyman Fabrics	U2408
 I	249391	Pyrite	O1732
+I	249399	Frilled Lichen	O1619,O1620
 I	249425	Bauxite	O1734
+I	249428	Pristine Hide	U2408
 I	249885	Recipe: Venomous Smoothie		U248198
 I	249886	Recipe: Slimy Smoothie		U248198
 I	249887	Recipe: Mrrggl Smrrthle		U248198
@@ -544,9 +764,27 @@ I	249889	Recipe: Spicy Smoothie		U248198
 I	249890	Recipe: Wicked Smoothie		U248198
 I	250989	Recipe: Lesser Mender's Potion	U3386
 I	251335	Plans: Sterling Silver Boots	U2261
-I	253665	Pattern: Linen Reagent Bag		U3364
-I	253668	Pattern: Woolen Reagent Bag		U3364
+I	252022	Galestrider Jerky	U252068
+I	252026	Gustberry Pie		U254089
+I	252027	Gustberry Juice		U254089
+I	252028	Fresh Gustberry Bread	U252068
+I	252029	Hippogryph Flank		U254089
+I	252030	Pungent Skycheddar	U252068	U254089
+I	252031	Crisp Spring Water	U252068
+I	252032	Red Delicious Stormapple	U251966,U252068	U254089
+I	252661	Commander Cyclas's Head	U251966
+I	252760	Stolen Shen'dar Supplies	O576179,U252068
+I	253665	Pattern: Linen Reagent Bag		U3364,U4577
+I	253668	Pattern: Woolen Reagent Bag		U3364,U4577
 I	253710	Bruuz's Dorsal Fin	U209797
+I	255663	Windstone	U252068,U256966
+I	257224	Cracked Windstone	U251662
+I	257226	Lesser Essence of the Four Winds	U251662
+I	263415	Raani's Lucky Feather	O617675
+I	263418	Shadowsong Family Signet	O617674
+I	267474	Galeswept Forestshroom	U252068
+I	268415	Commonplace Herb Seeds	O1618
+I	268416	Uncommon Herb Seeds	O1620
 I	269715	Savannah Lion Hide	U3241
 I	269719	Trapped Game	O640104
 I	269739	Bloody Tuft of Fur	O640104
@@ -554,36 +792,61 @@ I	270151	Benedict's Orders	U262119
 I	271343	Note Scrap	U1973
 I	271350	Tortured Soul	U1974
 I	272941	Thick Logs		U12033,U248198,U3400,U4553
+I	273001	Gloomrise Toxin Sample	U264096
 I	273181	Crystalline Silk	U264081
 I	273636	Chef's Knife		U12962
+I	273658	Bloody Parchment	U264082
 I	274021	Barrens Headband		U265574
 I	274740	Quilted Cloak		U265574
 I	274741	Rumpled Kilt		U265574
 I	274742	Ratchet Wristwraps		U265574
 I	274743	Defective Samophlange		U265574
 I	274744	Barrens Basher		U265574
-I	277113	Apprentice's Herb Pouch		U4561,U4775
-I	277114	Apprentice's Skinning Satchel		U4561,U4775
-I	277115	Apprentice's Mining Pack		U4561,U4775
+I	275713	Raider's Bow	O656180
+I	275716	Raider's Battleaxe	O656181
+I	275717	Raider's Shield	O656182
+I	275718	Prickly Pear Fruit	O656177
+I	275722	Ukor's Lost Pack	U266851
+I	275723	Halikor's Hoof	U266852
+I	275724	Hexed Pendant	U3206,U3207
+I	277113	Apprentice's Herb Pouch		U3158,U3168,U3367,U4561,U4775
+I	277114	Apprentice's Skinning Satchel		U3158,U3168,U3367,U4561,U4775
+I	277115	Apprentice's Mining Pack		U3158,U3168,U3367,U4561,U4775
+I	277128	Bloodtalon Matriarch Eggs	U268530
+I	277135	Forgotten Loa Idol	O660647
+I	277278	Handful of Cattails	O661093
+I	277279	Speargrass Cuttings	O661092
 I	277331	Handful of Complicated Parts	O660930
+I	277653	Abandoned Training Weapon	O673476
+I	277661	Dull Storm Orb	U3118
+I	277665	Charged Thunder Lizard Organ	U3130
 I	277936	Glittering Sunstone	U4022,U4023,U4024,U4025,U4026
 I	278225	Surgical Spidersilk	U2563
 I	280375	Worgen Bits	U1924
 I	280697	Plagued Cockroach		U8403
 I	280699	Undercity Cockroach		U8403
-M	1413:622,391;1417:738,331;1420:615,532;1421:435,415;1442:479,611;1454:534,658,508,707,535,660,622,403,509,699,515,592;1456:450,593,449,592,450,589;1458:621,370,619,513,701,515,699,361,620,520,619,368,668,502,621,511,697,370,678,383,699,513,702,368,620,366
+I	282711	Naga Maiden's Gown	U14277
+I	286008	Naga Spinefin	U275662,U275663
+I	286009	Aggor's Belt	U275666
+I	286010	Broken Bone Trident	O693669
+I	286011	Banner Scrap	O693670
+I	286012	Orcish Dagger	O693674
+M	1411:519,421;1413:622,391;1417:738,331;1420:615,532;1421:435,415;1442:479,611;1454:534,658,508,707,535,660,622,403,509,699,515,592,606,556;1456:450,593,449,592,450,589;1458:621,370,619,513,701,515,699,361,620,520,619,368,668,502,621,511,697,370,678,383,699,513,702,368,620,366,622,509
+N	347	Grizzle Halfmane	0	61		1458:567,867	H	Alterac Valley Battlemaster
 N	499	Watcher Paige	0	29		1431:440,675	A	The Night Watch
 N	874	Protector Korelor	0	30		1436:647,632	A	The People's Militia
 N	1383	Snarl	0	31	trainer	1454:797,229,798,235	H	Expert Blacksmith
 N	1417	Young Wetlands Crocolisk	1	21		1437:505,316
 N	1547	Decrepit Darkhound	1	5		1420:666,629,685,634,639,515,632,543,635,590,685,555
-N	1548	Cursed Darkhound	1	8		1420:547,705,599,622,509,702,587,618,757,678,778,685,811,717,608,622,717,549,745,511,747,508
-N	1553	Greater Duskbat	1	6		1420:613,603,603,585,602,564,652,628,679,632,712,641,635,555,639,532,639,515
-N	1554	Vampiric Duskbat	1	9		1420:741,660,790,693,784,688,801,458,851,384
+N	1548	Cursed Darkhound	1	8		1420:547,705,599,622,509,702,587,618,757,678,778,685,811,717,608,622,717,549,745,511,747,508,559,661,506,696,762,680,804,713,754,492,618,622
+N	1553	Greater Duskbat	1	6		1420:613,603,603,585,602,564,652,628,679,632,712,641,635,555,639,532,639,515,684,634,666,580,694,572
+N	1554	Vampiric Duskbat	1	9		1420:741,660,790,693,784,688,801,458,851,384,788,692,727,547,734,521,750,488
 N	1738	Deathguard Terrence	0	21		1420:612,531	H
+N	1765	Worg	1	10		1420:562,772
 N	1778	Ferocious Grizzled Bear	1	11		1421:463,257,472,182,503,414,492,141,469,185,464,262,515,482,501,433,556,422,552,440,557,438,472,459
 N	1782	Moonrage Darksoul	1	13		1421:577,447,584,448,572,458,463,267,580,413,586,421,590,419,604,413,461,284
 N	1787	Skeletal Executioner	1	54		1422:373,707,458,691
+N	1811	Plaguewing Vulture	1	58		1422:544,740
 N	1867	Dalaran Apprentice	0	14		1421:552,630,568,656,518,619,500,677,526,663,496,687,528,557,522,722	A
 N	1888	Dalaran Watcher	1	19		1421:575,785,597,796,592,801,617,777,635,777,635,766,630,750,627,776,603,749
 N	1889	Dalaran Wizard	1	20		1421:630,651,635,759,630,765,644,755,649,764
@@ -612,98 +875,181 @@ N	2137	Eliza Callen	0	12		1420:603,527	H	Leather Armor Merchant
 N	2140	Edwin Harly	0	19	vendor	1421:441,398	H	General Supplies
 N	2216	Apothecary Lydon	0	35		1424:615,194	H	Royal Apothecary Society
 N	2226	Karos Razok	0	55	flight	1421:455,425	H	Bat Handler
+N	2227	Sharlindra	0	25		1458:579,892	H
 N	2244	Syndicate Shadow Mage	1	21		1424:663,429,674,463,818,396,826,404,833,405,807,472,796,452,756,426,755,418,787,452,791,424,791,414,788,418,794,403,785,395,780,404,797,397,752,398,802,455,809,467
-N	2251	Giant Yeti	1	34		1416:389,737,376,677,375,665
+N	2251	Giant Yeti	1	34		1416:389,737,376,677,375,665,374,358,370,343
 N	2252	Crushridge Ogre	1	35		1416:498,619,498,604,496,540
+N	2253	Crushridge Brute	1	35		1416:492,519,494,532,496,544,489,507,498,554
 N	2261	Syndicate Watchman	1	20		1424:674,463,758,475,763,467,772,458,797,428,808,420,808,419,812,414,818,396,816,400,827,404,836,408,828,431,811,442,808,450,800,478,795,455,787,454,777,441,772,436,751,423,751,419,768,421,794,449
 N	2267	Hillsbrad Peasant	0	25		1424:340,420,358,459,349,460,328,470,298,427,304,422,345,381,353,408,352,465,351,447,339,441,338,478,347,446,336,454,341,459,347,480,348,475,315,423,322,398,311,418,362,472,351,474,330,418,366,435	A
+N	2269	Hillsbrad Miner	1	26		1424:275,579
 N	2308	Andrew Brownell	0	40		1458:728,292,732,295	H
 N	2335	Magistrate Burnside	0	30		1424:296,421,352,491,296,419	A
 N	2344	Dun Garok Mountaineer	0	29		1424:727,739,701,731,707,761,707,759,699,762,698,777,709,783,710,738,681,757,705,772,721,788,721,792,718,796,719,801,682,790,697,750,683,773,712,749,711,785,724,801,717,751	A
+N	2346	Dun Garok Priest	0	30		1424:691,733	A
 N	2347	Wild Gryphon	1	40		1424:820,364,804,350,902,398
-N	2348	Elder Moss Creeper	1	26		1424:576,647,581,637,577,634,625,732,659,763
-N	2349	Giant Moss Creeper	1	24		1424:319,518,663,575,636,575,731,629,640,537,607,472,798,331,722,279,807,334,835,363,378,281,806,313,834,344,867,417,844,435,797,586,762,597,717,649,340,540,318,539,649,514,433,557,396,607,376,646,342,655,342,595,715,614,768,523
-N	2350	Forest Moss Creeper	1	20		1424:714,376,619,304,711,87,598,356,630,285,712,341,570,83,665,82,597,333,577,267,574,247,599,269
-N	2351	Gray Bear	1	21		1424:568,229,586,274,560,267,577,226,574,351,552,153,573,142,562,105,658,346,645,370,547,200,551,179,555,93,658,37,658,94,639,70,640,357,572,276,618,362,589,330,650,352
-N	2354	Vicious Gray Bear	1	22		1424:442,362,488,372,521,374,506,335,456,372,464,371,523,324,454,390,492,366,705,469,715,476,451,414,412,450,444,371,536,416,459,424,415,429,486,422,713,370,542,294,402,354,742,346,717,341,407,345,463,386,494,383,741,339,545,449,463,403
-N	2356	Elder Gray Bear	1	26		1424:326,336,365,328,705,469,320,611,351,541,657,599,724,538,741,319,633,476,640,539,632,512,611,478,763,319,770,325,791,344,805,351,835,363,823,355,823,339,831,350,806,349,859,421,413,464,354,524,340,540,290,584,386,499
-N	2371	Daggerspine Siren	1	31		1424:603,644,576,634,585,647,578,652,578,664,586,662
-N	2384	Starving Mountain Lion	1	24		1424:435,374,432,369,456,365,450,393,535,315,547,323,533,300,529,312,499,325,499,310,448,363,500,326,504,352,488,320,497,341,449,356,439,396,417,375,421,355,407,377,433,355,533,361,485,335,471,275,584,409,554,241,471,283,552,425,543,370
+N	2348	Elder Moss Creeper	1	26		1424:576,647,581,637,577,634,625,732,659,763,593,654,614,683,603,539,593,630,604,637,599,666,594,596,609,589,619,562
+N	2349	Giant Moss Creeper	1	24		1424:319,518,663,575,636,575,731,629,640,537,607,472,798,331,722,279,807,334,835,363,378,281,806,313,834,344,867,417,844,435,797,586,762,597,717,649,340,540,318,539,649,514,433,557,396,607,376,646,342,655,342,595,715,614,768,523,671,524,696,520
+N	2350	Forest Moss Creeper	1	20		1424:714,376,619,304,711,87,598,356,630,285,712,341,570,83,665,82,597,333,577,267,574,247,599,269,588,248,580,299,618,406,606,352,603,340,595,283,599,248,680,103,655,82,635,346,628,379,634,421,622,322,572,140,571,136,710,90
+N	2351	Gray Bear	1	21		1416:726,670;1424:568,229,586,274,560,267,577,226,574,351,552,153,573,142,562,105,658,346,645,370,547,200,551,179,555,93,658,37,658,94,639,70,640,357,572,276,618,362,589,330,650,352,575,280,581,320,598,322,596,303,559,296,684,128,655,82,639,67,628,330
+N	2354	Vicious Gray Bear	1	22		1424:442,362,488,372,521,374,506,335,456,372,464,371,523,324,454,390,492,366,705,469,715,476,451,414,412,450,444,371,536,416,459,424,415,429,486,422,713,370,542,294,402,354,742,346,717,341,407,345,463,386,494,383,741,339,545,449,463,403,564,397
+N	2356	Elder Gray Bear	1	26		1424:326,336,365,328,705,469,320,611,351,541,657,599,724,538,741,319,633,476,640,539,632,512,611,478,763,319,770,325,791,344,805,351,835,363,823,355,823,339,831,350,806,349,859,421,413,464,354,524,340,540,290,584,386,499,659,511,722,516,679,611
+N	2371	Daggerspine Siren	1	31		1424:603,644,576,634,585,647,578,652,578,664,586,662,593,654,611,643,591,633,599,629,583,689,568,673,581,651,576,674,580,683,588,694,587,704,568,654,561,645,559,644,552,621
+N	2372	Mudsnout Gnoll	1	27		1424:619,652,626,679,657,628,655,617,646,605,640,598,639,607
+N	2377	Torn Fin Tidehunter	1	32		1424:332,672,367,683,450,651,451,646
+N	2384	Starving Mountain Lion	1	24		1424:435,374,432,369,456,365,450,393,535,315,547,323,533,300,529,312,499,325,499,310,448,363,500,326,504,352,488,320,497,341,449,356,439,396,417,375,421,355,407,377,433,355,533,361,485,335,471,275,584,409,554,241,471,283,552,425,543,370,554,447
+N	2385	Feral Mountain Lion	1	28		1424:591,475,624,680,617,684,621,588,667,635,603,538,583,607
+N	2386	Southshore Guard	0	55		1424:431,662,447,528	A
 N	2387	Hillsbrad Councilman	1	26		1424:319,429
+N	2388	Innkeeper Shay	0	30		1424:627,191	H	Innkeeper
 N	2389	Zarise	0	55	flight	1424:601,190,602,187	H	Bat Handler
-N	2390	Aranae Venomblood	0	29		1424:616,197,612,205	H	Herbalist
+N	2390	Aranae Venomblood	0	29	trainer	1424:616,197,612,205	H	Herbalist
 N	2391	Serge Hinott	0	32		1424:615,191	H	Expert Alchemist
 N	2393	Christoph Jeffcoat	0	32		1424:624,191	H	Tradesman
 N	2394	Mallen Swain	0	32		1424:622,209	H	Tailoring Supplies
+N	2397	Derak Nightfall	0	32		1424:627,203,635,192	H	Cook
 N	2399	Daryl Stack	0	56		1424:635,208	H	Master Tailor
 N	2401	Kayren Soothallow	0	30	vendor	1424:623,203,624,199	H	General Goods
 N	2403	Farmer Getz	0	24		1424:345,401	A
 N	2404	Blacksmith Verringtan	0	26		1424:327,472,325,447,331,463	A
-N	2406	Mountain Lion	1	33		1416:396,860,340,845,395,839,366,841,338,806,312,777,321,686
-N	2408	Snapjaw	1	31		1416:367,211,369,195,361,139,899,474,851,512,825,543,817,555,810,568,803,582,790,608,774,630,764,638,746,651,737,659,728,668;1424:571,473,681,288,607,422,700,109,690,135,683,163,682,177,682,220
+N	2406	Mountain Lion	1	33		1416:396,860,340,845,395,839,366,841,338,806,312,777,321,686,808,585
+N	2408	Snapjaw	1	31		1416:367,211,369,195,361,139,899,474,851,512,825,543,817,555,810,568,803,582,790,608,774,630,764,638,746,651,737,659,728,668,723,676,771,624,804,594,814,571,838,529,867,504,892,484,907,476,793,623,775,640,768,646,744,665,738,675,725,690,367,222;1424:571,473,681,288,607,422,700,109,690,135,683,163,682,177,682,220,684,231,620,438,660,372,641,403,656,395,664,387,673,331,677,277,680,266,678,224,677,193,695,124,715,83,701,131,695,145
 N	2427	Jailor Eston	1	24		1424:752,425,793,419,795,429,752,405
 N	2428	Jailor Marlgen	1	24		1424:782,399,779,408,790,425,792,406
+N	2434	Shadowy Assassin	1	37		1424:447,528
+N	2447	Narillasanz	1	44		1416:512,241
 N	2448	Clerk Horrace Whitesteed	0	26		1424:302,421,298,428,312,421,330,407,296,417	A
 N	2449	Citizen Wilkes	0	25		1424:319,428,312,415,336,428	A
 N	2450	Miner Hackett	0	29		1424:306,557,305,583,312,534,310,547	A
 N	2458	Randolph Montague	0	45		1458:661,426	H	Banker
 N	2459	Mortimer Montague	0	45		1458:666,442,672,441	H	Banker
+N	2480	Bro'kin	0	49		1416:388,389		Alchemy Supplies
 N	2490	First Mate Crazz	0	44		1434:281,758		Blackwater Raiders
 N	2502	"Shaky" Phillipe	0	44		1434:271,738
 N	2552	Witherbark Troll	1	30		1417:746,385,747,392
 N	2556	Witherbark Headhunter	1	35		
-N	2559	Highland Strider	1	30		1417:582,404,632,424,666,433,617,441,615,455,267,230,510,383,603,412,416,457,429,431,461,414,495,422,510,419,664,335,691,277,694,513,691,496,699,508,667,553,647,510,643,509,630,472
-N	2563	Plains Creeper	1	32		1417:502,422,504,382,595,506,487,606,416,457,495,422,714,452,685,462,697,556,690,579,707,501,666,530,691,549,689,549,683,556,699,474,684,527,643,453
+N	2559	Highland Strider	1	30		1417:582,404,632,424,666,433,617,441,615,455,267,230,510,383,603,412,416,457,429,431,461,414,495,422,510,419,664,335,691,277,694,513,691,496,699,508,667,553,647,510,643,509,630,472,594,441,573,467,555,489,686,532
+N	2560	Highland Thrasher	1	33		1417:565,628,434,341,440,350
+N	2563	Plains Creeper	1	32		1417:502,422,504,382,595,506,487,606,416,457,495,422,714,452,685,462,697,556,690,579,707,501,666,530,691,549,689,549,683,556,699,474,684,527,643,453,403,531,285,266,477,380,495,382
 N	2578	Young Mesa Buzzard	1	32		1417:683,556
-N	2704	Hanashi	0	50		1454:812,196	H	Weapon Master
+N	2611	Fozruk	1	42		1417:617,479
+N	2704	Hanashi	0	50	trainer	1454:812,196	H	Weapon Master
+N	2761	Cresting Exile	1	39		1417:735,301,734,298
 N	2804	Kurden Bloodclaw	0	61		1458:545,959	H	Warsong Gulch Battlemaster
-N	2818	Slagg	0	38	trainer	1417:741,336	H	Superior Butcher
+N	2818	Slagg	0	38	trainer	1417:741,336,738,336	H	Superior Butcher
+N	2819	Tunkk	0	34		1417:745,356	H	Leatherworking Supplies
+N	2820	Graud	0	31	vendor	1417:740,325	H	General Goods
+N	2821	Keena	0	33	vendor	1417:740,324	H	Trade Goods
 N	2843	Jutak	0	43		1434:275,775		Blade Trader
 N	2851	Urda	0	55	flight	1417:733,328	H	Wind Rider Master
 N	2857	Thund	0	23		1454:763,245,756,250	H	Journeyman Engineer
 N	2858	Gringer	0	55	flight	1434:269,770	H	Wind Rider Master
 N	2859	Gyll	0	55		1434:277,778	A	Gryphon Master
-N	2956	Adult Plainstrider	1	7		1412:501,488,575,586,556,606,483,464
-N	2957	Elder Plainstrider	1	9		1412:459,396,499,486,489,521,410,241,330,168,329,159,332,151,520,499,501,488,532,295
-N	2959	Prairie Stalker	1	7		1412:555,535,546,518,530,503,500,487,490,474,472,432
-N	2960	Prairie Wolf Alpha	1	9		1412:410,243
+N	2956	Adult Plainstrider	1	7		1412:501,488,575,586,556,606,483,464,463,398
+N	2957	Elder Plainstrider	1	9		1412:459,396,499,486,489,521,410,241,330,168,329,159,332,151,520,499,501,488,532,295,347,285,373,161,364,182,349,203,358,171,361,155,359,133,336,136,336,146,339,191,642,634,626,636;1456:192,60
+N	2959	Prairie Stalker	1	7		1412:555,535,546,518,530,503,500,487,490,474,472,432,552,624,410,512,402,497,403,488
+N	2960	Prairie Wolf Alpha	1	9		1412:410,243,361,156,362,138,336,138,336,171,489,389,589,637;1456:351,62,438,165
+N	2964	Windfury Sorceress	1	10		1412:333,310,326,303,363,253,369,233,374,226,377,216
 N	2967	Galak Centaur	1	9		1412:603,615,594,609,582,596,610,618,597,611,606,621,596,621
 N	2968	Galak Outrunner	1	10		1412:608,617,595,609,611,621,606,621
-N	2970	Swoop	1	7		1412:576,586,390,475,547,520
+N	2970	Swoop	1	7		1412:576,586,390,475,547,520,459,396
+N	2973	Kodo Bull	1	10		1412:336,172
+N	2974	Kodo Matriarch	1	11		1412:336,174
 N	2995	Tal	0	55	flight	1456:465,507,467,492	H	Wind Rider Master
 N	2996	Torn	0	45		1456:471,586,467,587,470,591	H	Banker
 N	2997	Jyn Stonehoof	0	30	repair,vendor	1456:413,620	H	Weapons Merchant
 N	2998	Karn Stonehoof	0	35		1456:390,543,394,558,402,546	H	Expert Blacksmith
-N	2999	Taur Stonehoof	0	30	repair,vendor	1456:392,546,398,553	H	Blacksmithing Supplies
-N	3003	Fyr Mistrunner	0	30		1456:414,534	H	Bread Vendor
+N	2999	Taur Stonehoof	0	30	repair,vendor	1456:392,546,398,553,422,569,413,545	H	Blacksmithing Supplies
+N	3003	Fyr Mistrunner	0	30	vendor	1456:414,534,422,569,408,538	H	Bread Vendor
 N	3014	Nida Winterhoof	0	30	vendor	1456:492,402,493,399	H	Herbalism Supplier
 N	3015	Kuna Thunderhorn	0	30	repair,vendor	1456:467,459	H	Bowyer & Fletching Goods
+N	3016	Tand	0	30		1456:500,348	H	Basket Weaver
 N	3017	Nan Mistrunner	0	30		1456:470,408	H	Fruit Vendor
+N	3025	Kaga Mistrunner	0	30		1456:512,498	H	Meat Vendor
 N	3027	Naal Mistrunner	0	40		1456:501,504	H	Cooking Supplier
-N	3035	Flatland Cougar	1	7		1412:555,535,548,522,489,474,569,574,471,430,493,504,494,512,542,563,573,581,537,625,489,526
+N	3028	Kah Mistrunner	0	45		1456:564,478	H	Fishing Trainer
+N	3035	Flatland Cougar	1	7		1412:555,535,548,522,489,474,569,574,471,430,493,504,494,512,542,563,573,581,537,625,489,526,476,397,463,398,534,579
 N	3036	Kym Wildmane	0	40		1456:775,296	H	Druid Trainer
-N	3045	Malakai Cross	0	50		1456:248,226	H	Priest Trainer
-N	3084	Bluffwatcher	0	55		1456:437,582,497,371,450,592,423,563,493,399	H
-N	3100	Elder Mottled Boar	1	9		1411:484,137,499,135,508,126,480,128
+N	3044	Miles Welsh	0	40	trainer	1456:257,159	H	Priest Trainer
+N	3045	Malakai Cross	0	50	trainer	1456:248,226,240,217	H	Priest Trainer
+N	3046	Father Cobb	0	60		1456:245,224	H	Priest Trainer
+N	3047	Archmage Shymm	0	60		1456:224,162	H	Mage Trainer
+N	3048	Ursyn Ghull	0	40		1456:255,156,266,167	H	Mage Trainer
+N	3049	Thurston Xane	0	50		1456:228,205	H	Mage Trainer
+N	3084	Bluffwatcher	0	55		1456:437,582,497,371,450,592,423,563,493,399,581,471,267,262,281,315,445,604,427,597,451,626,437,609,511,323,370,515,507,405,507,385,456,430,304,311	H
+N	3099	Dire Mottled Boar	1	6		1411:535,622,520,614,516,598,512,569,512,532,508,519,511,514,514,506,519,476,521,473,494,394,472,469,464,454,461,441,449,415,462,424,473,432,516,574,555,578,550,582,587,519,557,562,538,578,539,617,527,662,522,634,517,655,515,791,546,750
+N	3100	Elder Mottled Boar	1	9		1411:484,137,499,135,508,126,480,128,477,130,526,110,544,106,462,204,482,141,502,133,515,123,535,116,461,165,462,171,484,216,451,235,381,297,379,296,385,277,386,239,398,226,392,202,392,192,389,181,375,159,372,182,363,256,359,292,354,308,364,316
+N	3103	Makrura Clacker	1	6		1411:589,820,622,883,592,825,624,776,647,767,668,735,647,697,610,707,611,435,619,424,617,440,618,475,620,485,637,503
+N	3104	Makrura Shellhide	1	6		1411:607,840,610,800,635,704,625,493,626,511
+N	3107	Surf Crawler	1	7		1411:582,808,613,840,624,844,626,837,628,824,690,876,626,882,610,877,614,866,589,827,613,790,618,779,628,770,648,764,654,759,668,738,669,694,652,695,620,788,633,842,586,295,590,291,590,265,601,181
 N	3110	Dreadmaw Crocolisk	1	11		1413:642,29,640,38
+N	3121	Durotar Tiger	1	7		1411:688,853,648,864,652,877,617,890,690,715,601,793
+N	3122	Bloodtalon Taillasher	1	7		1411:636,832,680,835,686,863,683,890,671,894,646,864,669,725,466,460,616,779,617,781,633,842,451,235,412,323,583,298,589,266,585,236,569,242,446,253,549,381,557,317,574,279
+N	3123	Bloodtalon Scythemaw	1	9		1411:526,118,535,116,397,205,391,173,359,257,370,265,362,278,359,310,367,318,515,118,425,207,408,186,548,185
+N	3125	Clattering Scorpid	1	6		1411:546,748,563,735,579,715,576,709,562,687,558,739,532,694,532,676,515,577,508,540,504,518,510,568,519,586,543,575,588,508,549,563,538,647,536,639,522,634,513,698,512,737,515,754,538,775,546,778,559,458,568,462,602,447,591,444,593,500
+N	3126	Armored Scorpid	1	7		1411:487,384,485,371,475,357,482,351,453,290,574,305,581,296,585,236,566,201,564,231,543,294,566,255,443,259,549,381,557,317,574,279,581,267,584,259
+N	3130	Thunder Lizard	1	10		1411:394,237,390,246,391,265,393,284,391,291,391,312,390,251,389,252,405,243,400,281,406,299,412,240,395,274,391,302
 N	3149	Nez'raz	0	45		1434:314,298	H	Zeppelin Master
+N	3153	Frang	0	11		1411:426,689	H	Warrior Trainer
+N	3154	Jen'shan	0	8		1411:426,689,428,691	H	Hunter Trainer
+N	3155	Rwag	0	8		1411:413,681	H	Rogue Trainer
+N	3156	Nartok	0	9	trainer	1411:406,683	H	Warlock Trainer
+N	3157	Shikrik	0	10		1411:426,689	H	Shaman Trainer
+N	3158	Duokna	0	10	vendor	1411:426,675	H	General Goods
+N	3159	Kzan Thornslash	0	34		1411:406,680	H	Weaponsmith
+N	3160	Huklah	0	11		1411:406,679	H	Cloth & Leather Armor Merchant
+N	3161	Rarc	0	10		1411:406,680	H	Armorer & Shieldcrafter
+N	3163	Uhgar	0	15	repair,vendor	1411:520,407	H	Weaponsmith
+N	3164	Jark	0	14		1411:540,428	H	General Goods
+N	3165	Ghrawt	0	13	repair,vendor	1411:531,409,529,413,530,411	H	Bowyer
+N	3166	Cutac	0	14	repair,vendor	1411:532,411,531,409	H	Cloth & Leather Armor Merchant
+N	3167	Wuark	0	16	repair,vendor	1411:520,413,519,412	H	Armorer & Shieldcrafter
+N	3168	Flakk	0	15	vendor	1411:529,421	H	Trade Supplies
+N	3169	Tarshaw Jaggedscar	0	43		1411:540,427	H	Warrior Trainer
+N	3170	Kaplak	0	14		1411:520,435	H	Rogue Trainer
+N	3171	Thotar	0	16		1411:523,431	H	Hunter Trainer
+N	3172	Dhugru Gorelust	0	37	trainer	1411:542,412	H	Warlock Trainer
+N	3173	Swart	0	15		1411:540,428	H	Shaman Trainer
+N	3174	Dwukk	0	27		1411:520,408	H	Journeyman Blacksmith
+N	3175	Krunn	0	16		1411:520,410	H	Miner
+N	3184	Miao'zan	0	25	trainer	1411:555,741	H	Journeyman Alchemist
+N	3185	Mishiki	0	14	trainer	1411:555,750	H	Herbalist
+N	3186	K'waii	0	11	vendor	1411:564,736	H	General Goods
+N	3187	Tai'tasi	0	12		1411:559,740	H	Trade Supplies
+N	3191	Cook Torka	0	6	trainer	1411:512,425	H
+N	3220	Brave Darksky	0	14		1412:455,561	H
+N	3225	Corrupted Mottled Boar	1	10		1411:392,231
 N	3227	Corrupted Bloodtalon Scythemaw	1	11		1411:418,163
+N	3228	Corrupted Surf Crawler	1	10		1411:586,281
+N	3230	Nazgrel	0	62		1454:321,367	H	Advisor to Thrall
+N	3231	Corrupted Dreadmaw Crocolisk	1	12		1411:369,193,355,246;1413:644,73
 N	3242	Zhevra Runner	1	13		1413:526,214,526,204,525,179,524,168,525,146,602,205,608,219,634,313,644,347,565,344,494,131,507,132,553,338,555,341,539,342,450,325,446,333,470,250,466,245,472,269,528,344,532,356,534,363,539,377,546,385,511,337,503,354,497,359,482,375,480,386
+N	3243	Savannah Highmane	1	12		1413:491,271
 N	3245	Ornery Plainstrider	1	17		1413:604,89,605,312,601,307,613,357,594,327,617,346,607,360,596,533,578,516,566,516,553,507,549,511,542,509,552,492,555,473,596,84,577,63,583,75,591,79,608,107,609,127,611,315,609,321,607,333,612,307,478,128,463,135,435,151,455,153,447,160
-N	3246	Fleeting Plainstrider	1	13		1413:500,133,514,132,559,346,569,343,548,344,458,310,529,348,546,383,479,381,514,355,443,345,497,348,459,287,453,327,451,343,638,362,531,179,486,158,485,170,486,182,491,201,527,159,533,185
+N	3246	Fleeting Plainstrider	1	13		1413:500,133,514,132,559,346,569,343,548,344,458,310,529,348,546,383,479,381,514,355,443,345,497,348,459,287,453,327,451,343,638,362,531,179,486,158,485,170,486,182,491,201,527,159,533,185,420,259,495,136,424,235,566,211,478,228,480,217,480,207
 N	3247	Thunderhawk Hatchling	1	18		1413:443,529,438,554,443,531
-N	3248	Barrens Giraffe	1	16		1413:591,311,597,334,555,476,525,141,525,131,543,99,592,364,602,347,631,83,568,166,514,132,543,106,525,122,517,127,449,410,548,404,448,409,492,409,581,338,633,62,640,49,630,74,443,171,429,199,630,91,638,54
-N	3255	Sunscale Screecher	1	13		1413:566,172,557,445,595,106,589,113,576,122,567,168,603,141,599,142,610,229,607,301,605,299,504,132,551,98,543,106,532,113,458,285,538,363,483,374,445,336,443,345,457,299,556,100,532,124,498,397
+N	3248	Barrens Giraffe	1	16		1413:591,311,597,334,555,476,525,141,525,131,543,99,592,364,602,347,631,83,568,166,514,132,543,106,525,122,517,127,449,410,548,404,448,409,492,409,581,338,633,62,640,49,630,74,443,171,429,199,630,91,638,54,441,191,432,198,424,223,628,78
+N	3255	Sunscale Screecher	1	13		1413:566,172,557,445,595,106,589,113,576,122,567,168,603,141,599,142,610,229,607,301,605,299,504,132,551,98,543,106,532,113,458,285,538,363,483,374,445,336,443,345,457,299,556,100,532,124,498,397,581,203,525,194,530,176,512,368,543,356,509,373
 N	3256	Sunscale Scytheclaw	1	16		1413:436,170,454,159,446,169,439,169,482,118,606,87,584,72
-N	3296	Orgrimmar Grunt	0	55		1411:504,135;1454:458,644,506,901,472,693,495,694,530,695,556,647,631,387,674,394,678,385,652,389,628,389,601,407,596,406,573,400,567,422,591,470,606,534,411,643,643,379,598,498,510,718,460,652,727,301,575,420,526,647,485,747,705,359,494,702,453,629,526,780	H
+N	3289	Unknown	0	11		1411:560,746
+N	3293	Rezlak	0	5		1411:464,227,464,234		Tinkers' Union
+N	3296	Orgrimmar Grunt	0	55		1411:504,135,457,126;1454:458,644,506,901,472,693,495,694,530,695,556,647,631,387,674,394,678,385,652,389,628,389,601,407,596,406,573,400,567,422,591,470,606,534,411,643,643,379,598,498,510,718,460,652,727,301,575,420,526,647,485,747,705,359,494,702,453,629,526,780	H
 N	3309	Karus	0	45	banker	1454:495,693,496,689	H	Banker
 N	3310	Doras	0	55	flight	1454:454,639,457,642	H	Wind Rider Master
 N	3314	Urtharo	0	30	repair,vendor	1454:472,692,475,687	H	Weapon Merchant
+N	3315	Tor'phan	0	30	repair,vendor	1454:622,502	H	Cloth & Leather Armor Merchant
+N	3316	Handor	0	30		1454:628,452	H	Cloth & Leather Armor Merchant
 N	3318	Koma	0	45	banker	1454:496,691,502,694,501,689	H	Banker
 N	3320	Soran	0	45	banker	1454:496,694	H	Banker
 N	3322	Kaja	0	30	repair,vendor	1454:524,625	H	Guns and Ammo Merchant
+N	3324	Grol'dar	0	50		1454:482,469,484,458,479,490	H	Warlock Trainer
+N	3325	Mirket	0	50		1454:491,470,487,469,485,470,484,458	H	Warlock Trainer
+N	3326	Zevrost	0	50	trainer	1454:482,463,483,457	H	Warlock Trainer
 N	3339	Captain Thalo'thas Brightsun	0	25		1413:623,390
 N	3341	Gann Stonespire	0	18		1413:461,812,461,798,461,755,459,790	H
+N	3344	Kardris Dreamseeker	0	60		1454:391,378	H	Shaman Trainer
+N	3347	Yelmak	0	35		1454:567,336	H	Expert Alchemist
+N	3348	Kor'geld	0	30	vendor	1454:563,345	H	Alchemy Supplies
 N	3355	Saru Steelfury	0	45	trainer	1454:821,229	H	Artisan Blacksmith
 N	3356	Sumi	0	30	repair,vendor	1454:824,238	H	Blacksmithing Supplier
 N	3357	Makaru	0	35	trainer	1454:729,270,730,263	H	Mining Trainer
@@ -711,21 +1057,27 @@ N	3358	Gorina	0	30	vendor	1454:729,271,732,265	H	Mining Supplier
 N	3360	Koru	0	30	repair,vendor	1454:816,189	H	Mace & Staves Vendor
 N	3361	Shoma	0	30		1454:813,187	H	Weapon Vendor
 N	3364	Borya	0	30	vendor	1454:626,510	H	Tailoring Supplies
-N	3367	Felika	0	30		1454:563,579	H	General Trade Goods Merchant
+N	3365	Karolek	0	35		1454:632,449	H	Expert Leatherworker
+N	3366	Tamar	0	30		1454:632,449	H	Leatherworking Supplies
+N	3367	Felika	0	30	vendor	1454:563,579,542,573,552,576,560,372,539,566	H	General Trade Goods Merchant
 N	3368	Borstan	0	30		1454:574,536	H	Meat Vendor
 N	3374	Bael'dun Excavator	1	22		1413:470,857
 N	3376	Bael'dun Soldier	1	24		1413:496,839
 N	3386	Theramore Preserver	1	16		1413:605,549
 N	3391	Gazlowe	0	60		1413:627,363
 N	3392	Prospector Khazgorm	0	24		1413:475,849,481,859,480,860	A	Explorers' League
+N	3396	Hezrul Bloodmark	1	19		1413:460,373
+N	3397	Kolkar Bloodcharger	1	14		1413:460,373
 N	3399	Zamja	0	35	trainer	1454:572,533,580,536	H	Cooking Trainer
 N	3400	Xen'to	0	30	vendor	1454:575,530,584,541	H	Cooking Supplier
+N	3403	Sian'tsu	0	40		1454:390,372,382,372	H	Shaman Trainer
+N	3404	Jandi	0	35	trainer	1454:552,402,555,398	H	Herbalism Trainer
 N	3409	Zendo'jian	0	30	repair,vendor	1454:812,189	H	Weapon Vendor
 N	3412	Nogg	0	35		1454:756,250	H	Expert Engineer
 N	3413	Sovik	0	30	vendor	1454:757,249	H	Engineering Supplies
 N	3419	Apothecary Zamah	0	22		1456:234,213,230,209	H	Royal Apothecary Society
 N	3425	Savannah Prowler	1	15		1413:598,354,407,202,631,66,639,53,622,85,540,158,640,38
-N	3426	Zhevra Charger	1	18		1413:612,321,617,315,604,332,482,119,460,136,453,130,441,132,441,142,433,163,453,166,435,150,468,142,447,150,479,116,424,147,451,152,369,278
+N	3426	Zhevra Charger	1	18		1413:612,321,617,315,604,332,482,119,460,136,453,130,441,132,441,142,433,163,453,166,435,150,468,142,447,150,479,116,424,147,451,152,369,278,600,76,455,147,464,431,483,492
 N	3439	Wizzlecrank's Shredder	0	18		1413:566,75
 N	3442	Sputtervalve	0	15		1413:630,371		Tinkers' Union
 N	3446	Mebok Mizzyrix	0	17		1413:624,376
@@ -736,9 +1088,11 @@ N	3467	Baron Longshore	1	16		1413:642,472,643,469,638,486,629,496,637,492		South
 N	3481	Barg	0	14		1413:518,302	H	General Supplies
 N	3482	Tari'qa	0	14		1413:515,303	H	Trade Supplies
 N	3484	Kil'hala	0	25		1413:521,321	H	Journeyman Tailor
+N	3485	Wrahk	0	18		1413:522,317	H	Tailoring Supplies
 N	3486	Halija Whitestrider	0	19		1413:522,319,521,321	H	Clothier
 N	3487	Kalyimah Stormcloud	0	23		1413:522,319	H	Bags & Sacks
-N	3488	Uthrok	0	16		1413:509,291	H	Bowyer & Gunsmith
+N	3488	Uthrok	0	16		1413:509,291,511,294	H	Bowyer & Gunsmith
+N	3489	Zargh	0	16	vendor	1413:525,299	H	Butcher
 N	3490	Hula'mahi	0	30		1413:515,302	H	Reagents and Herbs
 N	3493	Grazlix	0	25		1413:622,380		Armorer & Shieldcrafter
 N	3495	Gagsprocket	0	20		1413:627,363		Engineering Goods
@@ -748,10 +1102,11 @@ N	3529	Moonrage Armorer	1	15		1421:467,724
 N	3531	Moonrage Tailor	1	15		1421:471,724
 N	3537	Zixil	0	32	repair,vendor	1424:610,199,608,199		Merchant Supreme
 N	3538	Overwatch Mark I	0	32		1424:605,188		Protector
-N	3544	Jason Lemieux	0	40		1424:619,196	H	Mushroom Seller
+N	3544	Jason Lemieux	0	40	vendor	1424:619,196,603,194,622,212,616,209	H	Mushroom Seller
 N	3566	Flatland Prowler	1	9		1412:490,389,485,392,383,260
 N	3577	Dalaran Brewmaster	1	15		1421:625,647
 N	3615	Devrak	0	55	flight	1413:515,303	H	Wind Rider Master
+N	3620	Harruk	0	40		1411:520,435	H	Pet Trainer
 N	3630	Deviate Coiler	1	15		1414:519,550
 N	3631	Deviate Stinglash	1	16		1414:523,550,526,549
 N	3633	Deviate Slayer	1	16		1414:523,550,527,549
@@ -759,26 +1114,35 @@ N	3638	Devouring Ectoplasm	1	16		1414:525,550,527,549
 N	3641	Deviate Lurker	1	17		1414:525,550
 N	3672	Boahn	1	20		1414:527,550		Druid of the Fang
 N	3682	Vrang Wildgore	0	35		1413:438,122	H	Weaponsmith & Armorcrafter
+N	3707	Ken'jai	0	10		1411:426,689	H	Priest Trainer
 N	3711	Wrathtail Myrmidon	1	20		1440:96,277
 N	3713	Wrathtail Wave Rider	1	18		1440:99,275,125,267,134,250,142,204,147,197,146,157,148,256,145,262,142,272,123,274
+N	3745	Foulweald Pathfinder	1	23		1440:560,627,563,635
+N	3746	Foulweald Den Watcher	1	25		1440:558,632,505,595,568,626,563,635
 N	3782	Shadethicket Stone Mover	1	25		1440:795,664
 N	3802	Severed Dreamer	1	29		1440:753,734,748,743
-N	3809	Ashenvale Bear	1	21		1440:367,601,471,563,504,557,539,545,564,556,548,548,521,544,370,597,341,402,513,546,575,561,553,550,669,859
+N	3809	Ashenvale Bear	1	21		1440:367,601,471,563,504,557,539,545,564,556,548,548,521,544,370,597,341,402,513,546,575,561,553,550,669,859,569,560,366,462,329,401,381,398,393,390,373,352,418,439,435,701,572,559,552,549
+N	3810	Elder Ashenvale Bear	1	26		1440:623,551,678,514,619,559,639,547,641,553,677,623,647,593,644,587,643,580
 N	3811	Giant Ashenvale Bear	1	30		
 N	3812	Clattering Crawler	1	20		1440:123,330,154,241
-N	3814	Spined Crawler	1	21		1440:137,285,148,213,144,179,141,278,140,284,121,270,130,317,141,295
+N	3814	Spined Crawler	1	21		1440:137,285,148,213,144,179,141,278,140,284,121,270,130,317,141,295,140,152,138,162,151,157
 N	3816	Wild Buck	1	19		1440:250,358,230,348,227,341,205,327,236,352,226,303,262,343,236,316,182,301,244,354,222,331
 N	3817	Shadowhorn Stag	1	22		1440:525,637,512,547
-N	3818	Elder Shadowhorn Stag	1	26		1440:725,643,700,627,707,632,719,640,725,571,725,638,706,597,714,581,718,570,724,565
-N	3819	Wildthorn Stalker	1	21		1440:356,562,673,760,323,524,318,523,302,504,351,601,297,489,356,559,350,581,311,519,300,496,381,307,382,386,333,400,328,407,350,599,670,851,785,658,746,766
+N	3818	Elder Shadowhorn Stag	1	26		1440:725,643,700,627,707,632,719,640,725,571,725,638,706,597,714,581,718,570,724,565,645,500,647,487,641,474,631,472,629,446,630,445
+N	3819	Wildthorn Stalker	1	21		1440:356,562,673,760,323,524,318,523,302,504,351,601,297,489,356,559,350,581,311,519,300,496,381,307,382,386,333,400,328,407,350,599,670,851,785,658,746,766,723,746,406,557,384,399,412,431,423,447,353,573,455,558,348,591,349,583,305,513
 N	3820	Wildthorn Venomspitter	1	25		1440:655,606,642,564,678,623,642,574,663,614,600,683,588,680,680,621,724,510,641,556
-N	3823	Ghostpaw Runner	1	19		1440:353,573,217,313,199,302,173,299,238,352,353,603,349,598
+N	3823	Ghostpaw Runner	1	19		1440:353,573,217,313,199,302,173,299,238,352,353,603,349,598,708,759,736,764,300,497,241,353,788,659,319,523,167,296
+N	3834	Crazed Ancient	1	28		1440:658,450
+N	3881	Grimtak	0	14	vendor	1411:513,425	H	Butcher
+N	3882	Zlagk	0	9	vendor	1411:427,673	H	Butcher
 N	3924	Thistlefur Shaman	1	23		1440:310,433,327,399,337,395,340,395,339,387,350,330,366,336,374,341,372,335,374,352,369,351,362,361,359,363,400,320,399,320,384,364
 N	3925	Thistlefur Avenger	1	24		1440:315,459,304,425,334,396,341,402,340,395,349,330,349,329,357,330,370,337,378,341,363,360,399,320,373,351,384,364,316,438
-N	3926	Thistlefur Pathfinder	1	23		1440:359,333,370,339,361,362,399,320,382,360,381,391
+N	3926	Thistlefur Pathfinder	1	23		1440:359,333,370,339,361,362,399,320,382,360,381,391,360,399,396,373,375,354,400,320,374,329,371,345
 N	3928	Rotting Slime	1	21		1440:718,701,784,658,755,732,752,752,696,818
+N	3933	Hai'zan	0	14	vendor	1411:556,739	H	Butcher
 N	3944	Wrathtail Priestess	1	20		1440:96,277,114,302
 N	3951	Bhaldaran Ravenshade	0	34		1440:498,675	A	Bowyer
+N	3955	Shandrina	0	24		1440:492,676	A	Trade Goods
 N	3963	Danlaar Nightstride	0	35		1440:499,674	A	Hunter Trainer
 N	4006	Deepmoss Webspinner	1	19		1442:691,403
 N	4007	Deepmoss Venomspitter	1	18		1442:607,639,597,619,607,656,531,564,508,392,522,531,520,579,524,617,610,658,612,641,612,632,617,611,630,589,624,611,535,749,536,737,531,723,533,718,528,718,529,740,635,617,628,633,627,621,538,616,527,627,524,584,531,553,513,477,492,457,645,603
@@ -797,6 +1161,7 @@ N	4040	Cave Stalker	1	22		1437:534,644
 N	4042	Singed Basilisk	1	26		1442:339,649
 N	4043	Galthuk	0	8	repair,vendor	1454:819,190,821,187	H	Two-Handed Weapons Merchant
 N	4046	Magatha Grimtotem	0	62		1456:703,307	H	Elder Crone
+N	4047	Zor Lonetree	0	62		1454:390,377,390,380	H	Elder Far Seer
 N	4050	Cenarion Caretaker	1	26		1442:279,139
 N	4057	Son of Cenarius	1	24		1442:377,131
 N	4067	Twilight Runner	1	23		1442:378,156
@@ -809,8 +1174,9 @@ N	4114	Gravelsnout Forager	1	27		1441:594,581,268,406
 N	4117	Cloud Serpent	1	26		1441:452,545
 N	4118	Venomous Cloud Serpent	1	28		1441:236,447
 N	4124	Needles Cougar	1	27		1441:330,514,670,511,594,581,220,234,144,270,165,180,142,146,126,145,151,316,301,464,319,497,506,454,371,471,287,418,120,217,129,262,100,226,142,257,153,338,187,340,150,345,133,207,107,231,136,268,138,271,151,328
-N	4127	Hecklefang Hyena	1	16		1413:588,293,601,286,605,299,598,407,615,408,556,454,557,448,561,415,586,397,636,71,564,177,599,76,600,174,614,253,622,291,517,131,528,128,542,112,545,106,579,376,441,354,546,396,447,405,570,354,582,355,633,57,633,61,641,41
+N	4127	Hecklefang Hyena	1	16		1413:588,293,601,286,605,299,598,407,615,408,556,454,557,448,561,415,586,397,636,71,564,177,599,76,600,174,614,253,622,291,517,131,528,128,542,112,545,106,579,376,441,354,546,396,447,405,570,354,582,355,633,57,633,61,641,41,622,85,619,86
 N	4128	Hecklefang Stalker	1	22		1413:456,851,461,821
+N	4166	Gazelle	1	3		1413:536,361,535,356
 N	4196	Silithid Swarm	1	22		1413:473,698		Silithid Swarmer's Minion
 N	4248	Pesterhide Hyena	1	27		1441:407,497,338,538,457,601,247,235,236,377,261,423,273,419,314,514,268,411,492,470,517,492,382,550,297,474,304,467,321,497,258,392,288,421,219,236,205,401,218,419,233,443,240,453
 N	4249	Pesterhide Snarler	1	29		1441:123,206,147,197,125,150,533,445,112,223,138,257,91,218,183,352,115,242,106,231,110,238,140,272,178,372
@@ -836,18 +1202,25 @@ N	4558	Lauren Newcomb	0	30	repair,vendor	1458:666,381,641,381	H	Light Armor Merc
 N	4559	Timothy Weldon	0	30	repair,vendor	1458:628,400,628,393	H	Heavy Armor Merchant
 N	4561	Daniel Bartlett	0	30		1458:641,381	H	General Trade Supplier
 N	4562	Thomas Mordan	0	30	vendor	1458:689,401,692,392,688,395	H	Reagent Vendor
+N	4565	Richard Kerwin	0	40		1458:885,156	H	Warlock Trainer
+N	4570	Sydney Upton	0	30		1458:717,289	H	Staff Merchant
 N	4571	Morley Bates	0	30		1458:736,329	H	Fungus Vendor
+N	4576	Josef Gregorian	0	45		1458:708,295,708,300	H	Artisan Tailor
+N	4577	Millie Gregorian	0	30	vendor	1458:710,289,708,299,704,302	H	Tailoring Supplies
+N	4580	Lucille Castleton	0	30		1458:717,289	H	Robe Vendor
 N	4581	Salazar Bloch	0	30	vendor	1458:769,382,771,387	H	Book Dealer
 N	4591	Mary Edras	0	35	trainer	1458:735,556
-N	4593	Christoph Walker	0	60		1458:468,165,476,149	H	Warrior Trainer
+N	4593	Christoph Walker	0	60		1458:468,165,476,149,474,191	H	Warrior Trainer
+N	4594	Angela Curthas	0	50		1458:474,191	H	Warrior Trainer
 N	4595	Baltus Fowler	0	40		1458:476,149	H	Warrior Trainer
 N	4596	James Van Brunt	0	35	trainer	1458:615,296,612,307	H	Expert Blacksmith
 N	4597	Samuel Van Brunt	0	30	repair,vendor	1458:615,296	H	Blacksmithing Supplier
 N	4598	Brom Killian	0	35	trainer	1458:559,369,563,373	H	Mining Trainer
 N	4603	Nicholas Atwood	0	30	repair,vendor	1458:623,270	H	Gun Merchant
 N	4605	Basil Frye	0	26		1458:601,288,612,288	H	Journeyman Blacksmith
-N	4606	Aelthalyste	0	60		1458:492,181,489,181	H	Priest Trainer
-N	4607	Father Lankester	0	40		1458:514,138	H	Priest Trainer
+N	4606	Aelthalyste	0	60		1458:492,181,489,181,474,191	H	Priest Trainer
+N	4607	Father Lankester	0	40		1458:514,138,474,191	H	Priest Trainer
+N	4608	Father Lazarus	0	50	trainer	1458:471,194	H	Priest Trainer
 N	4613	Christopher Drakul	0	50		1458:688,441,690,444	H	Guild Master
 N	4615	Katrina Alliestar	0	30	vendor	1458:548,500,547,497	H	Herbalism Supplier
 N	4624	Booty Bay Bruiser	0	57		
@@ -861,15 +1234,18 @@ N	4802	Blackfathom Tide Priestess	1	20		1414:445,349,439,349,439,351
 N	4803	Blackfathom Oracle	1	22		1414:439,346
 N	4879	Ogg'marr	0	40	vendor	1445:368,312	H	Butcher
 N	4883	Krak	0	43		1445:368,313	H	Armorer
-N	4954	Uttnar	0	36	vendor	1417:741,336	H	Butcher
+N	4949	Thrall	0			1454:321,377,319,379	H	Warchief
+N	4954	Uttnar	0	36	vendor	1417:741,336,739,338	H	Butcher
 N	5052	Edward Remington	0	25		1458:693,445,688,440	H	Guild Tabard Designer
 N	5190	Merill Pleasance	0	25	vendor	1458:691,446,667,440,689,443	H	Tabard Vendor
 N	5204	Apothecary Zinge	0	29		1458:481,700	H	Royal Apothecary Society
-N	5624	Undercity Guardian	0	55		1458:549,708,564,174,702,409,702,443,631,714,477,405,493,586,605,440,660,476,614,473,659,482,575,685	H
+N	5624	Undercity Guardian	0	55		1458:549,708,564,174,702,409,702,443,631,714,477,405,493,586,605,440,660,476,614,473,659,482,575,685,631,483,483,284,454,260,702,412,609,473,639,491,466,269,687,405,660,487,660,494,626,470,616,467,684,523,658,500,665,724,844,485,808,257	H
+N	5639	Craven Drok	0	35		1454:496,505,524,445,515,469,518,457,504,509	H
 N	5652	Practice Dummy	0	25		1458:461,251
 N	5662	Sergeant Houser	0	40		1458:474,273	H	Sergeant
 N	5668	Mattie Alred	0	20		1458:659,297	H
 N	5670	Edrick Killian	0	20		1458:658,277	H
+N	5677	Summoned Succubus	1	20		1454:501,504
 N	5680	Male Human Captive	0	5		1458:511,221	A
 N	5687	Captive Abomination	1	20		1458:536,228
 N	5697	Theresa	0	5		1458:502,146,528,136	H	Gerard's Experiment
@@ -877,18 +1253,30 @@ N	5701	Selina Pickman	0	20		1458:751,437,736,266,661,261	H
 N	5706	Davitt Hickson	0	20		1458:751,437,736,266	H
 N	5707	Reginald Grimsford	0	20		1458:752,437	H
 N	5725	Deathguard Lundmark	0	15		1420:627,556	H
+N	5732	Apothecary Katrina	0	20		1458:627,486	H	Royal Apothecary Society
 N	5733	Apothecary Lycanus	0	20		1458:510,802	H	Royal Apothecary Society
 N	5744	Cedric Stumpel	0	20		1458:749,565	H
 N	5747	Hepzibah Sedgewick	0	20		1458:792,508,660,619,690,516	H
+N	5754	Zane Bradford	0	10		1458:717,289	H	Wand Vendor
 N	5758	Leo Sarn	0	18	vendor	1421:540,823	H	Enchanting Supplies
 N	5766	Savannah Cub	1	5		1413:617,344,615,335,623,333,623,325,602,332,597,318		Savannah Matriarch's Pet
 N	5780	Cloned Ectoplasm	1	16		1414:523,546,525,550
 N	5806	Treant Ally	0	24		1442:351,118,371,120,374,131	A	Son of Cenarius's Pet
+N	5811	Kamari	0	26		1454:628,452,632,448	H	Journeyman Leatherworker
 N	5812	Tumi	0	30		1454:823,235	H	Heavy Armor Merchant
+N	5815	Kurgul	0	45		1454:485,470,479,490	H	Demon Trainer
 N	5819	Mirelle Tremayne	0	30		1458:614,284	H	Heavy Armor Merchant
+N	5821	Sheldon Von Croy	0	30		1458:708,299	H	Cloth Armor Merchant
 N	5870	Krond	0	27	vendor	1442:463,587	H	Butcher
+N	5880	Un'Thuwa	0	14		1411:560,746	H	Mage Trainer
+N	5884	Mai'ah	0	10		1411:426,689	H	Mage Trainer
 N	5886	Gwyn Farrow	0	16		1421:443,398	H	Mushroom Merchant
-N	5921	Strength of Earth Totem II	1	25		1440:540,625		Foulweald Shaman's Totem
+N	5921	Strength of Earth Totem II	1	25		1440:540,625,505,593,567,626,566,630		Foulweald Shaman's Totem
+N	5942	Zansoa	0	14		1411:559,740	H	Fishing Supplies
+N	5943	Rawrk	0	15	trainer	1411:541,420,541,419	H	First Aid Trainer
+N	5952	Den Grunt	0	55		1411:423,684,433,678,407,680,482,677	H
+N	5957	Birgitte Cranston	0	45		1456:223,165	H	Portal Trainer
+N	6027	Kitha	0	17		1411:543,412	H	Demon Trainer
 N	6028	Burkrum	0	30		1440:734,605	H	Heavy Armor Merchant
 N	6132	Razorfen Servitor	1	23		1414:509,704
 N	6208	Caverndeep Invader	1	26		1415:433,535
@@ -896,14 +1284,20 @@ N	6209	Caverndeep Looter	1	26		1415:434,535
 N	6210	Caverndeep Pillager	1	25		1415:433,535
 N	6213	Irradiated Invader	1	26		1415:432,535
 N	6221	Addled Leper	1	25		1415:434,535
+N	6239	Cyclonian	1	40		1416:790,637
 N	6288	Jayla	0	23		1440:496,676	A	Skinner
+N	6410	Orm Stonehoof	0	45		1456:381,520	H
 N	6466	Gamon	1	12		1454:536,707,535,685
-N	6491	Spirit Healer	0	60		1413:508,326;1414:532,546;1415:482,319;1417:486,558;1424:638,197;1441:303,235;1442:576,620;1458:679,138,679,153
-N	6492	Rift Spawn	1	16		1458:491,729,488,739,575,685
+N	6491	Spirit Healer	0	60	spirithealer	1411:471,177,575,733;1413:508,326,454,611;1414:532,546;1415:482,319;1417:486,558;1424:638,197;1437:495,414;1441:303,235;1442:576,620;1458:679,138,679,153;2521:403,637
+N	6492	Rift Spawn	1	16		1458:491,729,488,739,575,685,588,707
 N	6668	Lord Cyrik Blackforge	1	23		1413:469,859
 N	6739	Innkeeper Bates	0	30	innkeeper,vendor	1421:432,413	H	Innkeeper
 N	6741	Innkeeper Norman	0	30	innkeeper,vendor	1458:675,382,668,379,674,378,668,384	H	Innkeeper
+N	6746	Innkeeper Pala	0	30		1456:446,614	H	Innkeeper
+N	6928	Innkeeper Grosk	0	30	innkeeper,vendor	1411:516,418	H	Innkeeper
 N	6929	Innkeeper Gryshka	0	30	vendor	1414:584,455;1454:534,683,540,687	H	Innkeeper
+N	6987	Malton Droffers	0	40		1454:590,373	H	Droffers and Son Salvage
+N	7088	Thuwd	0	35		1454:632,449	H	Skinning Trainer
 N	7161	Wrenix the Wretched	0	20		1413:631,363
 N	7230	Shayis Steelfury	0	60		1454:806,238,800,227	H	Armor Crafter
 N	7231	Kelgruk Bloodaxe	0	60		1454:821,187	H	Weapon Crafter
@@ -911,14 +1305,21 @@ N	7360	Dun Garok Soldier	0	30		1424:306,562	A	Foreman Bonds's Guardian
 N	7731	Innkeeper Jayka	0	30	innkeeper,vendor	1442:476,619,475,621	H	Innkeeper
 N	7793	Ox	0	53		1454:806,238	H	The Mithril Order
 N	7794	McGavan	0	55		1434:287,749		The Mithril Order
+N	7825	Oran Snakewrithe	0	50		1458:719,289	H
 N	7853	Scooty	0	30		1434:277,775		Chief Engineer
+N	7952	Zjolnir	0	45		1411:553,755	H	Raptor Handler
+N	7953	Xar'Ti	0	50	trainer	1411:554,754	H	Raptor Riding Trainer
 N	8119	Zikkel	0	45		1413:627,374		Banker
 N	8356	Chesmu	0	45		1456:471,588	H	Banker
 N	8357	Atepa	0	45		1456:468,587,475,585	H	Banker
+N	8360	Elki	0	30		1456:444,548	H	Mail Armor Merchant
 N	8361	Chepi	0	30	vendor	1456:423,563	H	Reagent Vendor
 N	8403	Jeremiah Payson	0	30	vendor	1458:667,462,672,455,673,448	H	Cockroach Vendor
-N	8996	Voidwalker Minion	1	27		1440:830,520		Bleakheart Hellcaller's Minion
+N	8722	Auctioneer Gullem	0	50	auctioneer	1456:405,537,388,514,389,508	H
+N	8996	Voidwalker Minion	1	27		1411:543,90,532,109,517,107,523,110,530,111,547,89,538,92,517,97,520,109,418,260,551,100,536,85,528,76,526,83;1440:830,520		Bleakheart Hellcaller's Minion
+N	9087	Bashana Runetotem	0	35		1456:711,313	H
 N	9316	Wenikee Boltbucket	0	19		1413:490,112
+N	9501	Innkeeper Adegwa	0	30		1417:741,326	H	Innkeeper
 N	9549	Borand	0	30		1442:454,594	H	Bowyer
 N	9552	Zanara	0	43		1445:356,307	H	Bowyer
 N	9555	Mu'uta	0	35	repair,vendor	1417:726,335	H	Bowyer
@@ -928,26 +1329,37 @@ N	9566	Zapetta	0	45		1420:608,587	H	Zeppelin Master
 N	9976	Tharlidun	0	30		1417:738,331	H	Stable Master
 N	9979	Sarah Goode	0	30		1421:437,412	H	Stable Master
 N	9983	Kelsuwa	0	30		1413:451,587	H	Stable Master
+N	9987	Shoja'my	0	30		1411:520,420	H	Stable Master
 N	10053	Anya Maulray	0	30		1458:668,379,675,382,675,376	H	Stable Master
 N	10054	Bulrug	0	30		1456:448,599,450,592	H	Stable Master
 N	10057	Theodore Mont Claire	0	30		1424:622,203,620,197	H	Stable Master
 N	10063	Reggifuz	0	35		1413:622,391		Stable Master
+N	10181	Lady Sylvanas Windrunner	0			1458:579,892	H	Banshee Queen
 N	10266	Ug'thok	0	25		1454:806,238	H	Journeyman Blacksmith
-N	10278	Thrag Stonehoof	0	24		1456:397,556,391,560	H	Journeyman Blacksmith
+N	10278	Thrag Stonehoof	0	24		1456:397,556,391,560,422,569	H	Journeyman Blacksmith
 N	10377	Elu	0	28		1441:449,491	H	Wind Rider Apprentice
 N	10378	Omusa Thunderhorn	0	55	flight	1413:445,591	H	Wind Rider Master
+N	10540	Vol'jin	0			1454:322,361	H
+N	10578	Bom'bay	0	8		1411:556,750	H	Witch Doctor in Training
+N	10676	Raider Jhash	0	35		1411:524,421	H
+N	10682	Raider Kerr	0	35		1411:520,421,526,433	H
+N	10719	Herald of Thrall	0	50		1454:319,379,335,378	H
 N	10720	Galak Assassin	1	28		1441:221,320
 N	10781	Royal Overseer Bauhaus	0	40		1458:691,446	H	Undercity Census
-N	10879	Harbinger Balthazad	0	3		1458:646,548,680,409	H
-N	10880	Warcaller Gorlach	0	3		1454:513,667,602,494,586,572	H
+N	10879	Harbinger Balthazad	0	3		1458:646,548,680,409,640,419,616,517	H
+N	10880	Warcaller Gorlach	0	3		1454:513,667,602,494,586,572,526,424,551,575	H
 N	10881	Bluff Runner Windstrider	0	3		1456:418,569	H
 N	11017	Roxxik	0	46		1454:755,250	H	Artisan Engineer
+N	11025	Mukdrak	0	26	trainer	1411:521,407	H	Journeyman Engineer
 N	11044	Doctor Martin Felben	0	25		1458:468,747	H	Journeyman Alchemist Trainer
+N	11046	Whuut	0	23	trainer	1454:559,334,560,330	H	Journeyman Alchemist
+N	11048	Victor Ward	0	24	trainer	1458:708,299	H	Journeyman Tailor
+N	11049	Rhiannon Davis	0	32	trainer	1458:708,299,702,300	H	Expert Tailor
 N	11177	Okothos Ironrager	0	52		1454:801,234,796,235	H	Armorsmith
 N	11178	Borgosh Corebender	0	51		1454:798,235	H	Weaponsmith
 N	11748	Samantha Swifthoof	0	40		1434:335,537	H
 N	11833	Rahauro	0	20		1456:702,301,696,288,706,320	H	Magatha's Servant
-N	11868	Sayoc	0	50		1454:818,188	H	Weapon Master
+N	11868	Sayoc	0	50		1454:818,188,817,192	H	Weapon Master
 N	11869	Ansekhwa	0	50		1456:414,622,414,616,407,607	H	Weapon Master
 N	11870	Archibald	0	50		1458:553,343	H	Weapon Master
 N	11899	Shardi	0	55	flight	1445:357,317	H	Wind Rider Master
@@ -960,43 +1372,80 @@ N	12033	Wulan	0	30	vendor	1443:262,699	H	Cooking Supplies
 N	12043	Kulwia	0	32	vendor	1442:455,595	H	Trade Supplies
 N	12136	Snurk Bucksquick	0	45		1411:508,129	H	Zeppelin Master
 N	12196	Innkeeper Kaylisk	0	30	innkeeper	1440:739,607,741,609	H	Innkeeper
+N	12198	Martin Lindsey	0	61		1456:289,199	H	Arathi Basin Battlemaster
 N	12616	Vhulgra	0	55	flight	1440:732,615	H	Wind Rider Master
+N	12676	Sharptalon	0	31		1440:743,695,740,683,698,703	A
 N	12677	Shadumbra	0	28		1440:543,546,555,551,621,501	A
 N	12736	Je'neu Sancrea	0	25		1440:116,343		Earthen Ring
+N	12776	Hraug	0	9		1411:406,684	H	Demon Trainer
 N	12818	Ruul Snowhoof	0	26		1440:376,351,414,345	H
 N	12920	Doctor Gregory Victor	0	48		1417:734,365	H	Trauma Surgeon
 N	12921	Enraged Foulweald	1	23		1440:564,635
+N	12922	Imp Minion	1	10		1411:406,684,426,269,529,270	H	Burning Blade Cultist's Pet
 N	12940	Vorsha the Lasher	1	22		1440:92,275
 N	12962	Wik'Tar	0	30	vendor	1440:118,342	H	Fish Merchant & Supplies
 N	13155	Deathstalker Agent	0	40		1437:514,591	H
-N	14375	Scout Stronghand	0	60		1454:535,648,555,640,523,840,529,653	H
-N	14376	Scout Manslayer	0	60			H
-N	14377	Scout Tharr	0	60		1454:534,650	H
-N	14402	Seeker Cromwell	0	60		1458:661,411,654,442,648,439,619,510,659,464,659,430	H
-N	14403	Seeker Nahr	0	60		1458:692,397,551,219,529,362,673,442,629,407,648,439,615,285,551,199	H
-N	14404	Seeker Thompson	0	60		1458:736,266,664,320,628,409,648,439,657,389	H
-N	14440	Hunter Sagewind	0	60		1456:473,588	H
+N	13417	Sagorne Creststrider	0	50		1454:391,378	H	Shaman Trainer
+N	14375	Scout Stronghand	0	60		1454:535,648,555,640,523,840,529,653,473,651	H
+N	14376	Scout Manslayer	0	60		1454:492,698	H
+N	14377	Scout Tharr	0	60		1454:534,650,502,609	H
+N	14392	Overlord Runthak	0	60		1454:518,762,518,724,517,758,517,745	H
+N	14402	Seeker Cromwell	0	60		1458:661,411,654,442,648,439,619,510,659,464,659,430,659,483,673,390,638,476	H
+N	14403	Seeker Nahr	0	60		1458:692,397,551,219,529,362,673,442,629,407,648,439,615,285,551,199,659,386,629,479,635,484	H
+N	14404	Seeker Thompson	0	60		1458:736,266,664,320,628,409,648,439,657,389,719,289	H
+N	14440	Hunter Sagewind	0	60		1456:473,588,450,595,440,597,407,535	H
+N	14441	Hunter Ragetotem	0	60		1456:408,389,450,595,462,449	H
 N	14442	Hunter Thunderhorn	0	60		1456:459,497,472,585,473,500,437,583	H
 N	14726	Rashona Straglash	0	35		1454:629,514	H	Horde Cloth Quartermaster
 N	14729	Ralston Farnsley	0	35		1458:721,293,719,291,745,283	H	Horde Cloth Quartermaster
+N	15116	Grinkle	0	50		1454:516,701,510,724	H	Fishing Promoter
+N	15125	Kosco Copperpinch	0	30	vendor	1417:742,295		Smokywood Pastures
+N	15126	Rutherford Twing	0	55	repair,vendor	1417:735,301,734,298	H	Defilers Supply Officer
 N	15131	Qeeju	0	45		1440:733,617	H	Stable Master
-N	15188	Cenarion Emissary Blackhoof	0	55		1454:497,657
+N	15188	Cenarion Emissary Blackhoof	0	55		1454:497,657,478,655
 N	16227	Bragok	0	55	flight	1413:631,372		Flight Master
 N	185333	Avelina Lilly	1	22		1421:637,656
 N	185334	Isaac Pearson	0	22		1413:620,385	A
+N	185335	Summoned Incubus	1	20		1454:500,502
 N	203139	Son of Arugal	1	25		1421:463,257
 N	209797	Bruuz	1	20		1413:646,397
 N	210845	Jixo Madrocket	0	20		1442:593,625		Amateur Daredevil
 N	211022	Owen Thadd	0	40		1458:737,325	H	Librarian
 N	217669	Scorched Screeching Roguefeather	1	30		1441:276,463
 N	217711	Seared Needles Cougar	1	27		1441:238,245
+N	230317	Mokvar	0	60		1454:344,372	H
 N	246152	Shari Stilwell	0	16	trainer	1420:604,527	H	Paladin Trainer
+N	246344	Alodan the Hopeful	0	30		1456:255,156	H	Paladin Trainer
 N	248196	Apothecary Durelle	0	60		1413:498,293	H	Alchemist
 N	248197	Gor'mak	0	60	repair,vendor	1413:498,297	H	Blacksmith
 N	248198	Aza'bek	0	60	vendor	1413:498,293	H	Chef
 N	248199	Beneris	0	60		1413:498,297	H	Enchanter
 N	248200	Fizzlefuse	0	60		1413:498,294	H	Opportunist Engineer
 N	248201	Pawani	0	60		1413:497,293	H	Leatherworker
+N	250868	Vuldren	1	6		2521:463,555
+N	250874	Vuldren Alpha	1	10		2521:566,738
+N	251245	Prideclaw	1	6		2521:406,634,411,639,430,619
+N	251523	Constable Aonda	0	20		2521:455,455		Peacekeeper
+N	251622	Flutterfly	1	9		2521:461,724,483,756
+N	251661	Galestrider	1	6		2521:468,576,443,575,431,580,425,566,453,584
+N	251662	Living Lightning	1	7		2521:475,560,483,582,484,565,477,558,473,544,475,539,485,538,489,542,492,563,494,557,500,547,500,552
+N	251707	Ornery Galestrider	1	8		2521:504,759
+N	251904	Sania Silverstream	1	7		2521:452,452		Al'Aketh Missionary
+N	251966	Commander Cyclas	1	8		2521:502,568
+N	252068	Al'Aketh Stormcaller	1	7		2521:470,560,483,583,487,574,478,559,478,573,479,586,474,539,469,544,482,536,492,549,488,543,469,568,481,561,492,563,494,556,501,546,501,559
+N	252076	High Priestess Lorthuna	1			2521:489,539
+N	252077	Skypriest Aanders	1	6		2521:489,539
+N	252155	Peacekeeper Vaaniel	0	5		2521:424,619
+N	252172	Danarii Bellowveil	0	10		2521:451,453		Advisor
+N	254081	Naeluna Swiftmend	0	10	trainer	2521:452,445		Druid Trainer
+N	254084	Elayaa Easewind	0	10		2521:452,443		Hunter Trainer
+N	254087	Miriaan Mistblade	0	10		2521:431,433		Rogue Trainer
+N	254088	Corsan Earthrazer	0	10		2521:452,452		Warrior Trainer
+N	254089	Coriella Calmbreeze	0	10	vendor	2521:431,433		Innkeeper
+N	254100	Zephras Citizen	0	10		2521:452,452
+N	254128	Wardrobe	0	1		2521:489,539		A Very Convenient Obstruction
+N	254360	Belandiel Farflight	0	10		2521:452,452		Trade Supplies
+N	255679	Corswyn Aseril	0	58		1454:390,380	H	Windshaper
 N	256386	Dokimi	0	30		1413:502,294	H	Inventory Intake
 N	256388	Jornah	0	30		1413:499,294	H	Contract Coordinator
 N	256392	Pack Kodo	0	60		1413:497,293
@@ -1004,31 +1453,59 @@ N	256400	Okamache	0	30		1413:497,290	H	Kodo Handler
 N	256570	Crate of Alchemy Goods	0	60		1413:498,293	H
 N	256571	Crate of Blacksmithing Goods	0	60		1413:497,297	H
 N	256575	Basket of Textile Supplies	0	60		1413:496,296	H
+N	256966	Skypriest Aanders	1	8		2521:410,642,409,642
+N	256996	Al'Aketh Warrior	1	8		2521:411,639
+N	257024	Mendalass Tattermend	0	10		2521:431,434		Skinner
 N	257648	Tanis Alderwood	0	10		1458:675,382,664,379	H
+N	258415	Angela Ward	0	30		1458:708,294	H	Tailoring Recipes
 N	258878	Auctioneer Quickcoin	0	32	auctioneer	1413:499,296
+N	259118	Muln Earthfury	0			1412:333,225		Earthen Ring
+N	259119	Alaana Stormwalker	0	20		1412:334,225	H	Windshapers
 N	259649	Ulric Frostveil	0	25		1440:119,343	H
-N	260093	Garen Largo	0	20	trainer	1458:473,156,483,147,476,149	H	Paladin Trainer
+N	260093	Garen Largo	0	20	trainer	1458:473,156,483,147,476,149,474,191	H	Paladin Trainer
 N	260803	Highland Spider	1	27		1437:515,636,510,616,508,603,500,582,504,594
+N	260804	Highland Lurker	1	28		1437:485,565
 N	260809	Highland Tortoise	1	26		1437:501,583,491,566,481,565,491,571,501,579
 N	261366	Walton	0	20		1413:420,114	H	Tanner
 N	261367	Terry Longdrink	0	19		1413:419,114	A	Bounty Hunter
 N	261368	Kul Tiras Marine	0	18		1413:418,154	A
 N	261371	Vrang Wildgore	0	35		1413:419,113	H	Weaponsmith & Armorcrafter
 N	262119	Corporal Adamore	0	17		1413:417,153	A
-N	262504	Earthen Ring Shaman	0	55		1412:376,144
+N	262492	Rimblat Earthshatter	0	60		1412:334,207		Earthen Ring
+N	262502	Brix Xizzix	0	20		1412:342,255		Entrepreneur
+N	262504	Earthen Ring Shaman	0	55		1412:376,144,339,243,332,224,337,216,346,206
+N	262523	Galestrider	0	10		1412:336,248
+N	262558	Palah Thunderhoof	0	55		1412:334,225		Shaman Trainer
 N	264072	Yorn Grimtotem	0	30		1412:325,202		Earthen Ring
 N	264074	Mazu'kon	0	35		1412:325,206		Earthen Ring
+N	264078	Sutara Plainstalker	0	30		1412:342,226		Quartermaster
 N	264079	Gloomrise Hatchling	1	27		1412:335,110,331,84
 N	264081	Gloomrise Spinner	1	28		1412:330,118,333,100,337,95,334,89
-N	264083	Gloomrise Soldier	1	29		1412:342,114,332,122,330,117,333,100
-N	264096	Gnawed Corpse	1	29		1412:339,112
+N	264082	Broodmother Valraxx	1	30		1412:332,79
+N	264083	Gloomrise Soldier	1	29		1412:342,114,332,122,330,117,333,100,345,120,333,98,332,80,333,78,329,118,344,102,328,82
+N	264096	Gnawed Corpse	1	29		1412:339,112,332,80,332,98,327,98,328,89,337,102
+N	264287	Galestrider Handler	0	10		1412:336,247	H
 N	265574	Winklespark	0	22	vendor	1413:627,375		Ratchet Quartermaster
+N	265809	Brakk	0	12		1411:520,475	H	Adventurer
 N	266216	Lord Tomas	1	24		1424:798,461
-N	266484	Morbin Lightbane	0	30		1458:564,920	H
-N	267006	Dark Neophyte	1	11		1420:659,629		Cult of the Damned
+N	266484	Morbin Lightbane	0	30		1458:564,920,577,887,579,892	H
+N	266849	Ridgeshade Lurker	1	5		1411:519,613,510,562,508,540,511,533,509,517,523,580,504,566,507,527,526,636
+N	266850	Ridgeshade Creeper	1	5		1411:516,581,511,570,508,540,512,533,503,517,507,533,518,576
+N	266851	Ukorsbane	1	8		1411:507,566
+N	266852	Halikor	1	12		1411:407,300
+N	266940	Turroc	0	10		1411:540,427	H
+N	267006	Dark Neophyte	1	11		1420:659,629,684,634		Cult of the Damned
+N	267291	Emerald Riding Raptor	0	1		1411:553,755
+N	267297	Turquoise Riding Raptor	0	1		1411:555,750
+N	267298	Violet Riding Raptor	0	1		1411:552,756
+N	267322	Thedda	0	6		1411:446,686	H
+N	267327	Kagil	0	10		1411:410,680	H	Junior Skinning Trainer
+N	267328	Norzsh	0	11		1411:406,680	H	Junior Mining Trainer
+N	267329	Zor'la	0	8	trainer	1411:426,675	H	Junior Herbalism Trainer
 N	267354	Black Skeletal Horse	0	1		1420:604,527
-N	268048	Darkspear Emissary	0	30		1458:726,442,658,540,659,554	H
-N	268624	Razormane Raider	1	18		1413:502,560
+N	268048	Darkspear Emissary	0	30		1454:493,640,509,470;1458:726,442,658,540,659,554,732,435,589,437,590,448,587,459,589,441	H
+N	268530	Bloodtalon Matriarch	1	9		1411:682,719,690,713
+N	268624	Razormane Raider	1	18		1413:502,560,477,497,483,492,489,503
 N	268745	Mayhoa Skyhoof	0	5		1454:582,391	H	Girl with Puppies
 N	268925	Night Elf Courier	0	15		1442:488,399
 N	269068	Eylah Sunhorn	0	55		1456:396,548,394,558	H	Sun Priest of An'she
@@ -1036,30 +1513,73 @@ N	269141	Lavender Riding Kodo	0	1		1442:465,597
 N	269152	Tylana Clawhoof	0	30		1442:455,598,462,598	H	Kodo Mounts
 N	270038	Calder Gray	0	50		1458:490,699,492,701	H	Understudy of the Royal Apothecary Society
 N	270438	Deathstalker Masoj	0	30		1424:640,537	H
+N	271034	Gragtharr	0	55		1454:562,349	H
+N	271035	Nalrekk Fizzlewrench	0	55		1454:566,348
+N	271036	Rorschak	0	55		1454:562,350
 N	271322	Essene Villard	0	22		1437:511,86	A
+N	271712	Cloudrunner	1	6		2521:458,573
+N	272389	Marsh Owl	1	34		1416:347,119,363,143
 N	272526	Glix Xizzix	0	55		1458:698,460,692,472		Visionary, Entrepreneur, Barber
+N	272633	Nuara Tremorhoof	0	60		1412:334,225		Elder Farseer
+N	273084	Chadsworth	0	35		1458:477,265	H
+N	274833	An'drak	0	55		1454:411,703	H
 N	274834	Evermore	0	55		1454:400,720	H	An'drak's Pet
 N	274845	Pallwick Boneset	0	20		1413:513,299	H
 N	274856	Poe	0	1		1458:752,437	H
 N	274916	Vigilant Deathguard	0	55		1420:609,593,615,579,611,599	H
 N	275437	Dark Enforcer	1	11		1420:666,629,686,634		Cult of the Damned
+N	275657	Heglan Shadeeye	0	9		1411:587,457	H
+N	275662	Spitelash Scout	1	9		1411:583,298,589,288,590,285,588,277,590,263,589,260,592,254,578,275,588,245
+N	275663	Spitelash Attendant	1	11		1411:582,298,588,287,590,272,589,271,591,255,587,248,591,224
+N	275666	Aggor the Young	1	11		1411:591,173
+N	275811	Pal'juh	0	7		1411:463,789	H	Shadow Hunter Trainee
+N	276171	Oura Stormspinner	0	35		1412:342,224	H	Windshapers Cloth Quartermaster
 N	276793	Ochre Skeletal Warhorse	0	1		1420:603,527
+N	276800	Swift Olive Raptor	0	2		1411:552,755
+N	276801	Swift Orange Raptor	0	2		1411:554,754
+N	276803	Swift Blue Raptor	0	1		1411:552,755
+O	1617	Silverleaf	1411:669,866,690,710,575,703,562,687,511,629,503,487,502,471,477,476,506,567,519,586,604,545,606,560,516,653,379,296,392,202,460,269,564,377,556,328,576,309,564,263,540,108
+O	1618	Peacebloom	1411:690,716,578,715,427,397,523,580,559,584,586,529,588,508,541,642,522,634,513,718,491,384,507,349,424,312,387,176,371,265,358,283,367,318,449,293,577,480,551,346,570,215,570,244,571,243,530,128,425,207,507,163
+O	1619	Earthroot	1411:467,459,545,579,602,540,520,642,512,727,522,758,403,326,369,248,360,297,461,246,566,244,556,189,449,201
 O	1731	Copper Vein	1413:624,491,617,349,586,308,588,294,599,366,613,403,611,442,632,456,590,512,566,516,577,94,609,36,574,46,601,165,619,315,465,396,457,822;1421:599,709,553,336,569,460,570,459,580,452,499,414,487,482,481,684,502,460,444,764,534,848;1424:478,354,812,397,600,478,238,608,213,565;1441:261,243,216,234,144,271,164,180,261,423;1442:770,886,435,262,439,145,520,342,710,585,578,718,349,479,375,412,386,497,368,196,766,526
 O	1732	Tin Vein	1413:622,551,593,87,486,148,452,122,436,121,395,236;1421:594,701,585,721,581,700,575,705,496,245,578,607,579,449,585,448,559,503,474,519;1424:535,167,546,199,570,84,579,118,729,712,582,570,572,614;1431:405,767;1441:352,508,312,506,481,589,404,388,274,419,182,228,145,255,112,215;1442:453,252,350,173,448,186,492,355,596,891,469,400,299,648,280,686,279,686,381,532,384,210,761,487
 O	1733	Silver Vein	1413:464,128;1417:706,525,726,670,726,668,667,740;1421:481,336,559,503;1424:582,573;1440:550,615;1441:288,491,382,552,145,255;1442:301,140
 O	1735	Iron Deposit	1416:444,844,360,818;1417:617,441,191,333,691,277,702,575,733,591,697,675,698,737,709,714,774,434,796,428;1424:376,260,851,419,727,739,452,307,426,334,463,318;1440:645,556,723,510,706,515,725,571,708,601,755,765;1441:330,513,594,581,432,328,157,189,153,401,258,526,258,553,302,458,262,537,239,245,236,447,289,492;1442:388,211
+O	3696	Food Crate	1417:227,239;1424:863,514
+O	3698	Food Crate	1417:227,239
 O	3705	Barrel of Milk	1413:477,55
 O	13891	Serpentbloom	1414:519,546,520,546,525,550
 O	19541	Deepmoss Eggs	1442:596,620,458,433,616,595,749,537,774,526,790,511
 O	178184	Sapphire of Aku'Mai	1414:440,346,437,347
 O	178185	Sapphire of Aku'Mai	1414:438,347
 O	178227	Murgut's Totem Basket	1440:564,636
+O	576179	Supply Cache	2521:498,566,499,572
+O	617674	Arvensus Shadowsong	2521:410,640
+O	617675	Raani Windgazer	2521:411,640
 O	640104	Sprung Trap	1413:447,165,455,153,433,164,429,150,447,135,454,131
+O	656160	Wilted Peacebloom	1411:429,562,407,604
+O	656161	Stunted Silverleaf	1411:412,588,470,663,460,676,466,696
+O	656177	Prickly Pear Fruit	1411:493,481,488,489,490,492,478,493,478,489
+O	656180	Raider's Bow	1411:594,564
+O	656181	Raider's Battleaxe	1411:573,566
+O	656182		1411:566,530
+O	660647	Forgotten Loa Idol	1411:683,836,683,856
 O	660930	Pile of Complicated Parts	1413:621,439,614,442,621,441,619,451
+O	661092	Speargrass	1454:708,344,713,323
+O	661093	Cattail	1454:680,331,677,326
+O	673476	Abandoned Training Weapon	1411:439,672,441,671,438,650,441,651,443,661
+O	693669	Weapon Piece	1411:602,447
+O	693670	Strange Debris	1411:601,426
+O	693674	Abandoned Dagger	1411:589,443
+Q	2	Sharptalon's Claw	30		U12696		Bring Sharptalon's Claw to Senani Thunderheart at Splintertree Post, Ashenvale.
 Q	25	Stonetalon Standstill	25	U12737	U12737	1440:486,703	Dispatch 12 Befouled Water Elementals at Mystral Lake, due east of the Talondeep Path and southwest of Splintertree Post.  Scout the gazebo on Mystral Lake that overlooks the nearby Alliance outpost.  Return to Mastok Wrilehiss at Splintertree Post, Ashenvale.	monster:Befouled Water Elemental slain
 Q	99	Arugal's Folly	15	U1938	U1938	1421:452,733	Bring 6 Pyrewood Shackles to Dalar Dawnweaver at the Sepulcher.	item:Pyrewood Shackle
 Q	216	Between a Rock and a Thistlefur	24	U12757	U12757	1440:345,375	Take down 12 Thistlefur Avengers and 12 Thistlefur Shaman; most are located east of Zoram Strand in Thistlefur Village.  Once completed, return to Karang Amakkar at Zoram'gar Outpost, Ashenvale.	monster:Thistlefur Avenger slain|monster:Thistlefur Shaman slain
 Q	264	Until Death Do Us Part	15	U5543			Place Clarice's Pendant on Yuriv's Tomb in Silverpine.
+Q	356	Rear Guard Patrol						monster:Bleeding Horror slain|monster:Wandering Spirit slain
+Q	357	The Lich's Identity						item:The Lich's Spellbook
+Q	369	A New Plague						item:Vicious Night Web Spider Venom
+Q	371	At War With The Scarlet Crusade						monster:Captain Vachon slain|monster:Scarlet Friar slain
 Q	422	Arugal's Folly	11	U1938	U1938	1421:528,285	Retrieve the Remedy of Arugal for Dalar Dawnweaver at the Sepulcher.	item:Remedy of Arugal
 Q	423	Arugal's Folly	14	U1938	U1938	1421:418,279	Bring 6 Glutton Shackles and 3 Darksoul Shackles to Dalar Dawnweaver at the Sepulcher.	item:Glutton Shackle|item:Darksoul Shackle
 Q	424	Arugal's Folly	15	U1938	U1938		Kill Grimson the Pale and bring his head to Dalar Dawnweaver at the Sepulcher.	item:Head of Grimson
@@ -1112,16 +1632,56 @@ Q	676	The Hammer May Fall	32	U2770	U2771	1417:343,444	Kill 8 Boulderfist Ogres a
 Q	677	Call to Arms	32	U2771	U2771	1417:681,764	Slay 10 Witherbark Axe Throwers, 10 Headhunters and 8 Witch Doctors, and return to Drum Fel in the Hammerfall outpost.	monster:Witherbark Axe Thrower slain|monster:Witherbark Headhunter slain|monster:Witherbark Witch Doctor slain
 Q	678	Call to Arms	38	U2771		1417:526,761	Kill 10 Boulderfist Brutes and 4 Boulderfist Magi, and return to Drum Fel in the Hammerfall outpost.	monster:Boulderfist Brute slain|monster:Boulderfist Magus slain
 Q	742	The Ashenvale Hunt	20	U10881	U12696		Speak with Senani Thunderheart at Splintertree Post, Ashenvale.
+Q	784	Vanquish the Betrayers	7	U3139	U3139	1411:592,563	Kill 10 Kul Tiras Sailors, 8 Kul Tiras Marines and Lieutenant Benedict and return to Gar'Thok in Razor Hill.	monster:Kul Tiras Sailor slain|monster:Kul Tiras Marine slain|monster:Lieutenant Benedict slain
+Q	786	Thwarting Kolkar Aggression	8	U3140	U3140	1411:462,789	Lar Prowltusk outside of Sen'jin Village wants you to destroy the 3 sets of Attack Plans held within Kolkar Crag.	object:Attack Plan: Valley of Trials destroyed|object:Attack Plan: Sen'jin Village destroyed|object:Attack Plan: Orgrimmar destroyed
+Q	788	Cutting Teeth	2	U3143	U3143	1411:437,658	Kill 10 Mottled Boars then return to Gornek at the Den.	monster:Mottled Boar slain
+Q	789	Sting of the Scorpid	3	U3143	U3143	1411:431,649	Get 10 Scorpid Worker Tails for Gornek in the Den.	item:Scorpid Worker Tail
+Q	790	Sarkoth	5	U3287	U3287	1411:404,673	Kill Sarkoth and bring his claw back to Hana'zua.	item:Sarkoth's Mangled Claw
+Q	791	Carry Your Weight	7	U3147	U3147	1411:582,559	Furl Scornbrow in the Razor Hill watchtower wants 8 Canvas Scraps.	item:Canvas Scraps
+Q	794	Burning Blade Medallion	5	U3145	U3145	1411:440,543	Bring the Burning Blade Medallion to Zureetha Fargaze, outside The Den.	item:Burning Blade Medallion
+Q	804	Sarkoth	5	U3287	U3143		Bring the news of Hana'zua's plight to Gornek at the Den.
+Q	805	Report to Sen'jin Village	5	U3145	U3188		Speak with Master Gadrin in Sen'jin Village.
+Q	806	Dark Storms	12	U3142	U3142	1411:421,266	Bring Fizzle's Claw to Orgnil Soulscar in Razor Hill.	item:Fizzle's Claw
+Q	808	Minshina's Skull	9	U3188	U3188	1411:674,878	Retrieve Minshina's skull from the circle of power on the Echo Isles.  Bring it to Master Gadrin in Sen'jin Village.	item:Minshina's Skull
+Q	809	Ak'Zeloth	13	U3216	U3521		Speak with Ak'Zeloth in the Barrens.
+Q	812	Need for a Cure	9	U3190		1411:450,10	Find Kor'ghan in Orgrimmar and get the Venomtail Antidote. Then bring the antidote to Rhinag near the northwestern border of Durotar.	item:Venomtail Antidote
+Q	815	Break a Few Eggs	8	U3191	U3191	1411:662,851	Bring 3 Taillasher Eggs to Cook Torka in Razor Hill.	item:Taillasher Egg
+Q	816	Lost But Not Forgotten	11	U3193	U3193	1411:364,200	Bring a sign of Kron's fate to Misha Tor'kren at the farmstead northwest of Razor Hill.	item:Kron's Amulet
+Q	817	Practical Prey	8	U3194	U3194	1411:616,908	Bring 4 Durotar Tiger Furs to Vel'rin Fang in Sen'jin Village.	item:Durotar Tiger Fur
+Q	818	A Solvent Spirit	7	U3304	U3304	1411:641,787	Bring 4 Intact Makrura Eyes and 8 vials of Crawler Mucus to Master Vornal in Sen'jin Village.	item:Intact Makrura Eye|item:Crawler Mucus
+Q	819	Chen's Empty Keg	15				Find someone who knows about Chen's Empty Keg.
+Q	823	Report to Orgnil	7	U3188	U3142		Speak with Orgnil Soulscar in Razor Hill.
 Q	824	Je'neu of the Earthen Ring	27	U12737	U12736		Bring the Befouled Water Globe to Je'neu Sancrea at Zoram'gar Outpost, Ashenvale.
+Q	825	From The Wreckage....	8	U3139	U3139	1411:620,444	Gar'Thok of Razor Hill wants you to retrieve 3 Gnomish Tools from the wreckage off the coast.	item:Gnomish Tools
+Q	826	Zalazane	10	U3188	U3188	1411:673,866	Defeat Zalazane.  Kill 8 Voodoo Trolls and 8 Hexed Trolls.  Bring Zalazane's Head to Gadrin.	monster:Hexed Troll slain|monster:Voodoo Troll slain|item:Zalazane's Head
+Q	827	Skull Rock	12	U3208	U3208	1411:524,268	Gather Searing Collars from the cultists in Skull Rock.  Bring them to Margoz at his camp.	item:Searing Collar
+Q	828	Margoz	12	U3142	U3208		Speak with Margoz.
+Q	829	Neeru Fireblade	12	U3208	U3216		Bring an Example Collar to Neeru Fireblade in Orgrimmar.
+Q	830	The Admiral's Orders	7		U3139		Take Admiral Proudmoore's Orders to Gar'Thok in Razor Hill.
+Q	831	The Admiral's Orders	7	U3139	U3230		Deliver Admiral Proudmoore's Orders to Nazgrel in Thrall's chamber in Orgrimmar.
+Q	832	Burning Shadows	12		U3216		Take this eye to Neeru Fireblade.
+Q	834	Winds in the Desert	9	U3293	U3293	1411:501,253	Retrieve 5 Sacks of Supplies and return them to Rezlak near Orgrimmar.	item:Sack of Supplies
+Q	835	Securing the Lines	11	U3293	U3293	1411:531,235	Kill 12 Dustwind Savages and 8 Dustwind Storm Witches for Rezlak near Drygulch Ravine.	monster:Dustwind Savage slain|monster:Dustwind Storm Witch slain
+Q	837	Encroachment	10	U3139	U3139	1411:427,389	Kill 4 Razormane Quilboars, 4 Razormane Scouts, 4 Razormane Dustrunners and 4 Razormane Battleguards for Gar'Thok at Razor Hill.	monster:Razormane Quilboar slain|monster:Razormane Scout slain|monster:Razormane Dustrunner slain|monster:Razormane Battleguard slain
+Q	840	Conscript of the Horde	12	U3336	U3337		Follow the western road from Razor Hill to the Barrens over a bridge.  Stop at the orc outpost across the bridge.  Give Kargal Battlescar at the Barrens outpost your recruitment letter.
+Q	842	Crossroads Conscription	12	U3337	U3338		Follow the western road from Kargal's Far Watch Outpost.  At the T intersection, turn left and follow the road south.   Find Sergra Darkthorn at the crossing of roads within the Crossroads.
 Q	843	Gann's Reclamation	23	U3341	U3341	1413:475,851	Gann Stonespire wants you to kill 15 Bael'dun Excavators and 5 Bael'dun Foremen.  Bring Khazgorm's Journal to Gann Stonespire.	monster:Bael'dun Excavator slain|monster:Bael'dun Foreman slain|item:Khazgorm's Journal
+Q	844	Plainstrider Menace	12	U3338		1413:513,349	Collect 7 Plainstrider Beaks and return them to Sergra Darkthorn in the Crossroads.	item:Plainstrider Beak
+Q	845	The Zhevra				1413:518,408		item:Zhevra Hooves
 Q	846	Revenge of Gann	26	U3341	U3341	1413:482,845	Gann Stonespire wants you to bring him 6 vials of Nitroglycerin, 6 bundles of Wood Pulp, and 6 samples of Sodium Nitrate.	item:Nitroglycerin|item:Wood Pulp|item:Sodium Nitrate
+Q	848	Fungal Spores	15	U3390		1413:467,396	Bring 4 Fungal Spores to Apothecary Helbrim at the Crossroads.	item:Fungal Spores
 Q	849	Revenge of Gann	26	U3341	U3341	1413:469,856	Destroy the flying machine at Bael Modan and return to Gann Stonespire.	object:Bael Modan Flying Machine destroyed
 Q	858	Ignition	18	U3439	U3439	1413:562,87	Get the Ignition Key and bring it to Wizzlecrank.	item:Ignition Key
 Q	863	The Escape	18	U3439			Protect Wizzlecrank and the stolen goblin shredder on the way to Sputtervalve in Ratchet.
 Q	865	Raptor Horns	18	U3446	U3446	1413:450,150	Gather 5 Intact Raptor Horns from Sunscale Scytheclaws, and bring them to Mebok Mizzyrix in Ratchet.	item:Intact Raptor Horn
+Q	867	Harpy Raiders	15	U3449		1413:397,157	Collect 8 Witchwing talons.  Return them to Darsok Swiftdagger at the Crossroads.	item:Witchwing Talon
 Q	868	Egg Hunt		U3428			Bring 12 Silithid Eggs and the Digging Claw to Korran at the Crossroads.
+Q	869	Raptor Thieves	13	U3464		1413:513,314	Bring 12 Raptor Heads to Gazrog at the Crossroads.	item:Raptor Head
 Q	870	The Forgotten Pools	13	U3448	U3448	1413:450,225	Report back to Tonga Runetotem with your findings.
+Q	871	Disrupt the Attacks	12	U3429		1413:547,259	Of the Razormane tribe, kill 8 Water Seekers, 8 Thornweavers and 3 Hunters, and then return to Thork in the Crossroads.	monster:Razormane Water Seeker slain|monster:Razormane Thornweaver slain|monster:Razormane Hunter slain
+Q	872	The Disruption Ends				1411:244,531		monster:Razormane Geomancer slain|monster:Razormane Defender slain|item:Kreenig Snarlsnout's Tusk
 Q	877	The Stagnant Oasis	16	U3448	U3448	1413:556,427	Return to Tonga at The Crossroads, after investigating the Stagnant Oasis.	object:Test the Dried Seeds
+Q	878	Tribes at War	21	U3430		1412:666,436	Kill 6 Bristleback Water Seekers, 12 Bristleback Thornweavers and 12 Bristleback Geomancers and return to Mangletooth at Camp Taurajo in the Barrens.	monster:Bristleback Water Seeker slain|monster:Bristleback Thornweaver slain|monster:Bristleback Geomancer slain
 Q	880	Altered Beings	16	U3448	U3448	1413:468,397	Bring 8 Altered Snapjaw Shells to Tonga Runetotem at the Crossroads.	item:Altered Snapjaw Shell
 Q	887	Southsea Freebooters	14	U3391	U3391	1413:637,466	Kill 12 Southsea Brigands and 6 Southsea Cannoneers for Gazlowe in Ratchet.	monster:Southsea Brigand slain|monster:Southsea Cannoneer slain
 Q	888	Stolen Booty	16	U3391	U3391	1413:626,496	Retrieve the Shipment of Boots and Telescopic Lens for Gazlowe in Ratchet.	item:Shipment of Boots|item:Telescopic Lens
@@ -1133,14 +1693,18 @@ Q	894	Samophlange	14	U3442			Access the control console at the Venture Company r
 Q	895	WANTED: Baron Longshore	16		U3391	1413:639,450	Bring the head of Baron Longshore to Gazlowe in Ratchet.	item:Baron Longshore's Head
 Q	896	Miner's Fortune	18	U3453	U3453	1413:605,38	Retrieve the Cats Eye Emerald from one of the Venture Co. Overseers or Enforcers for Wharfmaster Dizzywig at Ratchet.	item:Cats Eye Emerald
 Q	898	Free From the Hold	20	U3465	U3339		Safely escort Gilthares Firebough back to Captain Brightsun in Ratchet.
+Q	899	Consumed by Hatred	20	U3432		1412:700,516	Bring 60 Bristleback Quilboar Tusks to Mankrik at the Crossroads.	item:Bristleback Quilboar Tusk
 Q	900	Samophlange	14			1413:522,114	Close off the Fuel Control Valve, the Regulator Valve and the Main Control Valve then use the control console again.	object:Shut off Main Control Valve|object:Shut off Fuel Control Valve|object:Shut off Regulator Valve
 Q	901	Samophlange	14			1413:528,103	Get the Console Key from Tinkerer Sniggles to use on the control console.	item:Console Key
 Q	902	Samophlange	16		U3442		Return the Samophlange to Sputtervalve in Ratchet.
 Q	914	Leaders of the Fang	22	U5770	U5770		Bring the Gems of Cobrahn, Anacondra, Pythas and Serpentis to Nara Wildmane in Thunder Bluff.	item:Gem of Cobrahn|item:Gem of Anacondra|item:Gem of Pythas|item:Gem of Serpentis
-Q	962	Serpentbloom			U3419	1414:523,548		item:Serpentbloom
+Q	924	The Demon Seed	14	U3521	U3521	1413:479,190	Grab a Flawed Power Stone.  Bring it to the Altar of Fire before the stone expires, then return to Ak'Zeloth.	object:Destroy the Demon Seed
+Q	926	Flawed Power Stone
+Q	962	Serpentbloom	18	U3419	U3419	1414:523,548	Apothecary Zamah in Thunder Bluff wants you to collect 10 Serpentbloom.	item:Serpentbloom
 Q	1013	The Book of Ur	26	U2934	U2934		Bring the Book of Ur to Keeper Bel'dugur at the Apothecarium in the Undercity.	item:The Book of Ur
 Q	1014	Arugal Must Die	27	U1938	U1938	1421:429,674	Kill Arugal and bring his head to Dalar Dawnweaver at the Sepulcher.	item:Head of Arugal
 Q	1051	Vorrel's Revenge	33			1416:323,327	Return Vorrel Sengutz's wedding ring to Monika Sengutz in Tarren Mill.	item:Vorrel's Wedding Ring
+Q	1061	The Spirits of Stonetalon		U4047			Speak with Seereth Stonebreak in the Stonetalon Mountains.
 Q	1062	Goblin Invaders	19	U4049	U4049	1442:673,531	Kill 15 Venture Co. Loggers, then return to Seereth Stonebreak on the border of Stonetalon and the Barrens.	monster:Venture Co. Logger slain
 Q	1063	The Elder Crone	18	U4049	U4046		Speak with Magatha in Thunder Bluff.
 Q	1068	Shredding Machines	23	U4049	U4049	1442:673,465	Kill the shredders XT:4 and XT:9, then return to Seereth Stonebreak at the border of the Stonetalon Mountains and the Barrens.	monster:XT:4 slain|monster:XT:9 slain
@@ -1169,10 +1733,17 @@ Q	1221	Blueleaf Tubers	26	U3446	U3446	1413:623,376	Grab a Crate with Holes. Grab
 Q	1361	Regthar Deathgate	32	U2229	U3389		Speak with Regthar Deathgate.
 Q	1362	The Kolkar of Desolace	32	U3389			Speak with Felgur Twocuts at Ghost Walker Post in Desolace.
 Q	1483	Ziz Fizziks	21	U3442	U4201		Speak with Ziz Fizziks in Windshear Crag.
+Q	1485	Vile Familiars	4	U5765	U5765	1411:443,556	Bring 6 Vile Familiar Heads to Ruzan.	item:Vile Familiar Head
 Q	1489	Hamuul Runetotem	16	U3448	U5769		Speak with Hamuul Runetotem
 Q	1490	Nara Wildmane	16	U5769	U5770		Speak with Nara Wildmane.
 Q	1491	Smart Drinks	18	U3446	U3446	1414:524,547	Bring 6 portions of Wailing Essence to Mebok Mizzyrix in Ratchet.	item:Wailing Essence
+Q	1492	Wharfmaster Dizzywig	11	U3390			Bring the Secure Crate to Wharfmaster Dizzywig in Ratchet.
+Q	1499	Vile Familiars	4	U5765	U3145		Speak with Zureetha Fargaze.
+Q	1501	Creature of the Void	11	U5875	U5875	1454:721,865	Retrieve the Tablet of Verga for Gan'rul Bloodeye in Orgrimmar.	item:Tablet of Verga
+Q	1504	The Binding	11	U5875	U5875	1454:494,500	Using the Glyphs of Summoning, summon and subdue a voidwalker, then return the Glyphs of Summoning to Gan'rul Bloodeye in Orgrimmar.	monster:Summoned Voidwalker slain
+Q	1506	Gan'rul's Summons	10	U3294	U5875		Speak with Gan'rul Bloodeye in Orgrimmar.
 Q	1918	The Befouled Element	27		U12737		Bring the Befouled Water Globe to Mastok Wrilehiss at Splintertree Post, Ashenvale.
+Q	2161	A Peon's Burden	5	U6786	U6928		Bring Ukor's Burden to Innkeeper Grosk in Razor Hill.
 Q	2841	Rig Wars	35	U3412		1415:436,537	Retrieve the Rig Blueprints and Thermaplugg's Safe Combination from Gnomeregan and bring them to Nogg in Orgrimmar.	item:Rig Blueprints|item:Thermaplugg's Safe Combination
 Q	2842	Chief Engineer Scooty	35		U7853		Speak with Scooty in Booty Bay.
 Q	2843	Gnomer-gooooone!	35	U7853	U7853		Wait for Scooty to calibrate the Goblin Transponder.
@@ -1181,19 +1752,37 @@ Q	3921	Wenikee Boltbucket	14	U3442	U9316		Bring the Broken Samophlange to Wenike
 Q	3922	Nugget Slugs	15	U9316	U9316	1413:561,82	Bring 15 Nugget Slugs to Wenikee Boltbucket in the Barrens.	item:Nugget Slug
 Q	3923	Rilli Greasygob	18	U9316	U9317		Bring the Broken and Battered Samophlange to Rilli Greasygob in Orgrimmar.
 Q	3924	Samophlange Manual	19	U9317	U9317		Bring the Samophlange Manual to Rilli Greasygob in Orgrimmar.	item:Samophlange Manual
+Q	4402	Galgar's Cactus Apple Surprise	3	U9796	U9796	1411:433,635	Bring Galgar 10 Cactus Apples. You remember him saying that they could be found near cactuses.	item:Cactus Apple
 Q	4542	Message to Freewind Post		U10079			Bring the Urgent Message to Cliffwatcher Longhorn at Freewind Post.
+Q	4641	Your Place in the World	1	U10176	U3143		Speak with Gornek. You recall Kaltunk marking your map with his location and mentioning that Gornek resided in the Den, a building to the west.
 Q	4767	Wind Rider		U10377			Bring 10 Highperch Wyvern Eggs to Elu in Freewind Post.
+Q	4921	Lost in Battle	20	U3432			Find Mankrik's wife and then return to him in the Crossroads.	monster:Find Mankrik's Wife
+Q	5041	Supplies for the Crossroads	14	U3429		1411:261,551	Find and return Crossroads' Supply Crates to Thork in the Barrens.	item:Crossroads' Supply Crates
 Q	5042	Agamaggan's Strength			U3430
 Q	5043	Agamaggan's Agility			U3430
 Q	5045	Rising Spirit			U3430
 Q	5151	Hypercapacitor Gizmo	30	U10941	U10941	1441:227,246	Slay the beast and bring back the Hypercapacitor Gizmo and Panther Cage Key to Wizlo Bearingshiner.	item:Hypercapacitor Gizmo
+Q	5441	Lazy Peons	4	U11378	U11378	1411:415,592	Use the Foreman's Blackjack on Lazy Peons when they're sleeping.  Wake up 5 peons, then return the Foreman's Blackjack to Foreman Thazz'ril in the Valley of Trials.	monster:Peons Awoken
+Q	5722	Searching for the Lost Satchel	16				Search Ragefire Chasm for Maur Grimtotem's corpse and search it for any items of interest.
+Q	5723	Testing an Enemy's Strength	15		U11833		Search Orgrimmar for Ragefire Chasm, then kill 8 Ragefire Troggs and 8 Ragefire Shaman before returning to Rahauro in Thunder Bluff.	monster:Ragefire Trogg slain|monster:Ragefire Shaman slain
+Q	5724	Returning the Lost Satchel	16		U11833		Take the Grimtotem Satchel to Rahauro in Thunder Bluff.
+Q	5725	The Power to Destroy...			U2425	1454:513,493		item:Spells of Shadow|item:Incantations from the Nether
+Q	5726	Hidden Enemies	12	U4949	U4949	1411:527,95	Bring a Lieutenant's Insignia to Thrall in Orgrimmar.	item:Lieutenant's Insignia
+Q	5727	Hidden Enemies	12	U4949	U4949	1454:495,505	Take the Lieutenant's Insignia to Neeru Fireblade and speak to him. Gauge if he believes you are a member of the Burning Blade and then return to Thrall in Orgrimmar.	monster:Gauge Neeru Fireblade's reaction
+Q	5728	Hidden Enemies	16	U4949	U4949	1411:462,0	Kill Bazzalan and Jergosh the Invoker before returning to Thrall in Orgrimmar.	monster:Bazzalan slain|monster:Jergosh the Invoker slain
+Q	5729	Hidden Enemies	15	U4949	U3216		Speak to Neeru Fireblade in Orgrimmar.
+Q	5730	Hidden Enemies	16	U3216	U4949		Speak to Thrall in Orgrimmar and tell him what you've learned.
+Q	5761	Slaying the Beast	16	U3216	U3216		Enter Ragefire Chasm and slay Taragaman the Hungerer, then bring his heart back to Neeru Fireblade in Orgrimmar.	item:Taragaman the Hungerer's Heart
 Q	5881	Calling in the Reserves	28	U11860	U12576		Maggran wishes you to deliver a letter to Grish Longrunner at the Great Lift in the Barrens.
 Q	6282	Harpies Threaten	26	U11860	U11860	1442:329,627	Maggran Earthbinder in Sun Rock Retreat wants you to slay 7 Bloodfury Harpies, 7 Bloodfury Ambushers, 7 Bloodfury Slayers and 7 Bloodfury Roguefeathers.	monster:Bloodfury Harpy slain|monster:Bloodfury Ambusher slain|monster:Bloodfury Slayer slain|monster:Bloodfury Roguefeather slain
 Q	6283	Bloodfury Bloodline	26	U11860	U11860	1442:307,622	Maggran at Sun Rock Retreat wishes you to slay Bloodfury Ripper and bring her remains as proof of your deed.	item:Bloodfury Ripper's Remains
 Q	6284	Arachnophobia	21		U11860	1442:530,724	Kill Besseleth and bring Besseleth's Fang to Maggran at Sun Rock Retreat.	item:Besseleth's Fang
 Q	6301	Cycle of Rebirth	23	U11864	U11864	1442:483,407	Tammra Windfield at Sun Rock Retreat wants you to gather 10 Gaea Seeds.	item:Gaea Seed
+Q	6365	Meats to Orgrimmar	10	U3489	U3615		Bring Zargh's Meats to Devrak in the Crossroads.
 Q	6381	New Life	25	U11864	U11864	1442:325,675	Plant 10 Gaea Seeds in Gaea Dirt Mounds, and then return the remaining Enchanted Gaea Seeds to Tammra at Sun Rock Retreat.	object:Gaea seed planted
+Q	6384	Ride to Orgrimmar	10	U3615			Buy a wind rider to Orgrimmar from the wind rider master Devrak, then bring Zargh's Meats to Gryshka in Orgrimmar.
 Q	6393	Elemental War	25	U11862	U11862	1442:367,498	Bring 10 Incendrites to Tsunaman at Sun Rock Retreat.	item:Incendrites
+Q	6394	Thazz'ril's Pick	4	U11378	U11378	1411:437,537	Bring Thazz'ril's Pick to Foreman Thazz'ril.	item:Thazz'ril's Pick
 Q	6421	Boulderslide Ravine	18	U11861	U11861	1442:582,895	Explore deep into the cave at Boulderslide Ravine and bring back 10 Resonite Crystals for Mor'rogal at Sun Rock Retreat to investigate.	item:Resonite Crystal
 Q	6441	Satyr Horns	26	U12724	U12724	1440:670,542	Collect 16 Satyr Horns for Pixel in Splintertree Post.	item:Satyr Horns
 Q	6442	Naga at the Zoram Strand	19	U12719	U12719	1440:105,218	Bring 20 Wrathtail Heads to Marukai along the Zoram Strand.	item:Wrathtail Head
@@ -1222,8 +1811,9 @@ Q	6629	Kill Grundig Darkcloud	18	U11857	U11857	1442:767,865	Kill Grundig Darkclo
 Q	6641	Vorsha the Lasher	23	U12717	U12863		Keep Muglash safe as he travels to the brazier. Help him by putting the brazier out, then protect him as you fight against the Naga.  If you are successful, return to the Zoram'gar Outpost and inform the Warsong Runner of the death of Vorsha the Lasher.
 Q	6921	Amongst the Ruins	27	U12736	U12736	1414:439,354	Bring the Fathom Core to Je'neu Sancrea at Zoram'gar Outpost, Ashenvale.	item:Fathom Core
 Q	6922	Baron Aquanis	30		U12736		Bring the Strange Water Globe to Je'neu Sancrea at Zoram'gar Outpost, Ashenvale.
-Q	7321	Soothing Turtle Bisque	31	U2393		1417:4,69	Bring 10 pieces of Turtle Meat and some Soothing Spices to Christoph Jeffcoat in Tarren Mill.	item:Turtle Meat|item:Soothing Spices
+Q	7321	Soothing Turtle Bisque	31	U2393	U2393	1417:4,69	Bring 10 pieces of Turtle Meat and some Soothing Spices to Christoph Jeffcoat in Tarren Mill.	item:Turtle Meat|item:Soothing Spices
 Q	7813	A Donation of Wool			U14729
+Q	7814	A Donation of Silk			U14729
 Q	78124	Nar'thalas Almanac			U211022
 Q	78127	The Dalaran Digest			U211022
 Q	78142	Bewitchments and Glamours			U211022
@@ -1249,30 +1839,72 @@ Q	86576	Bloodfury Trinkets	26	U11860	U11861	1442:331,658	Bring 15 Glittering Sun
 Q	91899	A Sealed Crate			U256386
 Q	91900	A Sealed Crate			U256386
 Q	91904	A Sealed Crate			U256386
+Q	92421	Light's Justice	22	U266484			Collect 25 Intact Limbs within The Ruins of Lordaeron for Morbin Lightbane in the Undercity.	item:Intact Limbs
+Q	92528	Among the Faithful	8	U257065	U251523	2521:491,540	Look around Falaath Village to learn about the cult's intentions in the Shen'dar Highlands.	monster:Learn about the cultists' plans
+Q	92529	Falaath Village			U257065
+Q	92550	Havoc in the Highlands	8	U251523	U251523	2521:503,569	Travel to the ruins of Falaath Village and slay 6 Al'Aketh Stormcallers, 4 Living Lightning and take the head of Commander Cyclas.	monster:Al'Aketh Stormcaller slain|monster:Living Lightning slain|item:Commander Cyclas's Head
+Q	92551	Stolen Supplies	8	U252172	U252172	2521:487,560	Collect 10 packs of Stolen Shen'dar Supplies from Falaath Village in the Shen'dar Highlands.	item:Stolen Shen'dar Supplies
+Q	92701	To Valanaar	9	U251523			Deliver Aonda's Written Report to Valennia Stormfist in Valanaar.
 Q	92706	WANTED: Bruuz			U3391	1413:658,400		item:Bruuz's Dorsal Fin
 Q	93680	Key to the City	33	U2410		1424:231,265	Acquire the Dalaran Sewer Key for Magus Wordeen Voidglare in Tarren Mill.	item:Grimy Key
+Q	93926	The Western Watch	8	U251523	U252155	2521:423,619	Find Peacekeeper Vaaniel at the western watchtower.	monster:Check in on the Western Watchtower in the Shen'dar Highlands
+Q	93927	A Last Request	8	U252155	U251523	2521:409,640	Collect the note you found near the dead peacekeeper and read it to determine your next steps.	item:Collect and read the note|monster:Skypriest Aanders slain|item:Raani's Favorite Feather|item:Shadowsong Family Signet
+Q	93948	Deliver the Signet	9	U251523			Deliver the Shadowsong Family Signet to Talaanis Shadowsong in Valanaar.
 Q	94228	Craftsman's Writ: Green Iron Boots	60				Acquire the items requested by the customer and deliver them to the location marked on your map. This writ must be in your possession to complete the transaction.	item:Craftsman's Writ: Green Iron Boots|item:Green Iron Boots
+Q	94251	Craftsman's Writ: Phoenix Pants						item:Craftsman's Writ: Phoenix Pants|item:Phoenix Pants
 Q	95494	Bruised Pride and Lion Hides	18	U3682	U3682	1413:454,148	Collect 6 Savannah Lion Hides from the Savannah Matriarchs and Savannah Patriarchs in the Barrens.	item:Savannah Lion Hide
 Q	95495	The Hermit Tanner	18	U3682	U261366		Bring the Bundle of Hides to the hermit on the ridge overlooking the Dry Hills in the Barrens.
 Q	95507	Vrang's Game	18	U3682	U3682	1413:455,141	Collect 8 Trapped Game from traps found in Sprung Traps in the Barrens.	item:Trapped Game
 Q	95508	Unwelcome Guests	18	U261366	U261366	1413:413,110	Help Walton survive the encounter with Terry Longdrink and the Kul Tiras marines.	monster:Assist Walton
 Q	95621	Trouble in the Valley	18	U261366	U261366	1413:418,157	Travel to the wrecked caravan and learn more about why the Kul Tirans are here.	item:Learn why the Kul Tirans are here
 Q	95663	Dragonmaw Rumors	31	U2787	U13155		Travel to the Wetlands and meet the Deathstalker Agent in the hills above the Dragonmaw camp.
+Q	95664	Elder Knowledge	31		U9087		Take the Titan Relic to the Elder Rise in Thunder Bluff and look for someone who can tell you more about it.	item:Titan Relic
 Q	95682	Open the Maw	31	U13155	U13155		Slay the Dragonmaw forces within the Excavation Site and return to the Deathstalker Agent outside with anything you recover.	monster:Dragonmaw Saboteur slain|monster:Dragonmaw Warder slain|item:Dragonmaw Dispatch
 Q	95697	Changing Tastes	31	U3368	U3368		Enter the Excavation Sites in the Wetlands and bring back Thicket Raptor Meat.	item:Thicket Raptor Meat
 Q	95883	The Tortured Soul	23			1421:584,712	Collect a Tortured Soul from the nearby undead in Beren's Peril in Silverpine Forest.	item:Tortured Soul
 Q	95884	The Offering Stone	23				Find the Offering Stone in Beren's Peril in Silverpine Forest.
 Q	95885	The Offering of Blood	23			1421:581,697	Use the Tortured Soul to give an offering of blood at the Offering Stone in Beren's Peril.	object:Willingly offer blood|object:Release Tortured Soul|monster:Tortured Soul slain
 Q	95981	Watching the Roads			U2121	1421:643,762		monster:Dalaran Watcher slain|monster:Dalaran Wizard slain
+Q	96241	Talkin' bout Toxins, Mon	30	U264074	U264074	1412:332,96	Use the Toxin Extractor to gather 5 Gloomrise Toxin Samples from the Gnawed Corpses at Gloomrise.	item:Gloomrise Toxin Sample
+Q	96259	Defending the Dead	30	U259118	U259118	1412:333,103	Kill 10 Gloomrise Hatchlings and 5 Gloomrise Soldiers.	monster:Gloomrise Hatchling slain|monster:Gloomrise Soldier slain
 Q	96260	Stronger than Steel	30	U264072	U264072	1412:329,92	Gather 3 strands of Crystalline Silk from Gloomrise Spinners.	item:Crystalline Silk
+Q	96261	The Broodmother	31	U259118	U259118	1412:337,67	Kill Broodmother Valraxx at Gloomrise.	monster:Broodmother Valraxx slain
+Q	96294	A Darker Truth	30				Bring the letter you recovered from Broodmother Valraxx to Muln Earthfury at Skywatcher Plateau.
+Q	96604	The Great Outdoors	6	U265809	U265809	1411:520,473	Sit near Brakk's Basic Campfire and wait until you receive the Boosted Rest buff.	object:Sit near the campfire|object:Gain the Boosted Rest buff
+Q	96607	The Great Outdoors						object:Sit near the campfire|object:Gain the Boosted Rest buff
+Q	96652	The Adventurer	6		U265809		Bring the journal to Brakk near Razor Hill.
+Q	96655	Camping 101: Cooking	6	U265809	U3191	1411:511,424	Speak with Cook Torka in Razor Hill to learn to become a cook.	object:Learn cooking from Cook Torka in Razor Hill
+Q	96821	Legging It	6	U3194	U3139	1411:510,573	Kill 6 Ridgeshade Creepers and 6 Ridgeshade Lurkers in southern Durotar, then report to Gar'thok in Razor Hill.	monster:Ridgeshade Creeper slain|monster:Ridgeshade Lurker slain
+Q	96822	For Honor	7	U266940	U266940	1411:593,564	Collect the Raider's Battleaxe, Raider's Bow, and Raider's Shield from the Tiragarde Keep outskirts, then return them to Turroc in Razor Hill.	item:Raider's Bow|item:Raider's Battleaxe|item:Raider's Shield
+Q	96825	This Fruit Could Bite Back	6	U3191	U3191	1411:463,491	Cook Torka in Razor Hill wants you to collect 8 Prickly Pear Fruit from the Razormane Grounds west of town.	item:Prickly Pear Fruit
+Q	96876	Ukor's Lost Pack	8		U6786		Return the pack to Ukor in southern Durotar.
+Q	96877	Halikor's Hoof	12		U5811		Deliver Halikor's Hoof to Orgrimmar.
 Q	96986	The Grave Knight	33	U2278		1424:232,93	Defeat Atrexis the Grave Knight in the City of Dalaran for Melisara in Tarren Mill.	monster:Atrexis the Grave Knight slain
 Q	96988	Source of Power	33	U11044		1424:241,52	Collect 6 Cracked Sentry Cores in the City of Dalaran for Doctor Martin Felben in Undercity.	item:Cracked Sentry Core
+Q	97223	Bloodtalon Matriarch	8	U7953	U7953	1411:688,717	Bring Eggs of the Bloodtalon Matriarch to Xar'Ti in Sen'jin Village.	item:Bloodtalon Matriarch Eggs
+Q	97225	Forgotten Loa Idols	9	U3304	U3188	1411:669,843	Collect 8 Forgotten Loa Idols from the Echo Isles. Bring them to Master Gadrin in Sen'jin Village.	item:Forgotten Loa Idol
+Q	97242	Yelmak's Medley	15	U3348	U3348	1454:686,300	Take some cuttings from the Cattails and Speargrass growing around the water flows in the Valley of Honor and return to Kor'geld in Yelmak's Alchemy and Potions.	item:Handful of Cattails|item:Speargrass Cuttings
 Q	97253	Parts and Pieces	14	U7161	U7161	1413:618,459	Collect 5 Handfuls of Complicated Parts from the upper pirate camp south of Ratchet, then return to Wrenix the Wretched in Ratchet.	item:Handful of Complicated Parts
+Q	97279	Wayward Weapons	2	U3143	U3159	1411:448,638	Collect 6 Abandoned Training Weapons, then return to Kzan Thornslash in the Den.	item:Abandoned Training Weapon
+Q	97281	A Simmering Storm	11		U3293		Bring the Dull Stormy Orb to Rezlak near Drygulch Ravine.
+Q	97282	Stormy Potential	10	U3293	U3293	1411:396,299	Bring 5 Charged Thunder Lizard Organs to Rezlak near Drygulch Ravine.	item:Charged Thunder Lizard Organ
+Q	97292	Unending Torment				1416:125,9		monster:Hissing Serum administered
 Q	97539	Silky Sutures	36	U12920		1417:689,358	Return 12 Surgical Spidersilk to Doctor Gregory Victor in Hammerfall, Arathi Highlands.	item:Surgical Spidersilk
+Q	97899	Camping 101: Alchemy	6	U265809	U11046		Speak with Whuut in Orgrimmar to learn to craft a camping item for your profession once you have shown proficiency in your skill.	object:Raise your alchemy skill to 20
+Q	97903	Camping 101: First Aid	6	U265809	U5943		Speak with Rawrk in Razor Hill to learn to craft a camping item for your profession once you have shown proficiency in your skill.	object:Raise your first aid skill to 20
+Q	97905	Camping 101: Herbalism	6	U265809	U3404		Speak with Jandi in Orgrimmar to learn to craft a camping item for your profession once you have shown proficiency in your skill.	object:Raise your herbalism skill to 20
 Q	97985	Thundering Hearts	33	U270038		1441:548,496	Slay Stormheart in Thousand Needles and acquire its heart.	item:Stormheart's Still-beating Heart
 Q	98094	Scout Support	25	U2215	U270438		High Executor Darthalia wants you to deliver updated orders to Deathstalker Masoj, south of Tarren Mill, outside of Dun Garok.
 Q	98095	Valuable Vantages	25	U270438	U270438	1424:426,316	Deathstalker Masoj needs you to place the three Apothecary Vials on peaks around Hillsbrad Foothills and return to him.	monster:Western vial placed|monster:Northern vial placed|monster:Southern vial placed
 Q	98298	Arugal's Folly	16	U1938	U1938	1421:516,794	Bring 6 Worgen Bits to Dalar Dawnweaver in The Sepulcher.	item:Worgen Bits
 Q	98299	Stop the Spread	20	U1938	U1938	1421:452,849	Slay 5 Sickly Refugees and 5 Haggard Refugees for Dalar Dawnweaver in The Sepulcher.	monster:Haggard Refugee slain|monster:Sickly Refugee slain
+Q	98575	Tainted Tablet	1	U3143	U3156		Read the Tainted Tablet and speak to Nartok inside the Den in the Valley of Trials.
+Q	98823	Earthen Echo	31	U9087	U259118		Bring the Titan Relic to Muln Earthfury at the Skywatcher Plateau in northwest Mulgore.
 Q	98887	Conflict at Darkspear Islands	39	U15350			Bring 3 Darkspear Islands Marks of Honor to a Horde Warbringer outside the battlegrounds.	item:Darkspear Islands Mark of Honor
+Q	99048	A Missing Hand	9	U3142	U275657		Find Heglan Shadeeye north of Tiragarde Keep.
+Q	99049	Threat from Below	9	U275657	U3142	1411:588,443	Find signs of what attacked Heglan Shadeeye.	item:Orcish Dagger|item:Banner Scrap|item:Broken Bone Trident
+Q	99051	Threat from Below	11	U3142	U3142	1411:592,261	Collect 9 Naga Spinefins.	item:Naga Spinefin
+Q	99052	Threat from Below	11	U3142	U3142	1411:592,175	Kill the sea giant along Durotar's north coast and bring back proof of your accomplishment.	item:Aggor's Belt
+Q	99123	Lost in the Shadows	8	U275811	U3304		Help Pal'juh escape Kolkar Crag and bring news of your success to Master Vornal in Sen'jin Village.
+Q	99142	Tomb Weed						item:Tomb Weed
 ]==]

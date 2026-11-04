@@ -553,5 +553,9 @@
     "sha256": "79267e8be8034e47daab14350411b3acc0b1f64e86efc9d821a217497254ca0a",
     "source": "https://wago.tools/db2/UiMapAssignment/csv?build=1.60.1.70755&locale=enUS",
     "selection": "full extraction"
+  },
+  "discoveries/issue-10.wtl": {
+    "sha256": "37a986e98dc5674f535fea127c1741cdf5a0a55580ab5bfae73ca1a8b106e194",
+    "source": "Waypoint Tracker GitHub issue #10, zjanda, 2026-10-18; WTL1 enUS 1.1.1 player observations"
   }
 }
