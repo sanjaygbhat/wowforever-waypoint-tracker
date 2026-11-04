@@ -7,6 +7,7 @@ local function check(ok, message)
 end
 local sent, registered, joined, left = {}, {}, 0, 0
 local channel = 0
+local joinDelay, joinNotice, hidden = 0.5, false, 0
 C_ChatInfo = {
     RegisterAddonMessagePrefix = function(prefix) registered[prefix] = true end,
     SendAddonMessage = function(prefix, msg, chat, target)
@@ -15,8 +16,20 @@ C_ChatInfo = {
     end,
 }
 GetChannelName = function() return channel end
-JoinTemporaryChannel = function() channel = 7; joined = joined + 1 end
+local function notice(kind)
+    M.FireEvent("CHAT_MSG_CHANNEL_NOTICE", kind, "", "", "7. WPTRoutes", "", "", 0, 7, "WPTRoutes")
+end
+JoinTemporaryChannel = function()
+    joined = joined + 1
+    C_Timer.After(joinDelay, function()
+        channel = 7
+        if joinNotice then notice("YOU_JOINED") end
+    end)
+end
 LeaveChannelByName = function() channel = 0; left = left + 1 end
+ChatFrame_RemoveChannel = function(_, name)
+    if name == "WPTRoutes" then hidden = hidden + 1 end
+end
 M.group = { guild = true, party = true, raid = false }
 WaypointTrackerDB, WaypointTrackerCharDB = nil, nil
 local ns = M.LoadAddon("WaypointTracker", "WaypointTracker")
@@ -120,6 +133,68 @@ M.Tick(20, 1)
 check(not ns.Get("routeSharing") and #sent == before and Net.Status().queued == 0,
     "reset restores opt-out and cancels pending traffic immediately")
 check(channel == 0 and left == 1, "transport leaves when neither sharing feature needs it")
+
+-- Membership is asynchronous: Leave cannot cancel a join still in flight.
+local function optOutDuringJoin(delay, withNotice)
+    joinDelay, joinNotice = delay, withNotice
+    local joinsBefore = joined
+    ns.Set("routeSharing", true)
+    ns.Set("routeSharing", false)
+    check(joined == joinsBefore + 1 and channel == 0,
+        "sharing is disabled while channel membership is still pending")
+end
+
+before = #sent
+local leavesBefore, hiddenBefore = left, hidden
+optOutDuringJoin(1, false)
+M.Tick(1, 0.5)
+check(channel == 7 and left == leavesBefore, "join completes after opt-out but before the fallback")
+M.Tick(2, 0.5)
+check(channel == 0 and left == leavesBefore + 1 and hidden == hiddenBefore and #sent == before,
+    "fallback leaves an unwanted completed join without hiding it or sending")
+
+leavesBefore = left
+optOutDuringJoin(4, true)
+M.Tick(3, 0.5)
+check(channel == 0 and left == leavesBefore, "fallback runs before the slow join completes")
+M.Tick(2, 0.5)
+check(channel == 0 and left == leavesBefore + 1 and hidden == hiddenBefore and #sent == before,
+    "channel notice leaves a join completing after the fallback with both features off")
+
+-- Route opt-out must retain a late join if travel still needs the transport.
+joinDelay, joinNotice = 4, true
+ns.Set("travelShare", false)
+ns.Set("realRoutes", true)
+M.Tick(5, 0.5)
+check(channel == 0, "Real routes alone does not join when travel sharing is off")
+ns.Set("travelShare", true)
+ns.Set("routeSharing", true)
+ns.Set("routeSharing", false)
+leavesBefore, hiddenBefore = left, hidden
+M.Tick(5, 0.5)
+check(channel == 7 and left == leavesBefore and hidden > hiddenBefore and #sent == before,
+    "late joins stay hidden and joined for travel without route/vote sends after route opt-out")
+check(Trails.Share(path), "travel can still share after route opt-out during a late join")
+M.Tick(1)
+check(#sent == before + 3 and sent[before + 1][3] == "CHANNEL",
+    "retained late membership carries travel traffic")
+ns.Set("travelShare", false)
+check(channel == 0 and left == leavesBefore + 1, "disabling the remaining travel sharing leaves late membership")
+
+-- Notices also finish a wanted route join without waiting for another setting change.
+before = #sent
+ns.Set("routeSharing", true)
+M.Tick(3, 0.5)
+check(channel == 0 and #sent == before, "slow wanted join has no membership at the fallback")
+M.Tick(2, 0.5)
+check(channel == 7 and #sent > before and sent[before + 1][2] == "H",
+    "channel notice greets peers when a wanted route join completes after the fallback")
+local queuedBefore = Net.Status().queued
+before = #sent
+notice("YOU_JOINED")
+check(#sent == before and Net.Status().queued == queuedBefore,
+    "repeated channel notices do not duplicate the route greeting")
+ns.Set("routeSharing", false)
 check(#M.errors == 0, "no Lua errors: " .. tostring(M.errors[1]))
 print(("Route sharing tests: %d passed, %d failed"):format(passed, failed))
 os.exit(failed == 0 and 0 or 1)

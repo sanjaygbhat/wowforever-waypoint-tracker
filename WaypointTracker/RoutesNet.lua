@@ -444,6 +444,29 @@ local function HideChannel()
 end
 
 local joinedOnce = false
+local function Leave()
+    if ChannelNumber() and LeaveChannelByName then
+        pcall(LeaveChannelByName, Net.CHANNEL)
+    end
+    joinedOnce = false
+end
+
+local function ReconcileChannel()
+    if not WantChannel() then
+        Leave()
+        return
+    end
+    if ChannelNumber() then
+        HideChannel()
+        if not joinedOnce and Sharing() then
+            joinedOnce = true
+            Broadcast("H")
+            AnnounceMine()
+            SendMyVotes()
+        end
+    end
+end
+
 local function Join()
     if not WantChannel() then
         return
@@ -451,24 +474,7 @@ local function Join()
     if not ChannelNumber() and JoinTemporaryChannel then
         pcall(JoinTemporaryChannel, Net.CHANNEL)
     end
-    C_Timer.After(2, function()
-        if ChannelNumber() then
-            HideChannel()
-            if not joinedOnce and Sharing() then
-                joinedOnce = true
-                Broadcast("H")
-                AnnounceMine()
-                SendMyVotes()
-            end
-        end
-    end)
-end
-
-local function Leave()
-    if ChannelNumber() and LeaveChannelByName then
-        pcall(LeaveChannelByName, Net.CHANNEL)
-    end
-    joinedOnce = false
+    C_Timer.After(2, ReconcileChannel)
 end
 
 function Net.Status()
@@ -581,6 +587,9 @@ end)
 ns.RegisterEvent("CHAT_MSG_ADDON", function(prefix, msg, chat, sender)
     Net.OnMessage(prefix, msg, chat, sender)
 end)
+
+-- A join can complete after the two-second fallback, even after opting out.
+ns.RegisterEvent("CHAT_MSG_CHANNEL_NOTICE", ReconcileChannel)
 
 ns.On("ROUTE_VOTED", function(id, v)
     if Sharing() then
