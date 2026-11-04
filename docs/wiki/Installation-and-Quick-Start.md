@@ -6,7 +6,7 @@
 
 Download the **WaypointTracker** zip from [the latest GitHub release](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest), or install it with the [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker) app (World of Warcraft > **Forever**) or from [Wago](https://addons.wago.io/addons/waypoint-tracker).
 
-1. Extract the ZIP into your Forever **Interface/AddOns** folder. During the beta this is `World of Warcraft/_classic_beta_/Interface/AddOns/`.
+1. Extract the ZIP into your Forever **Interface/AddOns** folder. Use `World of Warcraft\_forever_\Interface\AddOns\` on Windows or `World of Warcraft/_forever_/Interface/AddOns/` on macOS.
 2. Check that these files are directly inside the two addon folders:
 
 ```text
@@ -21,7 +21,7 @@ The data folder supplies Find's database. It loads when you first open Find. Kee
 
 ## Install through WowUp
 
-WowUp's [2.24 beta releases](https://github.com/WowUp/WowUp/releases) support WoW Forever. Select your Forever installation, open **Get Addons → Install from URL**, and paste:
+In a [WowUp release](https://github.com/WowUp/WowUp/releases) that supports WoW Forever, select your Forever installation, open **Get Addons → Install from URL**, and paste:
 
 ```text
 https://github.com/sanjaygbhat/wowforever-waypoint-tracker

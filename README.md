@@ -89,14 +89,7 @@ Open `/wp` or left-click the minimap button for one window with **Waypoints**, *
   <br><sub>The arrow on the way to a waypoint in the Barrens, with its name, distance and time to arrive.</sub>
 </p>
 
-TODO: refresh the screenshots for this release:
-
-- Waypoints tab with the Add row and feedback below the title.
-- Find tab with the kind dropdown and Nearest menu.
-- Routes tab with zone, continent and world previews; world-map preview with Set This Route; an editor page with Back.
-- Blizzard Settings and Edit Mode with all four HUD elements.
-
-The existing map screenshot is in [docs/screenshots](docs/screenshots/README.md). The old window capture needs replacing.
+See the [map screenshot and capture notes](docs/screenshots/README.md) for more in-game views.
 
 ---
 
@@ -129,7 +122,8 @@ Turn on **Lead me to known chest spots** and, while nothing has appeared, the ar
 
 1. Download the latest `WaypointTracker-vX.Y.Z.zip` from [Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest).
 2. Unzip it into your AddOns folder. You should get **two** folders: `...\Interface\AddOns\WaypointTracker\` and `...\Interface\AddOns\WaypointTracker_Data\` (the database for the Find tab).
-   - WoW Forever beta: `World of Warcraft\_classic_beta_\Interface\AddOns\`
+   - Windows: `World of Warcraft\_forever_\Interface\AddOns\`
+   - macOS: `World of Warcraft/_forever_/Interface/AddOns/`
 3. Restart the game, or type `/reload` if it's already running.
 
 > [!TIP]
@@ -364,7 +358,7 @@ Type `/wp find` and a name (or the title of an NPC you've seen, like `blacksmith
 <details>
 <summary><b>How do I install addons for WoW Forever?</b></summary>
 
-Use the CurseForge app (World of Warcraft, **Forever**) or [Wago](https://addons.wago.io/addons/waypoint-tracker), or download the zip from [GitHub Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest) and unzip it into `Interface\AddOns` in your WoW Forever folder. During the beta that's `World of Warcraft\_classic_beta_\Interface\AddOns`. You get two folders, `WaypointTracker` and `WaypointTracker_Data`.
+Use the CurseForge app (World of Warcraft, **Forever**) or [Wago](https://addons.wago.io/addons/waypoint-tracker), or download the zip from [GitHub Releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest) and unzip it into `Interface\AddOns` in your WoW Forever folder. On Windows, use `World of Warcraft\_forever_\Interface\AddOns\`; on macOS, use `World of Warcraft/_forever_/Interface/AddOns/`. You get two folders, `WaypointTracker` and `WaypointTracker_Data`.
 </details>
 
 <details>
@@ -376,7 +370,7 @@ Yes. It's free and open source (MIT), with readable, unobfuscated code, no ads a
 <details>
 <summary><b>Does Waypoint Tracker work on WoW Forever?</b></summary>
 
-Yes, it's made for World of Warcraft: Forever (interface 16001), in beta now and launching on November 4, 2026.
+Yes, version 1.2.0 supports the live World of Warcraft: Forever client 1.60.1 (interface 16001).
 </details>
 
 <details>

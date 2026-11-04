@@ -73,14 +73,29 @@ def blte(data):
     return b''.join(result)
 
 
+def active_build(install, product='wowf'):
+    """Select one active product without falling back to a different client."""
+    with (Path(install) / '.build.info').open() as stream:
+        rows = list(csv.DictReader(stream, delimiter='|'))
+    matches = [r for r in rows if r['Active!DEC:1'] == '1'
+               and r['Product!STRING:0'] == product]
+    require(len(matches) == 1, 'expected one active build for product ' + product)
+    return matches[0]
+
+
+def client_arguments(parser):
+    """Shared offline CLI selection; archived beta clients remain opt-in."""
+    parser.add_argument('--product', default='wowf',
+                        help='CASC product (default: wowf; beta: wow_classic_beta)')
+    parser.add_argument('--folder', default='_forever_',
+                        help='SavedVariables client folder (default: _forever_; beta: _classic_beta_)')
+
+
 class LocalCASC:
-    def __init__(self, install):
+    def __init__(self, install, product='wowf'):
         self.install = Path(install)
         self.data = self.install / 'Data'
-        with (self.install / '.build.info').open() as stream:
-            rows = list(csv.DictReader(stream, delimiter='|'))
-        self.build = next(r for r in rows if r['Active!DEC:1'] == '1'
-                          and r['Product!STRING:0'] == 'wow_classic_beta')
+        self.build = active_build(self.install, product)
         self.build_key = self.build['Build Key!HEX:16']
         p = self.data / 'config' / self.build_key[:2] / self.build_key[2:4] / self.build_key
         config_bytes = p.read_bytes()

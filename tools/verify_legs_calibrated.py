@@ -25,7 +25,7 @@ import re
 import time
 
 import verify_legs_terrain as old
-from verify_legs_casc import LocalCASC, require
+from verify_legs_casc import LocalCASC, client_arguments, require
 
 ROOT = old.ROOT
 DIRS = old.DIRS
@@ -421,6 +421,7 @@ def main():
     ap.add_argument('--no-paths', action='store_true')
     ap.add_argument('--reuse-proposals', type=Path, help='Revalidate this tool\'s prior proposals instead of repeating A*')
     ap.add_argument('--progress', type=Path, help='New progress checkpoint outside client')
+    client_arguments(ap)
     args = ap.parse_args(); start = time.monotonic()
     outputs = [args.output, args.summary, args.detours] + ([args.progress] if args.progress else [])
     for p in outputs:
@@ -437,10 +438,10 @@ def main():
              'tools/travel_extra.tsv', 'WaypointTracker/Trails.lua', 'WaypointTracker/TravelData.lua', 'WaypointTracker_Data/Curated.lua']
     hashes = {p: old.sha(ROOT / p) for p in paths}
     areas = area_names()
-    casc = LocalCASC(args.install)
+    casc = LocalCASC(args.install, product=args.product)
     require(casc.build['Version!STRING:0'] == '1.60.1.70338', 'pinned fixture/client version mismatch')
     world = old.World(casc)
-    saved = list((Path(args.install) / '_classic_beta_/WTF/Account').glob('*/SavedVariables/WaypointTracker.lua'))
+    saved = list((Path(args.install) / args.folder / 'WTF/Account').glob('*/SavedVariables/WaypointTracker.lua'))
     if saved:
         account = max(saved, key=lambda p: p.stat().st_mtime)
         saved = [account] + list(account.parents[1].glob('*/*/SavedVariables/WaypointTracker.lua'))

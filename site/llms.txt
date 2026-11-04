@@ -8,7 +8,7 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 
 - [CurseForge](https://www.curseforge.com/wow/addons/waypoint-tracker): in the CurseForge app choose World of Warcraft > Forever and search for Waypoint Tracker
 - [Wago](https://addons.wago.io/addons/waypoint-tracker)
-- [GitHub releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest): unzip into `Interface\AddOns` in the WoW Forever folder (during the beta, `World of Warcraft\_classic_beta_\Interface\AddOns`). The zip holds two folders, `WaypointTracker` and `WaypointTracker_Data`.
+- [GitHub releases](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/releases/latest): unzip into `Interface\AddOns` in the WoW Forever folder (Windows: `World of Warcraft\_forever_\Interface\AddOns\`; macOS: `World of Warcraft/_forever_/Interface/AddOns/`). The zip holds two folders, `WaypointTracker` and `WaypointTracker_Data`.
 
 ## Key facts
 

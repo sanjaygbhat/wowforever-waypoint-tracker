@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Adversarial tests for the new binary reader and terrain classifications."""
+import argparse
+import tempfile
 import hashlib
 import math
 from pathlib import Path
@@ -9,7 +11,7 @@ import unittest
 import zlib
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from verify_legs_casc import EvidenceUnavailable, blte, chunks
+from verify_legs_casc import EvidenceUnavailable, active_build, blte, chunks, client_arguments
 from verify_legs_terrain import CHUNK, TILE, UNIT, TileTerrain, SavedLiteralParser, classify, candidate_path, plane, segment_points
 
 
@@ -54,6 +56,27 @@ def leg(a=(0,0),b=(100,0)):
 
 
 class Tests(unittest.TestCase):
+    def test_client_selection_defaults_and_beta_override(self):
+        parser = argparse.ArgumentParser()
+        client_arguments(parser)
+        args = parser.parse_args([])
+        self.assertEqual((args.product, args.folder), ('wowf', '_forever_'))
+        beta = parser.parse_args(['--product', 'wow_classic_beta', '--folder', '_classic_beta_'])
+        self.assertEqual((beta.product, beta.folder), ('wow_classic_beta', '_classic_beta_'))
+        with tempfile.TemporaryDirectory() as install:
+            manifest = Path(install) / '.build.info'
+            manifest.write_text('Active!DEC:1|Product!STRING:0|Version!STRING:0\n'
+                                '1|wow_classic_beta|old-beta\n'
+                                '0|wowf|inactive-live\n'
+                                '1|wowf|live\n')
+            self.assertEqual(active_build(install)['Version!STRING:0'], 'live')
+            self.assertEqual(active_build(install, beta.product)['Version!STRING:0'], 'old-beta')
+            with self.assertRaises(EvidenceUnavailable):
+                active_build(install, 'missing')
+            manifest.write_text(manifest.read_text() + '1|wowf|ambiguous\n')
+            with self.assertRaises(EvidenceUnavailable):
+                active_build(install)
+
     def test_blte_checksums_and_modes(self):
         raw=b'evidence'*100;payload=b'Z'+zlib.compress(raw)
         data=b'BLTE'+struct.pack('>I',36)+b'\x0f\0\0\x01'+struct.pack('>II',len(payload),len(raw))+hashlib.md5(payload).digest()+payload

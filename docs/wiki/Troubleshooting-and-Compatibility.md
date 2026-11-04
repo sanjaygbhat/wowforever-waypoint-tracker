@@ -4,7 +4,7 @@
 
 ## Check the installation first
 
-This release targets **World of Warcraft: Forever 1.60.1**, addon interface **16001**. Select the Forever release in your addon manager. During the beta, check the `_classic_beta_/Interface/AddOns` folder rather than another game installation.
+This release targets **World of Warcraft: Forever 1.60.1**, addon interface **16001**. Select the Forever release in your addon manager. Check `World of Warcraft\_forever_\Interface\AddOns\` (Windows) or `World of Warcraft/_forever_/Interface/AddOns/` (macOS).
 
 Make sure both **WaypointTracker** and **WaypointTracker_Data** are enabled, and that their TOC files sit directly inside those folders. If unzipping made an extra folder around them, move the two folders up into `AddOns`. Restart the game after first installing the folders.
 
