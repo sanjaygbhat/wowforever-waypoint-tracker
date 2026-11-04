@@ -267,6 +267,9 @@ class Audit:
         # move/area overrides. This establishes fidelity, not physical accuracy.
         raw_nodes = {r[0]: r for _, r in self.tsv(self.cache / "mz_nodes.tsv")}
         verification = json.loads((ROOT / 'tools/fixtures/travel/verified-routing.json').read_text())
+        launch = json.loads((ROOT / 'tools/fixtures/travel/launch-review.json').read_text())
+        stop_anchors = launch['stop_anchors']
+        transport_records = {r['id']: r['values'] for r in verification['transport']}
         corrections = {r['id']: r['values'] for r in verification['transport'] if r['verdict'] == 'CORRECTED'}
         moves, homes, drops = {}, {}, set()
         for _, r in self.tsv(self.extra):
@@ -283,8 +286,17 @@ class Audit:
             if not actual: continue
             line, n = actual
             m, x, y = moves.get(nid, (int(r[3]), float(r[4])*100, float(r[5])*100))
-            self.check(n[1] == r[1] and int(n[6]) == m and abs(float(n[7])-x) <= .0051 and abs(float(n[8])-y) <= .0051,
+            expected_kind = 'pass' if nid in stop_anchors else r[1]
+            self.check(n[1] == expected_kind and int(n[6]) == m and abs(float(n[7])-x) <= .0051 and abs(float(n[8])-y) <= .0051,
                        line, nid, n[6:9], f"source/override endpoint is map {m}, {x:.2f},{y:.2f}")
+            if nid in stop_anchors:
+                stop = transport_records[nid]['exact_vehicle_stop']
+                anchor = self.nodes.get(stop_anchors[nid])
+                self.check(anchor is not None, line, nid, anchor is not None, 'corrected client stop missing')
+                if anchor:
+                    expected_stop = [stop['world_map'], *stop['world_xyz'][:2], stop['ui_map'], *stop['xy_percent']]
+                    self.check(anchor[1][1] == 'dock' and list(map(float, anchor[1][3:9])) == expected_stop,
+                               anchor[0], stop_anchors[nid], anchor[1][3:9], 'client stop differs from verified spline')
             self.check(self.areas[int(n[2])-1] == homes.get(nid, r[2]), line, nid, self.areas[int(n[2])-1], "transport area differs from raw source/area override")
             if m in assign:
                 px, py = project(m, float(n[4]), float(n[5]))
@@ -304,6 +316,8 @@ class Audit:
                 r[3] = str(correction['conditional_cost_seconds'])
             if r[2] == 'tram':
                 r[4] = '58.633'
+            if r[2] == 'ship':
+                r[:2] = [stop_anchors.get(n, n) for n in r[:2]]
             options = directed.get((r[0], r[1], r[2]), [])
             self.check(len(options) == 1, options[0][0] if options else 1, ">".join(r[:2]), len(options), f"expected one raw transport link (mz_edges.tsv:{rawline})")
             for line, l in options:

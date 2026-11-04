@@ -119,6 +119,10 @@ local function graph(source)
         end
     end
     table.sort(g.order, function(a, b) return a.id < b.id end)
+    for _, r in ipairs(rows(source.hostileApproaches)) do
+        assert(g.nodes[r[1]], 'hostile approach node missing: ' .. r[1])
+        g.nodes[r[1]].accessFaction = r[2]
+    end
     for i, n in ipairs(g.order) do n.index = i; g.out[i] = {} end
     for _,r in ipairs(rows(source.walkEvidence)) do
         g.evidence[r[1] .. ">" .. r[2]],g.evidence[r[2] .. ">" .. r[1]] = r[3],r[3]
@@ -186,6 +190,8 @@ local function hostile(g, n, c)
     return n.city and g.cities[n.city] and g.cities[n.city] ~= "" and g.cities[n.city] ~= c.faction
 end
 local function permitted(l, mode, c, known)
+    if (l.from.accessFaction and l.from.accessFaction ~= c.faction)
+        or (l.to.accessFaction and l.to.accessFaction ~= c.faction) then return false end
     if (l.fac and l.fac ~= c.faction) or (l.class and l.class ~= c.class) or (l.race and l.race ~= c.race)
         or (l.quest and not (M.completedQuests or {})[l.quest]) then return false end
     if l.method == "taxi" then
@@ -234,6 +240,8 @@ local function oracle(g, start, goal, c, known, actual, allowUncertain)
     local dist, queue, head = {}, {}, 1
     local function state(n, mode) return (n.index - 1) * 4 + mode + 1 end
     local function offer(n, mode, cost)
+        if not c.ghost and n ~= start and n ~= goal and n.accessFaction
+            and n.accessFaction ~= c.faction then return end
         local id = state(n, mode)
         if dist[id] and dist[id] <= cost + 1e-8 then return end
         dist[id] = cost

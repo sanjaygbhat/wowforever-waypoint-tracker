@@ -1,0 +1,36 @@
+{
+  "reviewed_on": "2026-11-04",
+  "taxi_build": "1.60.1.70755",
+  "taxi_source": "https://wago.tools/db2/TaxiNodes/csv?build=1.60.1.70755&locale=enUS",
+  "taxi_sha256": "4360793e0edfbb8de62d12d87a69260b6a1bc6314b1e506b141c33e8802d8249",
+  "previous_build": "1.60.1.70338",
+  "added_taxi_rows": {
+    "3361": "Quest transport, not a discoverable flight master; excluded"
+  },
+  "changed_existing_taxi_rows": [],
+  "new_player_flight_masters": [],
+  "unavailable_launch_tables": [
+    "TaxiPath",
+    "TaxiPathNode",
+    "UiMap",
+    "UiMapAssignment"
+  ],
+  "ships_source": "https://worldofwarcraft.blizzard.com/en-gb/news/24304071",
+  "hostility_source": "https://us.forums.blizzard.com/en/wow/t/wow-forever-beta-development-notes/2360696/6",
+  "vehicle_stop_build": "1.60.1.70338",
+  "stop_anchors": {
+    "DOCK_STEAMWHEEDLE": "DOCK_STEAMWHEEDLE_CLIENT_STOP",
+    "DOCK_POWDERFUSE": "DOCK_POWDERFUSE_CLIENT_STOP"
+  },
+  "hostile_approaches": {
+    "CITY_DALARAN": "Alliance",
+    "DOCK_DALARAN": "Alliance",
+    "PORTAL_DALARAN_STORMWIND": "Alliance"
+  },
+  "limitations": [
+    "Launch TaxiNodes has no new player flight masters. Launch path/map exports returned HTTP 403; baseline paths are not certified unchanged.",
+    "Client vehicle stops are navigation anchors, not measured boarding platforms; walking access and the 90-second Steamwheedle service placeholder remain unmeasured.",
+    "Skyships already have client spline evidence (paths 11398 and 11457); no additional skyship added.",
+    "Dalaran has no ordinary taxi node in either snapshot; quest translocation node 3260 remains excluded."
+  ]
+}

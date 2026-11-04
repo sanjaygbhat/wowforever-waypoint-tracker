@@ -90,7 +90,7 @@ local function Parse()
         return nil
     end
     local d = {
-        nodes = {}, byArea = {}, out = {}, mapArea = {}, regions = {}, cities = {}, towns = {},
+        nodes = {}, byArea = {}, out = {}, mapArea = {}, regions = {}, cities = {}, towns = {}, hostileAnchors = {},
         teleports = {}, factors = {}, levels = {}, byTaxi = {}, barriers = {},
         areas = T.areas or {}, indoor = T.indoor or {}, ghostCorridors = {}, buildKey = T.buildKey,
     }
@@ -156,6 +156,14 @@ local function Parse()
     end)
     Rows(T.cities, function(f)
         d.cities[tonumber(f[1])] = f[2]
+    end)
+    Rows(T.hostileApproaches, function(f)
+        local n = d.nodes[f[1]]
+        if n then
+            n.accessFaction = Blank(f[2] or "")
+            -- Guard anchors are not inns and must never become hearth targets.
+            table.insert(d.hostileAnchors, {area=n.town, inn=n, fac=n.accessFaction})
+        end
     end)
     Rows(T.towns, function(f)
         local inn = d.nodes[f[3]]
@@ -580,6 +588,10 @@ end
 
 local function Usable(l, c, unlockedFrom)
     if l.ghostOnly and not c.ghost then return false end
+    -- An unrestricted vehicle can still land inside a hostile settlement.
+    -- Dalaran's open-world services are not a safe Horde connection.
+    if (l.from.accessFaction and l.from.accessFaction ~= c.faction)
+        or (l.to.accessFaction and l.to.accessFaction ~= c.faction) then return false end
     if l.fac and l.fac ~= c.faction then
         return false
     end
@@ -645,7 +657,8 @@ local function Danger(a, b, c, seconds)
     if cont and cont == bc and ax and ay and bx and by then
         local dx, dy = bx - ax, by - ay
         local length2 = dx * dx + dy * dy
-        for _, t in ipairs(data.towns) do
+        for i=1,#data.towns + #data.hostileAnchors do
+            local t = data.towns[i] or data.hostileAnchors[i - #data.towns]
             if (t.fac == "Alliance" or t.fac == "Horde") and c.faction and t.fac ~= c.faction then
                 local tc, tx, ty = Pos(t.inn)
                 if tc == cont and tx and ty then
@@ -876,6 +889,10 @@ local function Search(start, goal, c, allowUncertain)
     Push(heap, 0, first)
     local function Relax(u, node, cost, how, mode)
         if not cost then return end
+        -- Explicit hostile destinations remain visitable on foot, but must
+        -- not become intermediate service/ground shortcuts. Ghosts can walk.
+        if not c.ghost and node ~= goal and node ~= start and node.accessFaction
+            and node.accessFaction ~= c.faction then return end
         local walking = how == "walk" or (type(how) == "table" and WALKING[how.method])
         local surcharge, proof, observation = 0, nil, nil
         if walking and ns.Terrain and not (type(how) == "table" and (how.ghostOnly or how.observedGround)) then

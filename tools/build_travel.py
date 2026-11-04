@@ -22,6 +22,7 @@ import csv
 from pathlib import Path
 from terrain_integration import compile_terrain
 from verified_travel import compile_verified
+from launch_travel import apply_launch
 import json
 import math
 import os
@@ -466,6 +467,8 @@ def point_area(m, x, y):
 
 node_lines, links, terrain_evidence, barrier_lines, unmeasured_lines = compile_verified(
     Path(HERE).parent, node_lines, links, terrain_pending, to_map, point_area)
+node_lines, hostile_approaches = apply_launch(
+    Path(HERE).parent, node_lines, links, unmeasured_lines, transport_evidence)
 link_lines = ['\t'.join(l[:12]) for l in links]
 terrain_pending, terrain_edges = [], []
 corridor_lines = []  # No verified connector at the trace's first endpoint.
@@ -486,6 +489,8 @@ with open(OUT, "w", encoding="utf-8") as out:
     out.write(block('unmeasuredLinks', unmeasured_lines, 'from, to, method, confidence; retained only with planner dependency evidence'))
     out.write(block('transportEvidence', transport_evidence, 'record, verdict, field-level confidence; exact vehicle stops are not boarding platforms'))
     out.write(block('transportTiming', transport_timing, 'record, timing field, seconds, provenance; animation and exterior costs are separate'))
+    out.write(block('hostileApproaches', hostile_approaches,
+                    'node, owner faction; hostile open-world access, not a vehicle boarding restriction'))
     out.write(block('unmeasuredApproaches', [
         'TAXI_11\tZEPPELIN_TIRISFAL_ORGRIMMAR\tunmeasured-indoor\tThrall hard gate',
         'ZEPPELIN_ORGRIMMAR_TIRISFAL\t1454:32,37.8\tunmeasured-indoor\tThrall hard gate'],
