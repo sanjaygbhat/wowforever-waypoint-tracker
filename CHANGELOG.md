@@ -1,20 +1,39 @@
 # Changelog
 
+## 1.2.0
+
+- Ready for the WoW Forever launch (client 1.60.1, interface 16001). Install into `_forever_\Interface\AddOns`.
+- Find's quest markers, flight paths, towns and item names come from the live launch build (1.60.1.70755), with refreshed All The Things quest data.
+- Works with the live client's newer spell, item, chat and Edit Mode behaviour: known teleports and your hearthstone are detected reliably, route sharing pauses and retries while the game restricts addon messages, and the arrow, text and other screen elements remember their place separately for each Edit Mode layout style.
+- Real routes (beta) uses the corrected Steamwheedle Port and Powderfuse boat docks and no longer sends Horde characters through Dalaran.
+- Players' discoveries add 234 NPCs, 117 quests, 21 objects and the stock and drops of 260 items, with more observed locations for existing entries.
+- One window for Waypoints, Find and Routes. Editors, imports and help open as pages inside the tabs, with Back to return.
+- Ready-made route names describe what you get or do; levels and faction restrictions move into the details and tooltips. Two-line rows show the map and category, and For my level sorting puts suitable routes first.
+- Click a route for an area, continent or world map preview with stop pins and route lines. Click the preview to open it on the world map, with Set This Route and Back to Routes. Set uses your existing replace-or-add choice; closing the map clears the preview.
+- Route details include a scrolling numbered stop list. Start/Stop, Share/Skip and More keep the actions in one row, with editing, copying and removal in More.
+- Settings live in Blizzard Settings. Move the arrow, its text, the coordinates box and the route recorder in Edit Mode, with positions saved per layout.
+- Left-click the minimap button to open the window; right-click for the quick menu; Shift + left-click to add a waypoint here. The Addon Compartment and world-map button offer quick access too.
+- Feedback appears below the title. Clicks in the window keep chat quiet; the Real routes notice offers a button to turn it on. World-map coordinates respect Blizzard's saved settings.
+- Real routes (beta): the arrow guides you through passes and gates, with flight paths, boats, zeppelins, the tram, hearthstone and teleports when quicker. Enable it in Routes or the quick menu; tune it in Settings → Routes.
+- Real routes corrects transport eligibility and timings, replaces blocked walking shortcuts with verified paths where available, and labels needed unmeasured passages. Unresolved quest positions are removed while their names and definitions stay available in Find. The incomplete shipped corpse trace is dropped; corpse routing uses the general planner with checks for blocked legs and backward steering.
+- Zone-border roads use corrected ground anchors and verified bends or tunnel floors, recovering connections rejected by straight shortcuts across nearby slopes.
+- Treasure hunt remains beta, with its controls in Settings and the quick menu.
+
 ## 1.1.1
 
-- Spots you share in chat now start with **[Waypoint Tracker]**, followed by the map pin and coordinates. Turn it off under **Show more options → General → Start shared spots with [Waypoint Tracker]**.
+- Spots you share in chat now start with **[Waypoint Tracker]**, followed by the map pin and coordinates. Turn it off under the former advanced panel (now **Settings → Find & Sharing → Start shared spots with [Waypoint Tracker]**).
 - Stability fixes and improvements.
 
 ## 1.1.0
 
-**Treasure hunt**
+**Treasure hunt (beta)**
 - Tick **Treasure hunt** in the window, type `/wp treasure`, or set a key binding. Chests, rare spawns and other markers the game shows near you get a ping the moment they appear: a sound, a message on screen and a blinking taskbar icon if you're in another window.
 - The arrow points straight at it, follows a rare that wanders, and lets go once it's taken, killed or gone, then returns to your own waypoint.
 - Rares come from your minimap, nameplates and target, placed at their known spawn. Ones someone else is already fighting are left out.
 - A chest right in front of you pings too, and looting it clears it.
 - `/wp treasure status` lists the markers the game shows around you and your most recent finds, with how each was found.
 - **Lead me to known chest spots** walks you from one known chest spawn to the next while nothing has appeared.
-- Each part has its own switch under **Show more options → Treasure Hunt**.
+- Each part has its own switch under the former advanced panel (now **Settings → Treasure Hunt (beta)**).
 
 **Everything else**
 - Find's database is refreshed with the latest WoW Forever data: more of Zephras Isle, the Skyborne arrival in Mulgore, and new NPCs, quests and items across Azeroth.
@@ -31,7 +50,7 @@ First release for WoW Forever.
 **The arrow**
 - A 3D arrow over your character points to your waypoint, with its name, distance and time to arrive underneath. It turns from gold to green as you get closer.
 - It never catches mouse clicks, so right-click to attack always works.
-- Move it with **Move Arrow** in the window or in the game's **Edit Mode** (Esc > Edit Mode), where each layout keeps its own spot. **Reset** brings back its default place, size and visibility.
+- Move it with the button formerly called **Move Arrow** in the window or in the game's **Edit Mode** (Esc > Edit Mode), where each layout keeps its own spot. **Reset** brings back its default place, size and visibility.
 - The arrow and its text have their own size and visibility. Tick **Move the text separately** to place the text anywhere.
 - Arriving plays a sound, removes the waypoint and moves on to the next closest one. A waypoint set where you stand says "You're here" until you walk away.
 - **Your corpse:** when you die, the arrow points to your body, then goes back to your waypoint once you're alive (on by default).
@@ -57,5 +76,5 @@ First release for WoW Forever.
 - **Correct a spot:** press **Wrong spot? Correct it** on an NPC or object in Find, stand where it really is and save (or type the coordinates). **It's not there** removes a wrong spot; **Remove my correction** undoes it.
 
 **Everything else**
-- "Show more options" for the rest: fade when on course, hide in combat or on flight paths, colour styles, arrival distance, metres, a coordinates box, the game's own map pin, and more.
+- The former advanced panel held the rest: fade when on course, hide in combat or on flight paths, colour styles, arrival distance, metres, a coordinates box, the game's own map pin, and more.
 - Translated into German, French, Spanish, Portuguese, Russian, Korean and Chinese (Simplified and Traditional).

@@ -7,7 +7,7 @@ local function Help()
     ns.Print(L.HELP_HEADER, true)
     -- when another addon owns /way, /wp does the same job
     local wayTaken = ns.IsOtherArrowAddonPresent()
-    for _, key in ipairs({ "HELP_OPEN", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS", "HELP_HELP" }) do
+    for _, key in ipairs({ "HELP_OPEN", "HELP_OPTIONS", "HELP_EDITMODE", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE", "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS", "HELP_ROUTES", "HELP_ROUTES_MORE", "HELP_TRAVEL", "HELP_HELP" }) do
         local line = L[key]
         if wayTaken then
             line = line:gsub("/way ", "/wp ")
@@ -133,16 +133,31 @@ local function Clear(rest)
     end
 end
 
+local function ToggleTravel(on)
+    if on == nil then
+        on = not ns.Get("realRoutes")
+    end
+    ns.Set("realRoutes", on)
+    ns.Print(on and L.TRAVEL_NOW_ON or L.TRAVEL_NOW_OFF, true)
+    if on and ns.Travel and not ns.Travel.KnowsAnyFlight() then
+        ns.Print(L.TRAVEL_OPEN_FLIGHT_MAP, true)
+    end
+end
+
+function WaypointTracker_ToggleTravel()
+    ToggleTravel()
+end
+
 local function Handle(msg, isWayCommand)
     msg = ns.Trim(msg)
     local cmd, rest = msg:match("^(%S+)%s*(.-)$")
     cmd = cmd and Geo.Lower(cmd) or ""
 
-    if cmd == "" then
-        if isWayCommand then
+    if cmd == "" or cmd == "show" then
+        if isWayCommand and cmd == "" then
             Help()
-        else
-            WaypointTracker_ToggleWindow()
+        elseif ns.Window and ns.Window.Toggle then
+            ns.Window.Toggle()
         end
     elseif cmd == "help" or cmd == "?" then
         Help()
@@ -166,10 +181,72 @@ local function Handle(msg, isWayCommand)
         else
             ns.Treasure.Toggle()
         end
+    elseif cmd == "routes" or cmd == "route" or cmd == "lists" then
+        local sub = Geo.Lower(ns.Trim(rest))
+        if sub == "next" or sub == "skip" then
+            ns.Routes.Skip()
+        elseif sub == "record" or sub == "new" or sub == "create" then
+            if ns.Routes.Recording() then
+                local draft = ns.Routes.RecordFinish()
+                if draft then
+                    ns.RoutesUI.ShowEditor(draft)
+                end
+            else
+                ns.Routes.RecordStart()
+            end
+        elseif sub == "add" then
+            WaypointTracker_RouteRecordAdd()
+        elseif sub == "stop" then
+            ns.Routes.Stop()
+        elseif sub == "test" then
+            ns.RoutesNet.SelfTest()
+        elseif sub == "fast" then
+            -- for trying the "how was it?" question without waiting 5 minutes
+            ns.Routes.feedbackAfter = ns.Routes.feedbackAfter == 20 and 300 or 20
+            ns.Print(L.ROUTE_FAST:format(ns.Routes.feedbackAfter), true)
+        elseif sub == "status" then
+            local s = ns.RoutesNet.Status()
+            ns.Print(L.ROUTE_STATUS:format(s.sharing and (s.channel and ("#" .. s.channel) or L.ROUTES_NET_JOINING) or L.ROUTES_NET_OFF,
+                s.guild and L.YES or L.NO, s.group or "-", s.peers, s.sent, s.got, s.routes, s.votes), true)
+        elseif ns.Window and ns.Window.Toggle then
+            ns.Window.Toggle("routes")
+        end
+    elseif cmd == "travel" or cmd == "realroutes" or cmd == "rr" then
+        local sub = Geo.Lower(ns.Trim(rest))
+        local T = ns.Travel
+        if sub == "steps" or sub == "route" then
+            local lines = T.Describe()
+            if #lines == 0 then
+                ns.Print(T.Enabled() and L.TRAVEL_NO_PLAN or L.TRAVEL_OFF, true)
+            end
+            for i, line in ipairs(lines) do
+                ns.Print(("%d. %s"):format(i, line), true)
+            end
+        elseif sub == "status" then
+            local found = 0
+            for _, v in pairs(T.Know().flights) do
+                if v == true then
+                    found = found + 1
+                end
+            end
+            local own, shared, crossings = ns.Trails.Stats()
+            local _, bind = T.BindNode()
+            ns.Print(L.TRAVEL_STATUS:format(T.Enabled() and L.YES or L.NO, found, bind or "-", own, shared, crossings), true)
+        else
+            local on
+            if sub == "on" then on = true elseif sub == "off" then on = false end
+            ToggleTravel(on)
+        end
     elseif cmd == "find" or cmd == "search" then
-        ns.Find.Show(rest)
-    elseif cmd == "options" or cmd == "config" or cmd == "show" then
-        ns.UI.Show()
+        if ns.Find and ns.Find.Show then ns.Find.Show(rest) end
+    elseif cmd == "settings" or cmd == "options" or cmd == "config" then
+        if ns.Options and ns.Options.Open then ns.Options.Open() end
+    elseif cmd == "editmode" then
+        local ok, why
+        if ns.EditMode and ns.EditMode.Enter then ok, why = ns.EditMode.Enter() end
+        if not ok then
+            ns.Print(why == "combat" and L.IN_COMBAT_NO_PANELS or L.EDIT_MODE_HINT, true)
+        end
     else
         AddFromText(msg)
     end

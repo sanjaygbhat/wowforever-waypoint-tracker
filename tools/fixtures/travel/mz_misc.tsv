@@ -1,0 +1,16 @@
+factor	1429	1.06
+factor	1454	1.5
+factor	1458	1.9
+factor	1455	1.98
+factor	1456	1.5
+factor	1453	1.5
+container	easternkingdoms.elwynn_forest.stormwind_wizards_sanctum	indoor
+container	easternkingdoms.blackrock_mountain	indoor
+container		
+teleport	18960	TELEPORT_MOONGLADE	10
+teleport	3561	CITY_STORMWIND	10
+teleport	3562	CITY_IRONFORGE	10
+teleport	3565	CITY_DARNASSUS	10
+teleport	3563	CITY_UNDERCITY	10
+teleport	3566	CITY_THUNDER_BLUFF	10
+teleport	3567	CITY_ORGRIMMAR	10

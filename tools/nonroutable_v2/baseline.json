@@ -1,0 +1,17 @@
+{
+  "repo": ".",
+  "source_cache": "tools/.cache/sources",
+  "files": {
+    "tools/nonroutable_references.tsv": "252d8e3737747277b934827cc77cac0762aae7347d42c2cd988209f9c1ae5005",
+    "tools/fixtures/manifest.json": "a618bb4020baabf52165f99a863d59eb1820aaf30a6a07c8fc34ee23568ca99a",
+    "WaypointTracker_Data/Curated.lua": "62511d7efbf1ce2b87fdce39acd2e164eec16da19c4f06ccad31d542ac079e13",
+    "WaypointTracker_Data/ReferenceData.lua": "3b5b12ccead0a012252553188a42797da25baaec1d6934daf6f22bd8558bb2b5",
+    "WaypointTracker_Data/Forever.lua": "fa16cd2cbee1fbc0863905d4bca06de77c01e5fbfa07b78ba5bfebc2f7065e00",
+    "WaypointTracker/Database.lua": "0a36f4f5d44df7465b16bc15cd890b18791f7016c64a9cbb09d7994dc7464a76"
+  },
+  "source_commits": {
+    "ATT": "ec1aa307198d92d18c601ae2c9338a67b71e7d6b",
+    "pfQuest": "104f35678ca39ab1fb78b655f815cc7016f5e0c8"
+  },
+  "build": "1.60.1.70338"
+}

@@ -1,0 +1,6 @@
+# Exact unresolved identity relationships after applying SourceRecovery.lua.
+# category	file	entry	target	reason
+dangling:Curated.lua:drops	Curated.lua	I190308	O100000001	Only a generic LocalizationDB label (Unlit Torch); no typed Classic/Forever entity record connecting this number to I190308. Identity/namespace and position unresolved.
+dangling:Curated.lua:needs	Curated.lua	Q65602	O100000000	Only a generic LocalizationDB label (Sentinax Portal); no typed Classic/Forever entity record connecting this number to Q65602. Identity/namespace and position unresolved; do not substitute a quest area.
+dangling:Curated.lua:needs	Curated.lua	Q97977	O668493	Raw author explicitly calls this an unnamed object giving a Gnarlpine Totem. No verified display name or unique source position; multiple providers share the quest objective.
+dangling:Items.lua:startsQuest	Items.lua	I275985	97267	Exact StartQuestID is present on I275985 in build-70338 ItemSparse, but absent from build-70338 QuestV2 and pinned ATT quest names; Wowhead query unavailable/no matching result. Retain original start-quest link.

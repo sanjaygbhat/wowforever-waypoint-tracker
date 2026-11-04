@@ -43,49 +43,91 @@ end)
 -- ---------------------------------------------------------------------------
 -- The quest you're tracking
 -- ---------------------------------------------------------------------------
-local questWp, questID
+local questWp, questID, clickedQuest
+local beforeDeath -- corpse navigation restores this after resurrection
+local Follow = {}
+ns.Follow = Follow
 
 local function ClearQuestWaypoint()
     if questWp and WP.IsValid(questWp) then
         WP.Remove(questWp, true)
     end
-    questWp, questID = nil, nil
+    questWp, questID, clickedQuest = nil, nil, nil
 end
 
-local function UpdateTrackedQuest()
-    if not ns.Get("followQuest") then
-        if questWp then
-            ClearQuestWaypoint()
-        end
-        return
-    end
-    local id = C_SuperTrack and C_SuperTrack.GetSuperTrackedQuestID and C_SuperTrack.GetSuperTrackedQuestID()
-    if not id or id == 0 then
-        ClearQuestWaypoint()
-        return
-    end
-    local m, x, y = Places.QuestPosition(id)
-    if not m then
-        return
-    end
+-- Explicit clicks and automatic super-tracking share one waypoint. A click
+-- works even when automatic following is off, and immediately takes the arrow.
+local function TrackQuest(id, explicit)
+    id = ns.Int(ns.Num(id))
+    if not id then return end
+    local ok, m, x, y = pcall(Places.QuestPosition, id)
+    if not ok then return end
+    m, x, y = ns.Int(ns.Num(m)), ns.Num(x), ns.Num(y)
+    if not m or not x or not y or x < 0 or x > 1 or y < 0 or y > 1 then return end
     local changedQuest = id ~= questID
     if questWp and WP.IsValid(questWp) and not changedQuest and questWp.m == m and math.abs(questWp.x - x) < 0.002 and math.abs(questWp.y - y) < 0.002 then
-        return
+        if explicit then WP.SetActive(questWp, true) end
+        return questWp
     end
     local wasActive = questWp and WP.GetActive() == questWp
+    local previous = questWp
+    local preference = not changedQuest and previous and previous.travelPreference
+    local chosen = not changedQuest and previous and previous.travelChosen
+    local travelTrip = not changedQuest and previous and previous.travelTrip
     if questWp and WP.IsValid(questWp) then
         WP.Remove(questWp, true, true)
     end
-    local title = C_QuestLog.GetTitleForQuestID and C_QuestLog.GetTitleForQuestID(id)
+    local title = C_QuestLog and C_QuestLog.GetTitleForQuestID and ns.Str(C_QuestLog.GetTitleForQuestID(id))
     questWp = WP.Add(m, x, y, {
         title = title,
         persistent = false,
         silent = true,
         source = "quest",
+        noReuse = true, -- Follow removes this object; never borrow a user's pin.
         -- a newly tracked quest takes the arrow; an update keeps what you had
-        setActive = changedQuest or wasActive or WP.GetActive() == nil,
+        setActive = explicit or (changedQuest and not (ns.IsPlayerDead and ns.IsPlayerDead())) or wasActive or WP.GetActive() == nil,
     })
-    questID = id
+    questID = questWp and id or nil
+    if questWp then
+        questWp.travelPreference, questWp.travelChosen = preference or nil, chosen or nil
+        questWp.travelTrip = travelTrip or nil
+        if previous and beforeDeath == previous then beforeDeath = questWp end
+    end
+    return questWp
+end
+
+function Follow.TrackQuest(id)
+    local wp = TrackQuest(id, true)
+    if wp then
+        clickedQuest = questID
+        ns.Fire("QUEST_TRACKING_CHANGED")
+    end
+    return wp
+end
+
+function Follow.GetTrackedQuestID()
+    return questWp and WP.IsValid(questWp) and WP.GetActive() == questWp and questID or nil
+end
+
+local function UpdateTrackedQuest()
+    -- Removing an explicit waypoint must not recreate it at the next log event.
+    if clickedQuest and not (questWp and WP.IsValid(questWp)) then clickedQuest = nil end
+    if clickedQuest and C_QuestLog and C_QuestLog.GetLogIndexForQuestID then
+        local ok, index = pcall(C_QuestLog.GetLogIndexForQuestID, clickedQuest)
+        if ok and not (issecretvalue and issecretvalue(index)) then
+            index = ns.Num(index)
+            if not index or index == 0 then ClearQuestWaypoint() end
+        end
+    end
+    local id = clickedQuest
+    if not id and ns.Get("followQuest") then
+        id = C_SuperTrack and C_SuperTrack.GetSuperTrackedQuestID and ns.Num(C_SuperTrack.GetSuperTrackedQuestID())
+    end
+    if not id or id == 0 then
+        ClearQuestWaypoint()
+        return
+    end
+    TrackQuest(id)
 end
 
 -- Quest events come in bursts; look at most twice a second.
@@ -101,7 +143,16 @@ local function Schedule()
     end)
 end
 
-for _, event in ipairs({ "SUPER_TRACKING_CHANGED", "QUEST_LOG_UPDATE", "ZONE_CHANGED_NEW_AREA", "QUEST_TURNED_IN" }) do
+ns.RegisterEvent("SUPER_TRACKING_CHANGED", function()
+    if ns.Get("followQuest") then clickedQuest = nil end
+    Schedule()
+end)
+ns.RegisterEvent("QUEST_TURNED_IN", function(id)
+    id = ns.Num(id)
+    if id and id == clickedQuest then ClearQuestWaypoint() end
+    Schedule()
+end)
+for _, event in ipairs({ "QUEST_LOG_UPDATE", "ZONE_CHANGED_NEW_AREA" }) do
     ns.RegisterEvent(event, Schedule)
 end
 ns.On("LOGIN", Schedule)
@@ -113,52 +164,99 @@ end)
 
 -- ---------------------------------------------------------------------------
 -- Your corpse: dying drops a waypoint on your body and points the arrow at
--- it. Coming back to life removes it and puts back the waypoint you had.
+-- it. Releasing your spirit points the arrow at it again (whatever took it
+-- meanwhile), and coming back to life removes it and puts back the waypoint
+-- you had.
 -- ---------------------------------------------------------------------------
-local corpseWp, beforeDeath
+local corpseWp, deathMap, reached
 
 local function HasCorpseWaypoint()
     return corpseWp ~= nil and WP.IsValid(corpseWp)
 end
 
+local function IsDead()
+    return UnitIsDeadOrGhost and UnitIsDeadOrGhost("player") and true or false
+end
+ns.IsPlayerDead = IsDead
+
 local function AddCorpse(m, x, y)
     if HasCorpseWaypoint() then
         return
     end
-    beforeDeath = WP.GetActive()
-    corpseWp = WP.Add(m, x, y, { title = L.CORPSE_NAME, source = "corpse", persistent = false, silent = true })
+    local active = WP.GetActive()
+    if active and active.source ~= "corpse" then
+        beforeDeath = active
+    end
+    corpseWp = WP.Add(m, x, y, { title = L.CORPSE_NAME, source = "corpse", persistent = false, silent = true, noReuse = true })
 end
 
 local function OnDeath()
+    reached = false
     if not ns.Get("corpseWaypoint") then
         return
     end
     local m, x, y = ns.Geo.GetPlayerMapPosition()
+    deathMap = m or C_Map.GetBestMapForUnit("player")
     if m then
         AddCorpse(m, x, y)
     end
 end
 
+-- Where the game says your body is: asked on the map you're on, the map you
+-- died on, and the maps around them (the game only answers for a map that
+-- holds the body).
+local function CorpsePosition()
+    if not (C_DeathInfo and C_DeathInfo.GetCorpseMapPosition) then
+        return nil
+    end
+    local tried = {}
+    local function Try(m)
+        while m and m ~= 0 and not tried[m] do
+            tried[m] = true
+            local ok, pos = pcall(C_DeathInfo.GetCorpseMapPosition, m)
+            if ok and pos then
+                local x, y = ns.XY(pos)
+                x, y = ns.Num(x), ns.Num(y)
+                if x and y and (x > 0 or y > 0) and x <= 1 and y <= 1 then
+                    return m, x, y
+                end
+            end
+            local info = C_Map.GetMapInfo and C_Map.GetMapInfo(m)
+            m = info and info.parentMapID
+        end
+    end
+    local m, x, y = Try(C_Map.GetBestMapForUnit("player"))
+    if not m then
+        m, x, y = Try(deathMap)
+    end
+    return m, x, y
+end
+
 -- As a ghost (after releasing, or logging in as one) the game knows where
 -- the body is, even after dying somewhere that has no position.
 local function OnGhost()
-    if not ns.Get("corpseWaypoint") or HasCorpseWaypoint() or not (UnitIsGhost and UnitIsGhost("player")) then
+    if not ns.Get("corpseWaypoint") or not (UnitIsGhost and UnitIsGhost("player")) or reached then
         return
     end
-    local m = C_Map.GetBestMapForUnit("player")
-    local pos = m and C_DeathInfo and C_DeathInfo.GetCorpseMapPosition and C_DeathInfo.GetCorpseMapPosition(m)
-    if pos then
-        local x, y = ns.XY(pos)
-        if ns.Num(x) and ns.Num(y) then
+    if not HasCorpseWaypoint() then
+        local m, x, y = CorpsePosition()
+        if m then
             AddCorpse(m, x, y)
         end
+    end
+    -- the arrow goes to your body, whatever was picked up while you were dead
+    if HasCorpseWaypoint() and WP.GetActive() ~= corpseWp then
+        WP.SetActive(corpseWp, true)
     end
 end
 
 local function OnAlive()
     -- PLAYER_ALIVE also fires when you release your spirit
-    if UnitIsDeadOrGhost and UnitIsDeadOrGhost("player") then
-        OnGhost()
+    if IsDead() then
+        -- a moment later: the game places you at the graveyard first
+        C_Timer.After(0.5, function()
+            ns.Call(OnGhost)
+        end)
         return
     end
     if HasCorpseWaypoint() then
@@ -169,10 +267,33 @@ local function OnAlive()
             WP.SetActive(restore, true)
         end
     end
-    corpseWp, beforeDeath = nil, nil
+    corpseWp, beforeDeath, deathMap, reached = nil, nil, nil, false
 end
+
+-- walking up to your body counts: don't put the waypoint back
+ns.On("ARRIVED", function(wp)
+    if wp == corpseWp then
+        reached = true
+        -- Auto-clear would otherwise advance to the nearest unrelated pin,
+        -- leaving no corpse object for OnAlive to restore from. Restore now;
+        -- any destination the player selects afterwards remains their choice.
+        if WP.GetActive() == corpseWp and beforeDeath and WP.IsValid(beforeDeath) then
+            WP.SetActive(beforeDeath, true)
+        end
+    end
+end)
 
 ns.RegisterEvent("PLAYER_DEAD", OnDeath)
 ns.RegisterEvent("PLAYER_ALIVE", OnAlive)
 ns.RegisterEvent("PLAYER_UNGHOST", OnAlive)
+-- releasing inside a dungeon, or a loading screen, puts you on another map
+for _, event in ipairs({ "PLAYER_ENTERING_WORLD", "ZONE_CHANGED_NEW_AREA" }) do
+    ns.RegisterEvent(event, function()
+        if IsDead() then
+            C_Timer.After(1, function()
+                ns.Call(OnGhost)
+            end)
+        end
+    end)
+end
 ns.On("LOGIN", OnGhost)

@@ -254,9 +254,11 @@ function Learn.ParseGUID(guid)
     if type(guid) ~= "string" then
         return nil
     end
-    local kind, id = guid:match("^(%a+)%-%d+%-%d+%-%d+%-%d+%-(%d+)%-")
+    -- Only field six is an entry ID. Server/spawn fields are opaque on
+    -- Forever; never interpret them as layer IDs or persist spawn identity.
+    local kind, id = guid:match("^(%a+)%-[^%-]*%-[^%-]*%-[^%-]*%-[^%-]*%-(%d+)%-[^%-]*$")
     id = tonumber(id)
-    if not id then
+    if not id or id <= 0 or id > 2147483647 then
         return nil
     end
     if kind == "Creature" or kind == "Vehicle" then

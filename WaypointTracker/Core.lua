@@ -14,6 +14,11 @@ ns.version = (GetAddOnMetadata and GetAddOnMetadata(ADDON_NAME, "Version")) or "
 ns.defaults = {
     -- arrow
     arrowShown = true,
+    -- routes
+    routeSharing = true, -- share routes and votes with other players of the addon
+    routeApply = "ask", -- "ask" | "replace" | "add"
+    routeThisZone = false,
+    routeLowRated = false, -- show routes most players voted down
     arrowScale = 1.0,
     arrowAlpha = 0.8, -- a little see-through, so it feels part of the world
     arrowPos = nil, -- { point, relativePoint, x, y }; nil = over your character
@@ -42,8 +47,8 @@ ns.defaults = {
     worldCoords = true,
     mapClick = true,
     coordsBox = false,
-    coordsLocked = false,
     coordsPos = nil,
+    coordsLayouts = nil,
     -- general
     autoClosest = false,
     persist = true,
@@ -56,7 +61,18 @@ ns.defaults = {
     blizzardPin = false,
     followMapPins = true, -- the game's own map pin (and map pin links) move the arrow
     followQuest = false, -- point at the quest you track when you have no waypoint
+    questClickTrack = true, -- plain tracker clicks and the hover icon take the arrow
     corpseWaypoint = true, -- dying points the arrow at your body
+    -- Real routes (beta, see Travel.lua): follow a way you can go, not the straight line
+    realRoutes = false,
+    travelPreference = "safer",
+    travelFlights = true,
+    travelBoats = true,
+    travelHearth = true,
+    travelMapLine = true,
+    travelTrails = true, -- write down where you walk and follow walked paths
+    travelShare = true, -- share walked paths, crossings and boat times
+    travelNoticeShown = false,
     -- write down NPCs, quests and objects met in Forever (see Learn.lua)
     learn = true,
     -- treasure hunt (see Treasure.lua): off until you turn it on
@@ -67,13 +83,18 @@ ns.defaults = {
     treasureKnownSpots = false,
     treasurePing = true,
     treasureFocus = true,
-    -- Find window
+    -- Find tab
     findTab = "all",
     findFaction = true,
     findThisZone = false,
     -- window state
-    showAdvanced = false,
-    windowPos = nil,
+    uiLastTab = "waypoints",
+    recorderPos = nil,
+    recorderLayouts = nil,
+    tipsShown = {},
+    routesHelpShown = false,
+    welcomeShown = false,
+    wayNoticeShown = false,
 }
 
 local function CopyTable(src)
@@ -109,6 +130,20 @@ function ns.ReportError(err)
         return
     end
     reported[message] = true
+    -- kept in the saved variables too (the last few), so a bug seen once in
+    -- the game can still be read and fixed later
+    if type(WaypointTrackerDB) == "table" then
+        local log = type(WaypointTrackerDB.errorLog) == "table" and WaypointTrackerDB.errorLog or {}
+        WaypointTrackerDB.errorLog = log
+        table.insert(log, {
+            when = time and time() or 0,
+            version = ns.version,
+            error = err:sub(1, 2000),
+        })
+        while #log > 20 do
+            table.remove(log, 1)
+        end
+    end
     local handler = geterrorhandler and geterrorhandler()
     if handler then
         handler(err)
@@ -174,10 +209,15 @@ function ns.Set(key, value)
 end
 
 function ns.ResetSettings()
-    local keepWindow = ns.settings and ns.settings.windowPos
-    WaypointTrackerDB.settings = CopyTable(ns.defaults)
-    ns.settings = WaypointTrackerDB.settings
-    ns.settings.windowPos = keepWindow
+    local settings = CopyTable(ns.defaults)
+    for key, value in pairs(ns.settings or {}) do
+        if type(key) == "string" and key ~= "windowPos" and
+            (key == "uiLastTab" or key == "minimapAngle" or key == "tipsShown" or key:match("Layouts$") or key:match("Pos$")) then
+            settings[key] = value
+        end
+    end
+    WaypointTrackerDB.settings = settings
+    ns.settings = settings
     ns.Fire("SETTING_CHANGED", nil, nil)
 end
 
@@ -196,13 +236,14 @@ end
 -- ---------------------------------------------------------------------------
 -- Small helpers
 -- ---------------------------------------------------------------------------
+function ns.InCombat()
+    return InCombatLockdown and InCombatLockdown() or false
+end
+
 -- Returns v if it is a normal number we are allowed to do maths with.
 -- (Newer clients can hand addons "secret" values in some situations.)
 local issecretvalue = issecretvalue
 function ns.Num(v)
-    if v == nil then
-        return nil
-    end
     if issecretvalue and issecretvalue(v) then
         return nil
     end
@@ -226,7 +267,18 @@ end
 
 -- Returns v unless it is one of those secret values (then nil).
 function ns.Plain(v)
-    if v == nil or (issecretvalue and issecretvalue(v)) then
+    if issecretvalue and issecretvalue(v) then
+        return nil
+    end
+    return v
+end
+
+-- A normal string, safe to compare, format or pass on to another API.
+function ns.Str(v)
+    if issecretvalue and issecretvalue(v) then
+        return nil
+    end
+    if type(v) ~= "string" then
         return nil
     end
     return v
@@ -305,9 +357,14 @@ function ns.IsOtherArrowAddonPresent()
         return true
     end
     if C_AddOns and C_AddOns.GetAddOnEnableState then
-        local ok, state = pcall(C_AddOns.GetAddOnEnableState, "TomTom", UnitName("player"))
-        if ok and type(state) == "number" and state > 0 then
+        local player = UnitName and ns.Str(UnitName("player"))
+        -- Skip this lookup until the player's name is available.
+        if not player then return false end
+        local ok, state = pcall(C_AddOns.GetAddOnEnableState, "TomTom", player)
+        state = ns.Num(state)
+        if ok and state and state > 0 then
             local ok2, loadable = pcall(C_AddOns.IsAddOnLoadable, "TomTom")
+            loadable = ns.Plain(loadable)
             if not ok2 or loadable ~= false then
                 return true
             end
@@ -388,7 +445,26 @@ local function InitDatabase()
         end
         st.arrowLocked = nil
     end
-    db.version = 2
+    -- 2 -> 3: one route-start choice; Blizzard owns the window position.
+    if (db.version or 1) < 3 then
+        local st = db.settings
+        if st.routeAsk == false then
+            st.routeApply = (st.routeApply == "add") and "add" or "replace"
+        else
+            st.routeApply = "ask"
+        end
+        st.routeAsk = nil
+        st.showAdvanced = nil
+        st.windowPos = nil
+        st.coordsLocked = nil
+    end
+    -- Route preference keeps the saved enum: old Safer becomes safe with an
+    -- optional faster offer; old Fastest remains Always fastest. Per-trip
+    -- picker choices are discarded by the waypoint loader.
+    if db.settings.travelPreference ~= "fastest" and db.settings.travelPreference ~= "safer" then
+        db.settings.travelPreference = ns.defaults.travelPreference
+    end
+    db.version = 3
     ns.settings = db.settings
 
     if type(WaypointTrackerCharDB) ~= "table" then
@@ -425,4 +501,8 @@ BINDING_NAME_WAYPOINTTRACKER_ARROW = L.BINDING_ARROW
 BINDING_NAME_WAYPOINTTRACKER_CLOSEST = L.BINDING_CLOSEST
 BINDING_NAME_WAYPOINTTRACKER_FIND = L.BINDING_FIND
 BINDING_NAME_WAYPOINTTRACKER_SHARE = L.BINDING_SHARE
+BINDING_NAME_WAYPOINTTRACKER_ROUTES = L.BINDING_ROUTES
+BINDING_NAME_WAYPOINTTRACKER_ROUTE_NEXT = L.BINDING_ROUTE_NEXT
+BINDING_NAME_WAYPOINTTRACKER_ROUTE_RECORD_ADD = L.BINDING_ROUTE_RECORD_ADD
 BINDING_NAME_WAYPOINTTRACKER_TREASURE = L.BINDING_TREASURE
+BINDING_NAME_WAYPOINTTRACKER_TRAVEL = L.BINDING_TRAVEL

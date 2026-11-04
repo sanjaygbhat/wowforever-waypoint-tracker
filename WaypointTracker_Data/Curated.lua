@@ -58,7 +58,7 @@ N	295	Innkeeper Farley				1429:438,659
 N	297	Caretaker Folsom				1453:426,723	
 N	302	Blind Mary				1431:819,591	
 N	311	Sven Yorgen				1431:78,340	
-N	313	Theocritus				1429:652,698;1433:741,467	
+N	313	Theocritus				1429:652,698	
 N	328	Zaldimar Wefhellt				1429:433,662	
 N	332	Master Mathias Shaw				1453:783,707	
 N	338	Mazen Mac'Nadir				1453:518,743	
@@ -98,13 +98,13 @@ N	503	Lord Malathrom				1431:256,302
 N	506	Sergeant Brashclaw				1436:376,328	
 N	507	Fenros				1431:598,268,638,516	
 N	514	Smith Argus				1429:417,655	
-N	519	Slark				1436:262,656,266,564,272,450,288,726,290,346,290,794,296,398,310,264,336,832,350,206,390,150,430,100,486,100,498,104,552,134,560,98	
-N	520	Brack				1436:262,656,266,564,272,450,288,726,290,346,290,794,296,398,310,264,336,832,350,206,390,150,430,100,486,100,552,134	
+N	519	Slark				1436:350,206,390,150,430,100,486,100,498,104,552,134,560,98	
+N	520	Brack				1436:262,656,266,564,272,450,290,346,296,398,310,264	
 N	521	Lupos				1431:200,254,384,262,602,244,710,244	
 N	523	Thor			flight	1436:566,526	A
 N	534	Nefaru				1431:636,824	
 N	572	Leprithus				1436:424,308,600,776,652,632	
-N	573	Foe Reaper 4000				1436:386,516,455,360,516,674,518,246,628,622	
+N	573	Foe Reaper 4000				1436:386,516,455,360,518,246	
 N	574	Naraxis				1431:866,496	
 N	576	Watcher Ladimore				1431:736,468	
 N	584	Kazon				1433:330,66,309,86,366,116,384,136,424,154	
@@ -132,7 +132,7 @@ N	739	Brother Nimetz				1434:378,36
 N	763	Lost One Chieftain				1435:600,202,626,218,632,252,646,158	
 N	770	Corporal Kaleb				1434:377,33	
 N	771	Commander Felstrom				1431:180,380	
-N	773	Krazek				1434:270,772,270,772,270,772,270,772,270,772,270,772,516,268	
+N	773	Krazek				1434:270,772	
 N	777	Amy Davenport				1433:240,473	A
 N	786	Grelin Whitebeard				1426:250,758	
 N	793	Kara Adams				1433:255,465	A
@@ -143,7 +143,7 @@ N	836	Durnan Furcutter				1426:288,664	A
 N	837	Branstock Khalder				1426:286,664	
 N	840	Watcher Backus				1431:732,388	
 N	843	Gina MacGregor				1436:576,538	A
-N	844	Antonio Perelli				1429:426,666,688,716,750,724;1431:196,606,508,666,750,464;1433:240,474;1436:574,522,578,650	A
+N	844	Antonio Perelli				1429:688,716,750,724	A
 N	859	Guard Berton				1433:212,466	
 N	878	Scout Galiaan				1436:540,530	
 N	888	Watcher Dodds				1431:451,670	
@@ -305,8 +305,8 @@ N	1432	Renato Gallina				1453:638,736
 N	1435	Zardeth of the Black Claw				1453:401,853	
 N	1440	Milton Sheaf				1453:771,302	
 N	1441	Brak Durnad				1437:116,595	A
-N	1442	Helgrum the Swift				1445:477,552	
-N	1443	Fel'zerul				1435:642,208	
+N	1442	Helgrum the Swift					
+N	1443	Fel'zerul					
 N	1444	Brother Kristoff				1453:550,542	
 N	1448	Neal Allen				1437:108,568	A
 N	1449	Witch Doctor Unbagwa				1434:352,604	
@@ -321,7 +321,7 @@ N	1469	Vrok Blunderblast				1432:253,425	A
 N	1470	Ghak Healtouch				1432:371,494	
 N	1471	Jannos Ironwill				1417:460,477	A
 N	1474	Rann Flamespinner				1432:360,460	A
-N	1480	Caitlin Grassman				1437:118,586	
+N	1480	Caitlin Grassman				1437:119,588	
 N	1495	Deathguard Linnea				1420:654,602	
 N	1496	Deathguard Dillinger				1420:582,515	
 N	1497	Gunther Arcanus				1420:682,420	
@@ -357,7 +357,7 @@ N	1719	Warden Thelwater				1453:516,694
 N	1721	Nikova Raskol				1453:766,604	
 N	1740	Deathguard Saltain				1420:316,656	
 N	1742	Deathguard Bartholomew				1420:583,504	
-N	1748	Highlord Bolvar Fordragon				1453:801,384,798,386,672,851	
+N	1748	Highlord Bolvar Fordragon				1453:801,384,798,386	
 N	1776	Magtoor				1435:260,314	
 N	1837	Scarlet Judge				1422:410,146,432,106,432,166,458,208	
 N	1838	Scarlet Interrogator				1422:436,166,442,186,476,138,478,188	
@@ -376,7 +376,7 @@ N	1872	Tharek Blackstone				1426:460,516
 N	1885	Scarlet Smith				1422:430,128,468,120,470,178,476,136	
 N	1910	Muad				1420:358,430	
 N	1911	Deeb				1420:588,272,626,286	
-N	1920	Dalaran Spellscribe				1421:634,652	H
+N	1920	Dalaran Spellscribe				1421:634,652	
 N	1936	Farmer Solliden				1420:342,526,380,498	
 N	1937	Apothecary Renferrel				1421:428,408,434,408	
 N	1938	Dalar Dawnweaver				1421:442,398	
@@ -431,7 +431,7 @@ N	2151	Moon Priestess Amara				1438:556,584
 N	2172	Strider Clutchmother				1439:344,890,350,860,366,902,370,914,382,894,388,938,406,930,412,906	
 N	2175	Shadowclaw				1439:392,354,394,396,402,416,422,382	
 N	2184	Lady Moongazer				1439:430,612	
-N	2186	Carnivous the Breaker				1439:396,540,400,784,432,860	
+N	2186	Carnivous the Breaker				1439:396,540	
 N	2191	Licillin				1439:470,386	
 N	2192	Firecaller Radison				1439:390,864	
 N	2198	Crier Goodman				1453:548,626	
@@ -442,7 +442,7 @@ N	2226	Karos Razok			flight	1421:456,426	H
 N	2227	Sharlindra				1458:576,938	
 N	2228	Lieutenant Farren Orinelle				1424:514,584	
 N	2229	Krusk				1424:632,207	
-N	2258	Stone Fury				1416:618,378,666,472,730,462,788,474,808,342	
+N	2258	Stone Fury				1416:666,472,730,462,788,474,808,342	
 N	2263	Marshal Redpath				1424:496,586	
 N	2276	Magistrate Henry Maleb				1424:482,594	
 N	2277	Loremaster Dibbs				1424:504,570	
@@ -496,11 +496,11 @@ N	2491	Whiskey Slim				1434:271,775
 N	2493	Dizzy One-Eye				1434:286,759	
 N	2494	Privateer Bloads				1434:274,768	
 N	2495	Drizzlik				1434:282,776	
-N	2496	Baron Revilgaz				1434:272,768	
+N	2496	Baron Revilgaz				1434:272,769	
 N	2497	Nimboya				1434:322,278	
 N	2498	Crank Fizzlebub				1434:271,772	
 N	2500	Captain Hecklebury Smotts				1434:267,736	
-N	2501	"Sea Wolf" MacKinley				1434:278,771	
+N	2501	"Sea Wolf" MacKinley				1434:278,770	
 N	2502	"Shaky" Phillipe				1434:269,736	
 N	2504	Donyal Tovald				1453:752,302,846,242	
 N	2519	Kin'weelay				1434:322,278	
@@ -549,11 +549,11 @@ N	2711	Phin Odelic				1424:503,590
 N	2712	Quae				1417:602,538	
 N	2713	Kinelory				1417:602,538	
 N	2744	Shadowforge Commander				1418:412,262	
-N	2749	Siege Golem				1418:56,598,134,654,190,600,300,610,356,436,430,390	
+N	2749	Siege Golem				1418:300,610,356,436,430,390	
 N	2751	War Golem				1418:456,332,478,132,520,282	
 N	2752	Rumbler				1418:34,788,156,890	
 N	2753	Barnabus				1418:382,694,462,742,540,686,572,570	
-N	2754	Anathemus				1418:118,726,170,822,256,526,354,580,376,714,430,542,480,474,520,754,580,570	
+N	2754	Anathemus				1418:430,542,480,474,520,754,580,570	
 N	2756	Grund Drokda				1426:287,675	
 N	2766	Lolo the Lookout				1417:316,826	
 N	2767	First Mate Nilzlix				1417:326,814	
@@ -582,7 +582,7 @@ N	2816	Androd Fadran				1417:451,468	A
 N	2817	Rigglefuzz				1418:424,529	
 N	2819	Tunkk				1417:748,346	H
 N	2821	Keena				1417:740,326	H
-N	2832	Nixxrax Fillamug				1434:408,736	
+N	2832	Nixxrax Fillamug					
 N	2835	Cedrik Prose			flight	1417:458,462	A
 N	2836	Brikk Keencraft				1434:290,754	
 N	2838	Crazk Sparks				1434:282,766	
@@ -595,6 +595,7 @@ N	2848	Glyx Brewright				1434:280,780
 N	2849	Qixdi Goodstitch				1434:282,776	
 N	2850	Broken Tooth				1418:454,368,540,166,620,328	
 N	2851	Urda			flight	1417:730,326	H
+N	2857	Thund				1454:758,246	H
 N	2858	Gringer			flight	1434:268,770	H
 N	2859	Gyll			flight	1434:274,776	A
 N	2860	Sigrun Ironhew				1418:538,434	
@@ -609,9 +610,9 @@ N	2916	Historian Karnik				1455:772,118
 N	2917	Prospector Remtravel				1439:357,837	
 N	2918	Advisor Belgrum				1455:773,97	
 N	2920	Lucien Tosselwrench				1418:258,442	
-N	2921	Lotwil Veriatus				1418:260,449,258,450,260,449	
+N	2921	Lotwil Veriatus				1418:260,449,258,450	
 N	2930	Sentinel Glynda Nal'Shea				1439:377,434	
-N	2931	Zaricotl				1418:36,442,346,538,372,680,558,646,560,574	
+N	2931	Zaricotl				1418:372,680,558,646,560,574	
 N	2934	Keeper Bel'dugur				1458:537,545,540,546	
 N	2941	Lanie Reed			flight	1427:378,306	A
 N	2947	Harken Windtotem				1412:477,627	
@@ -652,14 +653,14 @@ N	3050	Veren Tallstrider				1456:440,446
 N	3052	Skorn Whitecloud				1412:460,634	
 N	3054	Zarlman Two-Moons				1412:469,612	
 N	3055	Maur Raincaller				1412:462,607	
-N	3056	Ghost Howl				1412:320,260,328,192,340,292,370,426,374,178,396,138,442,412,506,150	
+N	3056	Ghost Howl				1412:320,260,328,192,340,292,374,178,396,138	
 N	3057	Cairne Bloodhoof				1456:598,516	
 N	3061	Lanka Farshot				1412:440,764	
 N	3063	Krang Stonehoof				1412:482,636	
 N	3064	Gennia Runetotem				1412:474,629	
 N	3065	Yaw Sharpmane				1412:469,596	
 N	3066	Narm Skychaser				1412:474,626	
-N	3068	Mazzranache				1412:348,422,394,442,444,429,497,496,566,440	
+N	3068	Mazzranache				1412:444,429,497,496	
 N	3081	Wunna Darkmane				1412:456,617	H
 N	3085	Gloria Femmel				1433:215,434	A
 N	3088	Henry Chapal				1433:188,413	A
@@ -681,7 +682,7 @@ N	3154	Jen'shan				1411:428,692
 N	3155	Rwag				1411:412,680	
 N	3156	Nartok				1411:406,684	
 N	3157	Shikrik				1411:424,690	
-N	3170	Kaplak				1411:520,437,520,437	
+N	3170	Kaplak				1411:520,437	
 N	3171	Thotar				1411:518,434	
 N	3173	Swart				1411:544,426	
 N	3178	Stuart Fleming				1437:80,583	A
@@ -706,7 +707,7 @@ N	3294	Ophek				1411:542,412
 N	3295	Sludge Beast				1413:562,96,566,74	
 N	3304	Master Vornal				1411:558,744	
 N	3305	Grisha			flight	1427:348,306	H
-N	3310	Doras			flight	1454:452,636	H
+N	3310	Doras			flight	1454:452,638	H
 N	3314	Urtharo				1454:474,686	H
 N	3315	Tor'phan				1454:626,506	H
 N	3316	Handor				1454:628,448	H
@@ -744,8 +745,8 @@ N	3365	Karolek				1454:628,446	H
 N	3366	Tamar				1454:630,452	H
 N	3367	Felika				1454:465,366,508,587	H
 N	3368	Borstan				1454:574,534	
-N	3373	Arnok				1454:340,846	H
-N	3387	Jorn Skyseer				1413:449,591	
+N	3373	Arnok				1454:340,844	H
+N	3387	Jorn Skyseer				1413:448,590	
 N	3388	Mahren Skyseer				1413:658,439	
 N	3389	Regthar Deathgate				1413:453,284	
 N	3390	Apothecary Helbrim				1413:514,302	
@@ -761,7 +762,7 @@ N	3407	Sian'dur				1454:678,178
 N	3408	Zel'mak				1454:802,296	
 N	3409	Zendo'jian				1454:750,366	H
 N	3410	Jin'sora				1454:778,386	H
-N	3412	Nogg				1454:758,252	
+N	3412	Nogg				1454:758,252	H
 N	3413	Sovik				1454:756,252	H
 N	3418	Kirge Sternhorn				1413:448,586	
 N	3419	Apothecary Zamah				1456:229,209,236,214	
@@ -769,11 +770,11 @@ N	3421	Feegly the Exiled				1413:490,863
 N	3428	Korran				1413:511,296	
 N	3429	Thork				1413:515,309	
 N	3430	Mangletooth				1413:446,593	
-N	3432	Mankrik				1413:520,316,520,316	
+N	3432	Mankrik				1413:520,316	
 N	3433	Tatternack Steelforge				1413:451,577	
 N	3439	Wizzlecrank's Shredder				1413:565,75	
 N	3441	Melor Stonehoof				1456:615,809	
-N	3442	Sputtervalve				1413:630,372,630,372,630,372,630,372	
+N	3442	Sputtervalve				1413:630,372	
 N	3443	Grub				1413:553,318	
 N	3446	Mebok Mizzyrix				1413:624,373	
 N	3448	Tonga Runetotem				1413:523,319	
@@ -830,15 +831,15 @@ N	3599	Jannok Breezesong				1438:564,601
 N	3600	Laurna Morninglight				1438:556,568	
 N	3601	Dazalar				1438:566,596	
 N	3602	Kal				1438:560,616	
-N	3615	Devrak			flight	1413:514,302	H
+N	3615	Devrak			flight	1413:515,303	H
 N	3616	Onu				1439:435,763	
 N	3639	Sentinel Tysha Moonblade				1439:403,597	
 N	3644	Cerellean Whiteclaw				1439:358,437	
 N	3649	Thundris Windweaver				1439:374,402	
 N	3650	Asterion				1439:442,363	
-N	3652	Trigore the Lasher				1413:520,540	
+N	3652	Trigore the Lasher					
 N	3657	Sentinel Elissa Starbreeze				1439:390,436	
-N	3658	Lizzarik				1413:524,306,618,382	
+N	3658	Lizzarik				1413:618,382	
 N	3661	Balthule Shadowstrike				1439:550,249	
 N	3663	Delgren the Purifier				1440:262,387	
 N	3665	Crane Operator Bigglefuzz				1413:631,376	
@@ -857,8 +858,8 @@ N	3701	Tharnariun Treetender				1439:388,434
 N	3702	Alanndarian Nightsong				1439:376,406	
 N	3706	Tai'jin				1411:542,428	
 N	3707	Ken'jai				1411:424,688	
-N	3735	Apothecary Falthis				1440:332,210	A
-N	3736	Darkslayer Mordenthal				1440:744,734,750,698,780,738	A
+N	3735	Apothecary Falthis				1440:332,210	
+N	3736	Darkslayer Mordenthal				1440:744,734,750,698,780,738	
 N	3773	Akkrilus				1440:254,608,276,640,286,614	
 N	3792	Terrowulf Packlord				1440:506,390	
 N	3836	Mountaineer Pebblebitty				1432:182,840	
@@ -891,7 +892,7 @@ N	3980	Raleigh the Devout				1424:515,584
 N	3994	Keeper Albagorm				1442:371,81	
 N	3995	Witch Doctor Jin'Zil				1442:745,978	
 N	3996	Faldreas Goeth'Shael				1440:356,492	
-N	4015	Pridewing Patriarch				1442:448,456,452,392,488,480,548,380	
+N	4015	Pridewing Patriarch				1442:452,392,488,480,548,380	
 N	4030	Vengeful Ancient				1442:294,726,302,686,330,736,334,630,374,724	
 N	4043	Galthuk				1454:760,372	H
 N	4046	Magatha Grimtotem				1456:699,309,702,308	
@@ -981,7 +982,7 @@ N	4502	Tharg				1445:372,314
 N	4503	Mudcrush Durtfeet				1445:352,383	
 N	4510	Heralath Fallowbrook				1457:694,676	
 N	4544	Krueg Skullsplitter				1444:760,428	
-N	4551	Michael Garrett			flight	1415:449,389;1458:636,486	H
+N	4551	Michael Garrett			flight	1458:636,486	H
 N	4553	Ronald Burch				1458:623,431	H
 N	4554	Tawny Grisette				1458:697,448	H
 N	4555	Eleanor Rusk				1458:692,489	H
@@ -1023,7 +1024,7 @@ N	4631	Wharfmaster Lozgil				1434:263,736
 N	4706	Razzeric				1441:803,761	
 N	4708	Shreev				1446:509,270	
 N	4709	Zamek				1441:798,770	
-N	4721	Zangen Stonehoof				1456:550,513,550,513	
+N	4721	Zangen Stonehoof				1456:550,513	
 N	4722	Rau Cliffrunner				1441:461,517	
 N	4730	Lelanai				1457:383,153	A
 N	4731	Zachariah Post				1420:598,526	H
@@ -1065,7 +1066,7 @@ N	4963	Mikhail				1437:106,607
 N	4964	Commander Samaul				1445:680,486	
 N	4966	Private Hendel				1445:452,246	
 N	4967	Archmage Tervosh				1445:664,493	
-N	4968	Lady Jaina Proudmoore				1445:452,242	
+N	4968	Lady Jaina Proudmoore					
 N	4982	Thomas				1453:496,445	
 N	4983	Ogron				1445:408,366	
 N	4984	Argos Nightwhisper				1453:362,676	
@@ -1112,7 +1113,7 @@ N	5164	Grumnus Steelshaper				1455:502,426	A
 N	5165	Hulfdan Blackbeard				1455:516,148	
 N	5170	Hjoldir Stoneblade				1455:458,70	A
 N	5172	Briarthorn				1455:502,60	
-N	5174	Springspindle Fizzlegear				1455:688,452	
+N	5174	Springspindle Fizzlegear				1455:688,452	A
 N	5175	Gearcutter Cogspinner				1455:678,430	A
 N	5178	Soolie Berryfizz				1455:666,546	A
 N	5188	Garyl				1454:476,756	H
@@ -1122,19 +1123,19 @@ N	5191	Shalumon				1457:704,232	A
 N	5193	Rebecca Laughlin				1453:640,772	A
 N	5204	Apothecary Zinge				1458:500,684,498,682	
 N	5343	Lady Szallah				1444:248,728,260,672,266,658,278,686,282,674	
-N	5345	Diamond Head				1444:216,500,216,552,224,580,350,580,360,544	
+N	5345	Diamond Head				1444:350,580,360,544	
 N	5346	Bloodroar the Stalker				1444:526,606	
 N	5347	Antilus the Soarer				1444:536,692,542,736,572,746,598,734	
 N	5349	Arash-ethis				1444:418,248,460,238,462,254	
 N	5350	Qirot				1444:718,634,740,646,742,622,766,614,768,654,786,638	
-N	5352	Old Grizzlegut				1444:574,568,586,590,606,606,662,474,682,486,694,450	
+N	5352	Old Grizzlegut				1444:574,568,586,590,606,606	
 N	5353	Itharius				1435:137,717	
 N	5354	Gnarl Leafbrother				1444:686,572,720,580,756,588	
-N	5356	Snarler				1444:750,362,766,398,776,372,800,392,816,394,840,392	
+N	5356	Snarler				1444:776,372,800,392,816,394,840,392	
 N	5384	Brohann Caskbelly				1453:695,404	
 N	5386	Acolyte Dellis				1453:514,738	
 N	5387	High Explorer Magellas				1455:698,184	
-N	5391	Galen Goodward				1435:479,398,654,181	
+N	5391	Galen Goodward				1435:654,181	
 N	5394	Neeka Bloodscar				1418:64,470	
 N	5395	Felgur Twocuts				1443:562,594	
 N	5396	Captain Pentigast				1443:667,110	
@@ -1199,10 +1200,10 @@ N	5758	Leo Sarn				1421:540,822	H
 N	5765	Ruzan				1411:426,690	
 N	5767	Nalpak				1413:460,357	
 N	5768	Ebru				1413:460,357	
-N	5769	Arch Druid Hamuul Runetotem				1456:786,286,747,302	
+N	5769	Arch Druid Hamuul Runetotem				1456:784,284,747,302	
 N	5770	Nara Wildmane				1456:756,312	
 N	5783	Kalldan Felmoon				1413:459,357	
-N	5785	Sister Hatelash				1412:306,216,376,228,556,120	
+N	5785	Sister Hatelash				1412:306,216,376,228	
 N	5786	Snagglespear				1412:482,680,506,714,552,722	
 N	5787	Enforcer Emilgund				1412:409,263	
 N	5807	The Rake				1412:496,228,506,266,544,202,556,244	
@@ -1219,7 +1220,7 @@ N	5822	Felweaver Scornn				1411:516,96,530,72
 N	5823	Death Flayer				1411:352,482,354,530,360,556,378,534,388,462,392,510	
 N	5824	Captain Flat Tusk				1411:386,538,424,386,448,506	
 N	5826	Geolord Mottle				1411:436,408,438,500,446,484,476,500,496,450	
-N	5827	Brontus				1413:444,756,448,794,460,758,466,674,466,716,474,656,476,588,486,630,490,608,496,580	
+N	5827	Brontus				1413:444,756,448,794,460,758,466,674,466,716	
 N	5828	Humar the Pridelord				1413:620,336	
 N	5829	Snort the Heckler				1413:408,234,414,272,418,204	
 N	5830	Sister Rathtalon				1413:390,162,396,128,406,178	
@@ -1230,24 +1231,24 @@ N	5835	Foreman Grills				1413:566,86
 N	5836	Engineer Whirleygig				1413:562,86	
 N	5837	Stonearm				1413:422,246,466,230	
 N	5838	Brokespear				1413:530,446,536,400,546,462,566,436,572,416	
-N	5841	Rocklance				1413:530,446,534,374,538,412,546,480,554,456,556,390,568,418	
+N	5841	Rocklance				1413:530,446,538,412,546,480,554,456,556,390,568,418	
 N	5842	Takk the Leaper				1413:582,76,606,100,610,136	
-N	5847	Heggin Stonewhisker				1413:470,838	H
-N	5848	Malgin Barleybrew				1413:494,844	H
-N	5849	Digger Flameforge				1413:476,856	H
-N	5851	Captain Gerogg Hammertoe				1413:496,838	H
+N	5847	Heggin Stonewhisker				1413:470,838	
+N	5848	Malgin Barleybrew				1413:494,844	
+N	5849	Digger Flameforge				1413:476,856	
+N	5851	Captain Gerogg Hammertoe				1413:496,838	
 N	5859	Hagg Taurenbane				1413:416,788,420,816,434,840,448,796,450,846	
 N	5863	Geopriest Gukk'rok				1413:412,456,426,472,436,522,438,484,456,524	
-N	5864	Swinegart Spearhide				1413:414,456,422,480,452,490	
-N	5865	Dishu				1413:496,158,498,276,510,206,516,268	
+N	5864	Swinegart Spearhide				1413:414,456,422,480	
+N	5865	Dishu				1413:496,158,510,206	
 N	5875	Gan'rul Bloodeye				1454:482,456	
-N	5878	Thun'grim Firegaze				1413:572,302	
+N	5878	Thun'grim Firegaze				1413:572,303	
 N	5880	Un'Thuwa				1411:562,750	
 N	5884	Mai'ah				1411:424,690	
 N	5885	Deino				1454:386,860	
 N	5887	Canaga Earthcaller				1411:424,690	
 N	5888	Seer Ravenfeather				1412:444,768	
-N	5891	Minor Manifestation of Earth				1411:440,760;1412:519,803;1426:249,619	
+N	5891	Minor Manifestation of Earth				1411:440,760;1412:519,803	
 N	5892	Searn Firewarder				1454:378,374,380,377	
 N	5895	Minor Manifestation of Water				1421:386,446	
 N	5899	Brine				1413:434,774	
@@ -1267,12 +1268,12 @@ N	5931	Foreman Rigger				1442:638,518,676,454,680,540
 N	5932	Taskmaster Whipfang				1442:604,514,630,544,642,570,648,492	
 N	5933	Achellios the Banished				1441:178,368,200,394,212,416,214,372,216,334,240,436,252,368,256,414,260,396	
 N	5934	Heartrazor				1441:158,412,178,406,180,426	
-N	5935	Ironeye the Invincible				1441:764,602,820,580,842,728,860,806,866,702,866,768,886,734,886,788	
+N	5935	Ironeye the Invincible				1441:820,580,842,728,860,806,866,702,866,768,886,734,886,788	
 N	5937	Vile Sting				1441:698,646,716,644,718,724,728,720,730,678,742,768	
 N	5940	Harn Longcast				1412:467,591	H
 N	5942	Zansoa				1411:560,734	H
 N	5944	Yonada				1413:450,592	H
-N	5955	Tooga				1446:296,606	
+N	5955	Tooga					
 N	6018	Ur'kyo				1454:356,876	
 N	6019	Hornizz Brimbuzzle				1443:478,618	
 N	6026	Breyk			flight	1435:460,546	H
@@ -1310,7 +1311,7 @@ N	6254	Acolyte Wytula				1413:625,355
 N	6266	Menara Voidrender				1413:624,354	
 N	6286	Zarrin				1438:570,612	
 N	6293	Jorah Annison				1458:766,368	
-N	6294	Krom Stoutarm				1455:742,94	
+N	6294	Krom Stoutarm				1455:744,94	
 N	6301	Gorbold Steelhand				1439:381,412	
 N	6306	Helene Peltskinner				1429:462,622	
 N	6367	Donni Anthania				1429:442,532	A
@@ -1320,12 +1321,12 @@ N	6408	Ula'elek				1411:562,744
 N	6410	Orm Stonehoof				1456:390,558	
 N	6411	Velora Nitely				1458:624,392	
 N	6446	Therzok				1454:427,535	
-N	6467	Mennet Carkad				1458:836,676,832,690	
+N	6467	Mennet Carkad				1458:832,690,836,676	
 N	6522	Andron Gant				1458:546,756	
 N	6546	Tabetha				1445:460,570	
-N	6548	Magus Tirth				1441:782,758,478,758	
+N	6548	Magus Tirth				1441:782,758	
 N	6567	Ghok'kah				1445:352,308	H
-N	6568	Vizzklick				1446:510,273;2548:773,513	
+N	6568	Vizzklick				1446:510,273	
 N	6569	Gnoarn				1455:694,506	
 N	6574	Jun'ha				1417:728,366	H
 N	6576	Brienna Starglow				1444:890,458	A
@@ -1336,9 +1337,9 @@ N	6582	Clutchmother Zavas				1449:446,816,468,860,492,856,496,836
 N	6583	Gruff				1449:316,796,318,722,366,666,378,750	
 N	6584	King Mosh				1449:278,450,288,344,298,316,308,476,351,303,353,360,379,435	
 N	6585	Uhk'loc				1449:685,127	
-N	6646	Monnos the Elder				1447:556,802,564,878,596,890,598,784,598,806,728,192,762,180,768,234,786,174,820,186	
+N	6646	Monnos the Elder				1447:728,192,762,180,768,234,786,174,820,186	
 N	6647	Magister Hawkhelm				1447:568,286,594,314	
-N	6648	Antilos				1447:168,518,170,640,180,566,480,192,490,260,510,296,522,368,540,258,566,194	
+N	6648	Antilos				1447:168,518,170,640,180,566	
 N	6649	Lady Sesspira				1447:340,586,372,490,376,518,396,556,406,456	
 N	6650	General Fangferror				1447:416,518	
 N	6651	Gatekeeper Rageroar				1447:384,326	
@@ -1366,7 +1367,7 @@ N	6786	Ukor				1411:520,682
 N	6826	Talvash del Kissel				1455:360,40,362,38	
 N	6868	Jarkal Mossmeld				1418:26,460	
 N	6886	Onin MacHammer				1426:252,444	
-N	6929	Innkeeper Gryshka				1454:541,684	
+N	6929	Innkeeper Gryshka				1454:542,684	
 N	6946	Renzik "The Shiv"				1453:788,708	
 N	6966	Lucius				1433:230,520	
 N	6986	Dran Droffers				1454:594,368	
@@ -1391,7 +1392,7 @@ N	7316	Sister Aquinne				1457:290,454
 N	7317	Oben Rageclaw				1438:450,614	
 N	7363	Kum'isha the Collector				1419:518,356	
 N	7406	Oglethorpe Obnoticus				1434:282,762	
-N	7407	Chief Engineer Bildewhizzle				1446:524,284,519,270,668,223	
+N	7407	Chief Engineer Bilgewhizzle				1446:524,284	
 N	7408	Spigot Operator Luglunket				1446:524,284	
 N	7505	Bloodmage Drazial				1419:506,142	
 N	7506	Bloodmage Lynnore				1419:506,143	
@@ -1414,7 +1415,7 @@ N	7766	Tyrion				1453:732,357
 N	7771	Marvon Rivetseeker				1446:526,458	
 N	7773	Marli Wishrunner				1444:458,164	
 N	7774	Shay Leafrunner				1444:382,103	
-N	7775	Gregan Brewspewer				1444:440,110,451,256	
+N	7775	Gregan Brewspewer				1444:451,256	
 N	7776	Talo Thornhoof				1444:760,438	
 N	7777	Rok Orhan				1444:742,446	
 N	7780	Rin'ji				1425:306,470	
@@ -1449,7 +1450,7 @@ N	7877	Latronicus Moonspear				1444:304,462
 N	7879	Quintis Jonespyre				1444:324,438	
 N	7880	Ginro Hearthkindle				1444:318,452	
 N	7881	Stoley				1446:671,240	
-N	7882	Security Chief Bilgewhizzle				1446:671,239,519,270,668,223	
+N	7882	Security Chief Bilgewhizzle				1446:671,239	
 N	7884	Fraggar Thundermantle				1425:148,446	
 N	7895	Ambassador Bloodrage				1413:462,874,480,904,486,956	
 N	7900	Angelas Moonbreeze				1444:318,456	
@@ -1481,7 +1482,7 @@ N	8117	Wizbang Booms				1455:318,634	A
 N	8118	Lillian Singh				1453:626,700	A
 N	8122	Kizzak Sparks				1454:578,566	H
 N	8125	Dirge Quikcleave				1446:526,281	
-N	8126	Nixx Sprocketspring				1446:522,282,544,272	
+N	8126	Nixx Sprocketspring				1446:524,272,544,272	
 N	8131	Blizrik Buckshot				1446:508,276	
 N	8137	Gikkix				1446:666,221	
 N	8139	Jabbey				1446:670,220	
@@ -1497,25 +1498,25 @@ N	8177	Rartar				1435:454,570	H
 N	8178	Nina Lightbrew				1419:668,186	A
 N	8199	Warleader Krazzilak				1446:370,242,386,242,410,274,426,228,442,248	
 N	8200	Jin'Zallah the Sandbringer				1446:378,248,400,286,422,226	
-N	8201	Omgorn the Lost				1446:374,562,384,542,388,506,392,586,398,716,400,498,416,744,420,514,424,564,432,536,440,664,456,636,466,618,468,668,470,636,488,652	
-N	8202	Cyclok the Mad				1446:390,540,406,728,420,540,460,662	
+N	8201	Omgorn the Lost				1446:374,562,384,542,388,506,392,586,400,498,420,514,424,564,432,536	
+N	8202	Cyclok the Mad				1446:390,540,420,540	
 N	8203	Kregg Keelhaul				1446:728,466,748,476,760,450	
 N	8204	Soriid the Devourer				1446:316,450,326,442,348,432,348,460	
 N	8205	Haarka the Ravenous				1446:536,702,546,736,562,736,570,688,570,714	
-N	8207	Greater Firebird				1446:422,364,446,356,464,330,470,388,480,356,496,384,508,390,534,394	
-N	8208	Murderous Blisterpaw				1446:480,270,486,316,500,326,522,328,550,334,564,366	
-N	8210	Razortalon				1425:270,548,270,660,368,512,378,442	
-N	8211	Old Cliff Jumper				1425:170,546,190,506,226,524,306,494	
+N	8207	Greater Firebird				1446:470,388,480,356,496,384,508,390,534,394	
+N	8208	Murderous Blisterpaw				1446:480,270,486,316,500,326,522,328	
+N	8210	Razortalon				1425:270,548,368,512,378,442	
+N	8211	Old Cliff Jumper				1425:170,546,190,506,226,524	
 N	8212	The Reak				1425:468,404,494,530,580,416	
-N	8213	Ironback				1425:734,914,750,888,768,810,776,650,780,670,798,612,816,488,822,448	
-N	8214	Jalinde Summerdrake				1425:278,440,286,466,312,436,316,496,328,446	H
+N	8213	Ironback				1425:776,650,780,670,798,612,816,488,822,448	
+N	8214	Jalinde Summerdrake				1425:278,440,286,466,312,436,316,496,328,446	
 N	8215	Grimungous				1425:628,550,638,484,682,502,702,598,746,500,750,560	
 N	8216	Retherokk the Berserker				1425:446,674,464,646,468,702,504,604,512,656	
 N	8217	Mith'rethis the Enchanter				1425:588,712,598,774,668,802	
 N	8218	Witherheart the Stalker				1425:314,730,338,732,340,756,342,684,350,740	
 N	8219	Zul'arek Hatefowler				1425:242,574,328,576	
 N	8256	Curator Thorius				1455:714,162	
-N	8277	Rekk'tilac				1427:302,720,358,258,528,712,582,246,628,716,706,756	
+N	8277	Rekk'tilac				1427:528,712,628,716,706,756	
 N	8278	Smoldar				1427:292,608,300,508	
 N	8279	Faulty War Golem				1427:332,638,340,478,442,424,486,676,600,578	
 N	8280	Shleipnarr				1427:506,614,556,588,584,520,636,512,660,374,670,396	
@@ -1579,19 +1580,19 @@ N	8666	Lil Timmy				1453:640,380	A
 N	8678	Jubie Gadgetspring				1447:452,908	
 N	8679	Knaz Blunderflame				1434:510,352	
 N	8681	Outfitter Eric				1455:430,292	A
-N	8736	Buzzek Bracketswing				1446:516,302	
+N	8736	Buzzek Bracketswing				1446:522,276	
 N	8737	Linken				1449:446,82	
 N	8738	Vazario Linkgrease				1413:626,362	
 N	8878	Muuran				1443:556,566	H
 N	8879	Royal Historian Archesonus				1455:384,553	
-N	8924	The Behemoth				35:378,613,476,620	
+N	8924	The Behemoth					
 N	8965	Shawn				1433:242,536	
 N	8976	Hematos				1428:166,562,182,468,248,586,342,534	
-N	8978	Thauris Balgarr				1428:532,406,552,432,562,352,618,376,666,448,718,364	
-N	8979	Gruklash				1428:160,302,406,358,426,514,480,622	
-N	8981	Malfunctioning Reaver				1428:766,306,862,574,874,310,906,468	
+N	8978	Thauris Balgarr				1428:532,406,552,432,562,352,618,376,666,448	
+N	8979	Gruklash				1428:406,358,426,514	
+N	8981	Malfunctioning Reaver				1428:766,306,874,310	
 N	8997	Gershala Nightwhisper				1439:383,430	
-N	9026	Overmaster Pyron				35:362,362,370,282,406,378	
+N	9026	Overmaster Pyron					
 N	9046	Scarshield Quartermaster				1428:349,279	
 N	9077	Warlord Goretooth				1418:58,475	
 N	9078	Shadowmage Vivian Lagrave				1418:29,478,30,476	
@@ -1636,11 +1637,11 @@ N	9553	Nadia Vernon				1421:450,394	H
 N	9555	Mu'uta				1417:726,336	H
 N	9560	Marshal Maxwell				1428:847,690,846,688	
 N	9561	Jalinda Sprig				1428:854,701	
-N	9562	Hellendis Riverhorn				1428:858,690	
+N	9562	Helendis Riverhorn				1428:858,690	
 N	9563	Ragged John				1428:650,236	
 N	9565	Mayara Brightwing				1428:848,690	
 N	9584	Jalane Ayrole				1453:406,838	A
-N	9598	Arei				1448:494,144	
+N	9598	Arei					
 N	9602	Hahk'Zor				1428:786,446,792,422,808,486,828,428	
 N	9604	Gorgon'och				1428:772,430,808,448	
 N	9616	Laris Geardawdle				1455:754,234	
@@ -1658,21 +1659,21 @@ N	9997	Spraggle Frock				1449:436,85
 N	9998	Shizzle				1449:442,116	
 N	9999	Ringo				1449:520,500	
 N	10077	Deathmaw				1428:752,332,812,592,826,310,876,506	
-N	10078	Terrorspark				1428:164,242,420,462,476,432,518,436,636,376,694,326	
+N	10078	Terrorspark				1428:420,462,476,432,518,436	
 N	10079	Brave Moonhorn				1441:322,222	
 N	10118	Nessa Shadowsong				1438:562,924	A
-N	10119	Volchan				1428:720,436,720,556,738,356,770,312,818,610,878,590,902,456,912,334	
+N	10119	Volchan				1428:720,436,720,556,738,356,770,312,902,456	
 N	10136	Chemist Fuely				1458:476,730	
 N	10176	Kaltunk				1411:432,684	
 N	10181	Lady Sylvanas Windrunner				1458:578,918	
-N	10182	Rexxar				1443:408,786,424,968,496,564,506,752,520,394,540,32,556,666,598,376,628,226	
+N	10182	Rexxar				1443:540,32	
 N	10196	General Colbatann				1452:546,516,576,500,596,492,612,494	
-N	10197	Mezzir the Howler				1452:306,384,306,460,398,364,450,380	
+N	10197	Mezzir the Howler				1452:398,364,450,380	
 N	10198	Kashoch the Reaver				1452:620,692,636,698	
 N	10199	Grizzle Snowpaw				1452:670,352,672,376,686,360,692,386	
 N	10200	Rak'Shiri				1452:500,80,500,112,504,204,518,172,556,140	
-N	10201	Lady Hederine				1452:516,844,546,874,650,802	
-N	10202	Azurous				1452:572,456,618,404,630,408,648,430,664,456,666,534	
+N	10201	Lady Hederine				1452:650,802	
+N	10202	Azurous				1452:648,430,664,456,666,534	
 N	10216	Gubber Blump				1439:361,449	
 N	10219	Gwennyth Bly'Leggonde				1439:366,456	
 N	10260	Kibler				1428:658,220	
@@ -1687,8 +1688,8 @@ N	10305	Umi Rumplesnicker				1452:608,376
 N	10306	Trull Failbane				1448:346,526	
 N	10307	Witch Doctor Mau'ari				1452:618,382	
 N	10321	Emberstrife				1445:568,874	
-N	10356	Bayne				1420:408,432,420,526,450,540,500,508,514,522,576,416	
-N	10357	Ressan the Needler				1420:436,670,470,650,502,644,524,638,556,600,562,636	
+N	10356	Bayne				1420:408,432,420,526,450,540,500,508,514,522	
+N	10357	Ressan the Needler				1420:436,670,470,650,502,644,524,638	
 N	10358	Fellicent's Shade				1420:746,596,746,638,748,606,764,574,778,632	
 N	10359	Sri'skulk				1420:830,558,852,494,888,536,894,402,902,476	
 N	10377	Elu				1441:448,490	
@@ -1711,25 +1712,25 @@ N	10640	Oakpaw				1440:500,602,542,624,566,628
 N	10641	Branch Snapper				1440:476,466	
 N	10642	Eck'alom				1440:456,712,486,698,542,694	
 N	10643	Mugglefin				1440:192,442,206,450,216,418	
-N	10644	Mist Howler				1440:182,302,226,296,230,356,266,150,266,186,292,168	
+N	10644	Mist Howler				1440:182,302,226,296,230,356	
 N	10646	Lakota Windsong				1441:380,266	
 N	10647	Prince Raze				1440:772,462,784,426,790,456	
 N	10665	Junior Apothecary Holland				1420:575,490	
-N	10666	Gordo				1420:558,524	
+N	10666	Gordo					
 N	10667	Chromie				1422:394,668	
 N	10684	Remorseful Highborne				1452:562,444	
 N	10739	Mulgris Deepriver				1422:536,646	
 N	10778	Janice Felstone				1422:384,540	
 N	10781	Royal Overseer Bauhaus				1458:696,436	
 N	10782	Royal Factor Bathrilor				1453:573,481	
-N	10817	Duggan Wildhammer				1423:158,792,198,644,258,886,328,830,418,698,494,632	H
-N	10821	Hed'mush the Rotting				1423:390,746,556,254,590,414	
-N	10822	Warlord Thresh'jin				1423:656,218,688,208,708,198,724,130	
+N	10817	Duggan Wildhammer				1423:418,698	
+N	10821	Hed'mush the Rotting				1423:556,254,590,414	
+N	10822	Warlord Thresh'jin				1423:656,218,688,208,708,198	
 N	10823	Zul'Brin Warpbranch				1423:682,212,694,164,726,134,726,188	
 N	10824	Ranger Lord Hawkspear				1423:534,160	
-N	10825	Gish the Unmoving				1423:516,438,536,446,548,506,570,538,630,556,670,570,726,568	
-N	10826	Lord Darkscythe				1423:217,263,350,248,392,270,400,364,436,288	
-N	10827	Deathspeaker Selendre				1423:414,492,828,400,756,378	
+N	10825	Gish the Unmoving					
+N	10826	Lord Darkscythe				1423:217,263	
+N	10827	Deathspeaker Selendre				1423:828,400,756,378	
 N	10828	High General Abbendis				1423:806,856,779,742	
 N	10837	High Executor Derrington				1420:830,690,831,689	
 N	10838	Commander Ashlam Valorfist				1422:427,841	
@@ -1739,7 +1740,7 @@ N	10856	Argent Quartermaster Hasana				1420:832,682
 N	10857	Argent Quartermaster Lightspark				1422:428,838	
 N	10877	Courier Hammerfall				1455:316,670	
 N	10878	Herald Moonstalker				1457:364,398	
-N	10879	Harbinger Balthazad				1458:640,440,688,484	
+N	10879	Harbinger Balthazad				1458:688,484,640,440	
 N	10880	Warcaller Gorlach				1454:466,646	
 N	10881	Bluff Runner Windstrider				1456:414,542	
 N	10897	Sindrayl			flight	1450:480,672	A
@@ -1747,18 +1748,18 @@ N	10918	Lorax				1452:638,738
 N	10921	Taronn Redfeather				1448:509,816	
 N	10922	Greta Mosshoof				1448:512,822	
 N	10924	Ivy Leafrunner				1448:508,816	
-N	10926	Pamela Redpath				1423:311,780,311,780,311,780,311,780	
+N	10926	Pamela Redpath				1423:311,780	
 N	10927	Marlene Redpath				1422:492,784	
 N	10929	Haleh				1452:546,512	
 N	10941	Wizlo Bearingshiner				1441:214,324	
 N	10976	Jeziba				1422:394,668	
 N	11016	Captured Arko'narin				1448:362,554	
-N	11017	Roxxik				1454:568,564	H
+N	11017	Roxxik				1454:760,250	H
 N	11019	Jessir Moonbow				1448:513,820	
 N	11020	Remains of Trey Lightforge				1448:384,504	
 N	11022	Alexi Barov				1420:831,716	
 N	11023	Weldon Barov				1422:435,837	
-N	11026	Sprite Jumpsprocket				1453:618,308	
+N	11026	Sprite Jumpsprocket				1453:620,306,618,308	A
 N	11028	Jemma Quikswitch				1455:677,442	
 N	11033	Smokey LaRue				1423:709,484,718,484	
 N	11034	Lord Maxwell Tyrosus				1423:718,484	
@@ -1790,7 +1791,6 @@ N	11178	Borgosh Corebender				1454:796,236	H
 N	11184	Wixxrak				1452:616,380	
 N	11185	Xizzer Fizzbolt				1452:608,386	
 N	11187	Himmik				1452:612,390	
-N	11188	Evie Whirlbrew				1452:608,378	
 N	11189	Qia				1452:612,372	
 N	11191	Lilith the Lithe				1452:612,372	
 N	11192	Kilram				1452:612,370	
@@ -1819,7 +1819,7 @@ N	11610	Kirsta Deepshadow				1422:520,280
 N	11615	Mickey Levine				1420:832,724	
 N	11616	Nathaniel Dumah				1422:434,848	
 N	11624	Taiga Wisemane				1443:258,682	
-N	11625	Cork Gizelton				1443:602,382	
+N	11625	Cork Gizelton					
 N	11626	Rigger Gizelton				1443:404,794	
 N	11629	Jessica Redpath				1452:612,390	
 N	11688	Cursed Centaur				1443:298,626	
@@ -1834,7 +1834,7 @@ N	11800	Silva Fil'naveth			flight	1450:442,452	A
 N	11801	Rabine Saturna				1450:517,451	
 N	11802	Dendrite Starblaze				1450:562,304	
 N	11807	Tristane Shadowstone				1426:306,454	
-N	11814	Kali Remik				1411:62,742,562,742	
+N	11814	Kali Remik				1411:562,742	
 N	11820	Locke Okarr				1440:714,676	
 N	11821	Darn Talongrip				1442:732,949	
 N	11823	Vark Battlescar				1443:232,703	
@@ -1850,7 +1850,7 @@ N	11863	Azore Aldamort				1443:388,272
 N	11864	Tammra Windfield				1442:474,585	
 N	11865	Buliwyf Stonehand				1455:612,895	A
 N	11866	Ilyenia Moonfire				1457:575,468	A
-N	11867	Woo Ping				1453:639,691	A
+N	11867	Woo Ping				1453:638,690	A
 N	11868	Sayoc				1454:816,194	H
 N	11869	Ansekhwa				1456:412,614	H
 N	11870	Archibald				1458:572,324	H
@@ -1858,7 +1858,7 @@ N	11872	Myranda the Hag				1422:508,778
 N	11874	Masat T'andr				1435:265,314	A
 N	11877	Roon Wildmane				1443:250,722	
 N	11878	Nathanos Blightcaller				1423:223,636	
-N	11898	Crusader Lord Valdelmar				1423:882,862	
+N	11898	Crusader Lord Valdelmar					
 N	11899	Shardi			flight	1445:356,318	H
 N	11900	Brakkar			flight	1448:344,538	H
 N	11901	Andruk			flight	1440:122,338	H
@@ -1869,13 +1869,13 @@ N	12023	Kharedon				1450:566,298
 N	12029	Narianna				1450:532,426	
 N	12031	Mai'Lahii				1443:226,720	
 N	12033	Wulan				1443:262,698	H
-N	12037	Ursol'lok				1440:830,490,834,604,886,684	
+N	12037	Ursol'lok				1440:830,490,834,604	
 N	12042	Loganaar				1450:524,404	
 N	12043	Kulwia				1442:454,594	H
 N	12045	Hae'Wilani				1443:258,710	H
 N	12096	Stormpike Quartermaster				1459:431,176	
 N	12097	Frostwolf Quartermaster				1459:466,842	
-N	12237	Meshlok the Harvester				280:240,750	
+N	12237	Meshlok the Harvester					
 N	12245	Vendor-Tron 1000				1443:602,380	
 N	12246	Super-Seller 680				1443:406,792	
 N	12277	Melizza Brimbuzzle				1443:339,535	
@@ -1883,7 +1883,7 @@ N	12336	Brother Crowley				1453:525,433
 N	12340	Drulzegar Skraghook				1443:232,728	
 N	12384	Agustus the Touched				1423:113,265	
 N	12425	Flint Shadowmore				1422:436,845	
-N	12431	Gorefang				1421:476,176,480,258,518,196,602,100	
+N	12431	Gorefang				1421:518,196,602,100	
 N	12432	Old Vicejaw				1421:516,638,546,520,562,624	
 N	12433	Krethis Shadowspinner				1421:356,90,372,156	
 N	12577	Jarrodenus			flight	1447:118,776	A
@@ -1986,13 +1986,13 @@ N	14182	Bounty Hunter Kolark				1454:744,264
 N	14183	Artilleryman Sheldonore				1455:196,522	
 N	14221	Gravis Slipknot				1416:600,446	
 N	14222	Araga				1416:312,710,316,868,392,920	
-N	14223	Cranky Benj				1416:142,542,276,410,364,162	
-N	14224	7:XT				1418:128,670,194,806,240,526,290,686,554,532,554,838,584,676	A
+N	14223	Cranky Benj				1416:276,410,364,162	
+N	14224	7:XT				1418:554,838,584,676	A
 N	14225	Prince Kellen				1443:746,134,764,186,778,232	
-N	14226	Kaskk				1443:496,688,506,758,510,808,520,858,570,746	
-N	14227	Hissperak				1443:418,478,436,426,436,510,438,618,466,544,556,498	
-N	14228	Giggler				1443:508,92,574,100,602,248,638,348,666,174,672,234	
-N	14229	Accursed Slitherblade				1443:296,130,308,198,358,38,406,128	
+N	14226	Kaskk				1443:506,758,510,808,520,858,570,746	
+N	14227	Hissperak				1443:436,426,436,510,466,544,556,498	
+N	14228	Giggler				1443:602,248,638,348,666,174,672,234	
+N	14229	Accursed Slitherblade				1443:406,128	
 N	14230	Burgle Eye				1445:576,176,596,106,628,184,630,72,644,286	
 N	14231	Drogoth the Roamer				1445:362,136,394,144,396,212,422,188,428,220	
 N	14232	Dart				1445:476,186	
@@ -2004,12 +2004,12 @@ N	14237	Oozeworm				1445:360,684,366,626,398,626
 N	14266	Shanda the Spinner				1432:778,536	
 N	14267	Emogg the Crusher				1432:642,284,650,210,684,288,716,210	
 N	14268	Lord Condar				1432:628,782,748,678,780,742	
-N	14269	Seeker Aqualon				1433:282,582,462,596,502,614,636,626,716,646,732,712,758,674	
+N	14269	Seeker Aqualon				1433:462,596,502,614,636,626,716,646,732,712,758,674	
 N	14270	Squiddic				1433:390,608,428,528,460,634,476,544,526,676,546,600	
-N	14271	Ribchaser				1433:140,642,160,672,162,606,188,648,284,840,326,788,336,848	
-N	14272	Snarlflare				1433:364,668,383,300,492,330,546,372	
+N	14271	Ribchaser				1433:140,642,160,672,162,606,188,648,284,840	
+N	14272	Snarlflare				1433:383,300,492,330,546,372	
 N	14273	Boulderheart				1433:837,670	
-N	14275	Tamra Stormpike				1424:650,662,686,778,712,754,736,810	H
+N	14275	Tamra Stormpike				1424:650,662,686,778,712,754,736,810	
 N	14276	Scargil				1424:236,644,260,654,262,730,314,722	
 N	14277	Lady Zephris				1424:582,704,606,752,656,778,658,802,678,876	
 N	14278	Ro'Bark				1424:618,606,632,634,662,588,662,648	
@@ -2017,11 +2017,11 @@ N	14279	Creepthess				1424:258,546,284,634,352,604,392,516
 N	14280	Big Samras				1424:726,290,758,316,850,476,866,396	
 N	14281	Jimmy the Bleeder				1416:486,828,586,702	
 N	14301	Brinna Valanaar				1447:120,784	A
-N	14305	Human Orphan				1453:632,662	
-N	14339	Death Howl				1448:482,790,498,772,568,900	
+N	14305	Human Orphan				1453:563,540	
+N	14339	Death Howl				1448:482,790,498,772	
 N	14340	Alshirr Banebreath				1448:390,830,402,860,430,880	
 N	14342	Ragepaw				1448:476,936,484,912,490,928	
-N	14343	Olm the Wise				1448:546,266,566,92,572,214,586,186	
+N	14343	Olm the Wise				1448:546,266	
 N	14344	Mongress				1448:436,776,468,830	
 N	14345	The Ongar				1448:390,484,428,476,438,496	
 N	14355	Azj'Tordin				1444:767,372	
@@ -2044,25 +2044,25 @@ N	14437	Gorzeeki Wildeyes				1428:124,316
 N	14444	Orcish Orphan				1454:708,256	
 N	14445	Lord Captain Wyrmak				1435:632,406,698,360,768,392,772,658,798,482,810,578	
 N	14446	Fingat				1435:610,856,642,914,644,826,660,832,666,842	
-N	14447	Gilmorian				1435:780,56,834,936,854,870,870,804,906,240,906,732,936,396,936,596,952,512	
+N	14447	Gilmorian				1435:854,870,870,804,906,732,936,396,936,596,952,512	
 N	14448	Molt Thorn				1435:228,460,262,516,308,496,324,324,354,440,420,336	
 N	14450	Orphan Matron Nightingale				1453:563,540	
 N	14451	Orphan Matron Battlewall				1454:708,256	
 N	14463	Daio the Decrepit				1419:340,502	
 N	14469	Niby the Almighty				1448:414,448	
 N	14470	Impsy				1448:416,448,416,450	
-N	14471	Setis				1451:222,806,226,872,278,866,480,826	
-N	14472	Gretheer				1451:288,422,398,552,488,626,618,644	
+N	14471	Setis				1451:222,806,226,872,278,866	
+N	14472	Gretheer				1451:288,422,398,552,488,626	
 N	14473	Lapress				1451:544,838,552,898,616,840,638,916,642,794,642,836,648,824	
 N	14474	Zora				1451:176,658,202,582,236,618,240,712	
 N	14475	Rex Ashil				1451:460,284,472,238,476,266	
-N	14476	Krellack				1451:598,196,628,424,658,300,696,410	
-N	14477	Grubthor				1451:272,820,362,716,448,802,486,672	
+N	14476	Krellack				1451:598,196,658,300	
+N	14477	Grubthor				1451:362,716,448,802,486,672	
 N	14478	Huricanian				1451:214,170,214,226,222,262,230,288,242,130,260,268,270,138,282,160,294,244,298,198	
-N	14479	Twilight Lord Everun				1451:198,838,256,334,402,446	
+N	14479	Twilight Lord Everun				1451:198,838	
 N	14487	Gluggle				1434:344,224	
-N	14488	Roloch				1434:270,318,380,248	
-N	14490	Rippa				1434:242,580,254,736,268,850,304,860,340,836,356,748	
+N	14488	Roloch				1434:380,248	
+N	14490	Rippa				1434:242,580	
 N	14491	Kurmokk				1434:318,682,358,638	
 N	14492	Verifonix				1434:368,560	
 N	14494	Eris Havenfire				1423:171,128	
@@ -2103,7 +2103,7 @@ N	14828	Gelvas Grimegate				1412:381,446;1429:416,688
 N	14829	Yebb Neblegear				1412:383,462;1429:402,697	
 N	14832	Kerri Hicks				1412:386,464;1429:405,699	
 N	14833	Chronos				1412:372,425;1429:435,711	
-N	14841	Rinling				1412:380,442,380,442,380,442,380,442,380,442,379,444;1429:417,707	
+N	14841	Rinling				1412:380,442,379,444;1429:417,707	
 N	14842	Melnan Darkstone				1455:292,684	
 N	14843	Kruban Darkblade				1454:522,660	
 N	14844	Sylannia				1412:376,450;1429:420,700	
@@ -2148,7 +2148,7 @@ N	15190	Noggle Ficklespragg				1451:516,385
 N	15191	Windcaller Proudhorn				1451:512,383	
 N	15192	Anachronos				1446:650,500	
 N	15194	Hermit Ortell				1451:670,696	
-N	15197	Darkcaller Yanka				1420:556,699;1424:514,590	
+N	15197	Darkcaller Yanka				1420:556,699	
 N	15199	Sergeant Hartman				1424:500,572	
 N	15270	Huum Wildmane				1451:487,379	
 N	15282	Aurel Goldleaf				1451:520,382	
@@ -2165,7 +2165,7 @@ N	15498	Windcaller Yessendra				1451:520,382
 N	15499	Warden Haro				1451:511,389	
 N	15500	Keyl Swiftclaw				1451:518,395	
 N	15540	Windcaller Kaldon				1451:500,364	
-N	15549	Elder Morndeep				35:391,181	
+N	15549	Elder Morndeep					
 N	15552	Dr. Weavil				1445:776,170	
 N	15556	Elder Splitrock				1443:357,555	
 N	15557	Elder Rumblerock				1428:822,465	
@@ -2213,13 +2213,13 @@ N	15603	Elder Nightwind				1448:377,530
 N	15604	Elder Morningdew				1441:792,771	
 N	15605	Elder Riversong				1440:355,489	
 N	15606	Elder Brightspear				1452:556,437	
-N	15607	Elder Farwhisper				1423:416,159	
+N	15607	Elder Farwhisper				1423:481,219	
 N	15612	Krug Skullsplit				1451:522,684	
 N	15703	Senior Sergeant Grimsford				1458:628,492	
 N	15704	Senior Sergeant Kai'jin				1454:303,676	
 N	15864	Valadar Starsong				1450:536,353	
 N	15871	Elder Bronzebeard				1455:291,170	
-N	15895	Lunar Festival Harbinger				1429:325,530;1454:491,558;1455:288,162;1456:711,282;1457:386,303;1458:656,360	
+N	15895	Lunar Festival Harbinger				1454:491,558;1455:288,162;1456:711,282;1457:386,303;1458:656,360	
 N	15909	Fariel Starsong				1450:538,353	
 N	16001	Aldris Fourclouds				1457:420,420	
 N	16003	Deathguard Tor				1420:606,596	
@@ -2227,29 +2227,29 @@ N	16005	Lieutenant Jocryn Heldric				1453:638,707
 N	16007	Orok Deathbane				1454:512,702	
 N	16008	Temma of the Wells				1456:448,596	
 N	16009	Tormek Stoneriver				1455:324,660	
-N	16012	Mokvar				1454:350,383,350,383,350,383	
+N	16012	Mokvar				1454:350,383	
 N	16013	Deliana				1455:435,526	
 N	16014	Mux Manascrambler				1446:524,283,524,272	
 N	16015	Vi'el				1452:589,784	
 N	16016	Anthion Harmon				1423:262,113	
-N	16033	Bodley				33:631,444	
+N	16033	Bodley					
 N	16075	Kwee Q. Peddlefeet				1453:805,381;1454:334,378;1455:410,552;1456:608,506;1457:382,804;1458:548,900	
 N	16091	Dirk Thunderwood				1451:521,391	
 N	16105	Aristan Mottar				1453:619,752	
 N	16106	Evert Sorisam				1453:505,606	
 N	16108	Fenstad Argyle				1458:668,444	
 N	16109	Mara Rennick				1458:708,288	
-N	16112	Korfax				1423:720,485,720,485,720,485,720,485,720,485,720,485,720,485,720,485,720,485,720,485,720,485,720,485	
+N	16112	Korfax				1423:720,485	
 N	16113	Father Inigo Montoy				1423:717,486	
 N	16115	Commander Eligor Dawnbringer				1423:717,486	
 N	16116	Archmage Angela Dosantos				1423:717,487	
 N	16131	Rohan the Assassin				1423:716,489	
-N	16132	Huntsman Leopold				1423:726,490,726,490,726,490,726,490,726,490,726,490,726,490,726,490,726,490,726,490	
+N	16132	Huntsman Leopold				1423:726,490	
 N	16133	Mataus the Wrathcaster				1423:716,486	
 N	16134	Rimblat Earthshatter				1423:713,493	
 N	16135	Rayne				1423:714,493	
-N	16184	Nerubian Overseer				1423:74,436,70,303,152,326,202,316	
-N	16212	Dispatch Commander Metz				1423:713,480,713,480	
+N	16184	Nerubian Overseer				1423:74,436,70,303,152,326	
+N	16212	Dispatch Commander Metz				1423:713,480	
 N	16226	Guard Didier				1423:703,484	
 N	16227	Bragok			flight	1413:630,370	
 N	16376	Craftsman Wilhelm				1423:712,499	
@@ -2286,7 +2286,7 @@ N	205729	Boarton Shadetotem				1456:396,656
 N	210845	Jixo Madrocket				1442:592,624	
 N	210995	Alonso				1440:434,704	
 N	211022	Owen Thadd				1458:736,330	H
-N	211033	Garion Wendell				1453:489,865	A
+N	211033	Garion Wendell				1453:490,864	A
 N	211188	Maethra Slagheart				1457:382,892	
 N	211225	Baj'ura				1458:472,196	
 N	211229	Dietrich Praice				1454:356,878	
@@ -2302,7 +2302,7 @@ N	215643	Tokal				1434:270,772
 N	217300	Skonk				1417:576,746,200,674	
 N	218160	Aeonas the Vindicated				1453:488,489	
 N	218237	Wirdal Wondergear				1444:842,438	
-N	218920	Agent Keanna				1430:520,342	
+N	218920	Dalaran Agent				1430:520,342	
 N	220984	Fizbuz Mithril				1446:516,276	
 N	221400	Kajind				1447:254,662	
 N	221471	Field Captain Palandar				1431:456,512	
@@ -2334,6 +2334,7 @@ N	247226	Kelsey Fargo				1429:472,322
 N	248196	Apothecary Durelle				1413:498,296	
 N	248197	Gor'mak				1413:498,296	
 N	248199	Beneris				1413:496,298	
+N	248200	Fizzlefuse				1413:498,296	
 N	248242	Hamish Bergwort				1429:650,698	
 N	248248	Blixie Fitzwink				1429:632,726	
 N	248265	Ormin Pelford				1429:766,720	
@@ -2345,14 +2346,14 @@ N	250686	Tabitha Heartweaver				1421:444,430
 N	250929	Malfunctioning Cyclone Construct				2521:486,782	
 N	251001	Deathguard Kristof				1420:652,602	
 N	251166	Minor Manifestation of Earth				2521:496,240	
-N	251361	Rorian the Dayseeker				2521:420,234	
+N	251361	Rorian the Dayseeker				2521:421,235	
 N	251362	Ailee Farheart				2521:428,234	
-N	251363	Dalia the Collector				2521:432,240	
+N	251363	Dalia the Collector				2521:434,240	
 N	251364	Destin Thriceforged				2521:435,236	
 N	251365	Jolee Brightmeadows				2521:435,237	
-N	251366	Aetheen of the Gales				2521:426,236	
+N	251366	Aetheen of the Gales				2521:428,237	
 N	251368	Elatrell Featherlight				2521:434,248	
-N	251371	Falorne Fallwind				2521:432,248	
+N	251371	Falorne Fallwind				2521:433,249	
 N	251374	Windshaper Boro				2521:428,236	
 N	251487	Ventaari Brightwish				2521:426,244	
 N	251523	Constable Aonda				2521:456,454	
@@ -2360,7 +2361,7 @@ N	251684	Strange Hermit				2521:540,390
 N	251902	Illaya Amberwind				2521:436,448	
 N	251903	Rathiril Sunlance				2521:450,464	
 N	251904	Sania Silverstream				2521:448,454	
-N	251905	Fimbo Greasemitz				2521:438,438	
+N	251905	Zerril Softbreeze				2521:438,438	
 N	251906	Teeri Wellwind				2521:444,450	
 N	251965	Fevrath Skyhammer				2521:434,235	
 N	251968	Ayessa Dawnsinger				2521:590,796	
@@ -2374,7 +2375,7 @@ N	252373	Anathamaas Aetherwind				2521:658,804
 N	252377	Seena Skybreaker				2521:598,728	
 N	252378	Yorana Windyreed				2521:696,670	
 N	252382	Sessaria Skystride				2521:582,784	
-N	252383	Valennia Stormfist				2521:662,766,652,504,612,710	
+N	252383	Valennia Stormfist				2521:662,766,652,504	
 N	252389	Quel'ana Quickgale				2521:596,726	
 N	252448	Alvarion Windfield				2521:620,732	
 N	252475	Elaadrin Evengale				2521:666,798	
@@ -2417,7 +2418,7 @@ N	257087	Gretchen Mayberry			flight	2548:606,816	A
 N	257421	Tephri Thriceforged				2521:448,442	
 N	257422	Railee Thriceforged				2521:590,755	
 N	257446	Teo Hammerstorm				1426:288,662	
-N	257551	Valreaa Valewind				2521:424,250	
+N	257551	Valreaa Valewind				2521:424,252	
 N	257554	Halaan Hawk-Eye				2521:438,240	
 N	257944	Elegael Thornpaw				2521:616,392	
 N	258306	Granny Finespindle				1455:393,337	A
@@ -2425,6 +2426,7 @@ N	258568	Antonio Bolero				1453:535,818	A
 N	259012	Ealaane Nimbuswalker				2521:658,744	
 N	259084	Denaaris Stargale				1416:123,564	
 N	259119	Alaana Stormwalker				1412:334,224	
+N	259398	Galemender Delanea				2521:632,619	
 N	259860	Martha Wellsworth				2548:642,840	A
 N	259861	Paige Armstrong				2548:643,820	A
 N	259962	Fimbo Greasemitz				2548:790,542	
@@ -2453,12 +2455,15 @@ N	265813	Eric Brighthammer				1426:467,539
 N	266484	Morbin Lightbane				1458:578,898	
 N	266901	Pexmit				2482:588,418	
 N	267118	Gilbert Gray				1453:262,470	
+N	268238	Nordun Steadysight				1429:421,666	A
 N	268511	Manifest Clerk Philmor				1453:304,290	
 N	268568	Roy Lewells				1453:386,620	
 N	268592	Olariaan Swiftburn				2521:512,860	
 N	269153	Mountaineer Ylva				1432:318,862	
 N	269452	Excitable Slime				1458:532,294,576,634,646,650,746,232,834,454	
 N	270459	Alfina Nightgaze				1416:118,566	
+N	270637	Howin Kindfeather				1437:493,421	
+N	270844	Sylessa Duskwhisper				1437:80,559	
 N	271465	Falfaan Halfwind				2521:594,758	
 N	271478	Elaria Anvilwind				2521:595,761	
 N	271480	Taliaa Brightsky				2521:593,762	
@@ -2476,7 +2481,7 @@ N	276180	Elder Finseer				1429:782,570,796,468
 N	276189	Matriarch Bristlefur				1429:524,798,598,802,656,764	
 N	276198	Shal'ma				1411:606,896,636,956,690,716	
 O	31	Old Lion Statue	1433:792,467
-O	33	Locked Chest	1436:260,169,406,170
+O	33	Locked Chest	1436:260,169
 O	35	Captain's Footlocker	1436:259,478
 O	36	Broken Barrel	1436:405,478
 O	47	Wanted: Lieutenant Fangore	1433:217,465
@@ -2493,7 +2498,7 @@ O	261	Damaged Crate	1437:135,414
 O	269	Guarded Thunder Ale Barrel	1426:477,527
 O	270	Unguarded Thunder Ale Barrel	1426:477,527
 O	287	Bookie Herod's Records	1434:437,94
-O	288	Bookie Herod's Strongbox	1434:322,278
+O	288	Bookie Herod's Strongbox	
 O	711	Wanted!	1420:607,515
 O	1557	Lillith's Dinner Table	1420:666,448
 O	1561	Sealed Crate	1453:426,723
@@ -2515,7 +2520,7 @@ O	2076	Bubbling Cauldron	1434:322,277
 O	2083	Bloodsail Correspondence	1434:273,695
 O	2553	A Soggy Scroll	1435:228,481
 O	2554	Cortello's Riddle	1434:295,893,336,883
-O	2555	Musty Scroll	1425:808,468;1445:311,661
+O	2555	Musty Scroll	1445:311,661
 O	2560	Half-Buried Bottle	1434:328,787,337,750,360,711,364,785,370,654,404,606
 O	2652	Ebenezer Rustlocke's Corpse	1437:513,80
 O	2656	Waterlogged Letter	1417:443,929
@@ -2535,7 +2540,7 @@ O	2908	Sealed Supply Crate	1412:519,535
 O	3076	Dirt-stained Map	1412:599,821
 O	3238	Chen's Empty Keg	1413:379,161,418,387,438,122,450,622,547,372,557,273,558,200,565,436,571,90
 O	3239	Benedict's Chest	1411:593,577
-O	3642	Kolkars' Booty	1413:430,235,443,377,528,418
+O	3642	Kolkars' Booty	1413:430,235
 O	3643	Old Footlocker	1436:415,667
 O	3714	Alliance Strongbox	1413:496,836
 O	3972	WANTED	1413:626,375
@@ -2580,7 +2585,7 @@ O	123310	Ooze Covered Mithril Deposit	1441:661,862;1444:735,635,768,615
 O	123330	Buccaneer's Strongbox	1413:650,454
 O	123462	The Jewel of the Southsea	1413:650,454
 O	123848	Ooze Covered Thorium Vein	1449:500,812
-O	124371	Keystone	230:507,739
+O	124371	Keystone	
 O	129127	Gallywix's Lockbox	1413:547,56
 O	138492	Shards of Myzrael	1417:625,338
 O	141931	Hippogryph Egg	1444:570,782
@@ -2673,7 +2678,7 @@ O	176192	Catalogue of the Wayward	1422:394,667
 O	176196	Beached Sea Turtle	1439:531,181
 O	176197	Beached Sea Turtle	1439:442,207
 O	176198	Beached Sea Turtle	1439:317,837
-O	176213	Blood of Heroes	1422:359,575,365,536,382,563,397,696,406,731,408,575,415,621,422,548,428,642,433,683,437,705,442,650,445,717,446,535,459,511,459,714,468,345,470,671,470,699,476,700,479,531,494,681,498,333,523,550,523,663,533,662,535,635,549,271,553,596,567,347;1423:71,507,81,544,142,647,200,609,168,565,221,850,243,882,245,769,260,747,263,705,267,695,271,755,229,538,288,859,292,788,309,655,315,739,320,710,286,256,340,802,343,678,345,258,359,758,367,381,316,598,371,657,322,579,385,311,330,448,388,267
+O	176213	Blood of Heroes	1422:359,575,365,536,382,563,397,696,406,731,408,575,415,621,422,548,428,642,433,683,437,705,442,650,445,717,446,535,459,511,459,714,468,345,470,671,470,699,476,700,479,531,494,681,523,550,523,663,533,662,535,635,553,596,567,347;1423:71,507,81,544,142,647,200,609,168,565,221,850,243,882,245,769,260,747,263,705,267,695,271,755,229,538,288,859,292,788,309,655,315,739,320,710,286,256,340,802,343,678,345,258,359,758,367,381,316,598,371,657,322,579,385,311,330,448,388,267
 O	176361	Scourge Cauldron	1422:372,569
 O	176392	Scourge Cauldron	1422:625,586
 O	176393	Scourge Cauldron	1422:530,657
@@ -2681,7 +2686,7 @@ O	176582	Shellfish Trap	1443:181,865,203,713,234,771
 O	177289	Scourge Cauldron	1422:462,520
 O	177491	Termite Barrel	1422:484,319
 O	177667	Torn Scroll	1423:229,730,236,737
-O	177786	Rackmore's Chest	1443:361,304
+O	177786	Rackmore's Chest	
 O	177904	Wanted Poster: Besseleth	1442:591,758
 O	178244	Practice Lockbox	1433:468,451
 O	179486	Battered Footlocker	1424:755,400,796,466,830,441;1442:635,558,662,475,754,573
@@ -2701,14 +2706,14 @@ O	179913	Call to Arms!	1425:790,790
 O	180025	Mysterious Eastvale Haystack	1429:847,644
 O	180056	Mysterious Tree Stump	1412:362,645
 O	180448	Wanted Poster: Deathclasp	1451:513,383
-O	180456	Lesser Wind Stone	1451:182,811,205,862,244,360,279,306,383,465,390,424
-O	180461	Wind Stone	1451:172,848,247,327,376,448
-O	180466	Greater Wind Stone	1451:186,835,256,340,396,451
+O	180456	Lesser Wind Stone	1451:182,811,205,862
+O	180461	Wind Stone	1451:172,848
+O	180466	Greater Wind Stone	1451:186,835
 O	180503	Sandy Cookbook	1451:379,453
 O	180570	Keg	1424:514,590
 O	180658	School of Deviate Fish	1413:450,220,460,380,560,430
 O	180666	Draconic for Dummies	1458:770,380
-O	180667	Draconic for Dummies	287:320,429
+O	180667	Draconic for Dummies	
 O	180743	Carefully Wrapped Present	1454:495,785;1455:335,665
 O	180747	Gaily Wrapped Present	1454:496,782;1455:336,663
 O	180748	Ticking Present	1454:495,787;1455:336,665
@@ -2741,13 +2746,20 @@ O	424012	Mound of Dirt	1442:396,499
 O	462236	Mysterious Chest	1423:230,735
 O	509510	the Bulletin Board	1423:715,492
 O	562131	Applejack Still	1429:246,580
-O	581822	Bloodstained Satchel	2521:506,654
-O	610954	Bounty Available: Vulgara the Insatiable!	2521:452,452
-O	649051	Wanted: Insinerator Gar'im	1433:192,462
+O	581822	Bloodstained Satchel	2521:533,721
+O	610954	Bounty Available: Vulgara the Insatiable!	2521:434,459
+O	617674	Arvensus Shadowsong	2521:410,641
+O	617675	Raani Windgazer	2521:410,641
+O	617704	Bloody Note	2521:424,621
+O	626718	Dented Chest	2521:378,246
+O	626752	Dented Chest	2521:560,587,661,653
+O	649051	Wanted: Insinerator Gar'im	1433:243,462
 O	654846	Lost Journal	1438:591,395
 O	654925	Lost Journal	1411:428,691
 O	660964	Misplaced Packages	1455:726,485
 O	665289	Discarded Fishing Toolbox	1432:506,534
+O	671518	Tattered Spellbook	1437:535,545
+O	672330	Dragonmaw Armaments	1437:588,451
 Q	2					1440:758,696			I16305	H
 Q	5			U288						A
 Q	6			U823		1429:574,486			I182,U103	A
@@ -2829,7 +2841,7 @@ Q	86			U247					I769	A
 Q	87			U247		1429:416,788			I981,U327	A
 Q	88			U244		1429:698,794			I1006,U330	A
 Q	89			U341					I2856,U426,U430,U446,U580,U14271,I1013	A
-Q	90			U272					I2665,I1015	A
+Q	90			U272					I1015	A
 Q	91			U900					I1075,U429,U431,U432,U433,U434,U568,U579,U703,U947	A
 Q	92			U343					I1081,I1080,I2296	A
 Q	93			U272					I2251	A
@@ -2877,7 +2889,7 @@ Q	135			U234					I1327	A
 Q	136								I1357	
 Q	138			O35					I1358	
 Q	139			O36					I1361	
-Q	140			O33					I1362	
+Q	140			O34					I1362	
 Q	141			U332					I1353	A
 Q	142			U234		1436:456,686			I1381,U550	A
 Q	143			U344					I1407	A
@@ -3378,9 +3390,9 @@ Q	661			U2712						A
 Q	662			U2767		1417:230,845			I4487,O2707,I4489,O2709,I4488,O2708,I4490,O2710	
 Q	663			U2766						
 Q	664			U2769					U2595,U2596	
-Q	665			U2768						
-Q	666			U2774		1417:236,874			I4491,I4492,O2712	
-Q	667			U2610						
+Q	665			U2768					U2768	
+Q	666			U2774		1417:236,874			I4492,O2712	
+Q	667			U2610					U2610	
 Q	668			U2774					I4493	
 Q	669			U2610					I4502	
 Q	670			U2487					I4494	
@@ -3746,7 +3758,7 @@ Q	1063			U4049						H
 Q	1064			U4046						H
 Q	1065			U3419					I5628	H
 Q	1066			U2216					I5620,U2244	H
-Q	1067			U2216,U5588		1424:614,192				H
+Q	1067			U2216		1424:614,192				H
 Q	1068			U4049					U4073,U4074	H
 Q	1069			U3446					I5570,O19542	
 Q	1070			U4079						A
@@ -4380,7 +4392,7 @@ Q	2770			U4453					I8707
 Q	2771			U7804					I7928,I7931	
 Q	2772			U7804					I7926,I7933	
 Q	2773			U7804					I7927,I7930	
-Q	2781			U7407		1446:616,356			I8723,U7847	
+Q	2781			O150075,O142122		1446:616,356			I8723,U7847	
 Q	2782			O142127					I8724	H
 Q	2783			U7826						A
 Q	2784			U7572						H
@@ -4419,7 +4431,7 @@ Q	2871			U7877					I9248	A
 Q	2872			U2501						
 Q	2873			U7881		1446:722,467			I9244,O142181	
 Q	2874			U7881					I9245	
-Q	2875			U7882		1446:734,470			I9246,U7883	
+Q	2875			O150075,O142122		1446:734,470			I9246,U7883	
 Q	2876								I9250	
 Q	2877			U7884					U2655,U2656	A
 Q	2878			O174594					I11516	
@@ -4981,7 +4993,7 @@ Q	4811			U2930						A
 Q	4812			U2930		1439:370,430			I14339,I14338	A
 Q	4813			O175524						A
 Q	4821			U10539		1441:377,561			I12467,O175565	H
-Q	4822			U14305		1453:675,826			I18598,I7228,U14481	A
+Q	4822			U14305		1453:618,752			I18598,I7228,U14481	A
 Q	4841			U10537					U4094,U4093,U4096	H
 Q	4842			U9298						
 Q	4861			U10301						A
@@ -6839,7 +6851,7 @@ Q	79229			O417353
 Q	79235			U11438						
 Q	79236			U215643					I4600,U2832	
 Q	79242			U215643		1417:938,716			U215655,I212347,O423569	
-Q	79536	Greater Friend of the Library		U211033						A
+Q	79536	Greater Friend of the Library		U211033,U211022	U211033,U211022					
 Q	79624			U217300					I213422	
 Q	79626			O422483					I213427	
 Q	79677			U217300		1424:830,360			I213526,U2347,I213527,O422911,I213528,O422919,I213529,U769	
@@ -7014,6 +7026,7 @@ Q	82113			U6176					I20606,I20607,I20608	H
 Q	82114			U8379					I20085,U221942	
 Q	82115			U14470					I20606,I20607,I20608	
 Q	82135			U221587					I221519,U7149	A
+Q	82208	Greater Friend of the Library		U211033,U211022	U211033,U211022					
 Q	82662			U11146					I7945,I7941,I3855,I217281	A
 Q	82665			U11178					I7945,I7941,I3855,I217281	H
 Q	83808			U227672		1422:457,539			I226201,O455812	
@@ -7163,6 +7176,7 @@ Q	88744			U16361					I22484
 Q	88745			U16361					U16143	
 Q	88748			U16431					I22949	A
 Q	88749			U16531					I22950	H
+Q	88756	Bring Back a Bang		U1073		1437:625,282			I280806	A
 Q	89232			U241334						
 Q	89237			U16365					I12811,I12364,I6037,I234003,I12360	
 Q	89301			U241334						
@@ -7222,7 +7236,7 @@ Q	92462	Infestation Investigation		U251368					U251169
 Q	92463	The Cirrusfly Queen		U251368		2521:476,289			U251404	
 Q	92464	Elemental Unrest		U251361						
 Q	92465	Agitators		U249363					U251160,U251143	
-Q	92466	Call of Earth		U251374						
+Q	92466	Call of Earth		U251374						H
 Q	92467	Call of Earth		U251374						H
 Q	92468	Call of Earth		U251166						H
 Q	92469	Return to Rorian		U249363						
@@ -7231,23 +7245,24 @@ Q	92471	Aetheen of the Gales		U251361
 Q	92472	The Next Step		U251366						
 Q	92473	Aggressive Encroachment		U257551		2521:404,270			I251918,U250926	
 Q	92474	Falling With Style		U263113						
-Q	92481	A Student of the Arcane		U251361						
+Q	92481	A Student of the Arcane		U251361						A
 Q	92482	The Way of the Hunter		U251361						
 Q	92483	At Home in the Shadows		U251361						
-Q	92484	Embracing the Elements		U251361						
+Q	92484	Embracing the Elements		U251361						H
 Q	92485	A Student of Nature		U251361					I282420	
+Q	92489	Power Overwhelming		U5694						A
 Q	92514	Welcome to Shen'dar Village		U251523						H
-Q	92515	The Problem With Prideclaws		U251993						
+Q	92515	The Problem With Prideclaws		U251993					I252670	
 Q	92516	Hippogryph Harrassment		U251906						
 Q	92517	The Criminal Element		U251523		2521:494,360			U251918,U255534	
 Q	92528	Among the Faithful		U257065						
 Q	92529	Falaath Village		U251904						
 Q	92532	The Warrior's Path		U251361						
 Q	92544	Al'Aketh Thugs		U252095		2521:356,332			U251145,U251448,U256935	
-Q	92550	Havoc in the Highlands		U251523						
+Q	92550	Havoc in the Highlands		U251523					I252661	
 Q	92551	Stolen Supplies		U252172						
 Q	92553	Restocking the Larders		U251905						
-Q	92579	To Valanaar		U251523						H
+Q	92579	To Valanaar		U251523					I253152	H
 Q	92595	The Windshapers		U251902						H
 Q	92596	The High Order		U251903						A
 Q	92597	Reading the Ley Lines		U251371						
@@ -7255,19 +7270,19 @@ Q	92598	The Gift of Skysight		U251487
 Q	92640	Desperate Times		U252476						
 Q	92642	Disrupting Logistics		U252378		2521:655,670			U254596,U270201	
 Q	92643	The Turncoat		U252476						
-Q	92644	Unfortunate News		U253372						
+Q	92644	Unfortunate News		U253372					I273852	
 Q	92645	Breaking the Breaker		U252378		2521:656,655			U252666	
 Q	92646	Confront Lorthuna		U252383						H
 Q	92679	Blood Tithe		U252448		2521:473,796			U252800,U252448	
 Q	92682	Make Yourself Useful		U252800		2521:476,827			I253591,O578937,U252802	
-Q	92683	Flutterfly Dust		U252800		2521:519,834			I253595,O578959	
+Q	92683	Flutterfly Dust		U252800		2521:519,834			I253666,I253595,O578959	
 Q	92684	Ornery Ornery Galestriders		U252800		2521:533,722			I253597,U251707	
 Q	92685	The Hills Have Eyes		U252800		2521:476,761			I253596,U252820	
 Q	92693	Standing Our Ground		U252800		2521:473,796			U252800	
 Q	92698	What Is My Purpose?		U250929						
 Q	92699	The Supreme Magister		U252383						A
 Q	92700	The Grand Skyseer		U252383						H
-Q	92701	To Valanaar		U251523		2521:662,766			U252383	A
+Q	92701	To Valanaar		U251523		2521:662,766			I253152,U252383	A
 Q	92703	Deliver the News		U252800						
 Q	92708	A Grand Adventure		U251968						H
 Q	92709	A Grand Adventure		U252475		2521:665,798			U252475	A
@@ -7285,7 +7300,7 @@ Q	92752	Explosive Consultation		U11026					I254553	A
 Q	92753	Destruction in Deadmines		U253092					I254553	A
 Q	92819	Destruction in Deadmines		U253279						A
 Q	92834	Avenged Tenfold		U252475		2521:646,627			I255658,U253195,U253511	A
-Q	92840	Catching Wind		U252475					I254584	A
+Q	92840	Catching Wind		U252475		2521:479,689			I254584	A
 Q	92849	The Missing Scholar		O581822		2521:520,694			U253284	A
 Q	92850	The Missing Scholar		U253284		2521:523,656			I257107,U253283	A
 Q	92860	In Service of Zephras		U252475						A
@@ -7295,41 +7310,41 @@ Q	92881	The High Elder's Request		U252383
 Q	92909	Harvesting the Harvesters		U253395					I255007,I255010	A
 Q	92910	Harvesting the Harvesters							I255155	A
 Q	92911	Harvesting the Harvesters		U253395					I4405,I4363,I255007	A
-Q	92947	Making Our Move		U252383						
+Q	92947	Making Our Move		U252383		2521:612,710				
 Q	93036	Infiltrating the Cult		U251523						
 Q	93065	Prepare for Battle		U252383						
 Q	93089	What Comes Next		U252476						A
 Q	93090	What Comes Next		U252476						H
 Q	93159	The Strange Hermit		U251684						
 Q	93160	The Forest's Bounty		U251684						
-Q	93165	Mercy Falls on Deaf Ears		U254151						
+Q	93165	Mercy Falls on Deaf Ears		U254151					I258771	
 Q	93172	Free the Hollows		U251684						
 Q	93317	Crab Season		U257006		2521:641,615			I257941,U254588	
-Q	93318	WANTED: Vulgara the Insatiable		O610954						
-Q	93319	Pilfered Windstones		U251906						
+Q	93318	WANTED: Vulgara the Insatiable		O610954					I257942	
+Q	93319	Pilfered Windstones		U251906					I257945	
 Q	93320	Tower Defense		U252383						
-Q	93459	More Al'Aketh Ears		U254151						
+Q	93459	More Al'Aketh Ears		U254151					I258771	
 Q	93461	Welcome to Shen'dar Village		U251523						A
 Q	93552	Harvesting Windstones		U251363		2521:486,782			I258772,O613286	
 Q	93735	The Broken Construct		U251968						H
 Q	93736	Unwelcome Spirits		U254344						H
 Q	93737	The Broken Construct		U256083						H
 Q	93738	The Broken Construct		U256083						H
-Q	93739	Exploring the Horde		U4949						
+Q	93739	Exploring the Horde		U4949					I285357	
 Q	93740	Blood for Blood		U251968						H
 Q	93746	A Firm Response		U251968						H
 Q	93791	Speak with Belann		U252373						A
 Q	93797	Boughs in the Wind		U256507						A
-Q	93835	Confront Lorthuna		U252383						A
+Q	93835	Confront Lorthuna		U252383		2521:652,504				A
 Q	93836	The Fate of Zephras		U251968						H
 Q	93926	The Western Watch		U251523						
 Q	93927	A Last Request		U252155						
-Q	93948	Deliver the Signet		U251523		2521:662,766			U252476	
-Q	93949	Bugged		U252383		2521:617,758			U251314	
+Q	93948	Deliver the Signet		U251523		2521:662,766			I263491,U252476	
+Q	93949	Bugged		U252383		2521:617,758				
 Q	93951	A Little Beauty		U251991						
 Q	93958	The Inner Sanctum		U253576						
-Q	93963	Exploring the Alliance		U1748		1453:808,591			U275491,U7937,U2784,U7999	A
-Q	94003	The Skybreaker Bulwark		U252377						
+Q	93963	Exploring the Alliance		U1748		1453:790,448			I285356,U275491,U7937,U2784,U7999	
+Q	94003	The Skybreaker Bulwark		U252377					I263993	
 Q	94006	The Great Ursera Spirit		U252359						
 Q	94007	Taming the Beast		U254084						
 Q	94013	Taming the Beast		U252389						
@@ -7343,20 +7358,20 @@ Q	94413	A Magical Affront		U251903					U257532	A
 Q	94414	The Anchors of Zephras		U257554						
 Q	94484	Unnerving Silence		U252359						
 Q	94485	Tears of the Lady		U257944						
-Q	94486	Feathers for Binding		U257944						
-Q	94487	Unwanted and Unworthy		U257944						
-Q	94488	The Ties That Bind		U257944						
+Q	94486	Feathers for Binding		U257944					I265140	
+Q	94487	Unwanted and Unworthy		U257944					I265141	
+Q	94488	The Ties That Bind		U257944					I265475	
 Q	94489	The Wounds of Betrayal		U257944						
 Q	94490	Ripped Missive				2521:654,362			I265476	
-Q	94491	The Fate of the Den		U257944						
+Q	94491	The Fate of the Den		U257944					I265782	
 Q	94493	A Sacrifice in Vain		U257944						
 Q	94568	The Cult's True Plans		U252476						
 Q	94638	Strength and Mercy		U255853		2521:539,653			U258443	
 Q	94896	Aid For The Refugees		U259012		2521:580,319			I266433,O623295	
 Q	94897	The Fate of a Loved One		U259012		2521:570,295			I266434,U259013	
 Q	94912	Child of Nature		U270459						A
-Q	94946	The Magical City of Dalaran		U259084						A
-Q	94947	Welcome to Azeroth		U259084						A
+Q	94946	The Magical City of Dalaran		U252475						A
+Q	94947	Welcome to Azeroth		U259084						
 Q	94978	Taming the Beast		U252389						
 Q	94979	Taming the Beast		U252389						
 Q	95041	Data Hoaders		U11028		1426:263,412			I267413,O629596	A
@@ -7381,11 +7396,11 @@ Q	95682	Open the Maw		U13155					U275045,U275044,I284844,U275046	H
 Q	95697	Changing Tastes		U3368					I271100,U260325,U260800,U260801,U271732	H
 Q	95772	Songblade Search		U956						A
 Q	95795	Fallen in the Fen		U262465						A
-Q	95805	Grace of An'she and Mu'sha		U2982		1412:543,872			I277199,O660739	H
+Q	95805	Grace of An'she and Mu'sha		U2982		1412:566,887			I277199,O660739	H
 Q	95809	Heartwoven		U262681					I270901	A
 Q	95810	Lost Relic Carry							I270865	A
 Q	95998	The Great Outdoors		U263399						A
-Q	95999	Wanted: Insinerator Gar'im		O649051		1433:727,866			I271872,U214519	A
+Q	95999	Wanted: Insinerator Gar'im		O649051		1433:778,866			I271872,U214519	A
 Q	96031	Camping 101: Leatherworking		U265813						A
 Q	96044	Camping 101: Blacksmithing		U265813						A
 Q	96045	Camping 101: Alchemy		U265813						A
@@ -7399,7 +7414,7 @@ Q	96058	Camping 101: Engineering		U265813						A
 Q	96059	Camping 101: Enchanting		U265813						A
 Q	96101	The Great Outdoors		U263664						
 Q	96102	Camping 101: Tailoring		U265809						H
-Q	96130	Chakuyak		U3065		1412:391,658			I270302,U268558	H
+Q	96130	Chakuyak		U3065		1412:385,631			I270302,U268558	H
 Q	96390	Nip 'Em in the Bud		U264936					U6123	A
 Q	96391	Underground Map				1426:774,614			I274268	A
 Q	96392	Farsen's Watch		U264936						A
@@ -7428,10 +7443,10 @@ Q	96658	Camping 101: Cooking		U265812		1420:618,515			U265944	H
 Q	96659	The Adventurer		U2981					I275019	H
 Q	96661	Camping 101: Cooking		U265810						H
 Q	97220	Philmor's Favor		U268511					I277119	A
-Q	97222	Gatehouse Goods		U483		1453:711,823			I277198	A
+Q	97222	Gatehouse Goods		U483		1453:664,748			I277198	A
 Q	97234	Reading Room		U268568					I277158	A
 Q	97236	Fang of Githyiss							I277190	A
-Q	97237	Shelf Picked		U2504		1453:786,484			I277196,O660731,I277194,O660730,I277195,O660729,I277197,O660732	A
+Q	97237	Shelf Picked		U2504		1453:761,310			I277196,O660731,I277194,O660730,I277195,O660729,I277197,O660732	A
 Q	97243	Call of Fire		U252382						
 Q	97244	Call of Fire		U268592						
 Q	97245	Call of Fire		U268592						
@@ -7513,18 +7528,39 @@ Q	97977	Nature's Call		U1992					I279082,O668482,O668493	A
 Q	97979	The Goddess Provides		U3595						
 Q	98021	Journey to Sentinel Hill		U1748						
 Q	98067	Eyes of the Sentinels		U8396		1457:337,162			I279378	A
+Q	98072	Crocs of the Sky		U2094		1437:618,312			I279385,U1042,U1043,U1044,U1069	A
+Q	98189	Return the Statuette		U1242					I279589	A
+Q	98190	A Friend of the Family		U2104					I279595	A
+Q	98191	A Friend of the Family		U1748						A
+Q	98197	Spoils of War		U2086		1437:61,618			I279821,I279822	A
+Q	98208	Bloom of the Heavens		U270844		1437:122,638			I279915	
+Q	98209	Bloom of the Heavens		U270844					I279924	
+Q	98216	Understanding Our Present		U1077		1437:353,470			I279996,I279993	A
+Q	98219	The Shamed Lieutenant		U928						A
+Q	98221	From the Ashes		U2104		1437:454,427				A
+Q	98223	Old Habits		O671518					I280042	A
+Q	98230	This Land Was Their Land		U2104						A
+Q	98245	Razormaw Needling		U270637		1437:696,335			I280103,U1018,U1019	A
+Q	98246	Trying Times		U270637		1437:355,202			I280132	A
 Q	98247	Shipping Label		U256390					I280179	A
 Q	98248	Shipping Label		U256386					I280180	H
+Q	98282	Alchemical Hazards		U1480		1437:485,603			I280319,U1111,U4040	A
 Q	98284	Camping 101: Enchanting		U263664						H
 Q	98285	Camping 101: Engineering		U263664						
 Q	98286	Camping 101: Enchanting		U263664						A
+Q	98291	Death to the Dragonmaw		U270637		1437:597,449				A
+Q	98293	Forced Disarmament		O672330		1437:648,462			I280369	A
+Q	98297	Stopping the Cycle		U270637		1437:772,466				A
+Q	98300	Word to Ironforge		U270637					I280392	A
+Q	98310	Gleaning Our Future		U1077		1437:772,474			I280394,I280395,I280396,I280397,I280398	A
+Q	98313	For Further Study		U1077					I280403	A
 Q	98319	Secure the Mountain		U271546						A
 Q	98321	Flintfire's Shipment		U1241					I280413,O672508	A
 Q	98322	Secure the Mountain		U1252						A
 Q	98323	Secure the Mountain		U271546						A
 Q	98326	Frosthowl		U8508		1426:400,484			I280426,U271587	A
 Q	98386	Alther's Mill		U341		1433:475,412			U505,U271898,U271988,O673085,O673101	A
-Q	98387	Blackrock Blockade		U382		1433:610,736			I280839,O673384,O673385,O673399,I280841,O673390	A
+Q	98387	Blackrock Blockade		U382		1433:661,736			I280839,O673384,O673385,O673399,I280841,O673390	A
 Q	98389	A Light in the Darkness		U244808						H
 Q	98407	Show of Force		U1070		1433:109,614			I280911,U712	A
 Q	98423	The Treaty of Understanding				1455:393,560			I281030,U2784	A
@@ -7534,8 +7570,8 @@ Q	98601	A Difficult Path		U1569					I282423
 Q	98815	Highland Hides		U2094					I284845,U260325,U260800,U260801,U271732	A
 Q	98823	Earthen Echo		U9087					I270866	H
 Q	98824	Prehistoric Prism		U1077					I270865	A
-Q	99079	Longwalker Malah		U3222		1412:551,659			U275789	H
-Q	99080	Drive Them Out		U2993		1412:565,610			U2967,U2968,I286075,U275767	H
+Q	99079	Longwalker Malah		U3222		1412:576,632			U275789	H
+Q	99080	Drive Them Out		U2993		1412:593,573			U2967,U2968,I286075,U275767	H
 Q	99081	Grim Tidings		U275789					I286104	H
 Q	99082	The High Chieftain		U2993						H
 Q	99101	Our Ancient Enemy		U3222		1412:466,634			I286104,U2993	H
@@ -8014,7 +8050,6 @@ I	2622		U2606
 I	2623		U2780,U2781,U2782	
 I	2624		U2718	
 I	2633		U940,U941,U942	
-I	2665		U1303	
 I	2672		U118,U1922,U2958,U2959,U2960,U3056,U525	
 I	2673		U833,U834	
 I	2677		U157,U454	
@@ -9127,7 +9162,6 @@ I	13476		U7027
 I	13477		U4226,U4610	
 I	13478		U3348,U5178	
 I	13479		U9449,U9450,U9451,U9452	
-I	13480		U11188	
 I	13482		U11536	
 I	13483		U9499	
 I	13484		U11557	
@@ -9876,7 +9910,6 @@ I	19436		U12463,U12464,U12465,U12467
 I	19437		U12463,U12464,U12465,U12467	
 I	19438		U12460	
 I	19439		U12460	
-I	19442		U11536	
 I	19445		U11557	
 I	19505		U14754	
 I	19506		U14753	
@@ -10747,6 +10780,7 @@ I	203755		O386759
 I	208860		O408014	
 I	209845		O409562	
 I	209846		O409692	
+I	210178		U643	
 I	247826		U248278	
 I	247834		U6	
 I	247862		U248299	
@@ -10755,7 +10789,7 @@ I	248819		U263384
 I	248820		U263384	
 I	248822		U263384	
 I	249274		U263384	
-I	249391		U263384	
+I	249391		O1731,U263384	
 I	249399		U263384	
 I	249424		U263384	
 I	249425		U263384	
@@ -10805,6 +10839,7 @@ I	249887			U256731
 I	249888			U256731
 I	249889			U256731
 I	249890			U256731
+I	250187		U1020,U3255	
 I	250188		U428	
 I	250364			U248196,U256729
 I	250365			U248196,U256729
@@ -10905,6 +10940,7 @@ I	251469		U11557
 I	251470		U11557	
 I	251471			U248197,U256730
 I	251932		U251402	
+I	252760			
 I	252761		U258306	
 I	252762		U258306	
 I	252763		U258306	
@@ -11069,39 +11105,51 @@ I	254114			U256735
 I	254116			U256735
 I	254118			U256735
 I	254124		U266901	
+I	254871		O617704	
 I	255007		U114,U115,U276061,U36,U480	
 I	255010		U114,U115,U36	
 I	255155		U114,U36,U480	
+I	255663			
+I	255723		U2589	
+I	255724		U910	
+I	255728		U760	
 I	255729		U266901	
+I	257128			
 I	262765			U256389
-I	264201			U256733
-I	264202			U256733
-I	264203			U256733
-I	264204			U256733
-I	264205			U256733
-I	264206			U256733
-I	264209			U256733
-I	264211			U256733
-I	264216			U256733
-I	264217			U256733
-I	264220			U256733
-I	264221			U256733
-I	264222			U256733
-I	264232			U256733
+I	263415		O617675	
+I	263418		O617674	
+I	263493			
+I	264201			U248200,U256733
+I	264202			U248200,U256733
+I	264203			U248200,U256733
+I	264204			U248200,U256733
+I	264205			U248200,U256733
+I	264206			U248200,U256733
+I	264209			U248200,U256733
+I	264211			U248200,U256733
+I	264216			U248200,U256733
+I	264217			U248200,U256733
+I	264220			U248200,U256733
+I	264221			U248200,U256733
+I	264222			U248200,U256733
+I	264232			U248200,U256733
 I	264233		U266901	
-I	264234			U256733
-I	264235			U256733
-I	264237			U256733
+I	264234			U248200,U256733
+I	264235			U248200,U256733
+I	264237			U248200,U256733
+I	265105			
 I	268548		U1116,U1118	
 I	269671		U265756	
 I	269678		U265756	
 I	269681		U265756	
 I	269683		U265756	
+I	269901		U253139,U253140	
+I	269903		U253139,U253140	
 I	270888			U256389
 I	271621			U248196,U256729
 I	271622			U248197,U256730
 I	271624			U248199,U256732
-I	271625			U256733
+I	271625			U248200,U256733
 I	271626			U256734
 I	271627			U256735
 I	271654		U260560	
@@ -11158,13 +11206,18 @@ I	273647		U3927
 I	273804		U1696	
 I	273805		U1696	
 I	273806		U1696	
+I	273807		U1666	
 I	273808		U1666	
 I	273809		U1717	
 I	273810		U1717	
+I	273811		U1717	
 I	273812		U271480	
 I	273813		U271480	
 I	273814		U271480	
-I	273820		U1696	
+I	273815		U270201	
+I	273817		U1663	
+I	273819		U1663	
+I	273820		U1663	
 I	273824		U1716	
 I	273825		U1716	
 I	273827		U1716	
@@ -11357,17 +11410,18 @@ I	277108		U271465
 I	277109		U271465	
 I	277110		U271465	
 I	277111		U271465	
+I	277470		U276061	
 I	278157			U12782
 I	278158			U12782
 I	278265		U4612	
 I	278468			U12782
-I	280321			U256733
-I	280322			U256733
-I	280323			U256733
-I	280325			U256733
-I	280326			U256733
-I	280327			U256733
-I	280328			U256733
+I	280321			U248200,U256733
+I	280322			U248200,U256733
+I	280323			U248200,U256733
+I	280325			U248200,U256733
+I	280326			U248200,U256733
+I	280327			U248200,U256733
+I	280328			U248200,U256733
 I	280347		U254151	
 I	280363		U254151	
 I	280797		U1263	
@@ -11375,10 +11429,12 @@ I	280801		U1263
 I	282047		U3581	
 I	284664			U256389
 I	284715		U646	
-I	285285			U256733
-I	285286			U256733
-I	285287			U256733
-I	285288			U256733
+I	285254		U259398	
+I	285255		U259398	
+I	285285			U248200,U256733
+I	285286			U248200,U256733
+I	285287			U248200,U256733
+I	285288			U248200,U256733
 I	285292		U642	
 I	285327		U32287	
 I	285346		U5798	
@@ -11388,4 +11444,894 @@ I	285350		U5800
 I	286746		U276198	
 I	286748		U276189	
 I	286751		U276111	
+N	2359	Elemental Slave				1416:229,595	
 ]==]
+
+-- Source-backed recovery for the 531 audited relationships. MIT ATT sources.
+-- Append after the original Curated.lua payload; no new runtime code or TOC entry needed.
+-- Names alone never establish a spawn, accessibility, or relationship validity.
+-- I18036 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L305
+-- I23643 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Thousand Needles.lua#L59
+-- I23644 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Thousand Needles.lua#L731
+-- I23658 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/badlands.lua#L823
+-- I23659 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Swamp of Sorrows.lua#L291
+-- I23660 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/badlands.lua#L830
+-- I23661 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Western Plaguelands.lua#L852
+-- I23670 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Thousand Needles.lua#L72
+-- I23675 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Thousand Needles.lua#L73
+-- I23691 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Western Plaguelands.lua#L398
+-- I23694 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/The Hinterlands.lua#L339
+-- I23695 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/The Hinterlands.lua#L331
+-- I23760 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L921
+-- I23776 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L78
+-- I23778 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L682
+-- I23780 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L227
+-- I23788 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L673
+-- I23798 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L235
+-- I24081 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L84
+-- I49094 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Azshara.lua#L518
+-- I49204 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Azshara.lua#L412
+-- I209693 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L877
+-- I211452 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L891
+-- I211454 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L771
+-- I211818 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L764
+-- I212347 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Arathi Highlands.lua#L1011
+-- I213422 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Arathi Highlands.lua#L237
+-- I216661 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/classic/item=216661/grime-encrusted-ring
+-- I216662 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Gnomeregan.lua#L1056
+-- I217281 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Dustwallow Marsh.lua#L1310
+-- I217350 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Gnomeregan.lua#L1272
+-- I217351 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Gnomeregan.lua#L1287
+-- I220570 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L1296
+-- I220964 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L1153
+-- I221346 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L831
+-- I221363 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L847
+-- I221475 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L1208
+-- I226700 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L3055
+-- I226701 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/classic/item=226701/shadowcraft-belt
+-- I226702 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/classic/item=226702/shadowcraft-gloves
+-- I226703 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1204
+-- I226705 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1889
+-- I226706 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1185
+-- I226707 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1881
+-- I226708 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1895
+-- I226709 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1903
+-- I226710 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2047
+-- I226711 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1055
+-- I226712 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1354
+-- I226713 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1923
+-- I226714 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L960
+-- I226715 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L3083
+-- I226716 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2142
+-- I226718 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1224
+-- I226719 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1791
+-- I226720 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1783
+-- I226721 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1745
+-- I226722 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/0.5 Tier 0.5 Sets.lua#L277
+-- I226723 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2971
+-- I226724 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1310
+-- I226726 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1308
+-- I226727 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1875
+-- I226728 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1867
+-- I226729 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L3041
+-- I226730 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1016
+-- I226731 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1673
+-- I226732 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L731
+-- I226733 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1853
+-- I226734 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L3027
+-- I226735 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2750
+-- I226736 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1861
+-- I226737 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1088
+-- I226738 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1339
+-- I226740 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1236
+-- I226741 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2339
+-- I226743 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/0.5 Tier 0.5 Sets.lua#L733
+-- I226744 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1282
+-- I226745 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2999
+-- I226746 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1811
+-- I226747 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1805
+-- I226748 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2298
+-- I226749 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L3069
+-- I226750 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1833
+-- I226752 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1610
+-- I226753 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2499
+-- I226754 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1268
+-- I226755 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1797
+-- I226756 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1105
+-- I226757 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L3013
+-- I226758 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L833
+-- I226760 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1819
+-- I226761 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L817
+-- I226762 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1825
+-- I226763 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/0.5 Tier 0.5 Sets.lua#L1224
+-- I226764 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1054
+-- I226765 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L1238
+-- I226767 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1847
+-- I226768 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2616
+-- I226769 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scholomance.lua#L1839
+-- I226770 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Blackrock Spire.lua#L2985
+-- I226771 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Stratholme.lua#L1659
+-- I227914 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Felwood.lua#L910
+-- I228680 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/1.5 Onyxia's Lair.lua#L238
+-- I228690 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Dire Maul.lua#L1018
+-- I228691 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Dire Maul.lua#L551
+-- I228692 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Dire Maul.lua#L323
+-- I228693 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Dire Maul.lua#L824
+-- I231722 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/1.6 Blackwing Lair.lua#L559
+-- I232018 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/1.6 The Crystal Vale.lua#L58
+-- I234003 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L61
+-- I235049 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/2.4 Nightmare Grove.lua#L132
+-- I236750 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L3579
+-- I239196 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L26
+-- I239216 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L46
+-- I240848 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L171
+-- I281246 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/ruins of lordaeron.lua#L163
+-- I281300 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/ruins of lordaeron.lua#L175
+-- I281327 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/ruins of lordaeron.lua#L194
+-- O15084 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2010
+-- O15085 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2011
+-- O181627 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2598
+-- O181628 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2599
+-- O181629 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2600
+-- O181645 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2602
+-- O181672 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2604
+-- O181672 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/holidays/hallow's end.lua#L39
+-- O181681 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2605
+-- O181686 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2779
+-- O181687 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2606
+-- O181690 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2607
+-- O181916 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2608
+-- O190483 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2609
+-- O190484 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2610
+-- O201579 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2611
+-- O253069 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2613
+-- O254676 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/westfall.lua#L326
+-- O375544 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2614
+-- O397987 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2794
+-- O403041 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2796
+-- O403105 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2798
+-- O404911 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2804
+-- O405628 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2808
+-- O406006 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2812
+-- O410528 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2859
+-- O411710 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2866
+-- O411715 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2867
+-- O422483 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2881
+-- O422911 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2882
+-- O422919 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2883
+-- O423569 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2884
+-- O424074 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2893
+-- O424075 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2894
+-- O424076 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2895
+-- O424077 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2896
+-- O433596 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2897
+-- O439557 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2898
+-- O439558 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2899
+-- O439627 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2900
+-- O439628 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2901
+-- O439762 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2902
+-- O439778 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2903
+-- O439810 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2904
+-- O439815 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2905
+-- O441113 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2906
+-- O441114 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2907
+-- O441119 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2908
+-- O441124 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2909
+-- O441128 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2910
+-- O441129 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2911
+-- O441133 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2912
+-- O441140 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2913
+-- O441141 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2914
+-- O441222 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2915
+-- O441310 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2916
+-- O441312 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2917
+-- O441314 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2918
+-- O441848 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2919
+-- O441946 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2920
+-- O441947 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2921
+-- O441948 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2922
+-- O455812 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2923
+-- O457387 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2629
+-- O461639 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2939
+-- O462233 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/VanillaSOD/LocalizationDB.lua#L2940
+-- O561159 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2630
+-- O562103 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2631
+-- O562105 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2632
+-- O562106 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2633
+-- O562114 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2634
+-- O563442 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2636
+-- O578937 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2638
+-- O578959 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2639
+-- O613286 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2643
+-- O623295 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2649
+-- O629596 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2652
+-- O630871 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Tirisfal Glades.lua#L1053
+-- O630885 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Tirisfal Glades.lua#L1054
+-- O660729 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2654
+-- O660730 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2655
+-- O660731 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2656
+-- O660732 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2657
+-- O660739 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/kalimdor/mulgore.lua#L135
+-- O664122 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2659
+-- O668482 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/kalimdor/teldrassil.lua#L149
+-- O671154 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Tirisfal Glades.lua#L1033
+-- O672508 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2660
+-- O673085 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/redridge mountains.lua#L133
+-- O673101 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/redridge mountains.lua#L132
+-- O673384 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2661
+-- O673385 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2662
+-- O673390 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/redridge mountains.lua#L191
+-- O673399 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2663
+-- O694772 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2664
+-- O694785 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2665
+-- O694855 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L524
+-- O694934 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L786
+-- O695222 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/db/Camelot/LocalizationDB.lua#L2666
+-- O695223 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L1463
+-- O695277 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L1456
+-- Q82055 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/21 - Holidays/Darkmoon Faire.lua#L1438
+-- Q82056 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/21 - Holidays/Darkmoon Faire.lua#L1557
+-- Q82057 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/21 - Holidays/Darkmoon Faire.lua#L1642
+-- Q82058 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/21 - Holidays/Darkmoon Faire.lua#L1833
+-- Q85798 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/forever/tw/quest=85798/arms-for-the-field
+-- Q86760 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/classic/quest=86760/darkmoon-beast-deck
+-- Q86761 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/classic/quest=86761/darkmoon-warlords-deck
+-- Q86762 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/classic/quest=86762/darkmoon-elementals-deck
+-- Q86763 CONFIRMED_DEFINITION_ONLY https://www.wowhead.com/classic/quest=86763/darkmoon-portals-deck
+-- U4431 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/world drops/world drops.lua#L3975
+-- U17111 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Swamp of Sorrows.lua#L298
+-- U17112 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Swamp of Sorrows.lua#L303
+-- U17113 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Swamp of Sorrows.lua#L293
+-- U17115 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Swamp of Sorrows.lua#L314
+-- U17235 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/The Hinterlands.lua#L82
+-- U17236 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/The Hinterlands.lua#L86
+-- U17300 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L448
+-- U17304 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L97
+-- U36156 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/01 Kalimdor/Azshara.lua#L413
+-- U185335 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/1 - stormwind city.lua#L1277
+-- U202699 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L765
+-- U204645 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L850
+-- U208565 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Dun Morogh.lua#L789
+-- U209678 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L794
+-- U212694 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Ashenvale.lua#L1488
+-- U214129 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/The Barrens.lua#L2698
+-- U214519 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/redridge mountains.lua#L688
+-- U214519 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/redridge mountains.lua#L685
+-- U215062 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/1 - Stormwind City.lua#L3030
+-- U215095 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/1 - Darnassus.lua#L725
+-- U215096 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/2 - Orgrimmar.lua#L1859
+-- U215098 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/1 - Undercity.lua#L1005
+-- U215655 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Arathi Highlands.lua#L1006
+-- U216659 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L852
+-- U216660 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L849
+-- U216661 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L853
+-- U216662 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackfathom Deeps.lua#L851
+-- U217689 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Gnomeregan.lua#L1227
+-- U217996 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/Scarlet Monastery.lua#L733
+-- U218537 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Gnomeregan.lua#L1263
+-- U218624 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L816
+-- U221169 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/world drops/world drops.lua#L4531
+-- U221171 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1415
+-- U221172 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1419
+-- U221174 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1431
+-- U221175 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1435
+-- U221176 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1451
+-- U221200 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1447
+-- U221204 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1607
+-- U221206 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1619
+-- U221207 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1631
+-- U221210 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1643
+-- U221215 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1655
+-- U221216 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1667
+-- U221220 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1491
+-- U221221 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1478
+-- U221222 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1465
+-- U221259 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1183
+-- U221260 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1187
+-- U221261 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1159
+-- U221262 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1155
+-- U221263 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1171
+-- U221265 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1343
+-- U221266 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1355
+-- U221267 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1367
+-- U221268 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1391
+-- U221269 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1403
+-- U221270 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1379
+-- U221271 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1201
+-- U221272 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1214
+-- U221273 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1227
+-- U221325 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1989
+-- U221326 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1985
+-- U221328 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/The Hinterlands.lua#L2400
+-- U221330 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1961
+-- U221331 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2142
+-- U221333 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2154
+-- U221334 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2166
+-- U221335 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2178
+-- U221336 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2190
+-- U221337 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2202
+-- U221351 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2029
+-- U221352 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2016
+-- U221353 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L2003
+-- U221367 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1715
+-- U221369 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1711
+-- U221370 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1695
+-- U221371 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1699
+-- U221375 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1679
+-- U221377 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1683
+-- U221389 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1888
+-- U221391 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1900
+-- U221393 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1876
+-- U221395 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1912
+-- U221398 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1924
+-- U221399 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1936
+-- U221401 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1729
+-- U221402 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1742
+-- U221404 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L1755
+-- U221651 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Azshara.lua#L629
+-- U221829 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Tanaris.lua#L1690
+-- U221928 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Feralas.lua#L2779
+-- U221933 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Feralas.lua#L2770
+-- U221935 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Feralas.lua#L2761
+-- U221942 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L906
+-- U222198 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L892
+-- U222451 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/The Temple of Atal'hakkar.lua#L1157
+-- U222522 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Felwood.lua#L2391
+-- U222530 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Blackrock Depths.lua#L293
+-- U222703 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Feralas.lua#L2780
+-- U222704 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Feralas.lua#L2771
+-- U222705 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/01 Kalimdor/Feralas.lua#L2762
+-- U226923 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Demon Fall Canyon.lua#L15
+-- U227464 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L3485
+-- U227519 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Western Plaguelands.lua#L795
+-- U227985 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/06 - Expansion Features/01 - Classic/Season of Discovery.lua#L3509
+-- U228620 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Eastern Plaguelands.lua#L3432
+-- U228718 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L70
+-- U228720 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L133
+-- U228723 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L81
+-- U228724 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L170
+-- U228726 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L108
+-- U228727 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L105
+-- U228729 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L144
+-- U228747 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Searing Gorge.lua#L156
+-- U232309 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/1.6 The Crystal Vale.lua#L36
+-- U232900 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/1.6 Blackwing Lair.lua#L532
+-- U232903 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/1.6 Blackwing Lair.lua#L511
+-- U232924 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/01 - Dungeons Raids/01 - Classic/1.6 Blackwing Lair.lua#L595
+-- U238431 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/Karazhan Crypts.lua#L148
+-- U239337 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Eastern Plaguelands.lua#L88
+-- U241334 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L89
+-- U241834 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L138
+-- U242174 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L144
+-- U242499 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L197
+-- U242501 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L204
+-- U242863 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/standard/01 - Dungeons Raids/01 - Classic/3.5 Scarlet Enclave.lua#L177
+-- U248278 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L1671
+-- U248278 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L1668
+-- U248299 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L1684
+-- U248299 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L1678
+-- U248362 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L304
+-- U248362 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L301
+-- U248464 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L587
+-- U248464 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L584
+-- U248474 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L1136
+-- U248474 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/elwynn forest.lua#L1133
+-- U250483 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/ruins of lordaeron.lua#L110
+-- U250657 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/ruins of lordaeron.lua#L123
+-- U250660 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/ruins of lordaeron.lua#L32
+-- U250873 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L738
+-- U250926 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L138
+-- U250926 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L135
+-- U250937 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L706
+-- U250937 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L705
+-- U251115 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L712
+-- U251115 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L709
+-- U251143 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L154
+-- U251145 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L183
+-- U251160 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L151
+-- U251160 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1882
+-- U251169 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L807
+-- U251247 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1460
+-- U251314 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L291
+-- U251402 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1891
+-- U251402 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1889
+-- U251404 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1088
+-- U251404 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1087
+-- U251448 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L186
+-- U251707 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L885
+-- U251707 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L883
+-- U251918 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1106
+-- U251918 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1105
+-- U252666 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L275
+-- U252666 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L274
+-- U252802 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L831
+-- U252802 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L830
+-- U252820 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1226
+-- U252820 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1224
+-- U253195 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L223
+-- U253283 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1278
+-- U253283 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1276
+-- U253511 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L222
+-- U254588 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L539
+-- U254588 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L537
+-- U254596 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L588
+-- U254596 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L587
+-- U255534 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1110
+-- U255534 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1109
+-- U256092 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1459
+-- U256935 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L189
+-- U256935 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L188
+-- U257532 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L96
+-- U257655 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Tirisfal Glades.lua#L1070
+-- U258443 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1005
+-- U258443 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1004
+-- U259013 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1138
+-- U259013 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L1136
+-- U260157 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L880
+-- U260325 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L27
+-- U260800 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L24
+-- U260801 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L25
+-- U261306 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/hall of thanes.lua#L21
+-- U261319 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/hall of thanes.lua#L68
+-- U262465 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L66
+-- U262681 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L76
+-- U263389 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/hall of thanes.lua#L50
+-- U263390 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/hall of thanes.lua#L53
+-- U265002 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/hall of thanes.lua#L16
+-- U265701 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/ruins of lordaeron.lua#L26
+-- U265944 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Tirisfal Glades.lua#L632
+-- U268558 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/kalimdor/mulgore.lua#L1060
+-- U268558 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/kalimdor/mulgore.lua#L1058
+-- U269075 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L236
+-- U269075 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L235
+-- U269185 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/loch modan.lua#L240
+-- U270201 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L592
+-- U270201 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L591
+-- U270693 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/loch modan.lua#L663
+-- U270693 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/loch modan.lua#L660
+-- U271587 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L816
+-- U271587 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L813
+-- U271732 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L26
+-- U271898 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/world drops/world drops.lua#L4539
+-- U271988 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/redridge mountains.lua#L126
+-- U275044 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L141
+-- U275045 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L138
+-- U275046 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/dungeons & raids/excavation site - wetlands.lua#L145
+-- U275103 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Tirisfal Glades.lua#L1072
+-- U275491 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L622
+-- U275491 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/zephras isle.lua#L620
+-- U275767 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/kalimdor/mulgore.lua#L1095
+-- U275767 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/kalimdor/mulgore.lua#L1093
+-- U276003 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L1008
+-- U276009 CONFIRMED_POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L1023
+-- U276009 POSITION https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua#L1020
+-- U276061 CONFIRMED_DEFINITION_ONLY https://github.com/ATTWoWAddon/AllTheThings/blob/ec1aa307198d92d18c601ae2c9338a67b71e7d6b/.contrib/.db/forever/zzOLD/02 - Outdoor Zones/02 Eastern Kingdoms/Tirisfal Glades.lua#L1474
+local D = WaypointTrackerData
+if not D then return end
+local sourceRecoveryV2 = [==[
+WTL1	att-source-recovery-v2	1
+I	18036	Bottle of Disease		
+I	23643	Purifying Earth		
+I	23644	Crate of Reagents		
+I	23658	Advisor's Pack		
+I	23659	Fel-Tainted Morsels		
+I	23660	Advisor's Rapier		
+I	23661	Mark of the Lightbringer		
+I	23670	Thalanaar Moonwell Water		
+I	23675	Robotron Control Unit		
+I	23691	Corrupted Mark of the Lightbringer		
+I	23694	Gryphon Egg		
+I	23695	Featherbeard's Map		
+I	23760	Chalice of Elune		
+I	23776	Warsong Lumber		
+I	23778	Sentinel Luciel's Report		
+I	23780	Diabolical Plans		
+I	23788	Tree Seedlings		
+I	23798	Diabolical Plans		
+I	24081	Satyrnaar Fel Wood		
+I	49094	Keystone Shard		
+I	49204	Secret Rocket Plans		
+I	209693	Perfect Blackfathom Pearl		
+I	211452	Perfect Blackfathom Pearl		
+I	211454	Strange Water Globe		
+I	211818	Strange Water Globe		
+I	212347	Illari's Key		
+I	213422	Illegible Recipe		
+I	216661	Grime-Encrusted Ring		
+I	216662	Brilliant Gold Ring		
+I	217281	Moonsteel Broadsword		
+I	217350	Thermaplugg's Engineering Notes		
+I	217351	Thermaplugg's Engineering Notes		
+I	220570	Mantle of Nightmares		
+I	220964	Decharged Void-Powered Vambraces		
+I	221346	Scapula of the Fallen Avatar		
+I	221363	Scapula of the Fallen Avatar		
+I	221475	Essence of Eranikus		
+I	226700	Shadowcraft Tunic		
+I	226701	Shadowcraft Belt		
+I	226702	Shadowcraft Gloves		
+I	226703	Shadowcraft Boots		
+I	226705	Shadowcraft Pants		
+I	226706	Shadowcraft Spaulders		
+I	226707	Shadowcraft Cap		
+I	226708	Wildheart Cowl		
+I	226709	Wildheart Kilt		
+I	226710	Wildheart Spaulders		
+I	226711	Wildheart Gloves		
+I	226712	Wildheart Belt		
+I	226713	Wildheart Boots		
+I	226714	Wildheart Bracers		
+I	226715	Wildheart Vest		
+I	226716	Beaststalker's Mantle		
+I	226718	Beaststalker's Belt		
+I	226719	Beaststalker's Pants		
+I	226720	Beaststalker's Cap		
+I	226721	Beaststalker's Gloves		
+I	226722	Beaststalker's Boots		
+I	226723	Beaststalker's Tunic		
+I	226724	Magister's Belt		
+I	226726	Magister's Mantle		
+I	226727	Magister's Leggings		
+I	226728	Magister's Crown		
+I	226729	Magister's Robes		
+I	226730	Magister's Boots		
+I	226731	Magister's Gloves		
+I	226732	Lightforge Belt		
+I	226733	Lightforge Helm		
+I	226734	Lightforge Breastplate		
+I	226735	Lightforge Spaulders		
+I	226736	Lightforge Legplates		
+I	226737	Lightforge Gauntlets		
+I	226738	Lightforge Boots		
+I	226740	Devout Gloves		
+I	226741	Devout Mantle		
+I	226743	Devout Sandals		
+I	226744	Devout Belt		
+I	226745	Devout Robe		
+I	226746	Devout Crown		
+I	226747	Devout Skirt		
+I	226748	Gauntlets of Elements		
+I	226749	Vest of Elements		
+I	226750	Kilt of Elements		
+I	226752	Boots of Elements		
+I	226753	Pauldrons of Elements		
+I	226754	Cord of Elements		
+I	226755	Coif of Elements		
+I	226756	Dreadmist Mantle		
+I	226757	Dreadmist Robe		
+I	226758	Dreadmist Wraps		
+I	226760	Dreadmist Leggings		
+I	226761	Dreadmist Belt		
+I	226762	Dreadmist Mask		
+I	226763	Dreadmist Sandals		
+I	226764	Boots of Valor		
+I	226765	Belt of Valor		
+I	226767	Legplates of Valor		
+I	226768	Spaulders of Valor		
+I	226769	Helm of Valor		
+I	226770	Breastplate of Valor		
+I	226771	Gauntlets of Valor		
+I	227914	Owlbeast Pineal Gland		
+I	228680	Nostro's Compendium of Dragon Slaying		
+I	228690	The Light and How to Swing It		
+I	228691	Garona: A Study on Stealth and Treachery		
+I	228692	Codex of Defense		
+I	228693	The Arcanist's Cookbook		
+I	231722	Depleted Scythe of Chaos		
+I	232018	Dormant Wind Kissed Blade		
+I	234003	Obsidian-Infused Thorium Bar		
+I	235049	Nightmare Engulfed Object		
+I	236750	Heart of Doom		
+I	239196	Ruined Lightforged Blade		
+I	239216	Lightforged Iron		
+I	240848	Nordrassil Detritus		
+I	281246	Toxic Skullcap		
+I	281300	Blisterweed		
+I	281327	Hissing Serum		
+O	15084	The Sparklematic 5200	
+O	15085	The Sparklematic 5200	
+O	181627	Weapon Rack	
+O	181628	Empty Barrel	
+O	181629	Holy Coffer	
+O	181645	Gryphon Egg	
+O	181672	Wickerman Effigy	1420:560,690
+O	181681	Chalice of Elune	
+O	181686	Warsong Lumber Pile	
+O	181687	Lumber Pile	
+O	181690	Fertile Dirt Mound	
+O	181916	Tainted Wood	
+O	190483	Document Chest #2	
+O	190484	Document Chest #3	
+O	201579	Keystone Shard	
+O	253069	Blacker Lotus	
+O	254676	Suspicious Crate	
+O	375544	Wooden Figurine	
+O	397987	Kobold Stashbox	
+O	403041	Blasting Supplies	
+O	403105	Windfury Cone	
+O	404911	Hidden Cache	
+O	405628	Frostmane Loot Cache	
+O	406006	Idol	
+O	410528	Ornamented Chest	
+O	411710	Demonic Reliquary	
+O	411715	Bough of Altek	
+O	422483	The Salvagematic 9000	
+O	422911	Sealed Barrel	
+O	422919	Tapped Shadowforge Keg	
+O	423569	Dropped Pouch	
+O	424074	Quadrangulation Beacon 001	
+O	424075	Quadrangulation Beacon 002	
+O	424076	Quadrangulation Beacon 003	
+O	424077	Quadrangulation Beacon 004	
+O	433596	Spellbound War Chest	
+O	439557	Nightmare Moss	
+O	439558	Cold Iron Deposit	
+O	439627	Dreamroot	
+O	439628	Fool's Gold Vein	
+O	439762	Star Lotus	
+O	439778	Starsilver Vein	
+O	439810	Moonroot	
+O	439815	Greater Moonstone Formation	
+O	441113	Ogre Magi Text	
+O	441114	Mysterious Box	
+O	441119	Unhatched Green Dragon Egg	
+O	441124	Dream-Touched Dragon Egg	
+O	441128	Vibrating Crate	
+O	441129	Azsharan Prophecy	
+O	441133	Star-Touched Dragon Egg	
+O	441140	Humming Box	
+O	441141	Dreampearl	
+O	441222	Grave Mound	
+O	441310	Moonglow Dragon Egg	
+O	441312	Mad Keeper's Notes	
+O	441314	Harpy Screed	
+O	441848	Small Burrow	
+O	441946	Shrine of the Moon	
+O	441947	Shrine of the Beast	
+O	441948	Shrine of the Warden	
+O	455812	Squire Cuthbert's Sword	
+O	457387	Dwarven Heirloom	
+O	461639	Orthas' Hammer	
+O	462233	Shimmering Molten Crag	
+O	561159	Stolen Enchanting Supplies	
+O	562103	Waterlogged Saw	
+O	562105	Waterlogged Axe	
+O	562106	Waterlogged Toolbox	
+O	562114	Mining Tools	
+O	563442	Kobold Tracks	
+O	578937	Ripe Stormapple	
+O	578959	Flutterfly Dust	
+O	613286	Raw Windstone	
+O	623295	Abandonded Belongings	
+O	629596	Snowdrift	
+O	630871	Bottle	
+O	630885	Bottle	
+O	660729	The Forsaken Ally	
+O	660730	Trollbane Conquests	
+O	660731	Field Accounts of Horde Razings	
+O	660732	Cycles of Morality	
+O	660739	Ritual Fire	
+O	664122	Gozwin's Mechanic's Log	
+O	668482	Ellena Starlight	
+O	671154	Dry Branch	
+O	672508	Flintfire's Shipment	
+O	673085	Tarantula Egg	
+O	673101	Tarantula Egg	
+O	673384	Water Barrel	
+O	673385	Grain Sack	
+O	673390	Weapon Rack	
+O	673399	Stolen Weapon	
+O	694772	Fishing Trap	
+O	694785	Junk Pile	
+O	694855	Overgrown Duskweed	
+O	694934	Fallen Log	
+O	695222	Coalbeard's Rifle	
+O	695223	Sunhammers's Rifle	
+O	695277	Stoneavil's Rifle	
+Q	82055	Darkmoon Dunes Deck								
+Q	82056	Darkmoon Nightmares Deck								
+Q	82057	Darkmoon Plagues Deck								
+Q	82058	Darkmoon Wilds Deck								
+Q	85798	Arms for the Field								
+Q	86760	Darkmoon Beast Deck								
+Q	86761	Darkmoon Warlords Deck								
+Q	86762	Darkmoon Elementals Deck								
+Q	86763	Darkmoon Portals Deck								
+N	4431	Darkfang Spider					
+N	17111	Captured Jaguar					
+N	17112	Captured Tarantula					
+N	17113	Captured Crocolisk					
+N	17115	Cursed Lost One					
+N	17235	Witch Doctor Mai'jin					
+N	17236	Tcha'kaz					
+N	17300	Gorgannon					
+N	17304	Overseer Gorthak					
+N	36156	Mutant Goblin					
+N	185335	Summoned Incubus					
+N	202699	Baron Aquanis					
+N	204645	Blackfathom Elite					
+N	208565	Altar of the Light					
+N	209678	Twilight Lord Kelris					
+N	212694	Hirzek					
+N	214129	Venture Co. Light Shredder					
+N	214519	Incinerator Gar'im				1433:778,866	
+N	215062	Supplicant					
+N	215095	Supplicant					
+N	215096	Supplicant					
+N	215098	Supplicant					
+N	215655	Illari Duskfeather					
+N	216659	Fallenroot Satyr					
+N	216660	Fallenroot Rogue					
+N	216661	Blackfathom Tide Priestess					
+N	216662	Blackfathom Oracle					
+N	217689	Ziri "The Wrench" Littlesprocket					
+N	217996	Aeonas					
+N	218537	Mekgineer Thermaplugg					
+N	218624	Atal'alarion					
+N	221169	Black Widow Broodmother					
+N	221171	Nightmare Runner					
+N	221172	Nightmare Weaver					
+N	221174	Deranged Ogre					
+N	221175	Demented Fire Weaver					
+N	221176	Nightterror Whelp					
+N	221200	Wyrmkin Terrorwalker					
+N	221204	Ylanthrius					
+N	221206	Vvarc' Zul					
+N	221207	Amokarok					
+N	221210	Kroll Mountainshade					
+N	221215	Alara Grovemender					
+N	221216	Elenora Marshwalker					
+N	221220	Dreamwarden Amalia					
+N	221221	Dreamwarden Dorilar					
+N	221222	Dreamwarden Thalinar					
+N	221259	Wyrmkin Nightstalker					
+N	221260	Terror Whelp					
+N	221261	Dreamfire Betrayer					
+N	221262	Dreamfire Hellcaller					
+N	221263	Vengeful Ancient					
+N	221265	Larsera					
+N	221266	Zalius					
+N	221267	Shredder 9000					
+N	221268	Doran Dreambough					
+N	221269	Maseara Autumnmoon					
+N	221270	Alyssian Windcaller					
+N	221271	Dreamwarden Ellodar					
+N	221272	Dreamwarden Mandoran					
+N	221273	Dreamwarden Lanaria					
+N	221325	Wyrmkin Starhunter					
+N	221326	Wrath Whelp					
+N	221328	Dreamwater Vicejaw					
+N	221330	Fallen Moonkin					
+N	221331	Florius					
+N	221333	Doomkin					
+N	221334	Ghamoo-Raja					
+N	221335	Elianar Shadowdrinker					
+N	221336	Serlina Starbright					
+N	221337	Veanna Cloudsleeper					
+N	221351	Dreamwarden Valori					
+N	221352	Dreamwarden Sanathel					
+N	221353	Dreamwarden Laninar					
+N	221367	Wyrmkin Berserker					
+N	221369	Frenzied Whelp					
+N	221370	Dreamspring Roguefeather					
+N	221371	Dreamspring Stormcaller					
+N	221375	Lost Daughter					
+N	221377	Vengeful Son					
+N	221389	Alondrius					
+N	221391	Slirena					
+N	221393	Tyrannikus					
+N	221395	Mellias Earthtender					
+N	221398	Nerene Brooksinger					
+N	221399	Jamniss Treemender					
+N	221401	Dreamwarden Sheldryn					
+N	221402	Dreamwarden Gorlas					
+N	221404	Dreamwarden Anadelle					
+N	221651	Ceruleos					
+N	221829	Kajind					
+N	221928	Hippogryph Avatar					
+N	221933	Moonkin Avatar					
+N	221935	Treant Avatar					
+N	221942	Morphaz					
+N	222198	Nightmare Amalgamation					
+N	222451	Itty Bitty Murloc					
+N	222522	Spirit of Agamaggan					
+N	222530	Rugged Traveler					
+N	222703	Whisperwing					
+N	222704	Sagefeather					
+N	222705	Blightbark					
+N	226923	Grimroot					
+N	227464	's Squire					
+N	227519	Fallen Knight					
+N	227985	Arkonos the Cursed					
+N	228620	Slack-Jawed Ghoul					
+N	228718	Firelands Invader					
+N	228720	Duke Searbrand					
+N	228723	Obsidian Reaver					
+N	228724	Obsidian Surger					
+N	228726	Flamebringer Elementalist					
+N	228727	Flamebringer Defender					
+N	228729	Duke Tectonis					
+N	228747	Flamebringer Stalker					
+N	232309	Highlord Demitrian					
+N	232900	Cursed Mage					
+N	232903	Shadowmage					
+N	232924	Doan Karhan					
+N	238431	Enthusiastic Wisp					
+N	239337	Lord Maxwell Tyrosus					
+N	241334	The Will of the Ashbringer					
+N	241834	Istaria					
+N	242174	Thisalee Crow					
+N	242499	Highlord Mograine					
+N	242501	The Will of the Ashbringer					
+N	242863	Hyjal Bonfire					
+N	248278	Croaky				1429:766,868	
+N	248299	Elmpaw				1429:776,378,818,842	
+N	248362	Shinyfinder Narf				1429:490,290	
+N	248464	Nimsy				1429:416,800	
+N	248474	Geosculptor Yip				1429:606,498	
+N	250483	Witherfang					
+N	250657	Rath'mael					
+N	250660	The Baron					
+N	250873	Juvenile Vuldren					
+N	250926	Scrawny Ursera				2521:404,270	
+N	250937	Ursera Scavenger				2521:376,260	
+N	251115	Urs'anah				2521:357,253	
+N	251143	Roiling Winds					
+N	251145	Al'Aketh Brute					
+N	251160	Al'Aketh Convert				2521:457,187,470,200	
+N	251169	Pesky Cirrusfly					
+N	251247	Shadowgale Manticore					
+N	251314	Skyhopper					
+N	251402	Cirrusfly Soldier				2521:475,277	
+N	251404	Cirrusfly Queen				2521:476,289	
+N	251448	Al'Aketh Neophyte					
+N	251707	Ornery Galestrider				2521:533,722	
+N	251918	Highlands Bandit				2521:494,360	
+N	252666	Commander Belguilos				2521:656,655	
+N	252802	Hungry Bandit				2521:483,826	
+N	252820	Bandit Highwayman				2521:476,761	
+N	253195	Al'Aketh Preacher					
+N	253283	Shriekling Matriarch				2521:523,656	
+N	253511	Al'Aketh Pillager					
+N	254588	Windsong Crawler				2521:641,615	
+N	254596	Al'Aketh Healer				2521:655,670	
+N	255534	"Badwind" Bennic				2521:507,340	
+N	256092	Shadowgale Shriekling					
+N	256935	Malduko Cloudcrush				2521:356,332	
+N	257532	Windshaper Novice Seer					
+N	257655	Deathguard Billmuth					
+N	258443	Ur'endra				2521:539,653	
+N	259013	Resaan Nimbuswalker				2521:570,295	
+N	260157	Elder Snow Leopard					
+N	260325	Shadetooth					
+N	260800	Thicket Lurker					
+N	260801	Thicket Hunter					
+N	261306	Faldrim Anvilmar					
+N	261319	Durgen Dirgehammer					
+N	262465	Daewyn Songblade					
+N	262681	Ardin Grassman					
+N	263389	Enraged Apparition					
+N	263390	Tormented Soul					
+N	265002	Ghostly Attendant					
+N	265701	Captain Truman					
+N	265944	William Pickman					
+N	268558	Chakuyak				1412:385,631	
+N	269075	Snow Leopard Prowler				1426:273,629	
+N	269185	Headsplitter					
+N	270201	Al'Aketh Brawler				2521:655,666	
+N	270693	Daggerfang				1432:628,514	
+N	271587	Frosthowl				1426:400,484	
+N	271732	Thicket Stalker					
+N	271898	Greater Tarantula					
+N	271988	Greater Tarantula					
+N	275044	Dragonmaw Warder					
+N	275045	Dragonmaw Saboteur					
+N	275046	Dragonmaw Thaumaturgist					
+N	275103	Deathguard Veteran					
+N	275491	Randal Emerson				1453:790,448,792,442	
+N	275767	Herak the Pillager				1412:605,597	
+N	276003	Minor Ice Elemental					
+N	276009	Avala				1426:581,421	
+N	276061	Decrepit Harvester					
+]==]
+D.curated = (D.curated or "") .. "\n" .. sourceRecoveryV2
