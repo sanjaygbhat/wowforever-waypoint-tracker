@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+- Fixes the "exceeded its time limit" Lua warning while the Settings panel is open (#13). Changing a Waypoint Tracker setting no longer makes the game search every setting and redraw the whole list, and changes made in the panel redraw it only once.
+
 ## 1.2.1
 
 - Route sharing & votes (beta) is now off by default, including when updating from 1.2.0. Enable it in Settings → Routes or with Enable (beta) in the Routes tab; your opt-in is remembered.

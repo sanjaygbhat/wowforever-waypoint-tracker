@@ -109,6 +109,22 @@ M.settings.WAYPOINTTRACKER_arrowScale:SetValue(1.5)
 check(ns.Get("arrowScale") == 1.5, "number proxy writes the addon setting")
 M.settings.WAYPOINTTRACKER_routeApply:SetValue("add")
 check(ns.Get("routeApply") == "add", "string proxy writes the addon setting")
+-- Issue #13: writes from the panel must not notify Blizzard again (the panel already redraws),
+-- keys the panel does not show must not trigger a search of every game setting, and notify
+-- goes through the stored setting object, not Settings.NotifyUpdate.
+M.settingsNotified = {}
+M.settings.WAYPOINTTRACKER_arrowShown:SetValue(false)
+check(ns.Get("arrowShown") == false and not M.settingsNotified.WAYPOINTTRACKER_arrowShown,
+    "panel writes do not notify the same setting again")
+local lookups, realGetSetting, realNotify = 0, Settings.GetSetting, Settings.NotifyUpdate
+Settings.GetSetting = function(...) lookups = lookups + 1; return realGetSetting(...) end
+Settings.NotifyUpdate = function(...) lookups = lookups + 1; return realNotify(...) end
+ns.Set("windowPos", { point = "CENTER", x = 1, y = 2 })
+ns.Set("minimapAngle", 90)
+check(lookups == 0 and next(M.settingsNotified) == nil, "unregistered keys skip the Blizzard settings search")
+ns.Set("arrowShown", true)
+check(lookups == 0 and M.settingsNotified.WAYPOINTTRACKER_arrowShown, "addon changes notify the stored setting object")
+Settings.GetSetting, Settings.NotifyUpdate = realGetSetting, realNotify
 
 local controls = {}
 for _, init in ipairs(M.settingsControls) do controls[init.setting.variable] = init end

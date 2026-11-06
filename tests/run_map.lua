@@ -106,11 +106,12 @@ if not noCallbacks and not incompleteRegistry then
     check(cvarCallbacks.worldMapShowPlayerCoords and cvarCallbacks.worldMapShowPlayerCoords.owner == ns,
         "player-coordinate callback registers with the addon namespace as owner")
     local setting = Settings.GetSetting("WAYPOINTTRACKER_worldCoords")
-    local api, notify = Settings, Settings.NotifyUpdate
+    -- Options notifies through the stored setting object, not Settings.NotifyUpdate (issue #13).
+    local api, notify = Settings, setting.NotifyUpdate
     local notified, displayed
-    Settings.NotifyUpdate = function(variable)
-        notified, displayed = variable, setting:GetValue()
-        notify(variable)
+    setting.NotifyUpdate = function(self)
+        notified, displayed = self.variable, self:GetValue()
+        notify(self)
     end
     local function NativeCoords(on)
         local beforeWrites, beforeChanges = writes, coordsChanges
@@ -141,13 +142,14 @@ if not noCallbacks and not incompleteRegistry then
     SetCVar("worldMapShowPlayerCoords", coordsOn and "0" or "1")
     check(ns.Get("worldCoords") == not coordsOn, "native coordinates sync without Settings")
     Settings = api
-    Settings.NotifyUpdate = nil
+    local apiNotify = Settings.NotifyUpdate
+    setting.NotifyUpdate, Settings.NotifyUpdate = nil, nil
     SetCVar("worldMapShowPlayerCoords", coordsOn and "1" or "0")
     check(ns.Get("worldCoords") == coordsOn, "native coordinates sync without NotifyUpdate")
-    Settings.NotifyUpdate = function() error("Settings refresh unavailable") end
+    setting.NotifyUpdate = function() error("Settings refresh unavailable") end
     local ok = pcall(SetCVar, "worldMapShowPlayerCoords", coordsOn and "0" or "1")
     check(ok and ns.Get("worldCoords") == not coordsOn, "a failed Settings refresh cannot break native coordinates")
-    Settings.NotifyUpdate = notify
+    setting.NotifyUpdate, Settings.NotifyUpdate = notify, apiNotify
     SetCVar("worldMapShowPlayerCoords", coordsOn and "1" or "0")
 end
 if delayed then
