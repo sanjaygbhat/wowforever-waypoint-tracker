@@ -1829,6 +1829,9 @@ Settings = {
         function setting:SetValueChangedCallback(fn)
             self.onValueChanged = fn
         end
+        function setting:NotifyUpdate()
+            M.settingsNotified[var] = true
+        end
         M.settings[var] = setting
         return setting
     end,

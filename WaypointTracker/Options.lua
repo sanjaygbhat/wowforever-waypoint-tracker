@@ -4,7 +4,8 @@ local L, W = ns.L, ns.Widgets
 local Options = {}
 ns.Options = Options
 Options.categories = {}
-local root, registered = nil, {}
+-- registered[key] is the Blizzard setting object; applying is the key the panel is writing right now.
+local root, registered, applying = nil, {}, nil
 local canvasRows, canvasLayout
 local PREFIX = "WAYPOINTTRACKER_"
 local CATEGORY_NAMES = {
@@ -113,10 +114,33 @@ function Native.ButtonRow(cat, name, text, fn, tooltip)
 end
 
 local function Proxy(cat, key, valueType, label, get, set)
-    local setting = Settings.RegisterProxySetting(cat, PREFIX .. key, valueType, label, ns.defaults[key], get, set)
-    registered[key] = true
+    -- The panel refreshes its own list after it writes a value, so mark the write; notifying
+    -- again from SETTING_CHANGED would repeat that refresh.
+    local setting = Settings.RegisterProxySetting(cat, PREFIX .. key, valueType, label, ns.defaults[key], get,
+        function(v)
+            local outer = applying
+            applying = key
+            local ok, err = pcall(set, v)
+            applying = outer
+            if not ok then error(err, 0) end
+        end)
+    registered[key] = setting or true
     return setting
 end
+
+-- Tell Blizzard a setting changed outside the panel. The setting object is kept, because
+-- Settings.NotifyUpdate(variable) searches every game setting and makes the panel redraw
+-- its list. Keys the panel does not show are skipped.
+local function Notify(key)
+    local setting = registered[key]
+    if not setting or key == applying then return end
+    if type(setting) == "table" and setting.NotifyUpdate then
+        pcall(setting.NotifyUpdate, setting)
+    elseif Settings and Settings.NotifyUpdate then
+        pcall(Settings.NotifyUpdate, PREFIX .. key)
+    end
+end
+Options.Notify = Notify
 
 function Native.Bool(cat, key, label, tooltip)
     local setting = Proxy(cat, key, Settings.VarType.Boolean, label,
@@ -413,12 +437,10 @@ ns.On("LOGIN", function()
 end)
 
 ns.On("SETTING_CHANGED", function(key)
-    if Settings and Settings.NotifyUpdate then
-        if key then
-            pcall(Settings.NotifyUpdate, PREFIX .. key)
-        else
-            for k in pairs(registered) do pcall(Settings.NotifyUpdate, PREFIX .. k) end
-        end
+    if key then
+        Notify(key)
+    else
+        for k in pairs(registered) do Notify(k) end
     end
     if canvasLayout then canvasLayout() end
 end)

@@ -275,9 +275,7 @@ end
 if CVarCallbackRegistry and CVarCallbackRegistry.RegisterCallback then
     CVarCallbackRegistry:RegisterCallback("worldMapShowPlayerCoords", function()
         SyncFromCVars()
-        if Settings and Settings.NotifyUpdate then
-            pcall(Settings.NotifyUpdate, "WAYPOINTTRACKER_worldCoords")
-        end
+        if ns.Options and ns.Options.Notify then ns.Options.Notify("worldCoords") end
     end, ns)
 end
 
