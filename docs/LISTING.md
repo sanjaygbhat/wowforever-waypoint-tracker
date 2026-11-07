@@ -30,11 +30,11 @@ Wago: Map & Minimap, Quests & Leveling.
 1. `docs/screenshots/01-arrow.jpg`: the arrow in the Barrens (keep first: the arrow in the game world)
 2. `docs/screenshots/02-map.jpg`: pins on the Silverpine Forest map
 3. `docs/images/feature-grid.png`: features at a glance
-4. `docs/images/colours.png`: the arrow's colours
-5. `docs/images/treasure-hunt.png`: treasure hunt, beta (illustration)
+4. `docs/images/treasure-hunt.png`: treasure hunt, beta (illustration)
+5. `docs/images/colours.png`: the arrow's colours
 6. `docs/images/banner.png`: banner
 
-The archived `docs/screenshots/03-window.jpg` shows the old window; remove it from the live gallery.
+The archived `docs/screenshots/03-window.jpg` shows the old window and was removed from the CurseForge gallery on 2026-11-07.
 
 A real gameplay clip should replace the illustrated `arrow-demo.gif` at the top of the description once recorded: search for an NPC in Find, double-click it, walk while the arrow turns from gold to green, then "You have arrived!" (5 to 10 seconds, about 960 px wide, no chat or other addons on screen). See [capture notes](screenshots/README.md) for future UI images.
 
