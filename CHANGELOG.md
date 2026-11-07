@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.3
+
+- Data update for the current WoW Forever client (build 1.60.1.70862, Nov 7). Find knows the 17 items added since launch, including the Endless elixirs and scrolls, Noggenfogger Elixir and the new copies of Thunderfury, Sulfuras, Benediction, Anathema and Rhok'delar, with names in all ten languages.
+- 10 new Forever quests are recognised; their names come from the game while you play.
+
 ## 1.2.2
 
 - Fixes the "exceeded its time limit" Lua warning while the Settings panel is open (#13). Changing a Waypoint Tracker setting no longer makes the game search every setting and redraw the whole list, and changes made in the panel redraw it only once.

@@ -12,7 +12,7 @@ What it takes from the client:
   * town names on the world map (AreaPOI)
 
 Usage:
-  python3 tools/build_forever.py [--build 1.60.1.70755] [--cache DIR]
+  python3 tools/build_forever.py [--build 1.60.1.70862] [--cache DIR]
 """
 import argparse
 import re
@@ -115,7 +115,7 @@ def pfquest_item_ids(path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--build", default="1.60.1.70755")
+    ap.add_argument("--build", default="1.60.1.70862")
     ap.add_argument("--cache", default=os.path.join(HERE, "fixtures", "client"))
     ap.add_argument("--classic", "--pfquest", dest="classic", default=os.environ.get("PFQUEST", ""),
                     help="checkout of the classic database source; items it knows are left to it")

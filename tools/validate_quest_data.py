@@ -360,7 +360,7 @@ def verify_client_source(a, blocks, cache, all_blocks):
     if not builds:
         raise ValueError("client cache lacks QuestPOIBlob-<build>-enUS.csv")
     # Installed build, when present; otherwise lexical latest cache build.
-    preferred = cache / "QuestPOIBlob-1.60.1.70755-enUS.csv"
+    preferred = cache / "QuestPOIBlob-1.60.1.70862-enUS.csv"
     build = (preferred if preferred.exists() else builds[-1]).name[len("QuestPOIBlob-"):-len("-enUS.csv")]
     def table(name):
         return csv_rows(cache / (name + "-" + build + "-enUS.csv"))
