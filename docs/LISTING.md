@@ -4,33 +4,39 @@ The short fields for each store page, kept here so they stay in step. The long d
 
 ## Name
 
+Store pages (CurseForge and Wago). Search matches names first, so the name carries the words players search for:
+
 ```text
-Waypoint Tracker
+Waypoint Tracker - Quest Arrow & NPC Finder (Forever)
 ```
+
+The in-game addon list, folders and API identifiers stay `Waypoint Tracker` / `WaypointTracker`.
 
 ## Summary (CurseForge and Wago)
 
 ```text
-A 3D waypoint arrow and quest, NPC and item finder for WoW Forever. /way coordinates, shareable map pins and TomTom-compatible waypoints.
+Find any quest, NPC, enemy or item and a 3D arrow walks you there. /way coordinates, map pins and TomTom-compatible waypoints for WoW Forever.
 ```
 
-Version 1.2.0 ships one window with Waypoints, Find and Routes tabs, Blizzard Settings, Edit Mode, and route maps and previews. Real routes (beta) adds travel guidance through passes and gates and by transport; keep it a supporting feature.
+Lead with Find and the arrow: one promise, in the words players search for (quest, NPC, item, arrow, /way, TomTom). Routes, Real routes (beta), Treasure hunt (beta) and sharing stay in the description's "Also included" section.
 
 ## Categories
 
-CurseForge: **Map & Minimap** (main), Quests & Leveling, Chat & Communication.
+CurseForge: **Map & Minimap** (main), Quests & Leveling. Chat & Communication was dropped: players browsing it want chat addons.
 Wago: Map & Minimap, Quests & Leveling.
 
 ## Gallery (available images)
 
-1. `docs/screenshots/01-arrow.jpg`: the arrow in the Barrens
-2. `docs/images/feature-grid.png`: features at a glance
-3. `docs/screenshots/02-map.jpg`: pins on the Silverpine Forest map
-4. `docs/images/treasure-hunt.png`: treasure hunt, beta (illustration)
-5. `docs/images/colours.png`: the arrow's colours
+1. `docs/screenshots/01-arrow.jpg`: the arrow in the Barrens (keep first: the arrow in the game world)
+2. `docs/screenshots/02-map.jpg`: pins on the Silverpine Forest map
+3. `docs/images/feature-grid.png`: features at a glance
+4. `docs/images/colours.png`: the arrow's colours
+5. `docs/images/treasure-hunt.png`: treasure hunt, beta (illustration)
 6. `docs/images/banner.png`: banner
 
-The archived `docs/screenshots/03-window.jpg` shows the old window and is excluded from this gallery. See [capture notes](screenshots/README.md) for future UI images.
+The archived `docs/screenshots/03-window.jpg` shows the old window; remove it from the live gallery.
+
+A real gameplay clip should replace the illustrated `arrow-demo.gif` at the top of the description once recorded: search for an NPC in Find, double-click it, walk while the arrow turns from gold to green, then "You have arrived!" (5 to 10 seconds, about 960 px wide, no chat or other addons on screen). See [capture notes](screenshots/README.md) for future UI images.
 
 ## Links
 
