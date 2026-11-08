@@ -9,6 +9,8 @@
 Type a name or `/way 42 65`, and a 3D arrow over your character points the way with the distance and time to arrive. It turns from gold to green as you close in and clears itself when you get there.
 
 - **Find anything by name:** quests, NPCs, enemies, objects and items, including WoW Forever's new zones and quests.
+- **One click to your quest:** click the quest icon in front of a quest in your objective tracker and the arrow points at its current objective, moving on as you progress.
+- **Nearest services in one click:** mailbox, innkeeper, flight master, repair, merchant, bank, auction house and more.
 - **The `/way` you already know:** coordinates from any guide just work, and addons with a "Send to TomTom" button send their waypoints to this arrow.
 - **Nothing to set up:** free, open source and in 9 languages.
 
@@ -20,7 +22,7 @@ Type a name or `/way 42 65`, and a 3D arrow over your character points the way w
 
 *Real in-game screenshot.*
 
-1. Type `/wp find hogger` (or any name), or `/way 42 65`.
+1. Type `/wp find hogger` (or any name), or `/way 42 65`. Or click the quest icon in front of a quest in your objective tracker.
 2. Double-click a result and follow the arrow.
 3. Arrive. It plays a sound and points to your next waypoint.
 
@@ -30,7 +32,7 @@ Open **Find** with `/wp` and search as you type; typos are fine.
 
 - **Quests** show who gives them, where the objectives are and where to hand in, with a button for each.
 - **Items** show what drops or sells them and which quests need them.
-- **Nearest** finds the closest mailbox, innkeeper, flight master, repair vendor, bank or auction house.
+- **Nearest** buttons take you to the closest mailbox, innkeeper, flight master, repair, merchant, bank, auction house, stable master, spirit healer, battlemaster or meeting stone, in one click. They are also in the minimap button's right-click menu.
 
 Find covers the classic world and WoW Forever's new content, and learns as you play: NPCs you pass, vendor stock, quest givers and loot. What you see in the game always wins.
 
@@ -42,8 +44,13 @@ Find covers the classic world and WoW Forever's new content, and learns as you p
 
 Quest guides, treasure maps and any addon with a "Send to TomTom" button send their waypoints to this arrow, with nothing to set up. If you run TomTom itself, Waypoint Tracker leaves `/way` to it and `/wp` does the same things.
 
+Addons that point their waypoint buttons at Waypoint Tracker:
+
+- [RecipeRadar](https://www.curseforge.com/wow/addons/reciperadar): missing profession recipes, with waypoints to the vendors and trainers that teach them.
+
 ## Also included
 
+- **Pin colour:** make the active waypoint's pin on the world map and minimap gold, green, pink, purple, red or white, so it stands out from quest ! and ? icons (**Settings → Maps**).
 - **Share a spot:** right-click a waypoint and choose **Share** to put a clickable map pin in chat. Friends don't need the addon.
 - **Routes:** ready-made and your own lists of stops, with a map preview.
 - **Real routes (beta):** the arrow guides you through passes and gates, and uses flights, boats and teleports when quicker. Off by default.
