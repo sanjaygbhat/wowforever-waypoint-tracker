@@ -708,9 +708,9 @@ fw.faction:Click()
 ns.Set("findTab", "all")
 
 -- nearest services
-PickMenu(fw.nearest, L.SERVICE_INNKEEPER)
+fw.nearest.innkeeper:Click()
 check(WP.GetActive().title == Name("units", FARLEY), "nearest innkeeper is Goldshire's (got " .. tostring(WP.GetActive().title) .. ")")
-PickMenu(fw.nearest, L.SERVICE_MAILBOX)
+fw.nearest.mailbox:Click()
 check(WP.GetActive().m == 37 and WP.GetActive().title ~= Name("units", FARLEY), "nearest mailbox")
 ns.Find.Toggle()
 check(not ns.Find.IsShown(), "Find tab closes")
@@ -818,9 +818,9 @@ ns.Set("findTab", "object")
 fw.search:Type("skyflower")
 M.Tick(0.3)
 check(fw.rows[1].entry and fw.rows[1].entry.id == 95001, "Objects tab finds the learned object")
-PickMenu(fw.nearest, L.SERVICE_REPAIR)
+fw.nearest.repair:Click()
 check(WP.GetActive().title == "Breezy Trader", "Nearest repair uses a learned vendor (got " .. tostring(WP.GetActive().title) .. ")")
-PickMenu(fw.nearest, L.SERVICE_MAILBOX)
+fw.nearest.mailbox:Click()
 check(WP.GetActive().m == 2521, "Nearest mailbox uses a learned mailbox")
 
 -- sharing and importing discoveries
@@ -1121,7 +1121,7 @@ ns.DB.ParseClient({
     pois = ("86574\tstart\t%d\t37\t%.1f\t%.1f\n86574\tobj0\t%d\t37\t%.1f\t%.1f"):format(cont, wx, wy, cont, wx - 300, wy),
 })
 M.player.inst, M.player.wx, M.player.wy = 0, -1200, -1200 -- Elwynn Forest 40, 60
-PickMenu(fw.nearest, L.SERVICE_FLIGHT)
+fw.nearest.flight:Click()
 check(WP.GetActive().title == "Testport, Elwynn" and near(WP.GetActive().x, 0.41, 0.001), "Nearest flight path uses the game's flight paths")
 
 -- while the first quest-name scan runs, Find says so

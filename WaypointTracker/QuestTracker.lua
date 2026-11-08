@@ -33,6 +33,31 @@ local function Track(block, module, mouseButton)
     if button then button.flashUntil = GetTime() + 0.45 end
 end
 
+-- Blizzard's quest icon in front of each tracked quest (the "..." or "?"
+-- POI button) super-tracks the quest. Selecting it also takes the arrow to
+-- the quest's current objective; deselecting it lets go of that quest.
+local poiHooked = {}
+local function POIClick(poi, mouseButton)
+    if not ns.Get("questClickTrack") or not PlainLeft(mouseButton) then return end
+    local id = type(poi.GetQuestID) == "function" and ns.Int(ns.Num(poi:GetQuestID()))
+    if not id then return end
+    local super = C_SuperTrack and C_SuperTrack.GetSuperTrackedQuestID
+        and ns.Int(ns.Num(C_SuperTrack.GetSuperTrackedQuestID()))
+    if super ~= id then
+        Follow.StopQuest(id)
+        return
+    end
+    if not Follow.TrackQuest(id) then ns.Print(L.QUEST_TRACK_NO_POSITION, true) end
+end
+
+local function HookPOI(block)
+    local poi = block.poiButton
+    if poi and not poiHooked[poi] and type(poi.HookScript) == "function" then
+        poiHooked[poi] = true
+        poi:HookScript("OnClick", ns.Safe(POIClick))
+    end
+end
+
 local function Valid(button)
     return ns.Get("questClickTrack") and button.block
         and bindings[button.block] == button and QuestID(button.block, button.module)
@@ -161,7 +186,10 @@ Refresh = function()
         end
     end
     for block in pairs(bindings) do if not seen[block] then Release(block) end end
-    for block, module in pairs(seen) do Attach(block, module) end
+    for block, module in pairs(seen) do
+        Attach(block, module)
+        HookPOI(block)
+    end
 end
 
 Schedule = function()

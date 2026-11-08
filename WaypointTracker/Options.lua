@@ -230,6 +230,9 @@ local function Populate(api, categories)
     api.Bool(cat, "followMapPins", L.FOLLOW_MAP_PINS, L.FOLLOW_MAP_PINS_DESC)
     api.Bool(cat, "followQuest", L.FOLLOW_QUEST, L.FOLLOW_QUEST_DESC)
     api.Bool(cat, "questClickTrack", L.QUEST_CLICK_TRACK, L.QUEST_CLICK_TRACK_DESC)
+    local pinColours = {}
+    for _, c in ipairs(ns.PIN_COLOURS) do pinColours[#pinColours + 1] = { value = c.key, text = L[c.label] } end
+    api.Choice(cat, "pinColour", L.PIN_COLOUR, pinColours, L.PIN_COLOUR_DESC)
     api.Header(cat, L.SETTINGS_MINIMAP_HEADER)
     api.Bool(cat, "minimapPins", L.MINIMAP_PINS, L.MINIMAP_PINS_DESC)
     api.Bool(cat, "minimapEdge", L.MINIMAP_EDGE, L.MINIMAP_EDGE_DESC)

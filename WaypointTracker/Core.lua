@@ -29,6 +29,7 @@ ns.defaults = {
     textPos = nil, -- where the text goes when it moves on its own
     colorMode = "distance", -- "distance" | "direction" | "single"
     singleColor = { r = 1.0, g = 0.82, b = 0.0 },
+    pinColour = "gold", -- active waypoint pin on the world map and minimap (ns.PIN_COLOURS)
     showTitle = true,
     showDistance = true,
     showETA = false,
@@ -512,3 +513,22 @@ BINDING_NAME_WAYPOINTTRACKER_ROUTE_NEXT = L.BINDING_ROUTE_NEXT
 BINDING_NAME_WAYPOINTTRACKER_ROUTE_RECORD_ADD = L.BINDING_ROUTE_RECORD_ADD
 BINDING_NAME_WAYPOINTTRACKER_TREASURE = L.BINDING_TREASURE
 BINDING_NAME_WAYPOINTTRACKER_TRAVEL = L.BINDING_TRAVEL
+
+-- Colours offered for the active waypoint's pin on the world map and
+-- minimap. Other waypoints keep their light blue.
+ns.PIN_COLOURS = {
+    { key = "gold", label = "PIN_COLOUR_GOLD", rgb = { 1.0, 0.82, 0.0 } },
+    { key = "green", label = "PIN_COLOUR_GREEN", rgb = { 0.25, 1.0, 0.3 } },
+    { key = "pink", label = "PIN_COLOUR_PINK", rgb = { 1.0, 0.35, 0.8 } },
+    { key = "purple", label = "PIN_COLOUR_PURPLE", rgb = { 0.72, 0.45, 1.0 } },
+    { key = "red", label = "PIN_COLOUR_RED", rgb = { 1.0, 0.25, 0.2 } },
+    { key = "white", label = "PIN_COLOUR_WHITE", rgb = { 1.0, 1.0, 1.0 } },
+}
+
+function ns.PinColour()
+    local want = ns.Get and ns.Get("pinColour")
+    for _, c in ipairs(ns.PIN_COLOURS) do
+        if c.key == want then return c.rgb[1], c.rgb[2], c.rgb[3] end
+    end
+    return 1.0, 0.82, 0.0
+end

@@ -132,7 +132,7 @@ local function Update()
                     -- the pin's tip marks the spot
                     pin:SetPoint("BOTTOM", Minimap, "CENTER", sx, sy)
                     if isActive then
-                        pin.icon:SetVertexColor(1, 0.82, 0)
+                        pin.icon:SetVertexColor(ns.PinColour())
                     else
                         pin.icon:SetVertexColor(0.55, 0.8, 1)
                     end
