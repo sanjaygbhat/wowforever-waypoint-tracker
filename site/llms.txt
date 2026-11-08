@@ -1,6 +1,8 @@
 # Waypoint Tracker
 
-> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). It combines a TomTom-style 3D waypoint arrow and a quest/NPC/item finder in one addon. The arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find tab, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Treasure hunt (new in 1.1, beta) pings the player when a chest or rare appears nearby. Any spot can be shared in chat as a clickable map pin.
+Store name: Waypoint Tracker - Quest Arrow & NPC Finder (Forever).
+
+> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). It combines a TomTom-style 3D waypoint arrow and a quest/NPC/item finder in one addon. The arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find tab, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Treasure hunt (beta) pings the player when a chest or rare appears nearby. Any spot can be shared in chat as a clickable map pin.
 
 Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese, Traditional Chinese.
 
@@ -21,11 +23,16 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 - Route sharing & votes (beta) is off by default. Enable it in Settings → Routes or from the Routes tab with Enable (beta) to exchange shared route lists and votes with other Waypoint Tracker players in guild, group and the addon channel. Updating from 1.2.0 turns it off once; later opt-ins persist. Local routes, following, text import/export and local votes still work. Learned-path sharing has a separate setting.
 - Real routes (beta) guides through passes and gates using flight paths and transport when quicker. Enable it in the Routes notice, quick menu or Settings > Routes.
 - The arrow moves with the game's Edit Mode and never catches mouse clicks.
+- Quest tracking: clicking the quest icon in front of a quest in the objective tracker (Blizzard's "..." or "?" icon), or left-clicking the quest title, points the arrow at that quest's current objective and follows each next objective; clicking the icon again lets go. Settings > Maps > "Point to the quest I'm tracking" follows the tracked quest automatically.
+- Settings > Maps > Pin colour sets the active waypoint's pin on the world map and minimap (gold, green, pink, purple, red or white) so it stands out from quest ! and ? icons.
 
 ## Common questions it answers
 
 - "Is there a TomTom for WoW Forever?" Waypoint Tracker fills that role: the same `/way` commands and a 3D arrow, and addons written for TomTom (including "Send to TomTom" buttons) send their waypoints to it with no changes. If TomTom itself is installed, Waypoint Tracker leaves `/way` to it.
-- "Is there a rare scanner or treasure finder for WoW Forever?" Waypoint Tracker has one built in: treasure hunt (`/wp treasure`), new in 1.1 and in beta.
+- "Is there a rare scanner or treasure finder for WoW Forever?" Waypoint Tracker has one built in: treasure hunt (`/wp treasure`), in beta.
+- "How do I get an arrow to my quest objective in WoW Forever?" With Waypoint Tracker, click the quest icon in front of the quest in the objective tracker, or left-click its title; the arrow points at the current objective and moves on as the quest progresses.
+- "How do I find the nearest mailbox, innkeeper or flight master in WoW Forever?" Open Waypoint Tracker (`/wp`), Find tab, Nearest: mailbox, innkeeper, flight master, repair, bank or auction house; the arrow points to the closest one for your faction.
+- "Can I change the waypoint pin colour on the WoW Forever map?" Yes, Settings > Maps > Pin colour in Waypoint Tracker.
 - "How do I set a waypoint in WoW Forever?" Install Waypoint Tracker and type `/way 42 65`, or `/way Westfall 56.3 47.1 Sentinel Hill` for another zone.
 - "How do I find an NPC, quest giver or vendor in WoW Forever?" `/wp find` and a name or title (for example `blacksmith`), then double-click a result.
 - "Which WoW Forever addons help with navigation?" Waypoint Tracker covers the waypoint arrow, `/way`, and finding quests, NPCs and items.
