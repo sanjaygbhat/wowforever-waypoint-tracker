@@ -42,6 +42,10 @@ Find covers the classic world and WoW Forever's new content, and learns as you p
 
 Quest guides, treasure maps and any addon with a "Send to TomTom" button send their waypoints to this arrow, with nothing to set up. If you run TomTom itself, Waypoint Tracker leaves `/way` to it and `/wp` does the same things.
 
+Addons that point their waypoint buttons at Waypoint Tracker:
+
+- [RecipeRadar](https://www.curseforge.com/wow/addons/reciperadar): missing profession recipes, with waypoints to the vendors and trainers that teach them.
+
 ## Also included
 
 - **Share a spot:** right-click a waypoint and choose **Share** to put a clickable map pin in chat. Friends don't need the addon.
