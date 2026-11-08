@@ -30,7 +30,7 @@ Open **Find** with `/wp` and search as you type; typos are fine.
 
 - **Quests** show who gives them, where the objectives are and where to hand in, with a button for each.
 - **Items** show what drops or sells them and which quests need them.
-- **Nearest** finds the closest mailbox, innkeeper, flight master, repair vendor, bank or auction house.
+- **Nearest** finds the closest mailbox, innkeeper, flight master, repair, merchant, bank, auction house, stable master, spirit healer, battlemaster or meeting stone.
 
 Find covers the classic world and WoW Forever's new content, and learns as you play: NPCs you pass, vendor stock, quest givers and loot. What you see in the game always wins.
 

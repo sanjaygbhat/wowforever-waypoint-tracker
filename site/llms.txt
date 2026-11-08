@@ -31,7 +31,7 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 - "Is there a TomTom for WoW Forever?" Waypoint Tracker fills that role: the same `/way` commands and a 3D arrow, and addons written for TomTom (including "Send to TomTom" buttons) send their waypoints to it with no changes. If TomTom itself is installed, Waypoint Tracker leaves `/way` to it.
 - "Is there a rare scanner or treasure finder for WoW Forever?" Waypoint Tracker has one built in: treasure hunt (`/wp treasure`), in beta.
 - "How do I get an arrow to my quest objective in WoW Forever?" With Waypoint Tracker, click the quest icon in front of the quest in the objective tracker, or left-click its title; the arrow points at the current objective and moves on as the quest progresses.
-- "How do I find the nearest mailbox, innkeeper or flight master in WoW Forever?" Open Waypoint Tracker (`/wp`), Find tab, Nearest: mailbox, innkeeper, flight master, repair, bank or auction house; the arrow points to the closest one for your faction.
+- "How do I find the nearest mailbox, innkeeper or flight master in WoW Forever?" Open Waypoint Tracker (`/wp`), Find tab, Nearest: mailbox, innkeeper, flight master, repair, merchant, bank, auction house, stable master, spirit healer, battlemaster or meeting stone; the arrow points to the closest one for your faction.
 - "Can I change the waypoint pin colour on the WoW Forever map?" Yes, Settings > Maps > Pin colour in Waypoint Tracker.
 - "How do I set a waypoint in WoW Forever?" Install Waypoint Tracker and type `/way 42 65`, or `/way Westfall 56.3 47.1 Sentinel Hill` for another zone.
 - "How do I find an NPC, quest giver or vendor in WoW Forever?" `/wp find` and a name or title (for example `blacksmith`), then double-click a result.
