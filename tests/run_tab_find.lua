@@ -121,7 +121,9 @@ local function choose(key, label)
     check(ns.Get("findTab") == key and item.isSelected(), "Kind chooses " .. key)
     check((bare and fw.kind.text:GetText() or fw.kind:GetText()) == L[label], "Kind label follows " .. key)
 end
-local function service(label) menuItem(fw.nearest, L[label], "button").fn() end
+local SERVICE_KEY = { SERVICE_MAILBOX = "mailbox", SERVICE_INNKEEPER = "innkeeper", SERVICE_FLIGHT = "flight",
+    SERVICE_REPAIR = "repair", SERVICE_BANKER = "banker", SERVICE_AUCTIONEER = "auctioneer" }
+local function service(label) fw.nearest[SERVICE_KEY[label]]:Click() end
 
 Find.Show("kobold")
 check(Window.IsShown() and Window.GetTab() == "find" and fw.search:GetText() == "kobold", "Show fills search and opens Find")

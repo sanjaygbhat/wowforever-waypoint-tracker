@@ -25,6 +25,19 @@ function QuickMenu.Build(root)
         if WaypointTracker_ClearActive then WaypointTracker_ClearActive() end
     end))
     if clear and clear.SetEnabled then clear:SetEnabled(WP.GetActive() ~= nil) end
+    -- Nearest mailbox, innkeeper, flight master...: a submenu where the menu
+    -- supports one, otherwise the entry opens Find, where the buttons are.
+    local Find = ns.Find
+    if Find and Find.SERVICES and Find.GoToNearest then
+        local near = root:CreateButton(L.NEAREST_MENU, ns.Safe(function()
+            if Find.Show then Find.Show() end
+        end))
+        if near and type(near.CreateButton) == "function" then
+            for _, s in ipairs(Find.SERVICES) do
+                near:CreateButton(L[s.label], ns.Safe(function() Find.GoToNearest(s.key) end))
+            end
+        end
+    end
     root:CreateDivider()
     root:CreateButton(L.OPEN_EDIT_MODE, ns.Safe(function()
         if ns.EditMode and ns.EditMode.Enter then

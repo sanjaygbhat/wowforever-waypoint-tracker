@@ -105,6 +105,14 @@ function Follow.TrackQuest(id)
     return wp
 end
 
+-- The quest you picked was deselected (its tracker icon clicked again).
+function Follow.StopQuest(id)
+    if id and clickedQuest == id then
+        ClearQuestWaypoint()
+        ns.Fire("QUEST_TRACKING_CHANGED")
+    end
+end
+
 function Follow.GetTrackedQuestID()
     return questWp and WP.IsValid(questWp) and WP.GetActive() == questWp and questID or nil
 end

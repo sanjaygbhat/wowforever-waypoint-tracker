@@ -4,7 +4,6 @@ local _, ns = ...
 local L, Geo, WP = ns.L, ns.Geo, ns.WP
 
 local TEMPLATE = "WaypointTrackerMapPinTemplate"
-local ACTIVE_COLOUR = { 1.0, 0.82, 0.0 }
 local OTHER_COLOUR = { 0.55, 0.80, 1.0 }
 
 -- The XML template points at this global; it is completed in Setup() once
@@ -36,9 +35,10 @@ end
 function PinMethods:OnAcquired(wp, x, y)
     self.wp = wp
     self:SetPosition(x, y)
-    local c = (wp == WP.GetActive()) and ACTIVE_COLOUR or OTHER_COLOUR
-    self.Icon:SetVertexColor(c[1], c[2], c[3])
-    self.Highlight:SetVertexColor(c[1], c[2], c[3])
+    local r, g, b = OTHER_COLOUR[1], OTHER_COLOUR[2], OTHER_COLOUR[3]
+    if wp == WP.GetActive() then r, g, b = ns.PinColour() end
+    self.Icon:SetVertexColor(r, g, b)
+    self.Highlight:SetVertexColor(r, g, b)
 end
 
 function PinMethods:OnMouseEnter()
@@ -290,7 +290,7 @@ end)
 ns.On("WAYPOINTS_CHANGED", RefreshPins)
 ns.On("ACTIVE_CHANGED", RefreshPins)
 ns.On("SETTING_CHANGED", function(key)
-    if key == "worldPins" or key == nil then
+    if key == "worldPins" or key == "pinColour" or key == nil then
         RefreshPins()
     end
     if key == "worldCoords" or key == nil then

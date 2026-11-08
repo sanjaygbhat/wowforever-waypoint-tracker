@@ -129,6 +129,19 @@ local function GoToNearest(entries, title)
     else
         Status(L.NO_LOCATION)
     end
+    return wp
+end
+
+Find.SERVICES = SERVICES
+
+-- The arrow to the closest mailbox, innkeeper, flight master, repair vendor,
+-- bank or auction house for your faction. Returns the waypoint.
+function Find.GoToNearest(service)
+    if not DB.Load() then
+        Status(L.DB_BROKEN)
+        return nil
+    end
+    return GoToNearest(DB.ServiceEntries(service))
 end
 
 -- Sets the arrow for an entry (a quest's next step, an item's source...).
@@ -487,20 +500,42 @@ local function Build(content)
         end,
     })
     kind:SetPoint("LEFT", searchBox, "RIGHT", 6, 0)
-    local nearest = Widgets.Dropdown(frame, 144, {
-        text = function() return L.NEAREST_MENU end,
-        menu = function(root)
-            for _, s in ipairs(SERVICES) do
-                root:CreateButton(L[s.label], ns.Safe(function()
-                    if not DB.Load() then Status(L.DB_BROKEN); return end
-                    GoToNearest(DB.ServiceEntries(s.key))
-                end))
-            end
-        end,
-    })
-    nearest:SetPoint("LEFT", kind, "RIGHT", 6, 0)
     Widgets.Tooltip(kind, L.TAB_ALL, L.FIND_KIND_DESC)
-    Widgets.Tooltip(nearest, L.NEAREST_MENU, L.NEAREST_DESC)
+
+    -- Nearest: one click per service, always visible (as before 1.2.0).
+    local nearLabel = Widgets.Label(frame, L.NEAREST, "GameFontNormal")
+    nearLabel:SetPoint("TOPLEFT", 6, -72)
+    local nearest = {}
+    local function LayoutNearest()
+        local width = ns.Num(frame:GetWidth()) or 0
+        if width < 300 then width = 618 end
+        local labelWidth = ns.Num(nearLabel:GetStringWidth()) or 60
+        local each = math.floor((width - 8 - labelWidth - 10 - (#SERVICES - 1) * 4) / #SERVICES)
+        each = math.max(48, math.min(110, each))
+        for i, b in ipairs(nearest) do
+            b:SetWidth(each)
+            b:ClearAllPoints()
+            if i == 1 then
+                b:SetPoint("LEFT", nearLabel, "RIGHT", 10, 0)
+            else
+                b:SetPoint("LEFT", nearest[i - 1], "RIGHT", 4, 0)
+            end
+        end
+    end
+    for _, s in ipairs(SERVICES) do
+        local b = Widgets.Button(frame, L[s.label], 80, 22)
+        if GameFontNormalSmall and b.SetNormalFontObject then
+            b:SetNormalFontObject(GameFontNormalSmall)
+            b:SetHighlightFontObject(GameFontHighlightSmall)
+        end
+        b.service = s.key
+        b:SetScript("OnClick", ns.Safe(function() Find.GoToNearest(s.key) end))
+        Widgets.Tooltip(b, L[s.label], L.NEAREST_DESC)
+        nearest[#nearest + 1] = b
+        nearest[s.key] = b
+    end
+    LayoutNearest()
+    if frame.HookScript then frame:HookScript("OnSizeChanged", ns.Safe(LayoutNearest)) end
 
     local faction = Widgets.Check(frame, L.MY_FACTION_ONLY, "findFaction", L.MY_FACTION_ONLY_DESC, 180)
     faction:SetPoint("TOPLEFT", 2, -34)
@@ -519,7 +554,7 @@ local function Build(content)
     Widgets.Tooltip(discoveries, L.DISCOVERIES_MENU, L.SHARE_DISCOVERIES_DESC)
 
     local listBg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    listBg:SetPoint("TOPLEFT", 4, -66)
+    listBg:SetPoint("TOPLEFT", 4, -92)
     listBg:SetPoint("BOTTOMLEFT", 4, 34)
     listBg:SetWidth(LIST_W)
     listBg:SetBackdrop(Widgets.BACKDROP_BOX)

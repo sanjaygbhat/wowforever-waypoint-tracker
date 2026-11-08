@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.4
+
+- Click the quest icon in front of a quest in your objective tracker (the "..." or "?") and the arrow points at that quest's current objective, then moves on to the next one as you progress. Click the icon again to let go. On by default; **Settings → Maps → Track quests with a click** turns it off.
+- Nearest is back as one-click buttons in the Find tab: Mailbox, Innkeeper, Flight Master, Repair, Bank and Auction House. They are also in the quick menu (right-click the minimap button) under **Nearest...**.
+- New **Settings → Maps → Pin colour**: gold, green, pink, purple, red or white for the active waypoint's pin on the world map and minimap, so it stands out from quest ! and ? icons.
+- New regression tests cover the quest icon, all six Nearest services for both factions, pin colour, every key binding, `/cway` and the arrival settings.
+
 ## 1.2.3
 
 - Data update for the current WoW Forever client (build 1.60.1.70862, Nov 7). Find knows the 17 items added since launch, including the Endless elixirs and scrolls, Noggenfogger Elixir and the new copies of Thunderfury, Sulfuras, Benediction, Anathema and Rhok'delar, with names in all ten languages.

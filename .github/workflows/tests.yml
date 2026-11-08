@@ -46,6 +46,15 @@ jobs:
           lua5.1 tests/run_map.lua --delayed
           lua5.1 tests/run_map.lua --coords-on
           lua5.1 tests/run_map.lua --global-cvars
+          lua5.1 tests/run_map.lua --no-cvar-callbacks
+          lua5.1 tests/run_map.lua --incomplete-cvar-registry
+      - name: Scenario modes the plain loop does not reach
+        run: |
+          for m in abandon ghost ghost_arrival ghost_arrival_selection; do
+            echo "== run_follow_regressions $m"
+            lua5.1 tests/run_follow_regressions.lua "$m"
+          done
+          lua5.1 tests/run_travel_preference.lua --bare
       - name: All Lua check gates
         run: |
           for f in tests/check_*.lua; do
