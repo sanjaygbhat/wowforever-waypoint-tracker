@@ -3,9 +3,9 @@
 ## 1.2.4
 
 - Click the quest icon in front of a quest in your objective tracker (the "..." or "?") and the arrow points at that quest's current objective, then moves on to the next one as you progress. Click the icon again to let go. On by default; **Settings → Maps → Track quests with a click** turns it off.
-- Nearest is back as one-click buttons in the Find tab: Mailbox, Innkeeper, Flight Master, Repair, Bank and Auction House. They are also in the quick menu (right-click the minimap button) under **Nearest...**.
+- Nearest is back as one-click buttons in the Find tab, now with more places: Mailbox, Innkeeper, Flight Master, Repair, Merchant, Bank, Auction House, Stable Master, Spirit Healer, Battlemaster and Meeting Stone. They are also in the quick menu (right-click the minimap button) under **Nearest...**.
 - New **Settings → Maps → Pin colour**: gold, green, pink, purple, red or white for the active waypoint's pin on the world map and minimap, so it stands out from quest ! and ? icons.
-- New regression tests cover the quest icon, all six Nearest services for both factions, pin colour, every key binding, `/cway` and the arrival settings.
+- New regression tests cover the quest icon, every Nearest service for both factions, pin colour, every key binding, `/cway` and the arrival settings.
 
 ## 1.2.3
 

@@ -37,9 +37,15 @@ local SERVICES = {
     { key = "innkeeper", label = "SERVICE_INNKEEPER" },
     { key = "flight", label = "SERVICE_FLIGHT" },
     { key = "repair", label = "SERVICE_REPAIR" },
+    { key = "vendor", label = "SERVICE_VENDOR" },
     { key = "banker", label = "SERVICE_BANKER" },
     { key = "auctioneer", label = "SERVICE_AUCTIONEER" },
+    { key = "stablemaster", label = "SERVICE_STABLEMASTER" },
+    { key = "spirithealer", label = "SERVICE_SPIRITHEALER" },
+    { key = "battlemaster", label = "SERVICE_BATTLEMASTER" },
+    { key = "meetingstone", label = "SERVICE_MEETINGSTONE" },
 }
+local NEAREST_PER_ROW = 6
 
 local KIND_COLOUR = {
     quest = { 1, 0.82, 0 },
@@ -510,13 +516,15 @@ local function Build(content)
         local width = ns.Num(frame:GetWidth()) or 0
         if width < 300 then width = 618 end
         local labelWidth = ns.Num(nearLabel:GetStringWidth()) or 60
-        local each = math.floor((width - 8 - labelWidth - 10 - (#SERVICES - 1) * 4) / #SERVICES)
+        local each = math.floor((width - 8 - labelWidth - 10 - (NEAREST_PER_ROW - 1) * 4) / NEAREST_PER_ROW)
         each = math.max(48, math.min(110, each))
         for i, b in ipairs(nearest) do
             b:SetWidth(each)
             b:ClearAllPoints()
             if i == 1 then
                 b:SetPoint("LEFT", nearLabel, "RIGHT", 10, 0)
+            elseif (i - 1) % NEAREST_PER_ROW == 0 then
+                b:SetPoint("TOPLEFT", nearest[i - NEAREST_PER_ROW], "BOTTOMLEFT", 0, -4)
             else
                 b:SetPoint("LEFT", nearest[i - 1], "RIGHT", 4, 0)
             end
@@ -554,7 +562,7 @@ local function Build(content)
     Widgets.Tooltip(discoveries, L.DISCOVERIES_MENU, L.SHARE_DISCOVERIES_DESC)
 
     local listBg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    listBg:SetPoint("TOPLEFT", 4, -92)
+    listBg:SetPoint("TOPLEFT", 4, -118)
     listBg:SetPoint("BOTTOMLEFT", 4, 34)
     listBg:SetWidth(LIST_W)
     listBg:SetBackdrop(Widgets.BACKDROP_BOX)

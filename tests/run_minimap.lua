@@ -25,7 +25,7 @@ if arg[1] == "--bare" then
     ns.WP.ClearAll(true)
     local button = WaypointTrackerMinimapButton
     button:GetScript("OnClick")(button, "RightButton")
-    check(ns.WP.Count() == 1 and ns.Widgets.lastMenu and #ns.Widgets.lastMenu.items == 11, "bare minimap right-click falls back to Add here")
+    check(ns.WP.Count() == 1 and ns.Widgets.lastMenu and #ns.Widgets.lastMenu.items == 12, "bare minimap right-click falls back to Add here")
     ns.WP.ClearAll(true)
     WaypointTracker_OnAddonCompartmentClick("WaypointTracker", "RightButton")
     check(ns.WP.Count() == 1, "bare compartment right-click falls back to Add here")
@@ -106,9 +106,9 @@ for _, item in ipairs(root.items) do
     if item.text then items[item.text] = item end
 end
 check(counts.checkbox == 3, "menu has three checkboxes")
-check(counts.button == 5 and items[L.BINDING_HERE] and items[L.BINDING_SHARE] and items[L.BINDING_CLEAR], "menu has three waypoint actions")
+check(counts.button == 6 and items[L.BINDING_HERE] and items[L.BINDING_SHARE] and items[L.BINDING_CLEAR] and items[L.NEAREST_MENU], "menu has three waypoint actions and Nearest")
 check(items[L.OPEN_EDIT_MODE] and items[L.SETTINGS], "menu has Edit Mode and Settings")
-check(counts.divider == 2 and #root.items == 11, "menu groups separated by two dividers")
+check(counts.divider == 2 and #root.items == 12, "menu groups separated by two dividers")
 check(items[L.BINDING_CLEAR].enabled == true, "clear active is enabled with an active waypoint")
 
 local changes = {}
@@ -270,7 +270,7 @@ for _, unavailable in ipairs({ "absent", "missing method", "throwing method" }) 
     end
     WP.ClearAll(true)
     click("RightButton")
-    check(WP.Count() == 1 and ns.Widgets.lastMenu and #ns.Widgets.lastMenu.items == 11, "minimap menu fallback: " .. unavailable)
+    check(WP.Count() == 1 and ns.Widgets.lastMenu and #ns.Widgets.lastMenu.items == 12, "minimap menu fallback: " .. unavailable)
     WP.ClearAll(true)
     WaypointTracker_OnAddonCompartmentClick("WaypointTracker", "RightButton")
     check(WP.Count() == 1, "compartment menu fallback: " .. unavailable)

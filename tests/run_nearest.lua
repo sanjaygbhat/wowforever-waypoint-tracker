@@ -1,8 +1,9 @@
 -- Regression: Nearest mailbox / innkeeper / flight master / repair / bank /
--- auction house. 1.1.1 had six one-click buttons; 1.2.0 hid them in a
--- dropdown and players lost the feature. This drives the real entry points
+-- auction house / merchant / stable master / spirit healer / battlemaster /
+-- meeting stone. 1.1.1 had one-click buttons; 1.2.0 hid them in a dropdown
+-- and players lost the feature. This drives the real entry points
 -- (the visible Find buttons and the quick menu) against the shipped database,
--- for both factions, for all six services.
+-- for both factions, for every service.
 -- Run from repo root: lua5.1 tests/run_nearest.lua
 package.path = './tests/?.lua;' .. package.path
 local M = require('wowmock')
@@ -28,16 +29,19 @@ M.noDataAddon = false
 
 local SERVICES = {
     { 'mailbox', 'SERVICE_MAILBOX' }, { 'innkeeper', 'SERVICE_INNKEEPER' }, { 'flight', 'SERVICE_FLIGHT' },
-    { 'repair', 'SERVICE_REPAIR' }, { 'banker', 'SERVICE_BANKER' }, { 'auctioneer', 'SERVICE_AUCTIONEER' },
+    { 'repair', 'SERVICE_REPAIR' }, { 'vendor', 'SERVICE_VENDOR' }, { 'banker', 'SERVICE_BANKER' },
+    { 'auctioneer', 'SERVICE_AUCTIONEER' }, { 'stablemaster', 'SERVICE_STABLEMASTER' },
+    { 'spirithealer', 'SERVICE_SPIRITHEALER' }, { 'battlemaster', 'SERVICE_BATTLEMASTER' },
+    { 'meetingstone', 'SERVICE_MEETINGSTONE' },
 }
-check(Find.SERVICES and #Find.SERVICES == 6, 'Find offers six Nearest services')
+check(Find.SERVICES and #Find.SERVICES == #SERVICES, 'Find offers all ' .. #SERVICES .. ' Nearest services (got ' .. tostring(Find.SERVICES and #Find.SERVICES) .. ')')
 
 -- 1. The buttons are on screen in the Find tab, one per service, in a row.
 Find.Show()
 M.Tick(0.3)
 local fw = Find.widgets
 check(Window.IsShown() and Window.GetTab() == 'find', 'Find tab is open')
-local right = 0
+local right, rowRight = 0, {}
 for i, s in ipairs(SERVICES) do
     local b = fw.nearest and fw.nearest[s[1]]
     check(b ~= nil, 'Nearest button exists: ' .. s[1])
@@ -47,11 +51,18 @@ for i, s in ipairs(SERVICES) do
         check(fw.nearest[i] == b, 'Nearest buttons keep the 1.1.1 order: ' .. s[1])
         local w = b:GetWidth() or 0
         check(w >= 48, 'Nearest button is wide enough to read: ' .. s[1] .. ' (' .. w .. ')')
-        right = right + w + 4
+        local row = math.floor((i - 1) / 6) + 1
+        rowRight[row] = (rowRight[row] or 0) + w + 4
+        if i > 6 then
+            local p, rel = b:GetPoint()
+            check(rel == fw.nearest[i - 1] or rel == fw.nearest[i - 6], 'second-row button is anchored in the grid: ' .. s[1])
+        end
     end
 end
 local frameWidth = (fw.nearest[1] and fw.nearest[1]:GetParent():GetWidth()) or 0
-check(frameWidth == 0 or right <= frameWidth, 'the six buttons fit in the Find tab (' .. right .. ' of ' .. frameWidth .. ')')
+for row, used in pairs(rowRight) do
+    check(frameWidth == 0 or used <= frameWidth, 'Nearest row ' .. row .. ' fits in the Find tab (' .. used .. ' of ' .. frameWidth .. ')')
+end
 
 -- 2. Each button sets the arrow on the nearest entry of that service.
 local function OfService(key, wp)
@@ -113,7 +124,7 @@ for _, item in ipairs(root and root.items or {}) do
 end
 check(nearItem ~= nil, 'quick menu has Nearest...')
 local children = nearItem and nearItem.items or {}
-check(#children == 6, 'quick menu Nearest lists six services (got ' .. #children .. ')')
+check(#children == #SERVICES, 'quick menu Nearest lists every service (got ' .. #children .. ')')
 for i, s in ipairs(SERVICES) do
     local child = children[i]
     check(child and child.text == L[s[2]], 'quick menu Nearest item ' .. i .. ' is ' .. L[s[2]])
