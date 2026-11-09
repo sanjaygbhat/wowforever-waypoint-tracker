@@ -1968,7 +1968,8 @@ for k, n in pairs(M.unknownMethods) do
     unknown[#unknown + 1] = k
 end
 table.sort(unknown)
-print("Frame methods used but not mocked (check they exist in WoW): " .. table.concat(unknown, ", "))
+-- the strict mock answers nil for these, like the client; they are feature probes
+print("Widget keys probed but absent for their type (Type:Key): " .. table.concat(unknown, ", "))
 -- Run the runtime audit in isolation: its mocks and exits must not affect this
 -- play-through. CI and release checks both invoke this standard entrypoint.
 local function shellQuote(s)

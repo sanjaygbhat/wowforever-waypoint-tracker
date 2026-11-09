@@ -3,31 +3,6 @@
 package.path = "./tests/?.lua;" .. package.path
 local M = require("wowmock")
 
--- Missing mock features stay local until P13 integrates them.
-local createFrame = CreateFrame
-local probe = CreateFrame("Frame")
-local needsHeight = probe:GetStringHeight() == nil
-local needsEnabled = probe:IsEnabled() == nil
-function CreateFrame(...)
-    local frame = createFrame(...)
-    if needsHeight then
-        local createFontString = frame.CreateFontString
-        function frame:CreateFontString(...)
-            local fs = createFontString(self, ...)
-            if not rawget(fs, "GetStringHeight") then
-                function fs:GetStringHeight()
-                    return math.max(1, math.ceil(self:GetStringWidth() / math.max(1, self:GetWidth()))) * 14
-                end
-            end
-            return fs
-        end
-    end
-    if needsEnabled then
-        function frame:SetEnabled(on) self.enabled = on and true or false end
-        function frame:IsEnabled() return self.enabled ~= false end
-    end
-    return frame
-end
 if not ColorPickerFrame then
     ColorPickerFrame = {
         SetupColorPickerAndShow = function(self, info) self.info = info end,

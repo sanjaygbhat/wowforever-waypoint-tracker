@@ -2,30 +2,20 @@
 package.path = "./tests/?.lua;" .. package.path
 local M = require("wowmock")
 
--- The shared mock doesn't yet model font height or ScrollFrame offsets.
+-- Count focus requests. Wrap only widgets that have SetFocus in the client
+-- (edit boxes), so other widget types stay strict.
 local probe = M.NewObject("Frame", nil, UIParent)
-local shims = {}
-if not probe:GetVerticalScroll() then
-    shims.GetVerticalScroll = function(self) return self._verticalScroll or 0 end
-    shims.SetVerticalScroll = function(self, value) self._verticalScroll = value end
-end
-if not probe:GetStringHeight() then
-    shims.GetStringHeight = function(self)
-        local text = (self:GetText() or ""):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
-        local lines, width = 0, math.max(1, self:GetWidth())
-        for line in (text .. "\n"):gmatch("([^\n]*)\n") do
-            lines = lines + math.max(1, math.ceil(#line * 6 / width))
-        end
-        return lines * 12
-    end
-end
 local mt, previousIndex = getmetatable(probe), getmetatable(probe).__index
 local focusCalls = 0
-shims.SetFocus = function(self)
+local function countedFocus(self)
     focusCalls = focusCalls + 1
     previousIndex(self, "SetFocus")(self)
 end
-mt.__index = function(self, key) return shims[key] or previousIndex(self, key) end
+mt.__index = function(self, key)
+    local v = previousIndex(self, key)
+    if key == "SetFocus" and v then return countedFocus end
+    return v
+end
 
 -- Some mock versions expose GetOwner but leave SetOwner as a recorded no-op.
 local nativeTooltipOwner = GameTooltip.SetOwner

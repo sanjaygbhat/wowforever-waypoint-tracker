@@ -1,14 +1,16 @@
 -- A small fake of the WoW API, just enough to load and exercise the addon
 -- outside the game with plain Lua 5.1. Any frame method we don't implement
--- is recorded so it can be checked against the real API by hand.
+-- is nil, as in the client (see the strict widget methods note below).
 -- Frames model enabled state, multiline text height and vertical scroll offsets.
 -- Lines record _start/_end anchors and _thickness; regions record _drawLayer,
 -- _rotation and _colorTexture; frames record _clipsChildren.
 -- Settings initializers support parent and shown predicates.
 -- UI test state:
---   frames, unknownMethods: created objects and calls to unimplemented methods.
---   menus, lastMenu: menu history and the latest recording root (items contain
---     kind, text/title, fn, isSelected and setSelected; elements support submenus).
+--   frames, unknownMethods: created objects and "Type:Key" lookups that found
+--     no client method for that widget type (feature probes and failed calls).
+--   menus, lastMenu: opened menus and the latest generated root (items contain
+--     kind, text/title, fn, isSelected, setSelected, enabled and tooltip;
+--     elements support submenus; open menus have owner and open = true).
 --   lastPopup, lastPopupArgs: last popup ID and { a1, a2, data }.
 --   popups: visible dialog frames by ID; autoAcceptPopup/autoAltPopup/
 --     autoCancelPopup select a callback automatically, in that order.
@@ -43,7 +45,9 @@
 --   questDialog: id/title/text; loot: slot source GUIDs; lootItems: id/name by slot;
 --     canRepair: merchant repair support; merchant: vendor id/name rows.
 --   group: raid/party/guild flags; chatOpen/chatText: chat edit-box state.
--- Helpers: NewObject, FireEvent, Tick, ShowObjectTooltip, TypeSlash and LoadAddon.
+-- Helpers: NewObject, FireEvent, Tick, ShowObjectTooltip, TypeSlash, LoadAddon,
+--   ClickButton/OpenMenu/FindMenuItem/PickMenuItem (the mouse click path) and
+--   ExplainError. hooksecurefunc raises when its target is not a function.
 local M = {}
 
 M.unknownMethods = {}
@@ -108,7 +112,7 @@ end
 
 function geterrorhandler()
     return function(err)
-        table.insert(M.errors, err)
+        table.insert(M.errors, M.ExplainError(err))
     end
 end
 
@@ -116,33 +120,147 @@ end
 -- Frames
 -- ---------------------------------------------------------------------------
 local Frame = {}
--- template children and methods that plain frames don't have, so code can
--- feature-detect them
-local optionalWindowFields = {
-    TitleText = true, TitleContainer = true, CloseButton = true,
-    Inset = true, PortraitContainer = true,
-    SetTitle = true, SetPortraitToAsset = true,
+-- Strict widget methods. In the client a widget only has the methods of its
+-- own type (and of the types it inherits from); indexing anything else gives
+-- nil, so `if f.Method then` feature detection works and calling a missing
+-- method raises "attempt to call method 'X' (a nil value)". The mock does the
+-- same: a method in the shared Frame table is visible on an object only when
+-- the object's widget type has it in the client. There is no catch-all any
+-- more; an unknown capitalised key is recorded in M.unknownMethods
+-- ("Type:Method" -> count) and the error handler names the widget type when
+-- such a call fails (see M.ExplainError).
+--
+-- Evidence for every family below: the client's generated widget API
+-- documentation, Gethe/wow-ui-source branch `forever`,
+-- Interface/AddOns/Blizzard_APIDocumentationGenerated/Simple<Family>APIDocumentation.lua
+-- (SimpleObject, SimpleFrameScriptObject, SimpleScriptRegion,
+-- SimpleScriptRegionResizing, SimpleRegion, SimpleAnimatableObject,
+-- SimpleTextureBase, SimpleLine, SimpleFont, SimpleFontString, SimpleFrame,
+-- SimpleButton, SimpleCheckbox, SimpleEditBox, SimpleScrollFrame, SimpleSlider,
+-- SimpleAnimGroup). GameTooltip methods are not in the generated docs; they are
+-- used on the same branch by Blizzard_GameTooltip/Mainline/GameTooltip.lua
+-- (SetOwner, GetOwner, AddLine, NumLines) and
+-- Blizzard_Minimap/Mainline/GameTime.lua (IsOwned).
+-- tests/run_mock_selftest.lua checks that every mocked method belongs to a family.
+local FAMILY_METHODS = {
+    Object = "GetParent GetName GetObjectType IsObjectType",
+    ScriptRegion = "Show Hide SetShown IsShown IsVisible SetScript GetScript HookScript EnableMouse"
+        .. " IsMouseEnabled EnableMouseWheel IsMouseWheelEnabled IsMouseOver GetCenter GetWidth GetHeight"
+        .. " GetSize SetParent SetPassThroughButtons SetMouseClickEnabled SetMouseMotionEnabled",
+    Resizing = "SetPoint ClearAllPoints GetPoint GetNumPoints SetAllPoints SetSize SetWidth SetHeight",
+    Region = "SetAlpha GetAlpha SetScale GetScale GetEffectiveScale SetDrawLayer GetDrawLayer"
+        .. " SetVertexColor GetVertexColor",
+    Animatable = "CreateAnimationGroup",
+    TextureBase = "SetTexture GetTexture SetTexCoord GetTexCoord SetColorTexture SetRotation GetRotation"
+        .. " SetBlendMode GetBlendMode",
+    Line = "SetStartPoint SetEndPoint SetThickness GetThickness ClearAllPoints",
+    Font = "SetFont GetFont SetFontObject GetFontObject SetJustifyH GetJustifyH SetJustifyV GetJustifyV"
+        .. " SetTextColor GetTextColor SetSpacing GetSpacing",
+    FontString = "SetText GetText GetStringWidth GetStringHeight SetWordWrap CanWordWrap SetRotation GetRotation",
+    Frame = "SetID GetID GetFrameLevel SetFrameLevel SetFrameStrata GetFrameStrata CreateTexture"
+        .. " CreateFontString CreateLine SetClipsChildren DoesClipChildren SetHitRectInsets RegisterEvent"
+        .. " UnregisterEvent IsEventRegistered SetMovable IsMovable SetClampedToScreen IsClampedToScreen"
+        .. " RegisterForDrag StartMoving StopMovingOrSizing SetAlpha GetAlpha SetScale GetScale"
+        .. " GetEffectiveScale LockHighlight UnlockHighlight",
+    Button = "Click SetText GetText SetFontString GetFontString SetEnabled IsEnabled Enable Disable"
+        .. " RegisterForClicks SetMotionScriptsWhileDisabled GetMotionScriptsWhileDisabled SetHighlightTexture"
+        .. " GetHighlightTexture SetNormalTexture SetPushedTexture",
+    Checkbox = "SetChecked GetChecked",
+    EditBox = "SetText GetText SetFocus ClearFocus HasFocus SetEnabled IsEnabled Enable Disable SetMultiLine"
+        .. " IsMultiLine SetNumeric IsNumeric SetMaxLetters GetMaxLetters SetAutoFocus IsAutoFocus"
+        .. " HighlightText SetCursorPosition GetCursorPosition",
+    ScrollFrame = "SetScrollChild GetScrollChild GetVerticalScroll SetVerticalScroll UpdateScrollChildRect",
+    Slider = "SetMinMaxValues GetMinMaxValues SetValue GetValue SetValueStep GetValueStep SetObeyStepOnDrag"
+        .. " GetObeyStepOnDrag SetOrientation GetOrientation SetThumbTexture SetEnabled IsEnabled Enable Disable",
+    GameTooltip = "SetOwner GetOwner IsOwned AddLine SetText NumLines",
+    AnimationGroup = "SetScript GetScript HookScript",
 }
-
+local FRAME = { "Object", "ScriptRegion", "Resizing", "Animatable", "Frame" }
+local function Families(base, ...)
+    local out = {}
+    for _, f in ipairs(base) do out[#out + 1] = f end
+    for i = 1, select("#", ...) do out[#out + 1] = select(i, ...) end
+    return out
+end
+local BUTTON = Families(FRAME, "Button")
+-- widget type -> method families, following the client's inheritance
+local KIND_FAMILIES = {
+    Frame = FRAME,
+    Button = BUTTON,
+    CheckButton = Families(BUTTON, "Checkbox"),
+    -- the DropdownButton intrinsic adds DropdownButtonMixin per object
+    DropdownButton = BUTTON,
+    EditBox = Families(FRAME, "Font", "EditBox"),
+    ScrollFrame = Families(FRAME, "ScrollFrame"),
+    Slider = Families(FRAME, "Slider"),
+    GameTooltip = Families(FRAME, "GameTooltip"),
+    Texture = { "Object", "ScriptRegion", "Resizing", "Region", "Animatable", "TextureBase" },
+    -- lines are anchored with SetStartPoint/SetEndPoint, not SetPoint
+    Line = { "Object", "ScriptRegion", "Region", "Animatable", "TextureBase", "Line" },
+    FontString = { "Object", "ScriptRegion", "Resizing", "Region", "Animatable", "Font", "FontString" },
+    AnimationGroup = { "Object", "AnimationGroup" },
+}
+local familySets = {}
+for family, names in pairs(FAMILY_METHODS) do
+    familySets[family] = {}
+    for n in names:gmatch("%S+") do familySets[family][n] = true end
+end
+local kindMethods = {}
+for kind, families in pairs(KIND_FAMILIES) do
+    kindMethods[kind] = {}
+    for _, family in ipairs(families) do
+        for n in pairs(familySets[family]) do kindMethods[kind][n] = true end
+    end
+end
+-- Mock-only helpers for tests. They do not exist in the client, so addon code
+-- (any chunk loaded from WaypointTracker/) gets nil for them like any other
+-- missing method.
+local TEST_HELPERS = { RunScript = true, Type = true }
+local function CalledFromAddon()
+    -- level 1 is this function, 2 the __index metamethod, 3 the indexing code
+    local info = debug.getinfo(3, "S")
+    local src = info and info.source or ""
+    return src:find("WaypointTracker", 1, true) ~= nil and not src:find("tests/", 1, true)
+end
+M.lastUnknownMethod = nil
+M.unknownMethodKind = {} -- method -> widget type of its latest failed lookup
 local FrameMT = {
     __index = function(t, k)
         local v = Frame[k]
+        local kind = rawget(t, "_kind")
         if v ~= nil then
-            return v
+            if TEST_HELPERS[k] then
+                if not CalledFromAddon() then return v end
+            elseif kindMethods[kind] and kindMethods[kind][k] then
+                return v
+            end
         end
-        if optionalWindowFields[k] then
-            return nil
-        end
-        -- unknown method: record it and return a no-op
         if type(k) == "string" and k:match("^[A-Z]") then
-            M.unknownMethods[k] = (M.unknownMethods[k] or 0) + 1
-            return noop
+            local key = tostring(kind) .. ":" .. k
+            M.unknownMethods[key] = (M.unknownMethods[key] or 0) + 1
+            M.lastUnknownMethod = { kind = kind, method = k }
+            M.unknownMethodKind[k] = kind
         end
         return nil
     end,
 }
+M.FAMILY_METHODS, M.KIND_FAMILIES, M.TEST_HELPERS, M.FrameMethods = FAMILY_METHODS, KIND_FAMILIES, TEST_HELPERS, Frame
+
+-- Adds the widget type to "attempt to call method 'X' (a nil value)" errors.
+function M.ExplainError(err)
+    local text = tostring(err)
+    local method = text:match("attempt to call method '([^']+)' %(a nil value%)")
+    local kind = method and M.unknownMethodKind[method]
+    if kind then
+        return text .. (" [wowmock: %s has no method %s in the client]"):format(tostring(kind), method)
+    end
+    return text
+end
 
 local function NewObject(kind, name, parent)
+    if not KIND_FAMILIES[kind] then
+        error(('wowmock: unknown widget type "%s"'):format(tostring(kind)), 2)
+    end
     local o = setmetatable({
         _kind = kind,
         _name = name,
@@ -204,7 +322,12 @@ function Frame:HookScript(event, fn)
         self._scripts[event] = fn
     end
 end
+-- test helper: fires a script like the game would, intrinsic handler first
 function Frame:RunScript(event, ...)
+    local intrinsic = rawget(self, "_intrinsic")
+    if intrinsic and intrinsic[event] then
+        intrinsic[event](self, ...)
+    end
     local fn = self._scripts[event]
     if fn then
         return fn(self, ...)
@@ -483,15 +606,27 @@ function Frame:RegisterEvent(e)
     M.eventFrames[e] = M.eventFrames[e] or {}
     table.insert(M.eventFrames[e], self)
 end
-function Frame:UnregisterEvent() end
-function Frame:SetBackdrop(b)
-    self._backdrop = b
+function Frame:UnregisterEvent(e)
+    local list = M.eventFrames[e]
+    for i = #(list or {}), 1, -1 do
+        if list[i] == self then
+            table.remove(list, i)
+        end
+    end
+end
+function Frame:IsEventRegistered(e)
+    for _, f in ipairs(M.eventFrames[e] or {}) do
+        if f == self then
+            return true
+        end
+    end
+    return false
 end
 function Frame:SetScrollChild(c)
     self._child = c
 end
 function Frame:SetFontObject(f)
-    self._font = f
+    self._fontObject = f
 end
 function Frame:SetHighlightTexture() end
 function Frame:SetNormalTexture() end
@@ -500,6 +635,186 @@ function Frame:SetThumbTexture() end
 function Frame:GetHighlightTexture()
     return NewObject("Texture", nil, self)
 end
+-- State-keeping versions of client methods the addon calls; tests can read
+-- the stored fields (_strata, _movable, _clamped, _dragButtons, _clickButtons,
+-- _justifyH/_justifyV, _wordWrap, _font, _spacing, _numeric, _maxLetters,
+-- _autoFocus, _highlight, _cursor, _valueStep, _obeyStep, _orientation,
+-- _blendMode, _highlightLocked, _motionWhileDisabled, _mouseWheel).
+function Frame:GetDrawLayer()
+    local d = self._drawLayer or { "ARTWORK", 0 }
+    return d[1], d[2]
+end
+function Frame:GetRotation()
+    return self._rotation or 0
+end
+function Frame:DoesClipChildren()
+    return self._clipsChildren or false
+end
+function Frame:GetNumPoints()
+    return #self._points
+end
+function Frame:EnableMouseWheel(on)
+    self._mouseWheel = on and true or false
+end
+function Frame:IsMouseWheelEnabled()
+    return self._mouseWheel or false
+end
+function Frame:SetMouseClickEnabled(on)
+    self._mouseClick = on and true or false
+end
+function Frame:SetMouseMotionEnabled(on)
+    self._mouseMotion = on and true or false
+end
+function Frame:SetFrameStrata(strata)
+    self._strata = strata
+end
+function Frame:GetFrameStrata()
+    return self._strata or "MEDIUM"
+end
+function Frame:SetMovable(on)
+    self._movable = on and true or false
+end
+function Frame:IsMovable()
+    return self._movable or false
+end
+function Frame:SetClampedToScreen(on)
+    self._clamped = on and true or false
+end
+function Frame:IsClampedToScreen()
+    return self._clamped or false
+end
+function Frame:RegisterForDrag(...)
+    self._dragButtons = { ... }
+end
+function Frame:LockHighlight()
+    self._highlightLocked = true
+end
+function Frame:UnlockHighlight()
+    self._highlightLocked = false
+end
+-- buttons
+function Frame:RegisterForClicks(...)
+    self._clickButtons = { ... }
+end
+function Frame:SetMotionScriptsWhileDisabled(on)
+    self._motionWhileDisabled = on and true or false
+end
+function Frame:GetMotionScriptsWhileDisabled()
+    return self._motionWhileDisabled or false
+end
+function Frame:Enable()
+    self:SetEnabled(true)
+end
+function Frame:Disable()
+    self:SetEnabled(false)
+end
+-- fonts (FontString and EditBox)
+function Frame:SetFont(path, height, flags)
+    self._font = { path, height, flags }
+    return true
+end
+function Frame:GetFont()
+    local f = self._font
+    if type(f) == "table" and f[1] then
+        return f[1], f[2], f[3]
+    end
+end
+function Frame:GetFontObject()
+    local f = self._fontObject
+    return f
+end
+function Frame:SetJustifyH(j)
+    self._justifyH = j
+end
+function Frame:GetJustifyH()
+    return self._justifyH or "CENTER"
+end
+function Frame:SetJustifyV(j)
+    self._justifyV = j
+end
+function Frame:GetJustifyV()
+    return self._justifyV or "MIDDLE"
+end
+function Frame:SetSpacing(s)
+    self._spacing = s
+end
+function Frame:GetSpacing()
+    return self._spacing or 0
+end
+function Frame:SetWordWrap(on)
+    self._wordWrap = on and true or false
+end
+function Frame:CanWordWrap()
+    return self._wordWrap ~= false
+end
+-- edit boxes
+function Frame:SetMultiLine(on)
+    self._multiLine = on and true or false
+end
+function Frame:IsMultiLine()
+    return self._multiLine or false
+end
+function Frame:SetNumeric(on)
+    self._numeric = on and true or false
+end
+function Frame:IsNumeric()
+    return self._numeric or false
+end
+function Frame:SetMaxLetters(n)
+    self._maxLetters = n
+end
+function Frame:GetMaxLetters()
+    return self._maxLetters or 0
+end
+function Frame:SetAutoFocus(on)
+    self._autoFocus = on and true or false
+end
+function Frame:IsAutoFocus()
+    return self._autoFocus ~= false
+end
+function Frame:HighlightText(first, last)
+    local len = #(self:GetText() or "")
+    self._highlight = { first or 0, last or len }
+end
+function Frame:SetCursorPosition(pos)
+    self._cursor = pos
+end
+function Frame:GetCursorPosition()
+    return self._cursor or #(self:GetText() or "")
+end
+-- sliders
+function Frame:SetValueStep(step)
+    self._valueStep = step
+end
+function Frame:GetValueStep()
+    return self._valueStep or 0
+end
+function Frame:SetObeyStepOnDrag(on)
+    self._obeyStep = on and true or false
+end
+function Frame:GetObeyStepOnDrag()
+    return self._obeyStep or false
+end
+function Frame:SetOrientation(o)
+    self._orientation = o
+end
+function Frame:GetOrientation()
+    return self._orientation or "HORIZONTAL"
+end
+-- scroll frames
+function Frame:GetScrollChild()
+    return self._child
+end
+function Frame:UpdateScrollChildRect()
+    self._scrollRectUpdates = (self._scrollRectUpdates or 0) + 1
+end
+-- textures
+function Frame:SetBlendMode(mode)
+    self._blendMode = mode
+end
+function Frame:GetBlendMode()
+    return self._blendMode or "BLEND"
+end
 
 M.eventFrames = {}
 
@@ -507,9 +822,17 @@ local function NewMenuRoot()
     local root = { items = {} }
     local function Add(self, item)
         item.items = {}
-        item.SetTooltip = noop
-        item.SetEnabled = noop
-        item.AddInitializer = noop
+        -- element descriptions record what the menu would show
+        function item:SetTooltip(fn)
+            self.tooltip = fn
+        end
+        function item:SetEnabled(on)
+            self.enabled = on
+        end
+        function item:AddInitializer(fn)
+            self.initializers = self.initializers or {}
+            table.insert(self.initializers, fn)
+        end
         item.CreateTitle = root.CreateTitle
         item.CreateButton = root.CreateButton
         item.CreateCheckbox = root.CreateCheckbox
@@ -542,17 +865,55 @@ local function NewMenuRoot()
     return root
 end
 
+-- DropdownButton intrinsic (Blizzard_Menu/DropdownButton.lua, DropdownButtonMixin):
+-- SetupMenu generates at once when shown; a left mouse-down without Shift
+-- toggles the menu, regenerating it each time it opens. GenerateMenu also
+-- returns the root here, for tests.
 local function AddDropdownMethods(f)
+    f.intrinsic = "DropdownButton"
     function f:SetupMenu(gen)
+        assert(type(gen) == "function", "DropdownButtonMixin:SetupMenu(generator): argument is not a function.")
         self.menuGenerator = gen
+        if self:IsShown() then
+            self:GenerateMenu()
+        end
     end
     function f:GenerateMenu()
-        local root = NewMenuRoot()
-        if self.menuGenerator then
-            self.menuGenerator(self, root)
+        if not self.menuGenerator then
+            return
         end
-        self.lastRoot, M.lastMenu = root, root
+        local root = NewMenuRoot()
+        self.menuGenerator(self, root)
+        self.lastRoot, self.menuDescription, M.lastMenu = root, root, root
         return root
+    end
+    function f:IsMenuOpen()
+        return self.menu ~= nil
+    end
+    function f:OpenMenu()
+        if not self:IsEnabled() or self:IsMenuOpen() then
+            return
+        end
+        self:GenerateMenu()
+        if not self.menuDescription then
+            return
+        end
+        self.menu = self.menuDescription
+        self.menu.owner, self.menu.open = self, true
+        table.insert(M.menus, self.menu)
+    end
+    function f:CloseMenu()
+        if self.menu then
+            self.menu.open = false
+            self.menu = nil
+        end
+    end
+    function f:SetMenuOpen(open)
+        if open then
+            self:OpenMenu()
+        else
+            self:CloseMenu()
+        end
     end
     function f:OverrideText(text)
         self:SetText(text)
@@ -561,6 +922,19 @@ local function AddDropdownMethods(f)
         self.defaultText = text
         self:SetText(text)
     end
+    rawset(f, "_intrinsic", {
+        OnMouseDown = function(self)
+            if IsShiftKeyDown() then
+                return
+            end
+            self:SetMenuOpen(not self:IsMenuOpen())
+        end,
+        OnEnter = function(self)
+            if self.canOpenOnEnter then
+                self:OpenMenu()
+            end
+        end,
+    })
 end
 
 local function AddSettingSliderMethods(slider)
@@ -573,6 +947,16 @@ local function AddSettingSliderMethods(slider)
     function slider:RegisterCallback(event, fn, owner)
         self._callbacks[event] = self._callbacks[event] or {}
         table.insert(self._callbacks[event], { fn = fn, owner = owner })
+    end
+    -- CallbackRegistryMixin:UnregisterCallback(event, owner)
+    -- (Blizzard_SharedXMLBase/CallbackRegistry.lua)
+    function slider:UnregisterCallback(event, owner)
+        local list = self._callbacks[event] or {}
+        for i = #list, 1, -1 do
+            if list[i].owner == owner then
+                table.remove(list, i)
+            end
+        end
     end
     function slider:SetValue(value)
         local changed = self._value ~= value
@@ -598,6 +982,32 @@ function CreateFrame(kind, name, parent, template)
     end
     local f = NewObject(kind, name, parent)
     f._template = template
+    if Has("BackdropTemplate") then
+        -- BackdropTemplateMixin (Blizzard_SharedXML/Backdrop.lua): colours
+        -- apply only after a backdrop with a bgFile or edgeFile is set.
+        function f:SetBackdrop(info)
+            if info and (info.bgFile or info.edgeFile) then
+                self._backdrop = info
+            else
+                self._backdrop, self._backdropColor, self._backdropBorderColor = nil, nil, nil
+            end
+        end
+        function f:GetBackdrop()
+            return self._backdrop
+        end
+        function f:SetBackdropColor(r, g, b, a)
+            if self._backdrop then self._backdropColor = { r, g, b, a or 1 } end
+        end
+        function f:GetBackdropColor()
+            if self._backdropColor then return unpack(self._backdropColor) end
+        end
+        function f:SetBackdropBorderColor(r, g, b, a)
+            if self._backdrop then self._backdropBorderColor = { r, g, b, a or 1 } end
+        end
+        function f:GetBackdropBorderColor()
+            if self._backdropBorderColor then return unpack(self._backdropBorderColor) end
+        end
+    end
     if Has("UIPanelButtonTemplate") then
         f:SetFontString(f:CreateFontString(nil, "ARTWORK", "GameFontNormal"))
         function f:SetText(text)
@@ -663,16 +1073,10 @@ function CreateFrame(kind, name, parent, template)
         f.EditBox = NewObject("EditBox", nil, f)
         f.EditBox.Instructions = f.EditBox:CreateFontString()
         f.EditBox._multiLine = true
-        function f.EditBox:SetMultiLine(on)
-            self._multiLine = on
-        end
-        function f.EditBox:IsMultiLine()
-            return self._multiLine
-        end
         f.ScrollBar = NewObject("Slider", nil, f)
         f:SetScrollChild(f.EditBox)
     end
-    if kind == "DropdownButton" and Has("WowStyle1DropdownTemplate") then
+    if kind == "DropdownButton" then
         AddDropdownMethods(f)
     end
     if Has("EditModeSettingSliderTemplate") then
@@ -757,6 +1161,21 @@ end
 function GameTooltip:AddLine(text)
     M.tooltip = M.tooltip or {}
     table.insert(M.tooltip, text)
+end
+-- SetOwner starts a new tooltip (the client clears its lines); SetText
+-- replaces everything with one line.
+function GameTooltip:SetOwner(owner, anchor)
+    M.tooltipOwner, M.tooltipAnchor = owner, anchor
+    M.tooltip = {}
+end
+function GameTooltip:IsOwned(owner)
+    return M.tooltipOwner == owner
+end
+function GameTooltip:SetText(text)
+    M.tooltip = { text }
+end
+function GameTooltip:NumLines()
+    return #(M.tooltip or {})
 end
 DEFAULT_CHAT_FRAME = NewObject("Frame", "ChatFrame1", UIParent)
 function DEFAULT_CHAT_FRAME:AddMessage(msg)
@@ -978,11 +1397,19 @@ function M.ShowObjectTooltip(name)
 end
 
 -- hooks and Blizzard's callback registry
+-- Like the client: hooksecurefunc([table,] "name", hook) raises when the
+-- arguments are wrong or the target is not a function, at hook time.
 function hooksecurefunc(t, name, fn)
     if type(t) == "string" then
         t, name, fn = _G, t, name
     end
+    if type(t) ~= "table" or type(name) ~= "string" or type(fn) ~= "function" then
+        error('Usage: hooksecurefunc([table,] "functionName", hookfunc)', 2)
+    end
     local orig = t[name]
+    if type(orig) ~= "function" then
+        error(("hooksecurefunc(): %s is not a function"):format(name), 2)
+    end
     t[name] = function(...)
         local r = { orig(...) }
         fn(...)
@@ -1758,11 +2185,91 @@ MenuUtil = {
     CreateContextMenu = function(owner, gen)
         local root = NewMenuRoot()
         gen(owner, root)
+        root.owner, root.open = owner, true
         M.lastMenu = root
         table.insert(M.menus, root)
         return root
     end,
 }
+
+-- Click path ------------------------------------------------------------------
+-- M.ClickButton(button, mouseButton) presses and releases the mouse on a widget
+-- the way the game does: OnMouseDown (intrinsic handler first, so a
+-- DropdownButton toggles its menu), OnMouseUp, and OnClick when the widget is
+-- an enabled Button registered for that click. Buttons answer "LeftButtonUp"
+-- until RegisterForClicks replaces the set ("AnyUp"/"AnyDown" match every
+-- button; "...Down" registrations click on press). Button:Click() stays the
+-- programmatic call, which ignores registration like the client.
+-- Returns the menu the click opened (dropdown or context menu), or nil.
+local function ClickRegistered(button, mouseButton, phase)
+    local list = rawget(button, "_clickButtons") or { "LeftButtonUp" }
+    for _, reg in ipairs(list) do
+        if reg == mouseButton .. phase or reg == "Any" .. phase then
+            return true
+        end
+    end
+    return false
+end
+function M.ClickButton(button, mouseButton)
+    mouseButton = mouseButton or "LeftButton"
+    local before = #M.menus
+    local isButton = button.Click ~= nil
+    local enabled = isButton and (not button.IsEnabled or button:IsEnabled())
+    button:RunScript("OnMouseDown", mouseButton)
+    if enabled and ClickRegistered(button, mouseButton, "Down") then
+        button:RunScript("OnClick", mouseButton, true)
+    end
+    button:RunScript("OnMouseUp", mouseButton, true)
+    if enabled and ClickRegistered(button, mouseButton, "Up") then
+        button:RunScript("OnClick", mouseButton, false)
+    end
+    if #M.menus > before then
+        return M.menus[#M.menus]
+    end
+end
+-- Opens a dropdown or context menu through the click path; errors when the
+-- click opens nothing, so a broken entry point fails the test.
+function M.OpenMenu(button, mouseButton)
+    local menu = M.ClickButton(button, mouseButton)
+    if not menu then
+        error(("wowmock: clicking %s with %s opened no menu"):format(
+            tostring(button:GetName() or button:GetObjectType()), mouseButton or "LeftButton"), 2)
+    end
+    return menu
+end
+-- Finds an item by text (and kind) in a menu, searching submenus.
+function M.FindMenuItem(menu, text, kind)
+    for _, item in ipairs(menu.items or {}) do
+        if item.text == text and (not kind or item.kind == kind) then
+            return item
+        end
+        local sub = item.items and M.FindMenuItem(item, text, kind)
+        if sub then
+            return sub
+        end
+    end
+end
+-- Picks an item like a click in the open menu: runs its callback, then
+-- closes the menu (the default menu response).
+function M.PickMenuItem(menu, text, kind)
+    assert(menu.open ~= false, "wowmock: menu is closed")
+    local item = M.FindMenuItem(menu, text, kind)
+    if not item then
+        error(("wowmock: menu has no %s item %q"):format(kind or "", tostring(text)), 2)
+    end
+    if item.enabled == false then
+        error(("wowmock: menu item %q is disabled"):format(tostring(text)), 2)
+    end
+    local result
+    if item.fn then
+        result = item.fn()
+    end
+    if menu.owner and menu.owner.CloseMenu and menu.owner.menu == menu then
+        menu.owner:CloseMenu()
+    end
+    menu.open = false
+    return item, result
+end
 local nextCategoryID = 1
 local function NewCategory(name)
     nextCategoryID = nextCategoryID + 1
@@ -1993,6 +2500,18 @@ function M.LoadAddon(dir, name)
         end
     end
     return ns
+end
+
+-- Every shared widget method must be a client method of some family above
+-- (or a documented test helper), so the mock cannot invent widget API.
+for name in pairs(Frame) do
+    local known = TEST_HELPERS[name]
+    for _, set in pairs(familySets) do
+        known = known or set[name]
+    end
+    if not known then
+        error("wowmock: Frame:" .. name .. " is not in any client widget family")
+    end
 end
 
 return M

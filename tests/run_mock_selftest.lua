@@ -119,9 +119,10 @@ dd:SetupMenu(function(owner, root)
     generated = generated + 1
     root:CreateButton("Select", function() dd:SetText("Selected") end)
 end)
-check(generated == 0, "dropdown setup stores generator")
+-- DropdownButtonMixin:SetupMenu generates at once while the dropdown is shown
+check(generated == 1 and dd.menuGenerator ~= nil, "dropdown setup stores and runs generator when shown")
 local ddRoot = dd:GenerateMenu()
-check(generated == 1 and dd.lastRoot == ddRoot and M.lastMenu == ddRoot, "dropdown records generated menu")
+check(generated == 2 and dd.lastRoot == ddRoot and M.lastMenu == ddRoot, "dropdown records generated menu")
 ddRoot.items[1].fn()
 check(dd:GetText() == "Selected", "dropdown action")
 
@@ -334,7 +335,10 @@ check(panel._clipsChildren == false, "child clipping disabled")
 local texture = panel:CreateTexture()
 texture:SetRotation(0.5)
 texture:SetColorTexture(0.08, 0.08, 0.1)
-texture:SetHitRectInsets(0, 0, -11, 11)
+-- hit rects belong to frames (SimpleFrameAPI); regions have no such method
+check(texture.SetHitRectInsets == nil and type(panel.SetHitRectInsets) == "function",
+    "only frames have hit rect insets")
+M.unknownMethods["Texture:SetHitRectInsets"] = nil -- the deliberate probe above
 panel:SetHitRectInsets(0, 0, 0, 0)
 check(texture._rotation == 0.5 and texture._colorTexture[3] == 0.1
     and texture._colorTexture[4] == 1, "texture rotation and default colour alpha")
@@ -463,6 +467,76 @@ map:SetScript("OnHide", nil)
 map:SetMapID(37)
 
 check(next(M.unknownMethods) == nil, "new APIs use implemented methods")
+
+-- Strict widget methods: a method the client lacks for a widget type is nil
+-- (feature detection works) and calling it fails, naming the widget type.
+do
+    local frame = CreateFrame("Frame")
+    local fs = frame:CreateFontString()
+    check(frame.NoSuchClientMethod == nil and frame.SetJustifyH == nil and fs.SetFrameStrata == nil,
+        "missing and wrong-type widget methods are nil")
+    check(M.unknownMethods["Frame:NoSuchClientMethod"] == 1 and M.unknownMethods["FontString:SetFrameStrata"] == 1,
+        "probes are recorded by widget type")
+    local ok, err = pcall(function() frame:SetJustifyH("LEFT") end)
+    check(not ok and M.ExplainError(err):find("Frame has no method SetJustifyH", 1, true),
+        "calling a missing method raises and names the widget type")
+    fs:SetJustifyH("LEFT")
+    fs:SetWordWrap(false)
+    check(fs:GetJustifyH() == "LEFT" and not fs:CanWordWrap(), "font string methods keep state")
+    local edit = CreateFrame("EditBox")
+    edit:SetJustifyH("RIGHT")
+    edit:SetMaxLetters(12)
+    check(edit:GetJustifyH() == "RIGHT" and edit:GetMaxLetters() == 12 and edit.Click == nil,
+        "edit boxes have font and edit methods but not button methods")
+    check(frame.SetBackdrop == nil and CreateFrame("Frame", nil, nil, "BackdropTemplate").SetBackdrop ~= nil,
+        "backdrop methods come from BackdropTemplate only")
+    local before = #M.errors
+    geterrorhandler()(err)
+    check(M.errors[#M.errors]:find("[wowmock: Frame has no method SetJustifyH", 1, true), "error handler explains it")
+    table.remove(M.errors, before + 1)
+    -- test helpers are not visible to addon code
+    local addonChunk = assert(loadstring("local f = ... return f.RunScript, f.Type", "@WaypointTracker/Probe.lua"))
+    local run, typ = addonChunk(edit)
+    check(run == nil and typ == nil and edit.RunScript ~= nil, "mock-only helpers are hidden from addon code")
+    for k in pairs(M.unknownMethods) do M.unknownMethods[k] = nil end
+end
+
+-- hooksecurefunc raises at hook time like the client.
+do
+    local t = { Present = function() return 1 end }
+    check(not pcall(hooksecurefunc, t, "Missing", function() end), "hooking a missing table function raises")
+    check(not pcall(hooksecurefunc, "WowMockMissingGlobal", function() end), "hooking a missing global raises")
+    check(not pcall(hooksecurefunc, t, "Present"), "hooking without a hook function raises")
+    local seen
+    hooksecurefunc(t, "Present", function() seen = true end)
+    check(t.Present() == 1 and seen, "hook runs after the original and keeps its result")
+end
+
+-- Click path: a click toggles a DropdownButton menu; RegisterForClicks gates OnClick.
+do
+    local dd = CreateFrame("DropdownButton", nil, UIParent, "WowStyle1DropdownTemplate")
+    local picked
+    dd:SetupMenu(function(_, root) root:CreateRadio("One", function() return picked == 1 end, function() picked = 1 end) end)
+    local menu = M.OpenMenu(dd)
+    check(dd:IsMenuOpen() and menu.open and menu.owner == dd, "click opens the dropdown menu")
+    check(M.ClickButton(dd) == nil and not dd:IsMenuOpen(), "second click closes it")
+    M.shift = true
+    check(M.ClickButton(dd) == nil and not dd:IsMenuOpen(), "shift-click does not open a dropdown")
+    M.shift = false
+    dd:SetEnabled(false)
+    check(not pcall(M.OpenMenu, dd), "disabled dropdown opens nothing")
+    dd:SetEnabled(true)
+    M.PickMenuItem(M.OpenMenu(dd), "One", "radio")
+    check(picked == 1 and not dd:IsMenuOpen(), "picking runs the item and closes the menu")
+    local b, clicks = CreateFrame("Button"), {}
+    b:SetScript("OnClick", function(_, mouse) clicks[#clicks + 1] = mouse end)
+    M.ClickButton(b, "RightButton")
+    M.ClickButton(b)
+    b:RegisterForClicks("AnyUp")
+    M.ClickButton(b, "RightButton")
+    check(#clicks == 2 and clicks[1] == "LeftButton" and clicks[2] == "RightButton",
+        "OnClick fires only for registered mouse buttons")
+end
 check(#M.errors == 0, "no reported Lua errors")
 
 print(("%d passed, %d failed"):format(passed, failed))
