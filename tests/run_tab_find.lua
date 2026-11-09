@@ -106,18 +106,28 @@ local function typeSearch(text)
     fw.search:Type(text)
     M.Tick(0.3)
 end
-local function menuItem(dropdown, text, kind)
-    local root
-    if bare then dropdown:Refresh(); root = dropdown.menu
-    else dropdown:GenerateMenu(); root = M.lastMenu end
-    for _, item in ipairs(root.items) do
-        if item.text == text and item.kind == kind then return item end
+-- Native dropdowns are opened by a mouse click (the DropdownButton
+-- intrinsic) and an entry is picked from the open menu. The bare picker
+-- fallback has no menu, so it runs the item from its rebuilt description.
+local function pick(dropdown, text, kind)
+    if bare then
+        dropdown:Refresh()
+        for _, item in ipairs(dropdown.menu.items) do
+            if item.text == text and item.kind == kind then
+                item.fn()
+                return item
+            end
+        end
+        error("missing menu item: " .. text)
     end
-    error("missing menu item: " .. text)
+    local menu = M.OpenMenu(dropdown)
+    check(dropdown:IsMenuOpen() and menu == M.lastMenu, "click opens the " .. text .. " menu")
+    local item = M.PickMenuItem(menu, text, kind)
+    check(not dropdown:IsMenuOpen(), "picking " .. text .. " closes the menu")
+    return item
 end
 local function choose(key, label)
-    local item = menuItem(fw.kind, L[label], "radio")
-    item.fn()
+    local item = pick(fw.kind, L[label], "radio")
     check(ns.Get("findTab") == key and item.isSelected(), "Kind chooses " .. key)
     check((bare and fw.kind.text:GetText() or fw.kind:GetText()) == L[label], "Kind label follows " .. key)
 end
@@ -265,7 +275,7 @@ service("SERVICE_FLIGHT")
 check(WP.GetActive().title == "Testport, Elwynn" and near(WP.GetActive().x, 0.41), "nearest flight uses client flight paths")
 
 local exported = Learn.Export()
-menuItem(fw.discoveries, L.SHARE_DISCOVERIES, "button").fn()
+pick(fw.discoveries, L.SHARE_DISCOVERIES, "button")
 local sb = Find.shareBox
 local sharePage = sb
 check(Window.CurrentPage("find").key == "share", "Share opts into shell page reuse")
@@ -275,7 +285,7 @@ check(M.focus == sb.edit, "export text has focus for copying")
 sb.back:Click()
 check(not Window.CurrentPage("find") and Window.tabs.find.content:IsShown(), "Back restores Find root")
 WaypointTrackerDB.learned = nil
-menuItem(fw.discoveries, L.IMPORT_DISCOVERIES, "button").fn()
+pick(fw.discoveries, L.IMPORT_DISCOVERIES, "button")
 sb = Find.shareBox
 local importPage = sb
 check(Window.CurrentPage("find").key == "import", "Import has a separate reuse key")

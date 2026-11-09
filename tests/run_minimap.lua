@@ -24,7 +24,9 @@ if arg[1] == "--bare" then
     check(MenuUtil == nil, "bare harness removes MenuUtil before loading")
     ns.WP.ClearAll(true)
     local button = WaypointTrackerMinimapButton
-    button:GetScript("OnClick")(button, "RightButton")
+    -- a real right-click: without MenuUtil the click opens no menu and the
+    -- shared fallback runs Add here
+    check(M.ClickButton(button, "RightButton") == nil, "bare minimap right-click opens no native menu")
     check(ns.WP.Count() == 1 and ns.Widgets.lastMenu and #ns.Widgets.lastMenu.items == 12, "bare minimap right-click falls back to Add here")
     ns.WP.ClearAll(true)
     WaypointTracker_OnAddonCompartmentClick("WaypointTracker", "RightButton")
@@ -52,8 +54,10 @@ end
 
 local button = WaypointTrackerMinimapButton
 check(button and button:IsShown(), "minimap button shown after login")
+-- Clicks go through the mouse path (OnMouseDown/OnMouseUp/OnClick), so the
+-- button must be registered for the mouse button like in the client.
 local function click(mouse)
-    button:GetScript("OnClick")(button, mouse)
+    return M.ClickButton(button, mouse)
 end
 ns.Window.Hide()
 ns.Window.ShowTab("routes")
@@ -61,6 +65,9 @@ click("LeftButton")
 check(WaypointTrackerFrame:IsShown() and ns.Window.GetTab() == "routes", "left-click opens window on last tab")
 click("LeftButton")
 check(not WaypointTrackerFrame:IsShown(), "left-click closes window")
+local menusBefore = #M.menus
+click("MiddleButton")
+check(not WaypointTrackerFrame:IsShown() and #M.menus == menusBefore, "unregistered middle-click does nothing")
 
 WP.ClearAll(true)
 M.shift = true
@@ -75,29 +82,17 @@ M.shift = false
 check(ns.Window.IsShown(), "shift-left leaves open window open")
 ns.Window.Hide()
 
--- Record ownership and enabled state at the native menu-generator boundary.
--- The shared mock's menu descriptions expose SetEnabled but do not record it.
+-- The mock's menu descriptions record SetEnabled; the menu comes back from
+-- the right-click itself.
 local menuOwner
 local createMenu = MenuUtil.CreateContextMenu
 MenuUtil.CreateContextMenu = function(owner, generator)
     menuOwner = owner
-    return createMenu(owner, function(menuOwner, root)
-        local createButton = root.CreateButton
-        function root:CreateButton(...)
-            local item = createButton(self, ...)
-            local setEnabled = item.SetEnabled
-            function item:SetEnabled(enabled)
-                self.enabled = enabled
-                setEnabled(self, enabled)
-            end
-            return item
-        end
-        generator(menuOwner, root)
-    end)
+    return createMenu(owner, generator)
 end
-click("RightButton")
-local root = M.lastMenu
-check(root and menuOwner == button, "right-click opens menu owned by minimap button")
+local root = M.OpenMenu(button, "RightButton")
+check(root == M.lastMenu and root.owner == button and menuOwner == button and root.open,
+    "right-click opens menu owned by minimap button")
 check(not ns.Window.IsShown(), "right-click leaves window closed")
 check(root.items[1].kind == "title" and root.items[1].text == L.MENU_QUICK_TITLE, "quick menu title")
 local counts, items = {}, {}
@@ -119,7 +114,9 @@ for _, option in ipairs({
     local item, key = items[option[1]], option[2]
     local before = ns.Get(key)
     check(item.isSelected() == before, key .. " reads setting")
-    item.fn()
+    local menu = M.OpenMenu(button, "RightButton")
+    local picked = M.PickMenuItem(menu, option[1], "checkbox")
+    check(picked.text == item.text and not menu.open, key .. " pick closes the menu")
     check(ns.Get(key) == not before and changes[key] == 1, key .. " toggles through ns.Set")
     check(item.isSelected() == not before, key .. " selection reflects changes immediately")
     item.fn()
@@ -134,22 +131,23 @@ local function ClearItem(menu)
     end
 end
 check(ClearItem(M.lastMenu).enabled == false, "clear active is disabled with no waypoints")
+check(not pcall(M.PickMenuItem, M.lastMenu, L.BINDING_CLEAR, "button"), "disabled clear active cannot be picked")
 WP.Add(37, 0.4, 0.5, { setActive = false, silent = true })
 WP.SetActive(nil, true)
 click("RightButton")
 check(WP.Count() == 1 and not WP.GetActive() and ClearItem(M.lastMenu).enabled == false,
     "clear active stays disabled when saved waypoints have no active waypoint")
 WP.ClearAll(true)
-items[L.BINDING_HERE].fn()
+M.PickMenuItem(M.OpenMenu(button, "RightButton"), L.BINDING_HERE, "button")
 check(WP.Count() == 1 and WP.GetActive(), "Add here menu action adds waypoint")
 click("RightButton")
 check(ClearItem(M.lastMenu).enabled == true, "rebuilt menu enables clear active after adding here")
 local before = WP.Count()
 M.chatText = nil
-items[L.BINDING_SHARE].fn()
+M.PickMenuItem(M.OpenMenu(button, "RightButton"), L.BINDING_SHARE, "button")
 check(M.chatText and M.chatText:find(Geo.GetMapName(WP.GetActive().m), 1, true), "Share here opens location in chat")
 check(WP.Count() == before, "Share here keeps waypoint list")
-items[L.BINDING_CLEAR].fn()
+M.PickMenuItem(M.OpenMenu(button, "RightButton"), L.BINDING_CLEAR, "button")
 check(WP.Count() == 0 and not WP.GetActive(), "Clear active menu action removes waypoint")
 
 -- Navigation APIs are provided by sibling parcels; verify calls and combat
@@ -186,7 +184,7 @@ GameTooltip.SetOwner = function(self, owner, anchor)
 end
 local function hover()
     M.tooltip = {}
-    button:GetScript("OnEnter")(button)
+    button:RunScript("OnEnter")
 end
 hover()
 check(tooltipOwner == button and #M.tooltip == 5, "inactive minimap tooltip has title and four hints")
