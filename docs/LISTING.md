@@ -18,7 +18,7 @@ The in-game addon list, folders and API identifiers stay `Waypoint Tracker` / `W
 Find any quest, NPC, enemy or item and a 3D arrow walks you there. /way coordinates, map pins and TomTom-compatible waypoints for WoW Forever.
 ```
 
-Lead with Find and the arrow: one promise, in the words players search for (quest, NPC, item, arrow, /way, TomTom). Routes, Real routes (beta), Treasure hunt (beta) and sharing stay in the description's "Also included" section.
+Lead with Find and the arrow: one promise, in the words players search for (quest, NPC, item, arrow, /way, TomTom). Routes, Real routes, Treasure hunt (beta) and sharing stay in the description's "Also included" section.
 
 ## Categories
 

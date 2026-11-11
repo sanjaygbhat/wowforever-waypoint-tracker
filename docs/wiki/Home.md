@@ -26,7 +26,7 @@ Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft
 4. Open **Find** to search a quest, NPC, enemy, object or item; double-click a result and the arrow points to its closest spot.
 5. Turn on **Treasure hunt (beta)** in the quick menu (or type `/wp treasure`) to get a ping and the arrow the moment a chest or rare spawns near you.
 
-Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placement. **Real routes (beta)** is new in this release; turn it on from the Routes notice or quick menu to follow passes, gates and transport.
+Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placement. **Real routes** is on by default: the arrow follows passes, gates, transport, your hearthstone and class teleports; turn it off from the quick menu or Settings → Routes.
 
 ## Downloads and help
 

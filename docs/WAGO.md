@@ -1,12 +1,12 @@
 ![Waypoint Tracker: quest arrow and NPC finder for World of Warcraft: Forever](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/banner.png)
 
-# Find any quest, NPC or item, and a 3D arrow walks you there
+# Find any quest, NPC or item, and a 3D arrow takes you there by the fastest route
 
 ![The arrow turns to face the waypoint, goes from gold to green as you walk, then shows 'You have arrived!'](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/arrow-demo.gif)
 
 *Illustration, drawn with the addon's own arrow.*
 
-Type a name or `/way 42 65`, and a 3D arrow over your character points the way with the distance and time to arrive. It turns from gold to green as you close in and clears itself when you get there.
+Type a name or `/way 42 65`, and a 3D arrow over your character takes you there by the fastest route, through passes and gates and by flight path, boat, hearthstone or teleport, with the distance and time to arrive. It turns from gold to green as you close in and clears itself when you get there.
 
 - **Find anything by name:** quests, NPCs, enemies, objects and items, including WoW Forever's new zones and quests.
 - **One click to your quest:** click the quest icon in front of a quest in your objective tracker and the arrow points at its current objective, moving on as you progress.
@@ -53,7 +53,7 @@ Addons that point their waypoint buttons at Waypoint Tracker:
 - **Pin colour:** make the active waypoint's pin on the world map and minimap gold, green, pink, purple, red or white, so it stands out from quest ! and ? icons (**Settings → Maps**).
 - **Share a spot:** right-click a waypoint and choose **Share** to put a clickable map pin in chat. Friends don't need the addon.
 - **Routes:** ready-made and your own lists of stops, with a map preview.
-- **Real routes (beta):** the arrow guides you through passes and gates, and uses flights, boats and teleports when quicker. Off by default.
+- **Real routes:** the arrow follows the quickest way you can really go: through passes and gates, by flight path, boat or zeppelin, and with your hearthstone, Astral Recall, mage and druid teleports when that's quicker. It plans with your riding skill and travel forms. On by default; turn it off in **Settings → Routes**.
 - **Treasure hunt (beta):** a ping when a chest or rare appears nearby. Off by default; `/wp treasure`.
 - **Route sharing & votes (beta):** off by default; enable it in **Settings → Routes**.
 
@@ -84,7 +84,7 @@ Every command and setting: [Commands & Options](https://github.com/sanjaygbhat/w
 
 **How do I find an NPC or quest giver?** Type `/wp find` and a name, or a title like `blacksmith`, then double-click a result.
 
-**Does it send my data anywhere?** Not with the default settings. Discovery exports are manual, and route sharing is off unless you turn it on. Turning on Real routes (beta) also shares the paths you walk; switch that off in **Settings → Routes** ([details](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)).
+**Does it send my data anywhere?** Not with the default settings. Discovery exports are manual, and route sharing is off unless you turn it on. Sharing the paths you walk with Real routes is off unless you turn it on in **Settings → Routes** ([details](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)).
 
 **Which languages?** English, Deutsch, Français, Español, Português, Русский, 한국어, 简体中文 and 繁體中文, following your game client.
 
