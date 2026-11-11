@@ -175,7 +175,8 @@ local function Parse()
     Rows(T.teleports, function(f)
         local n = d.nodes[f[2]]
         if n then
-            table.insert(d.teleports, { spell = tonumber(f[1]), node = n, cost = tonumber(f[3]) or CAST })
+            table.insert(d.teleports, { spell = tonumber(f[1]), node = n, cost = tonumber(f[3]) or CAST,
+                reagent = tonumber(f[4] or ""), reagents = tonumber(f[5] or "") or 1 })
         end
     end)
     Rows(T.factors, function(f)
@@ -535,7 +536,7 @@ local function Context()
         -- the hearthstone or Astral Recall, class teleports and teleport items
         -- that are known, carried and off cooldown
         local inn, name = BindNode()
-        c.jumps = Abilities.Jumps(ab, inn, name, d and d.teleports, c.faction, LOADING)
+        c.jumps = Abilities.Jumps(ab, inn, name, d and d.teleports, c.faction, LOADING, c.level)
     end
     return c
 end
@@ -1121,7 +1122,7 @@ local function StepText(path, i, wpName)
     elseif type(how) == "table" and how.kind == "teleport" then
         return L.TRAVEL_TELEPORT:format(SpellName(how.spell))
     elseif type(how) == "table" and how.kind == "item" then
-        return L.TRAVEL_USE_ITEM:format(Abilities.ItemName(how.item))
+        return (how.misfire and L.TRAVEL_USE_ITEM_MISFIRE or L.TRAVEL_USE_ITEM):format(Abilities.ItemName(how.item))
     elseif type(how) == "table" and how.dialogue then
         return L.TRAVEL_DIALOG_FLIGHT:format(PlaceName(e.node))
     elseif type(how) == "table" and TRANSPORT[how.method] then

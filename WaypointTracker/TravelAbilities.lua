@@ -1,8 +1,11 @@
 -- TravelAbilities: what this character can use to get somewhere faster, for
 -- Real routes (Travel.lua): the hearthstone and Astral Recall, class
--- teleports, teleport items in the bags, riding skills, speed forms (Travel
--- Form, Ghost Wolf, Aspect of the Cheetah, Cat Form with Feral Swiftness)
--- and the Frequent Flier perk.
+-- teleports (with their reagent in the bags), teleport items (engineering
+-- transporters and the like: carried, charged, worn if a trinket, usable by
+-- this character), riding skills, speed forms (Travel Form, Ghost Wolf,
+-- Aspect of the Cheetah, Cat Form with Feral Swiftness) and the Frequent
+-- Flier perk. Reagents, item rules and spell text come from the client's
+-- tables via tools/build_travel.py.
 --
 -- Portions derived from MIT-licensed code and travel data; see
 -- THIRD-PARTY-LICENSES.txt. The data is generated into TravelData.lua's
@@ -56,7 +59,10 @@ function A.Parse(text, nodes)
             local item, node = tonumber(f[2]), nodes and nodes[f[3] or ""]
             if item and node then
                 ab.items[#ab.items + 1] = { item = item, node = node, cast = tonumber(f[4]) or 10,
-                    cooldown = tonumber(f[5]) or 0, fac = f[6] ~= "" and f[6] or nil }
+                    cooldown = tonumber(f[5]) or 0, fac = f[6] ~= "" and f[6] or nil,
+                    equip = f[7] == "1", charges = f[8] == "1", ability = tonumber(f[9] or ""),
+                    skill = tonumber(f[10] or ""), rank = tonumber(f[11] or ""), level = tonumber(f[12] or ""),
+                    misfire = f[13] == "1" }
             end
         elseif kind == "form" then
             local spell = tonumber(f[2])
@@ -101,14 +107,46 @@ function A.Knows(spell)
     return false
 end
 
--- How many of an item the bags hold (0 when the game can't say).
-function A.ItemCount(item)
+-- How many of an item the bags hold (0 when the game can't say). With
+-- `uses`, an item with charges counts its charges left instead.
+function A.ItemCount(item, uses)
     local count = (C_Item and C_Item.GetItemCount) or GetItemCount
     if not count then
         return 0
     end
-    local ok, owned = pcall(count, item)
+    local ok, owned
+    if uses then
+        ok, owned = pcall(count, item, false, true)
+    else
+        ok, owned = pcall(count, item)
+    end
     return ok and ns.Num(owned) or 0
+end
+
+-- Is this item worn? (A trinket only works equipped.) No API: not worn.
+function A.IsEquipped(item)
+    if not (C_Item and C_Item.IsEquippedItem) then
+        return false
+    end
+    local ok, worn = pcall(C_Item.IsEquippedItem, item)
+    return ok and ns.Plain(worn) == true
+end
+
+-- Does the game say this character can use the item (skill, specialization,
+-- level)? true or false, or nil when it can't say.
+function A.IsUsable(item)
+    if not (C_Item and C_Item.IsUsableItem) then
+        return nil
+    end
+    local ok, usable = pcall(C_Item.IsUsableItem, item)
+    if not ok then
+        return nil
+    end
+    usable = ns.Plain(usable)
+    if usable == nil then
+        return nil
+    end
+    return usable and true or false
 end
 
 -- The time each cooldown ends, from the last readable answer: in combat the
@@ -261,11 +299,38 @@ local function Owns(h)
     return A.Knows(h.spell) and A.SpellReady(h.spell)
 end
 
+-- Has the bags the reagent a teleport needs (Rune of Teleportation)?
+local function HasReagent(t)
+    return not t.reagent or A.ItemCount(t.reagent) >= (t.reagents or 1)
+end
+
+-- Can this character use this teleport item right now? Carried (with a
+-- charge left), off cooldown, worn when it's a trinket, the engineering
+-- specialization it asks for, and the game's own say on skill and level.
+-- A skill requirement only the game can confirm: no answer, no jump.
+local function ItemUsable(it, level)
+    if A.ItemCount(it.item, it.charges) <= 0 or not A.ItemReady(it.item) then
+        return false
+    end
+    if (it.equip and not A.IsEquipped(it.item)) or (it.ability and not A.Knows(it.ability)) then
+        return false
+    end
+    local usable = A.IsUsable(it.item)
+    if usable == false or (it.skill and usable ~= true) then
+        return false
+    end
+    if it.level and usable == nil then
+        return (ns.Num(level) or 0) >= it.level
+    end
+    return true
+end
+A.ItemUsable = ItemUsable
+
 -- The ways to jump from where you stand: { node, cost, kind, ... } for
 -- Travel's search. `inn`/`name` is where the hearthstone goes, `teleports`
 -- the network's class teleports, `faction` the player's, `loading` the
--- seconds a loading screen costs.
-function A.Jumps(ab, inn, name, teleports, faction, loading)
+-- seconds a loading screen costs, `level` the character's.
+function A.Jumps(ab, inn, name, teleports, faction, loading, level)
     local jumps = {}
     if inn then
         local best
@@ -280,13 +345,14 @@ function A.Jumps(ab, inn, name, teleports, faction, loading)
         end
     end
     for _, t in ipairs(teleports or {}) do
-        if A.Knows(t.spell) and A.SpellReady(t.spell) then
+        if A.Knows(t.spell) and HasReagent(t) and A.SpellReady(t.spell) then
             jumps[#jumps + 1] = { node = t.node, cost = t.cost + loading, kind = "teleport", spell = t.spell }
         end
     end
     for _, it in ipairs(ab and ab.items or {}) do
-        if (not it.fac or it.fac == faction) and A.ItemCount(it.item) > 0 and A.ItemReady(it.item) then
-            jumps[#jumps + 1] = { node = it.node, cost = it.cast + loading, kind = "item", item = it.item }
+        if (not it.fac or it.fac == faction) and ItemUsable(it, level) then
+            jumps[#jumps + 1] = { node = it.node, cost = it.cast + loading, kind = "item", item = it.item,
+                misfire = it.misfire or nil }
         end
     end
     return jumps

@@ -756,7 +756,7 @@
     "C_Item.GetItemCount": {
       "status": "verified",
       "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/17ed2c3e8471cdc3806ab0d26a082be7c67d3d7c/Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua",
-      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional."
+      "note": "Forever branch, build 1.60.1.70707; guarded at runtime where optional. includeUses (third argument) documented in the same file at Forever commit 4cd0ab752a77164f654ccbca9d0c1fe8dafceebe, build 1.60.1.70888."
     },
     "Enum.SpellBookSpellBank.Player": {
       "status": "verified",
@@ -814,6 +814,16 @@
     "C_Traits.GetDefinitionInfo": {
       "status": "verified",
       "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/SharedTraitsDocumentation.lua"
+    },
+    "C_Item.IsEquippedItem": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/4cd0ab752a77164f654ccbca9d0c1fe8dafceebe/Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70888 (version.txt); guarded at runtime, missing means not worn / skill unconfirmed."
+    },
+    "C_Item.IsUsableItem": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/4cd0ab752a77164f654ccbca9d0c1fe8dafceebe/Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua",
+      "note": "Forever branch, build 1.60.1.70888 (version.txt); guarded at runtime, missing means not worn / skill unconfirmed."
     }
   },
   "native_binary_sha256": "0d89aed141d61541513aad0f02946f5cb76bc74e967ec35139811e280d488620"

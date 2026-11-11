@@ -18,7 +18,10 @@ end
 
 -- The game state these tests control. The mock has none of these APIs.
 local known, spellCD, spellDur, bags, itemCD = {}, {}, {}, {}, {}
-local faction = "Alliance"
+-- charges left (GetItemCount with includeUses), worn items, and what the
+-- game says about using an item (nil: usable, the game's default answer)
+local charges, worn, usable = {}, {}, {}
+local faction, level = "Alliance", 60
 Enum.SpellBookSpellBank = { Player = 0, Pet = 1 }
 local function Book() return { IsSpellKnown = function(id, bank) return bank == 0 and known[id] == true end } end
 local function Spell()
@@ -32,9 +35,14 @@ local function Spell()
 end
 local function Item()
     return {
-        GetItemCount = function(id) return bags[id] or 0 end,
+        GetItemCount = function(id, _, includeUses)
+            if includeUses and charges[id] ~= nil then return charges[id] end
+            return bags[id] or 0
+        end,
         GetItemCooldown = function(id) local s = itemCD[id]; return s or 0, s and 3600 or 0, 1 end,
         GetItemNameByID = function(id) return "Item " .. id end,
+        IsEquippedItem = function(id) return worn[id] == true end,
+        IsUsableItem = function(id) return usable[id] ~= false, false end,
     }
 end
 C_SpellBook, C_Spell, C_Item = Book(), Spell(), Item()
@@ -43,6 +51,12 @@ function UnitFactionGroup(unit)
     if unit == "player" then return faction end
     return mockFaction(unit)
 end
+local mockLevel = UnitLevel
+function UnitLevel(unit)
+    if unit == "player" then return level end
+    return mockLevel(unit)
+end
+local RUNE = 17031 -- Rune of Teleportation, the mage city teleports' reagent
 
 -- A value the client marks secret (restricted in combat), recognised by
 -- issecretvalue before the addon loads, as Core.lua captures it then.
@@ -84,13 +98,38 @@ check(ab and #ab.riding == 2 and ab.riding[1].spell == 33388 and ab.riding[1].bo
     and ab.riding[2].spell == 33391 and ab.riding[2].bonus == 1, "Apprentice +60% and Journeyman +100% riding")
 check(ab and ab.flier and ab.flier.spell == 1225490 and ab.flier.bonus == 0.2, "Frequent Flier: flights 20% faster")
 local teleports = {}
-for _, t in ipairs(d.teleports) do teleports[t.spell] = t.node.id end
+for _, t in ipairs(d.teleports) do teleports[t.spell] = t end
 local wantTeleports = { [18960] = "TELEPORT_MOONGLADE", [3561] = "CITY_STORMWIND", [3562] = "CITY_IRONFORGE",
     [3565] = "CITY_DARNASSUS", [3563] = "CITY_UNDERCITY", [3566] = "CITY_THUNDER_BLUFF", [3567] = "CITY_ORGRIMMAR" }
 for spell, node in pairs(wantTeleports) do
-    check(teleports[spell] == node, "class teleport " .. spell .. " lands at " .. node)
+    local t = teleports[spell]
+    check(t and t.node.id == node and t.cost == 10, "class teleport " .. spell .. " lands at " .. node .. " after a 10 s cast")
+    -- The client's SpellReagents: the six mage city teleports use one Rune of Teleportation; Moonglade nothing.
+    if spell == 18960 then
+        check(t and t.reagent == nil, "Teleport: Moonglade needs no reagent")
+    else
+        check(t and t.reagent == RUNE and t.reagents == 1, "class teleport " .. spell .. " needs one Rune of Teleportation")
+    end
 end
-check(#ab.items == 0, "the Forever data has no fixed-destination teleport items")
+-- Teleport items from the client's item tables (tools/travel_items.tsv).
+local items = {}
+for _, it in ipairs(ab.items) do items[it.item .. (it.fac or "")] = it end
+local ripper, transporter = items["18984"], items["18986"]
+local safT, ezThro = items["260820"], items["260819"]
+local crumbleH, crumbleA = items["282006Horde"], items["282006Alliance"]
+check(#ab.items == 6, "six teleport item rows ship (" .. #ab.items .. ")")
+check(ripper and ripper.node.id == "INN_11118" and ripper.ability == 20222 and ripper.skill == 202 and ripper.rank == 260
+    and ripper.cooldown == 14400 and ripper.cast == 10 and ripper.misfire and not ripper.equip and not ripper.charges,
+    "Dimensional Ripper - Everlook: Everlook, Goblin Engineer, Engineering 260, 4 h cooldown, can misfire")
+check(transporter and transporter.node.id == "INN_7733" and transporter.ability == 20219 and transporter.skill == 202
+    and transporter.misfire, "Ultrasafe Transporter: Gadgetzan: Gadgetzan, Gnomish Engineer, can misfire")
+check(safT and safT.node.id == "INN_11118" and safT.equip and safT.charges and safT.level == 55 and not safT.skill
+    and not safT.ability and safT.misfire, "SAF-T Emergency Ripper: Everlook: a worn trinket with charges, level 55, no skill")
+check(ezThro and ezThro.node.id == "INN_7733" and ezThro.equip and ezThro.charges and ezThro.level == 55,
+    "EZ-Thro Field Transporter: Gadgetzan: a worn trinket with charges, level 55")
+check(crumbleH and crumbleH.node.id == "CITY_ORGRIMMAR" and crumbleA and crumbleA.node.id == "CITY_STORMWIND"
+    and not crumbleH.misfire and crumbleH.level == 1 and not crumbleH.equip,
+    "Crumbling Hearthstone: Orgrimmar for the Horde, Stormwind for the Alliance")
 
 -- ---------------------------------------------------------------------------
 -- Class teleports in the planner
@@ -123,6 +162,11 @@ local slowPath, slow = Travel.Search(auberdine, stormwind, c)
 check(slowPath and not Uses(slowPath, "teleport"), "without the spell the route doesn't teleport")
 known[3561] = true
 c = Context()
+check(not Jump(c, "teleport", "spell", 3561), "a known Teleport: Stormwind without a Rune of Teleportation is not a jump")
+local noRune = Travel.Search(auberdine, stormwind, c)
+check(noRune and not Uses(noRune, "teleport"), "without the rune the route doesn't teleport")
+bags[RUNE] = 1
+c = Context()
 local j = Jump(c, "teleport", "spell", 3561)
 check(j and j.node.id == "CITY_STORMWIND" and j.cost == 20, "a known Teleport: Stormwind is a jump (10 s cast + loading screen)")
 local path, total = Travel.Search(auberdine, stormwind, c)
@@ -154,11 +198,32 @@ path = Travel.Search(Place("TAXI_11"), Place("TAXI_23"), c)
 check(c.faction == "Horde" and Uses(path, "teleport", "spell", 3567), "Teleport: Orgrimmar takes a Horde mage home")
 known[3567] = nil
 faction = "Alliance"
+bags[RUNE] = nil
 known[18960] = true
 c = Context()
 path = Travel.Search(auberdine, Place("TELEPORT_MOONGLADE", 15), c)
-check(Uses(path, "teleport", "spell", 18960), "Teleport: Moonglade is chosen for a druid going to Moonglade")
+check(Uses(path, "teleport", "spell", 18960), "Teleport: Moonglade (no reagent) is chosen for a druid going to Moonglade")
 known[18960] = nil
+
+-- The reagent count: a secret, missing or failing answer means no rune.
+known[3561] = true
+bags[RUNE] = 1
+local realCount = C_Item.GetItemCount
+C_Item.GetItemCount = function(id) if id == RUNE then return secret end return realCount(id) end
+check(not Jump(Context(), "teleport", "spell", 3561), "a secret reagent count is not a rune in the bags")
+C_Item.GetItemCount = function(id) if id == RUNE then error("unavailable") end return realCount(id) end
+check(not Jump(Context(), "teleport", "spell", 3561), "a failing reagent count is not a rune in the bags")
+local savedItem, savedCount = C_Item, GetItemCount
+C_Item, GetItemCount = nil, nil
+check(not Jump(Context(), "teleport", "spell", 3561), "no item count API at all: the city teleport is not offered")
+known[18960] = true
+check(Jump(Context(), "teleport", "spell", 18960), "no item count API: Teleport: Moonglade still is (it needs no reagent)")
+known[18960] = nil
+GetItemCount = function(id) return bags[id] or 0 end
+check(Jump(Context(), "teleport", "spell", 3561), "the legacy GetItemCount answers for the rune when C_Item is missing")
+C_Item, GetItemCount = savedItem, savedCount
+C_Item.GetItemCount = realCount
+known[3561], bags[RUNE] = nil, nil
 
 -- ---------------------------------------------------------------------------
 -- The hearthstone and Astral Recall need the item, or the spell
@@ -195,8 +260,103 @@ check(not Jump(Context(), "hearth"), "both unavailable: no hearth jump")
 spellCD[556], known[556] = nil, nil
 
 -- ---------------------------------------------------------------------------
--- Teleport items need the item (the mechanism; Forever's data has none yet)
+-- Shipped teleport items: owned, off cooldown, worn, skilled, and faster
 -- ---------------------------------------------------------------------------
+local everlook, gadgetzan = Place("INN_11118"), Place("INN_7733")
+local function ItemJump(id, fac, lvl)
+    for _, jj in ipairs(A.Jumps(ab, nil, nil, {}, fac or "Alliance", 10, lvl or level)) do
+        if jj.kind == "item" and jj.item == id then return jj end
+    end
+end
+-- Dimensional Ripper - Everlook: Engineering 260 and Goblin Engineer.
+check(not ItemJump(18984), "Dimensional Ripper not in the bags: no jump")
+bags[18984] = 1
+check(not ItemJump(18984), "Dimensional Ripper without Goblin Engineer: no jump")
+known[20219] = true
+check(not ItemJump(18984), "Dimensional Ripper with the other (Gnomish) specialization: no jump")
+known[20222] = true
+j = ItemJump(18984)
+check(j and j.node.id == "INN_11118" and j.cost == 20 and j.misfire, "Dimensional Ripper with Goblin Engineer: an Everlook jump")
+usable[18984] = false
+check(not ItemJump(18984), "Dimensional Ripper the game says isn't usable (skill too low): no jump")
+usable[18984] = nil
+local realUsable = C_Item.IsUsableItem
+C_Item.IsUsableItem = nil
+check(not ItemJump(18984), "no IsUsableItem: the Engineering skill can't be confirmed, no jump")
+C_Item.IsUsableItem = function() return secret, false end
+check(not ItemJump(18984), "a secret IsUsableItem answer: skill unconfirmed, no jump")
+C_Item.IsUsableItem = function() error("unavailable") end
+check(not ItemJump(18984), "a failing IsUsableItem: skill unconfirmed, no jump")
+C_Item.IsUsableItem = realUsable
+itemCD[18984] = GetTime()
+check(not ItemJump(18984), "Dimensional Ripper on cooldown: no jump")
+itemCD[18984] = nil
+-- In the planner: chosen from the far side of the world, with the misfire note.
+c = Context()
+check(Jump(c, "item", "item", 18984), "the context offers the Dimensional Ripper")
+path = Travel.Search(stormwind, everlook, c)
+at = Uses(path, "item", "item", 18984)
+check(at and Travel.StepText(path, at, "Goal") == L.TRAVEL_USE_ITEM_MISFIRE:format("Item 18984"),
+    "Stormwind to Everlook uses the Dimensional Ripper and says it can misfire")
+path = Travel.Search(Place("INN_11118", 30), everlook, c)
+check(path and not Uses(path, "item"), "a teleport item is not used when walking there is quicker")
+bags[18984] = nil
+c = Context()
+path = Travel.Search(stormwind, everlook, c)
+check(path and not Uses(path, "item"), "without the item the route to Everlook doesn't use it")
+-- Ultrasafe Transporter: Gadgetzan wants Gnomish Engineer.
+bags[18986] = 1
+known[20222] = nil
+check(ItemJump(18986) and ItemJump(18986).node.id == "INN_7733", "Ultrasafe Transporter with Gnomish Engineer: a Gadgetzan jump")
+known[20219] = nil
+check(not ItemJump(18986), "Ultrasafe Transporter without Gnomish Engineer: no jump")
+bags[18986] = nil
+-- SAF-T Emergency Ripper: a level 55 trinket with charges, no skill needed.
+bags[260820], charges[260820] = 1, 3
+check(not ItemJump(260820), "the SAF-T Ripper in the bags but not worn: no jump")
+worn[260820] = true
+j = ItemJump(260820)
+check(j and j.node.id == "INN_11118" and j.misfire, "the SAF-T Ripper worn, with charges: an Everlook jump")
+charges[260820] = 0
+check(not ItemJump(260820), "the SAF-T Ripper with no charges left: no jump")
+charges[260820] = 2
+usable[260820] = false
+check(not ItemJump(260820), "the SAF-T Ripper the game says isn't usable: no jump")
+usable[260820] = nil
+C_Item.IsUsableItem = nil
+check(not ItemJump(260820, "Alliance", 54), "no IsUsableItem and level 54: the level 55 trinket is not a jump")
+check(ItemJump(260820, "Alliance", 55), "no IsUsableItem and level 55: the trinket is a jump (no skill to confirm)")
+local realWorn = C_Item.IsEquippedItem
+C_Item.IsEquippedItem = nil
+check(not ItemJump(260820), "no IsEquippedItem: a trinket isn't assumed worn")
+C_Item.IsEquippedItem = function() return secret end
+check(not ItemJump(260820), "a secret IsEquippedItem answer: not worn")
+C_Item.IsEquippedItem, C_Item.IsUsableItem = realWorn, realUsable
+itemCD[260820] = GetTime()
+check(not ItemJump(260820), "the SAF-T Ripper on cooldown: no jump")
+itemCD[260820] = nil
+bags[260820], charges[260820], worn[260820] = nil, nil, nil
+-- EZ-Thro Field Transporter: Gadgetzan, the same rules.
+bags[260819], charges[260819], worn[260819] = 1, 1, true
+check(ItemJump(260819) and ItemJump(260819).node.id == "INN_7733", "the EZ-Thro Transporter worn: a Gadgetzan jump")
+bags[260819], charges[260819], worn[260819] = nil, nil, nil
+-- Crumbling Hearthstone: the client text picks the capital by faction.
+bags[282006] = 1
+j = ItemJump(282006, "Horde")
+check(j and j.node.id == "CITY_ORGRIMMAR" and not j.misfire, "Crumbling Hearthstone takes the Horde to Orgrimmar")
+j = ItemJump(282006, "Alliance")
+check(j and j.node.id == "CITY_STORMWIND", "Crumbling Hearthstone takes the Alliance to Stormwind")
+local n = 0
+for _, jj in ipairs(A.Jumps(ab, nil, nil, {}, "Alliance", 10, level)) do if jj.item == 282006 then n = n + 1 end end
+check(n == 1, "only the player's own faction's Crumbling Hearthstone landing is offered")
+c = Context()
+path = Travel.Search(auberdine, stormwind, c)
+at = Uses(path, "item", "item", 282006)
+check(at and Travel.StepText(path, at, "Goal") == L.TRAVEL_USE_ITEM:format("Item 282006"),
+    "the planner uses the Crumbling Hearthstone and says to use it (no misfire note)")
+bags[282006] = nil
+
+-- The item row mechanism itself
 local itemAb = A.Parse("item\t18986\tCITY_STORMWIND\t10\t14400\tAlliance\nitem\t1\tNO_SUCH_NODE\t10\t0\t", d.nodes)
 check(#itemAb.items == 1 and itemAb.items[1].node.id == "CITY_STORMWIND", "item rows resolve their landing; unknown landings are dropped")
 check(#A.Jumps(itemAb, nil, nil, {}, "Alliance", 10) == 0, "a teleport item that isn't in the bags is not a jump")
@@ -272,7 +432,7 @@ known[1225490] = nil
 -- ---------------------------------------------------------------------------
 -- Each ability source degrades gracefully when its API is missing
 -- ---------------------------------------------------------------------------
-bags[6948], known[556], known[3561], known[33391] = 1, true, true, true
+bags[6948], bags[RUNE], known[556], known[3561], known[33391] = 1, 1, true, true, true
 local function Try(label)
     local ok, ctx = pcall(Context)
     check(ok, label .. ": no Lua error (" .. tostring(not ok and ctx) .. ")")
@@ -342,7 +502,7 @@ check(A.Knows(3561) == false, "a secret spellbook answer is not known")
 C_Item.GetItemCount = function() return secret end
 check(A.ItemCount(6948) == 0, "a secret item count is not carried")
 C_SpellBook, C_Spell, C_Item = Book(), Spell(), Item()
-bags[6948], known[556], known[3561], known[33391] = nil, nil, nil, nil
+bags[6948], bags[RUNE], known[556], known[3561], known[33391] = nil, nil, nil, nil, nil
 
 check(#M.errors == 0, "no reported Lua errors: " .. tostring(M.errors[1]))
 print(("Travel abilities: %d passed, %d failed"):format(passed, failed))

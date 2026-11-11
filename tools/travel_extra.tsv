@@ -1524,3 +1524,12 @@ barrier	1424	42.74999995231629	17.5	45.250000047683706	17.5	barrier-2-crossing-0
 barrier	1424	42.74999995231629	24.5	45.250000047683706	24.5	barrier-2-crossing-07
 barrier	1424	42.74999995231629	28.000000000000004	45.250000047683706	28.000000000000004	barrier-2-crossing-08
 barrier	1424	42.74999995231629	31.499999999999993	45.250000047683706	31.499999999999993	barrier-2-crossing-09
+
+# --- Ship timings (docs/data-audit.md "Upstream network review for 1.3.1")
+# Steamwheedle Port <-> Powderfuse Port replaces the old 90-second placeholder:
+# 198 s including the wait, 69 s aboard, as reported measured live upstream
+# (rebuild 1976d4f35e0460fdc587dd8361612a1b98095364, Data/Forever/Edges.lua).
+# The client ship path 11391 waits 60 s at each stop (TaxiPathNode nodes 5
+# and 23), matching the reported wait. Still an estimate: the link stays
+# labelled unmeasured-traversal.
+retime	DOCK_STEAMWHEEDLE	DOCK_POWDERFUSE	ship	198	69

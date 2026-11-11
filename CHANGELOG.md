@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1
+
+- Mage city teleports now need a **Rune of Teleportation** in your bags, as in the game. Without one, Real routes no longer tells a mage to cast Teleport: Stormwind, Ironforge, Darnassus, Orgrimmar, Undercity or Thunder Bluff. Teleport: Moonglade and Astral Recall need nothing and are unchanged.
+- Real routes can use **engineering transporters**: Dimensional Ripper - Everlook, Ultrasafe Transporter: Gadgetzan, SAF-T Emergency Ripper: Everlook and EZ-Thro Field Transporter: Gadgetzan, plus the **Crumbling Hearthstone** (Orgrimmar for the Horde, Stormwind for the Alliance). One is suggested only when it is quicker and you can really use it: in your bags, off cooldown, with a charge left, worn if it's a trinket, and with the Engineering skill and specialization the game asks for. These devices can misfire, so the step says so. Where they land is the town, not an exact spot.
+- The Steamwheedle Port – Powderfuse Port boat is now planned at about 3 minutes 20 seconds including the wait, instead of 1 minute 30 seconds, so routes no longer count on it being quicker than it is.
+- New regression tests cover the rune, every transporter's requirements (carried, cooldown, charges, worn, skill, specialization, level, faction) and clients missing the item APIs.
+
 ## 1.3.0
 
 - **Real routes is now a standard feature and on by default** (no longer a beta). The arrow follows the quickest way you can really go: through passes, gates and tunnels, by flight path, boat, zeppelin or the tram, and with your hearthstone or a teleport when that's quicker. Updating turns it on once for everyone; turn it off in **Settings → Routes**, the quick menu or with `/wp travel off`, and that choice is kept. The Routes tab no longer shows the "New to try" notice.
