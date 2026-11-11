@@ -222,6 +222,26 @@ local function CalledFromAddon()
     local src = info and info.source or ""
     return src:find("WaypointTracker", 1, true) ~= nil and not src:find("tests/", 1, true)
 end
+-- Taint. The client marks Blizzard code run from addon code as insecure, and
+-- values it writes stay tainted for every later reader. Mocks cannot model
+-- that in general, so the Blizzard paths known to spread it to the rest of the
+-- UI call M.Taint: run with addon code on the stack (and not inside a secure
+-- delegate such as the UI panel manager), it is recorded in M.taintedCalls.
+M.taintedCalls, M.secureDepth = {}, 0
+local function AddonOnStack()
+    for level = 3, 80 do
+        local info = debug.getinfo(level, "S")
+        if not info then return false end
+        local src = info.source or ""
+        if src:find("WaypointTracker", 1, true) and not src:find("tests/", 1, true) then return true end
+    end
+    return false
+end
+function M.Taint(what)
+    if M.secureDepth == 0 and AddonOnStack() then
+        table.insert(M.taintedCalls, what)
+    end
+end
 M.lastUnknownMethod = nil
 M.unknownMethodKind = {} -- method -> widget type of its latest failed lookup
 local FrameMT = {
@@ -1363,13 +1383,24 @@ C_CVar = {
 function GetCursorPosition()
     return 0, 0
 end
+-- Managed panels (an "area" in UIPanelWindows) are shown and hidden by the
+-- secure FramePositionDelegate, so their OnShow/OnHide run untainted. Other
+-- frames are shown or hidden directly, in the caller's (addon's) taint.
+local function PanelSecure(frame, fn)
+    local attrs = frame and frame.GetName and UIPanelWindows[frame:GetName() or ""]
+    if not (attrs and attrs.area) then return fn() end
+    M.secureDepth = M.secureDepth + 1
+    local ok, err = pcall(fn)
+    M.secureDepth = M.secureDepth - 1
+    if not ok then error(err, 0) end
+end
 function ShowUIPanel(frame)
     M.uiPanelCalls.show = M.uiPanelCalls.show + 1
     if M.player.combat then
         M.actionBlocked = (M.actionBlocked or 0) + 1
         return
     end
-    frame:Show()
+    PanelSecure(frame, function() frame:Show() end)
 end
 function HideUIPanel(frame)
     M.uiPanelCalls.hide = M.uiPanelCalls.hide + 1
@@ -1377,7 +1408,7 @@ function HideUIPanel(frame)
         M.actionBlocked = (M.actionBlocked or 0) + 1
         return
     end
-    frame:Hide()
+    PanelSecure(frame, function() frame:Hide() end)
 end
 function issecretvalue()
     return false
@@ -1429,7 +1460,17 @@ end
 -- Blizzard's HUD Edit Mode
 M.editLayouts = { "Modern", "Classic" }
 M.editActive = 1
-EditModeManagerFrame = { active = false, selected = nil, cleared = 0 }
+-- A real frame, opened the way the game menu does it: ShowUIPanel goes
+-- through the secure panel delegate, and OnShow enters Edit Mode.
+EditModeManagerFrame = NewObject("Frame", "EditModeManagerFrame", UIParent)
+EditModeManagerFrame._shown = false
+EditModeManagerFrame.active, EditModeManagerFrame.cleared = false, 0
+UIPanelWindows["EditModeManagerFrame"] = { area = "center", pushable = 0, whileDead = 1, neverAllowOtherPanels = 1 }
+EditModeManagerFrame:SetScript("OnShow", function(self) self:EnterEditMode() end)
+EditModeManagerFrame:SetScript("OnHide", function(self) self:ExitEditMode() end)
+function EditModeManagerFrame:CanEnterEditMode()
+    return not M.editModeBlocked
+end
 function EditModeManagerFrame:GetActiveLayoutInfo()
     return { layoutName = M.editLayouts[M.editActive] }
 end
@@ -1442,13 +1483,21 @@ end
 function EditModeManagerFrame:SelectSystem(frame)
     self.selected = frame
 end
+-- Entering or leaving from addon code taints editModeActive, which party and
+-- raid frames read on every update (CompactUnitFrame.lua:894, :1453 in the
+-- forever UI source): the 1.2.4 "secret boolean value ... tainted by
+-- 'WaypointTracker'" spam.
 function EditModeManagerFrame:EnterEditMode()
+    M.Taint("EditModeManagerFrame:EnterEditMode")
     M.editModeEntered = M.editModeEntered + 1
     self.active = true
+    if not self._shown then self._shown = true end
     EventRegistry:TriggerEvent("EditMode.Enter")
 end
 function EditModeManagerFrame:ExitEditMode()
+    M.Taint("EditModeManagerFrame:ExitEditMode")
     self.active = false
+    if self._shown then self._shown = false end
     EventRegistry:TriggerEvent("EditMode.Exit")
 end
 
@@ -2385,6 +2434,10 @@ Settings = {
 }
 SettingsPanel = NewObject("Frame", "SettingsPanel", UIParent)
 SettingsPanel._shown = false
+SettingsPanel:SetFrameStrata("HIGH")
+-- Not a managed UI panel: hiding it from addon code runs its OnHide (Flush,
+-- UpdateMicroButtons, binding saves) tainted.
+SettingsPanel:SetScript("OnHide", function() M.Taint("SettingsPanel:Hide") end)
 function SettingsPanel:GetLayout(category)
     local layout = M.settingsLayouts[category]
     if not layout then

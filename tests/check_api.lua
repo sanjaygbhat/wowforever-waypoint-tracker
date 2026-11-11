@@ -8,9 +8,18 @@ for f in list:lines() do
 end
 list:close()
 
+local NEVER = "\0never" -- no line allows these
 local rules = {
     -- positions can be plain { x, y } tables: read them with ns.XY(pos)
     { pattern = ":GetXY%(", allow = "function ns%.XY", why = "use ns.XY(pos), some positions have no :GetXY()" },
+    -- Taint (1.2.4 CompactUnitFrame "secret boolean value ... tainted by
+    -- 'WaypointTracker'"): Blizzard code run from addon code stays tainted.
+    -- Open Edit Mode with ShowUIPanel(EditModeManagerFrame), like the game menu.
+    { pattern = "[:%.]EnterEditMode", allow = NEVER, why = "taints Edit Mode for party/raid frames; use ShowUIPanel(EditModeManagerFrame)" },
+    { pattern = "[:%.]ExitEditMode", allow = NEVER, why = "taints Edit Mode for party/raid frames; use HideUIPanel(EditModeManagerFrame)" },
+    { pattern = "SettingsPanel[:%.]Hide", allow = NEVER, why = "SettingsPanel is not a managed panel: hiding it from addon code taints it" },
+    { pattern = "SettingsPanel[:%.]Close", allow = NEVER, why = "SettingsPanel is not a managed panel: closing it from addon code taints it" },
+    { pattern = "HideUIPanel[%s%(,]+SettingsPanel", allow = NEVER, why = "SettingsPanel is not a managed panel: HideUIPanel hides it directly, tainted" },
 }
 
 local problems = 0

@@ -272,6 +272,7 @@ L.HELP_WAY_SEARCH = "/way [nom] - chercher des quêtes, PNJ, ennemis, entités e
 -- Edit Mode
 L.ARROW_EDIT_NAME = "Flèche de point de passage"
 L.EDIT_MODE_HINT = "Déplacez-la en mode Édition (Échap > Mode Édition), avec une position pour chaque disposition."
+L.EDIT_MODE_BEHIND_SETTINGS = "Le mode Édition est ouvert derrière les Options : fermez les Options pour déplacer la flèche."
 
 -- Release polish
 L.NO_COORDS = "Saisissez d'abord X et Y."

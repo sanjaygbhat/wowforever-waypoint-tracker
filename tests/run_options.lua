@@ -157,15 +157,30 @@ M.player.combat = false
 local shown = 0
 local windowShow = ns.Window.Show
 ns.Window.Show = function() shown = shown + 1 end
+-- Regression (1.2.4 taint): SettingsPanel is not a managed UI panel, so hiding
+-- it from addon code ran its OnHide tainted. Open must leave it to the player
+-- and show the window above it instead.
 SettingsPanel:Show()
+local raised
+local raiseAbove = ns.Window.RaiseAbove
+ns.Window.RaiseAbove = function(other) raised = other end
 open.click()
-check(shown == 1 and not SettingsPanel:IsShown(), "Open closes Settings and opens the window")
-local hidePanel = HideUIPanel
-HideUIPanel = nil
+check(shown == 1 and SettingsPanel:IsShown() and raised == SettingsPanel, "Open shows the window above Settings without closing it")
+check(#M.taintedCalls == 0, "Open taints nothing: " .. table.concat(M.taintedCalls, ", "))
+ns.Window.RaiseAbove = raiseAbove
+SettingsPanel:Hide()
+raised = nil
+open.click()
+check(shown == 2 and raised == nil, "Open without Settings shown just opens the window")
+ns.Window.Show = windowShow
 SettingsPanel:Show()
-open.click()
-check(shown == 2 and not SettingsPanel:IsShown(), "Open still closes Settings without HideUIPanel")
-HideUIPanel = hidePanel
+ns.Window.Show()
+ns.Window.RaiseAbove(SettingsPanel)
+check(WaypointTrackerFrame:GetFrameStrata() == "DIALOG", "the window really sits above Settings (" .. tostring(WaypointTrackerFrame:GetFrameStrata()) .. ")")
+ns.Window.Hide()
+check(WaypointTrackerFrame:GetFrameStrata() ~= "DIALOG", "closing the window puts its strata back")
+SettingsPanel:Hide()
+ns.Window.Show = function() shown = shown + 1 end
 local beforeBindings = M.settingsOpened
 bindingsButton.click()
 check(M.settingsOpened == beforeBindings, "unregistered bindings category safely does nothing")
@@ -209,6 +224,29 @@ ns.EditMode = { Enter = function() return false, "combat" end }
 editButton.click()
 check(M.printed[#M.printed]:find(L.IN_COMBAT_NO_PANELS, 1, true), "Edit Mode failure reason is respected")
 ns.EditMode = oldEditMode
+-- Regression (1.2.4 taint, CompactUnitFrame "secret boolean value ... tainted
+-- by 'WaypointTracker'"): the real button must open Edit Mode through the
+-- secure panel manager, never by calling EnterEditMode or hiding Settings.
+M.taintedCalls = {}
+local enteredBefore = M.editModeEntered
+SettingsPanel:Show()
+editButton.click()
+check(M.editModeEntered == enteredBefore + 1 and EditModeManagerFrame:IsEditModeActive(), "Edit Mode button really enters Edit Mode")
+check(#M.taintedCalls == 0, "Edit Mode button taints nothing: " .. table.concat(M.taintedCalls, ", "))
+check(SettingsPanel:IsShown() and M.printed[#M.printed]:find(L.EDIT_MODE_BEHIND_SETTINGS, 1, true),
+    "Settings stays open and the player is told Edit Mode is behind it")
+SettingsPanel:Hide()
+HideUIPanel(EditModeManagerFrame)
+check(not EditModeManagerFrame:IsEditModeActive(), "closing Edit Mode leaves it")
+local printedBefore = #M.printed
+editButton.click()
+check(M.editModeEntered == enteredBefore + 2 and #M.taintedCalls == 0
+    and #M.printed == printedBefore, "Edit Mode from a closed Settings opens untainted, no extra notice")
+HideUIPanel(EditModeManagerFrame)
+M.editModeBlocked = true
+editButton.click()
+check(M.editModeEntered == enteredBefore + 2 and M.printed[#M.printed]:find(L.EDIT_MODE_HINT, 1, true), "Edit Mode the game refuses gives the hint")
+M.editModeBlocked = nil
 local pick = button(O.categories.arrow, L.PICK_COLOUR)
 check(pick and pick.parentInitializer == controls.WAYPOINTTRACKER_colorMode and not pick.parentPredicate()
     and not pick:ShouldShow(), "Pick colour is hidden unless colour is single")

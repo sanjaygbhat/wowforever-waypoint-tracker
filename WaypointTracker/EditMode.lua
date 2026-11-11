@@ -482,7 +482,21 @@ end
 function EditMode.Enter()
     if ns.InCombat() then return false, "combat" end
     local m = EditModeManagerFrame
-    if m and m.EnterEditMode then return pcall(m.EnterEditMode, m) end
+    if m and m.Show then
+        -- Open it exactly as the game menu does: ShowUIPanel hands the frame to
+        -- the secure panel manager, whose OnShow enters Edit Mode. Never call
+        -- m:EnterEditMode() from here: it taints editModeActive, which party and
+        -- raid frames read on every update ("secret boolean value ... tainted by
+        -- 'WaypointTracker'" in CompactUnitFrame).
+        if m.CanEnterEditMode then
+            local ok, can = pcall(m.CanEnterEditMode, m)
+            if ok and can == false then return false, "unavailable" end
+        end
+        if m:IsShown() then return true end
+        if not ShowUIPanel then return false, "unavailable" end
+        local ok = pcall(ShowUIPanel, m)
+        return ok and m:IsShown() and true or false, "unavailable"
+    end
     if ns.Arrow and ns.Arrow.SetMoving then
         ns.Arrow.SetMoving(not ns.Arrow.moving)
         return true, "legacy"

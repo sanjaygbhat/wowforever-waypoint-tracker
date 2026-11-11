@@ -272,6 +272,7 @@ L.HELP_WAY_SEARCH = "/way [nome] - buscar missões, PNJs, inimigos, objetos e it
 -- Edit Mode
 L.ARROW_EDIT_NAME = "Seta do ponto de rota"
 L.EDIT_MODE_HINT = "Mova no Modo de Edição (Esc > Modo de Edição), com uma posição para cada leiaute."
+L.EDIT_MODE_BEHIND_SETTINGS = "O Modo de Edição está aberto atrás das Opções: feche as Opções para mover a seta."
 
 -- Release polish
 L.NO_COORDS = "Digite X e Y primeiro."
