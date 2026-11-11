@@ -64,16 +64,15 @@ ns.defaults = {
     followQuest = false, -- point at the quest you track when you have no waypoint
     questClickTrack = true, -- plain tracker clicks and the hover icon take the arrow
     corpseWaypoint = true, -- dying points the arrow at your body
-    -- Real routes (beta, see Travel.lua): follow a way you can go, not the straight line
-    realRoutes = false,
+    -- Real routes (see Travel.lua): follow a way you can go, not the straight line
+    realRoutes = true,
     travelPreference = "safer",
     travelFlights = true,
     travelBoats = true,
     travelHearth = true,
     travelMapLine = true,
     travelTrails = true, -- write down where you walk and follow walked paths
-    travelShare = true, -- share walked paths, crossings and boat times
-    travelNoticeShown = false,
+    travelShare = false, -- opt-in: share walked paths, crossings and boat times
     -- write down NPCs, quests and objects met in Forever (see Learn.lua)
     learn = true,
     -- treasure hunt (see Treasure.lua): off until you turn it on
@@ -471,7 +470,19 @@ local function InitDatabase()
     if (db.version or 1) < 4 then
         db.settings.routeSharing = false
     end
-    db.version = 4
+    -- 4 -> 5: Real routes is a standard feature now, on by default. A saved
+    -- false can't tell the old default from a choice, so it is turned on
+    -- once for everyone; turning it off again afterwards is kept. The
+    -- opt-in notice it replaces is gone. Walked-path sharing stays opt-in:
+    -- it only ever ran with Real routes on, so it stays on only for players
+    -- who had Real routes on and hadn't turned sharing off.
+    if (db.version or 1) < 5 then
+        local st = db.settings
+        st.travelShare = st.realRoutes == true and st.travelShare ~= false
+        st.realRoutes = true
+        st.travelNoticeShown = nil
+    end
+    db.version = 5
     ns.settings = db.settings
 
     if type(WaypointTrackerCharDB) ~= "table" then

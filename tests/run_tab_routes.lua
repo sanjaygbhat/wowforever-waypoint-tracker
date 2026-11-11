@@ -248,19 +248,11 @@ w.sharingEnable:Click()
 check(ns.Get("routeSharing") and not w.sharingEnable:IsShown() and #M.printed == printedBeforeEnable,
     "Routes tab opt-in enables sharing, hides its button and keeps chat quiet")
 check(w.net:GetText() == L.ROUTES_SHARING_LINE:format(ns.RoutesNet.Status().peers), "sharing footer reports peers")
-check(w.notice:IsShown() and w.notice.text:GetText() == L.TRAVEL_NEW_WINDOW, "Real routes notice explains the feature without a slash command")
-w.notice.enable:Click()
-check(ns.Get("realRoutes") and ns.Get("travelNoticeShown") and not w.notice:IsShown(), "notice enables Real routes and acknowledges it in one click")
+-- Real routes is a standard feature (1.3.0): no opt-in notice in the Routes tab.
+check(w.notice == nil and ns.Get("realRoutes") == true, "Real routes is on by default with no opt-in notice")
 ns.Set("realRoutes", false)
-ns.Set("travelNoticeShown", false)
-w.notice.dismiss:Click()
-check(ns.Get("travelNoticeShown") and not w.notice:IsShown(), "notice dismissal persists and relayouts")
-ns.Set("travelNoticeShown", false)
+check(w.notice == nil, "turning Real routes off brings back no opt-in notice")
 ns.Set("realRoutes", true)
-check(not w.notice:IsShown(), "enabled Real routes hides the notice")
-ns.Set("realRoutes", false)
-check(w.notice:IsShown(), "notice returns until dismissed")
-w.notice.dismiss:Click()
 
 w.source:GenerateMenu()
 local sourceMenu = M.lastMenu

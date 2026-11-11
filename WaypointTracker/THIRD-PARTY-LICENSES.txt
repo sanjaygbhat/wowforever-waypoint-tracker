@@ -4,7 +4,11 @@ reproduced below, as the MIT licence requires.
 ========================================================================
 Mapzeroth (https://github.com/tr0tsky0/Mapzeroth)
 Used by Real routes (TravelData.lua): zone crossings, city gates, docks,
-inns and the measured times of ships and zeppelins in WoW Forever.
+inns and the measured times of ships and zeppelins in WoW Forever; and
+(TravelAbilities.lua, ported from PlayerAbilities.lua, MovementSpeed.lua
+and Hearth.lua, branch "rebuild" commit 1976d4f35e0460fdc587dd8361612a1b98095364)
+the class teleports, hearthstone and Astral Recall, riding skills, speed
+forms and Frequent Flier perk with their spell and item ids.
 ========================================================================
 
 MIT License

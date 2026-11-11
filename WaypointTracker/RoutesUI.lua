@@ -383,9 +383,7 @@ end
 
 local function Layout()
     if not frame then return end
-    local notice = not ns.Get("travelNoticeShown") and not ns.Get("realRoutes")
-    frame.notice:SetShown(notice)
-    local top = notice and -78 or 0
+    local top = 0
     searchBox:ClearAllPoints()
     searchBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, top)
     listBg:ClearAllPoints()
@@ -397,23 +395,6 @@ local function Build(content)
     frame = content
     firstHelp = not ns.Get("routesHelpShown")
     frame.status = Window.frame.status
-    frame.notice = CreateFrame("Frame", nil, frame)
-    frame.notice:SetPoint("TOPLEFT")
-    frame.notice:SetPoint("TOPRIGHT")
-    frame.notice:SetHeight(72)
-    frame.notice.text = Widgets.Label(frame.notice, L.TRAVEL_NEW_WINDOW, "GameFontHighlightSmall")
-    frame.notice.text:SetPoint("TOPLEFT", 4, -4)
-    frame.notice.text:SetPoint("RIGHT", -4, 0)
-    frame.notice.dismiss = Widgets.Button(frame.notice, L.TRAVEL_NOTICE_DISMISS, 90, 22)
-    frame.notice.dismiss:SetPoint("BOTTOMRIGHT", -4, 4)
-    frame.notice.dismiss:SetScript("OnClick", ns.Safe(function() ns.Set("travelNoticeShown", true) end))
-    frame.notice.enable = Widgets.Button(frame.notice, L.TRAVEL_NOTICE_ENABLE, 110, 22)
-    frame.notice.enable:SetPoint("RIGHT", frame.notice.dismiss, "LEFT", -6, 0)
-    frame.notice.enable:SetScript("OnClick", ns.Safe(function()
-        ns.Set("realRoutes", true)
-        ns.Set("travelNoticeShown", true)
-    end))
-    Widgets.Tooltip(frame.notice.enable, L.REAL_ROUTES, L.REAL_ROUTES_DESC)
 
     -- Two filter rows leave enough room for translated dropdown labels.
     searchBox = Widgets.EditBox(frame, 260, { search = true, placeholder = L.ROUTES_SEARCH })
@@ -618,7 +599,7 @@ local function Build(content)
     RoutesUI.widgets = {
         source = source, rows = rows, detail = detail, search = searchBox.edit, new = tab.leftButton,
         import = tab.leftButton2, help = help, cat = cat, sort = sort, zoneOnly = zoneOnly,
-        empty = emptyText, net = netText, status = frame.status, list = list, notice = frame.notice,
+        empty = emptyText, net = netText, status = frame.status, list = list,
         map = detail.map, more = detail.more, meta2 = detail.meta2, sharingEnable = sharingEnable,
     }
     Layout()

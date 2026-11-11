@@ -63,6 +63,7 @@ RouteMap.lua
 RoutePreview.lua
 RoutesUI.lua
 TravelData.lua
+TravelAbilities.lua
 Terrain.lua
 Travel.lua
 Trails.lua
