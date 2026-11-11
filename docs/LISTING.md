@@ -15,7 +15,7 @@ The in-game addon list, folders and API identifiers stay `Waypoint Tracker` / `W
 ## Summary (CurseForge and Wago)
 
 ```text
-Find any quest, NPC, enemy or item and a 3D arrow walks you there. /way coordinates, map pins and TomTom-compatible waypoints for WoW Forever.
+Find any quest, NPC, enemy or item and a 3D arrow takes you there by the fastest route. /way coordinates, map pins and TomTom-compatible waypoints for WoW Forever.
 ```
 
 Lead with Find and the arrow: one promise, in the words players search for (quest, NPC, item, arrow, /way, TomTom). Routes, Real routes, Treasure hunt (beta) and sharing stay in the description's "Also included" section.
