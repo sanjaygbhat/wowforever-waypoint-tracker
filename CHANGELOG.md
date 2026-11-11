@@ -7,6 +7,8 @@
 - The Steamwheedle Port – Powderfuse Port boat is now planned at about 3 minutes 20 seconds including the wait, instead of 1 minute 30 seconds, so routes no longer count on it being quicker than it is.
 - New regression tests cover the rune, every transporter's requirements (carried, cooldown, charges, worn, skill, specialization, level, faction) and clients missing the item APIs.
 
+## 1.3.0
+
 - **Real routes is now a standard feature and on by default** (no longer a beta). The arrow follows the quickest way you can really go: through passes, gates and tunnels, by flight path, boat, zeppelin or the tram, and with your hearthstone or a teleport when that's quicker. Updating turns it on once for everyone; turn it off in **Settings → Routes**, the quick menu or with `/wp travel off`, and that choice is kept. The Routes tab no longer shows the "New to try" notice.
 - Routes are quicker and more complete: the planner knows every mage city teleport and Teleport: Moonglade, uses Astral Recall before your hearthstone when both are ready (saving the longer cooldown), plans with your riding skill (Apprentice +60%, Journeyman +100%) and travel forms (Travel Form, Ghost Wolf, Aspect of the Cheetah, Cat Form with Feral Swiftness) even before you mount up, and counts Frequent Flier. A teleport or hearthstone on cooldown, or one you don't have, is never suggested; the global cooldown no longer hides a ready teleport, and in combat the last known cooldown is used.
 - Sharing the paths you walk with other players stays opt-in: it is off by default and stays on only if you already had Real routes on with sharing enabled. Route sharing & votes (beta) and Treasure hunt (beta) are unchanged.
