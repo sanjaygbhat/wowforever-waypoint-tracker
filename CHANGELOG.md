@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.5
+
+- Fixes Lua errors from party and raid frames ("attempt to perform boolean test on field 'outOfRange' (a secret boolean value, while execution tainted by 'WaypointTracker')"). Opening Edit Mode from Waypoint Tracker (Settings, the quick menu or `/wp editmode`) now opens it the same way the game menu does, so the game's own frames are no longer affected. If you saw the errors, `/reload` once after updating.
+- Open Window in Waypoint Tracker's settings now shows the window above the Settings panel instead of closing it from the addon. Open Edit Mode from Settings opens Edit Mode behind the panel and tells you; close Settings to move things.
+- New regression tests model the game's taint rules for Edit Mode and the Settings panel, and a code check refuses the calls that caused this.
+
 ## 1.2.4
 
 - Click the quest icon in front of a quest in your objective tracker (the "..." or "?") and the arrow points at that quest's current objective, then moves on to the next one as you progress. Click the icon again to let go. On by default; **Settings → Maps → Track quests with a click** turns it off.

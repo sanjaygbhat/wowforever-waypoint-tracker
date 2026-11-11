@@ -273,6 +273,7 @@ L.HELP_WAY_SEARCH = "/way [nombre] - buscar misiones, PNJ, enemigos, entidades y
 -- Edit Mode
 L.ARROW_EDIT_NAME = "Flecha de punto de ruta"
 L.EDIT_MODE_HINT = "Muévela en el modo edición (Esc > Modo edición), con una posición para cada diseño."
+L.EDIT_MODE_BEHIND_SETTINGS = "El modo edición está abierto detrás de Opciones: cierra Opciones para mover la flecha."
 
 -- Release polish
 L.NO_COORDS = "Escribe X e Y primero."

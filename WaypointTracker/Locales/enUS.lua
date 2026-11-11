@@ -274,6 +274,7 @@ L.HELP_WAY_SEARCH = "/way [name] - search quests, NPCs, enemies, objects and ite
 -- Edit Mode
 L.ARROW_EDIT_NAME = "Waypoint Arrow"
 L.EDIT_MODE_HINT = "Move it in Edit Mode (Esc > Edit Mode), with a spot for each layout."
+L.EDIT_MODE_BEHIND_SETTINGS = "Edit Mode is open behind Settings: close Settings to move the arrow."
 
 -- Release polish
 L.NO_COORDS = "Type X and Y first."

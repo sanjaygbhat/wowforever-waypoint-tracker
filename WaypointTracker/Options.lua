@@ -22,27 +22,29 @@ local function CombatBlocked()
     return false
 end
 
-local function CloseSettings()
-    if not SettingsPanel or ns.InCombat() then return end
-    if HideUIPanel then
-        if pcall(HideUIPanel, SettingsPanel) then return end
-    end
-    if SettingsPanel.Close and pcall(SettingsPanel.Close, SettingsPanel, true) then return end
-    SettingsPanel:Hide()
-end
-
+-- Never hide SettingsPanel from here. It is not a managed UI panel, so
+-- HideUIPanel, :Close() and :Hide() all run its OnHide (micro buttons, key
+-- binding saves) in this addon's taint. The window opens above it instead;
+-- Edit Mode opens underneath and shows when the player closes Settings.
 local function OpenWindow()
     if CombatBlocked() then return end
-    CloseSettings()
-    if ns.Window and ns.Window.Show then ns.Window.Show() end
+    if ns.Window and ns.Window.Show then
+        ns.Window.Show()
+        if SettingsPanel and SettingsPanel:IsShown() and ns.Window.RaiseAbove then
+            ns.Window.RaiseAbove(SettingsPanel)
+        end
+    end
 end
 
 local function EnterEditMode()
     if CombatBlocked() then return end
-    CloseSettings()
     if ns.EditMode and ns.EditMode.Enter then
         local ok, reason = ns.EditMode.Enter()
-        if not ok then ns.Print(reason == "combat" and L.IN_COMBAT_NO_PANELS or L.EDIT_MODE_HINT, true) end
+        if not ok then
+            ns.Print(reason == "combat" and L.IN_COMBAT_NO_PANELS or L.EDIT_MODE_HINT, true)
+        elseif SettingsPanel and SettingsPanel:IsShown() then
+            ns.Print(L.EDIT_MODE_BEHIND_SETTINGS, true)
+        end
     elseif ns.Arrow and ns.Arrow.SetMoving then
         ns.Arrow.SetMoving(true)
     end

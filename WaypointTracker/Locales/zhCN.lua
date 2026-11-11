@@ -255,6 +255,7 @@ L.HELP_WAY_SEARCH = "/way [名称] - 搜索任务、NPC、敌人、物体和物�
 -- Edit Mode
 L.ARROW_EDIT_NAME = "路径点箭头"
 L.EDIT_MODE_HINT = "在编辑模式中移动它（Esc > 编辑模式），每个布局都有各自的位置。"
+L.EDIT_MODE_BEHIND_SETTINGS = "编辑模式已在设置界面后打开：关闭设置即可移动箭头。"
 
 -- Release polish
 L.NO_COORDS = "请先输入 X 和 Y。"

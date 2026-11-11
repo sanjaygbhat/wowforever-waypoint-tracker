@@ -160,6 +160,34 @@ check(WP.IsValid(a) and WP.Count() == 3, 'with autoClear off the reached waypoin
 ns.Set('autoClear', true)
 WP.ClearAll(true)
 
+-- ---------------------------------------------------------------------------
+-- Taint (1.2.4: "attempt to perform boolean test on field 'outOfRange' (a
+-- secret boolean value, while execution tainted by 'WaypointTracker')" in
+-- CompactUnitFrame). Every way to open Edit Mode must go through the secure
+-- panel manager; none may call Blizzard's Edit Mode or Settings code directly.
+-- ---------------------------------------------------------------------------
+local function Leave() if EditModeManagerFrame:IsShown() then HideUIPanel(EditModeManagerFrame) end end
+M.taintedCalls = {}
+local entered = M.editModeEntered
+M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, 'editmode')
+check(M.editModeEntered == entered + 1 and EditModeManagerFrame:IsEditModeActive(), '/wp editmode enters Edit Mode')
+Leave()
+local menu = M.OpenMenu(WaypointTrackerMinimapButton, 'RightButton')
+local item = menu and M.FindMenuItem(menu, L.OPEN_EDIT_MODE)
+check(item ~= nil, 'the quick menu has Edit Mode')
+if item then M.PickMenuItem(menu, L.OPEN_EDIT_MODE) end
+check(M.editModeEntered == entered + 2 and EditModeManagerFrame:IsEditModeActive(), 'the quick menu Edit Mode entry enters Edit Mode')
+-- Selecting our arrow inside Edit Mode, then leaving it.
+if ns.EditMode.Select then ns.EditMode.Select('arrow') end
+Leave()
+check(not EditModeManagerFrame:IsEditModeActive(), 'leaving Edit Mode works')
+for _, b in ipairs(bindings) do
+    local fn = b.body:match('^([%w_]+)%(%)$')
+    if fn and type(_G[fn]) == 'function' then pcall(_G[fn]) end
+end
+Leave()
+check(#M.taintedCalls == 0, 'no entry point runs Blizzard Edit Mode or Settings code tainted: ' .. table.concat(M.taintedCalls, ', '))
+
 check(#M.errors == 0, 'entry points have no reported Lua errors')
 for _, e in ipairs(M.errors) do print(e) end
 print(('%d passed, %d failed'):format(passed, failed))

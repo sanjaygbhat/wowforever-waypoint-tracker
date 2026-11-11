@@ -299,6 +299,10 @@ local function Build()
         if frame.rehoming then return end
         if PlaySound and SOUNDKIT then PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE) end
         frame.shownDirectly = nil
+        if frame.raisedFrom then
+            frame:SetFrameStrata(frame.raisedFrom)
+            frame.raisedFrom = nil
+        end
         Deactivate(Window.tabs[current])
         for key in pairs(Window.tabs) do Window.PopAll(key) end
         updateElapsed = 0
@@ -392,6 +396,17 @@ function Window.Show(key)
     frame.shownDirectly = true
     frame:Show()
     return true
+end
+
+-- Shown from inside Blizzard Settings: sit above that panel until closed,
+-- rather than closing Settings from addon code (which taints it).
+local STRATA_ABOVE = { BACKGROUND = "LOW", LOW = "MEDIUM", MEDIUM = "HIGH", HIGH = "DIALOG", DIALOG = "FULLSCREEN" }
+function Window.RaiseAbove(other)
+    if not (frame and frame:IsShown() and other and other.GetFrameStrata) then return end
+    local above = STRATA_ABOVE[other:GetFrameStrata() or ""]
+    if not above then return end
+    frame.raisedFrom = frame.raisedFrom or frame:GetFrameStrata()
+    frame:SetFrameStrata(above)
 end
 
 function Window.Hide()

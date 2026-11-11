@@ -272,6 +272,7 @@ L.HELP_WAY_SEARCH = "/way [Name] - Quests, NSCs, Gegner, Objekte und Gegenständ
 -- Edit Mode
 L.ARROW_EDIT_NAME = "Wegpunktpfeil"
 L.EDIT_MODE_HINT = "Verschiebe ihn im Bearbeitungsmodus (Esc > Bearbeitungsmodus), mit eigenem Platz für jedes Layout."
+L.EDIT_MODE_BEHIND_SETTINGS = "Der Bearbeitungsmodus ist hinter den Einstellungen geöffnet: Schließe die Einstellungen, um den Pfeil zu verschieben."
 
 -- Release polish
 L.NO_COORDS = "Gib zuerst X und Y ein."

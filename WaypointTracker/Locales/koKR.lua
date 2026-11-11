@@ -255,6 +255,7 @@ L.HELP_WAY_SEARCH = "/way [이름] - 퀘스트, NPC, 적, 오브젝트, 아이�
 -- Edit Mode
 L.ARROW_EDIT_NAME = "경로점 화살표"
 L.EDIT_MODE_HINT = "편집 모드(Esc > 편집 모드)에서 옮기세요. 레이아웃마다 위치를 따로 저장합니다."
+L.EDIT_MODE_BEHIND_SETTINGS = "편집 모드가 설정 창 뒤에 열렸습니다. 설정을 닫고 화살표를 옮기세요."
 
 -- Release polish
 L.NO_COORDS = "먼저 X와 Y를 입력하세요."
