@@ -82,6 +82,8 @@ Every command and setting: [Commands & Options](https://github.com/sanjaygbhat/w
 
 **Is there a TomTom-style arrow for WoW Forever?** Yes, this is one. It understands the same `/way` commands and accepts waypoints from addons built for TomTom.
 
+**Lua errors from party or raid frames mentioning WaypointTracker?** Fixed in 1.2.5: update, then type `/reload` once. Opening Edit Mode from the addon (Settings, the quick menu or `/wp editmode`) affected the game's own frames in earlier versions.
+
 **How do I find an NPC or quest giver?** Type `/wp find` and a name, or a title like `blacksmith`, then double-click a result.
 
 **Does it send my data anywhere?** Not with the default settings. Discovery exports are manual, and route sharing is off unless you turn it on. Turning on Real routes (beta) also shares the paths you walk; switch that off in **Settings → Routes** ([details](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)).
