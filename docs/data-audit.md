@@ -196,3 +196,108 @@ Run `tools/filter_quest_locations.py` after data generation and reviewed curatio
 Permanent route gates include `run_thrall_travel.lua`, `check_taxi_transport.lua`, `run_quest557_ground.lua`, `run_ghost_travel.lua` and `run_route_coverage.lua`. Coverage uses 2,658 fixed restored profile/origin/destination cases. A lost route must name a BLOCKED walking link in its baseline path; unexplained losses fail. This is a sampled planner coverage gate, not an exhaustive all-node-pairs claim.
 
 Quest 557 uses the complete verified control to Elemental Slave at Alterac 22.9, 59.5 as its curated Find target. The other genuine spawn coordinates remain in the immutable raw source database as references; they are not deleted. The permanent ground gate checks the actual Find selection as well as both planner preferences and coordinate representations.
+
+## Teleport items and reagents (1.3.1)
+
+Evidence is the Forever client's own tables for build **1.60.1.70862**
+(`https://wago.tools/db2/<Table>/csv?build=1.60.1.70862&locale=enUS`), pinned as
+`tools/fixtures/travel/<Table>-1.60.1.70862-enUS.csv` by
+`tools/pin_travel_client.py` with both the full-table and the pinned-file
+SHA-256 in the manifest. The same rows were extracted from build 1.60.1.70888
+and are byte-identical. API availability comes from Gethe/wow-ui-source
+`forever` at 4cd0ab752a77164f654ccbca9d0c1fe8dafceebe (version 1.60.1.70888),
+`ItemDocumentation.lua`: `C_Item.IsEquippedItem`, `C_Item.IsUsableItem`, and
+`C_Item.GetItemCount`'s `includeUses` argument.
+
+**Reagents.** SpellReagents rows 19589, 19622, 19623, 19676, 19679 and 19680
+give Teleport: Stormwind (3561), Ironforge (3562), Undercity (3563),
+Darnassus (3565), Thunder Bluff (3566) and Orgrimmar (3567) one Rune of
+Teleportation (17031) each. Teleport: Moonglade (18960), Astral Recall (556)
+and the Hearthstone (8690) have no SpellReagents row. `build_travel.py` writes
+the reagent into the `teleports` block; the planner offers a city teleport only
+when the bags hold the reagent (a missing, failing or secret count is none).
+The generator refuses a hearth spell that gains a reagent, and a spell with more
+than one reagent, instead of dropping the requirement. All of these spells cast
+in 10 seconds (SpellMisc casting index 7 = 10,000 ms).
+
+**Teleport items.** Every client item whose on-use spell teleports
+(SpellEffect 5/252) or whose spell text describes teleporting or transporting
+was reviewed. The client has no destination for these spells: Everlook
+Transporter (23442) is a type-252 effect with a server-side target, and
+Gnomish Transporter (23453), Mount Hyjal Transporter (1269339) and Crumbling
+Hearthstone (1312670) are scripted (type 3) effects. A row ships only when the
+client's spell text names a town that is already a network node, and
+`build_travel.py` refuses rows whose landing word is missing from that text.
+Landings are the town's inn (or the capital's city node) and are **estimated**,
+like the class teleports' `cast-verified,landing-unmeasured` landings. Cast
+time, cooldown, charges, slot, required skill/rank, specialization and level
+are read from ItemEffect/ItemSparse, never from `tools/travel_items.tsv`.
+
+| Item | Client facts | Landing | Shipped |
+| --- | --- | --- | --- |
+| 18984 Dimensional Ripper - Everlook | Engineering (202) 260, Goblin Engineer (20222), 4 h cooldown, text: "transports you to Everlook… technical problems that sometimes occur" | Everlook inn `INN_11118` | yes, "can misfire" |
+| 18986 Ultrasafe Transporter: Gadgetzan | Engineering 260, Gnomish Engineer (20219), 4 h, text: "transport yourself to Gadgetzan… nothing bad could ever happen" | Gadgetzan inn `INN_7733` | yes, "can misfire" |
+| 260820 SAF-T Emergency Ripper: Everlook | trinket (InventoryType 12), level 55, 3 charges, 4 h, spell 23442 | `INN_11118` | yes, worn only, "can misfire" |
+| 260819 EZ-Thro Field Transporter: Gadgetzan | trinket, level 55, 3 charges, 4 h, spell 23453 | `INN_7733` | yes, worn only, "can misfire" |
+| 282006 Crumbling Hearthstone | level 1, single use, text "$?pc923[Orgrimmar][Stormwind]"; PlayerCondition 923 is a Horde race mask | `CITY_ORGRIMMAR` (Horde), `CITY_STORMWIND` (Alliance) | yes |
+| 260821, 260823 (Mount Hyjal transporters) | "Kaylaena's Workshop on Mount Hyjal… high chance" of problems | no network node | no |
+| 17690–17691, 17900–17909, 18149–18150 | "sanctuary of Dun Baldar / Frostwolf Keep" | Alterac Valley only | no |
+| 191267, 191288 | inside Naxxramas | dungeon | no |
+| 241128 Pile of Portiporters | "Teleport Somewhere", New Avalon only | random | no |
+| 213548 Scroll of Liminal Passage | to a party member | not fixed | no |
+| 22589/22630–22632, 12585, 17191 | group portals (Karazhan, Stormwind, inner Maraudon) | portal object | no |
+| 21711 Lunar Festival Invitation | from within Moonglade's event area | event only | no |
+| 260830 SAF-T Teleport | Tinker: Teleport, "Teleport forward $M2 yds" | short blink | no |
+
+Misfires: the Everlook spell's own text says technical problems occur, and the
+Gnomish spell is a server script whose text is ironic about safety; neither
+outcome is described by client data. Rather than excluding the engineers'
+devices, the step says "Use … (it can misfire)" and the landing stays an
+estimate. The skill-gated devices are offered only when
+`C_Item.IsUsableItem` confirms the item is usable and the specialization spell
+is known; with no answer (missing API, error, secret value) they are skipped.
+Trinkets are offered only while worn (`C_Item.IsEquippedItem`), with a charge
+left (`GetItemCount(item, false, true)`) and off cooldown; their level is
+checked with `UnitLevel` only when `IsUsableItem` cannot answer.
+
+Not needed for Forever on this evidence: equipping an item before use is not
+planned (a trinket must already be worn), toys and flight costs remain out of
+scope, and mage portals (10059, 11416–11420, reagent Rune of Portals 17032) are
+never better than the mage's own teleport to the same city.
+
+## Upstream network review for 1.3.1
+
+Upstream (Mapzeroth `rebuild` 1976d4f35e0460fdc587dd8361612a1b98095364, still
+the branch head on 2026-11-11) was dumped with `tools/mapzeroth_dump.lua` and
+built against our fixtures without changing any gate. The checked-in `mz_*.tsv`
+fixtures stay at the earlier extraction; only the timing below is imported.
+
+- **Steamwheedle and Powderfuse docks moved** (1446:68.36,23.02 and
+  2548:80.31,54.39). The build stops with "terrain endpoint changed:
+  DOCK_STEAMWHEEDLE" (and DOCK_POWDERFUSE when only that one is pinned): both are
+  surveyed terrain endpoints. The new positions lie 15 and 16 yards from the
+  client-spline `*_CLIENT_STOP` anchors the ship already uses, so upstream now
+  agrees with the client evidence we route through. Kept ours, no import.
+- **Redridge crossings.** Upstream moves the Riverglades–Redridge crossing
+  (2548:16.01,68.62 / 1433:45.36,7.92; ours 13.8,78.4, 334 yards away, with our
+  own north-road crossing 151 yards from upstream's Redridge side) and adds
+  Redridge–Riverglades (2), Redridge–Burning Steppes and Redridge–Swamp of
+  Sorrows crossings. Moving the Riverglades anchor fails "terrain endpoint
+  changed: BORDER_RIVERGLADES_TO_REDRIDGE_MOUNTAINS" (it starts terrain chain
+  956CFEACC0D3). The new crossings fail "missing walking verdict" in
+  `verified_travel.py`: the build-1.60.1.70338 terrain verification has no
+  verdict for them, and a verdict from a different client build would mix
+  evidence identities. Kept ours; they need a terrain verification pass first.
+- **Steamwheedle–Powderfuse ship time.** Upstream reports a live measurement
+  of 69 s aboard and 60 s at the dock, 2T + D = 198 s, the same both ways. The
+  client path 11391 (TaxiPathNode nodes 5 and 23) waits 60 s at each stop,
+  matching the reported wait; its spline is 1,561 and 1,588 yards per crossing,
+  about 53–54 s at the speed implied by the Booty Bay–Ratchet ship's reported
+  95 s over 2,787 yards, so 198 s is consistent with client geometry while the
+  old 90 s placeholder was not. Imported as `retime` in `tools/travel_extra.tsv`
+  (198 s, 69 aboard). The link stays `unmeasured-traversal`; no terrain,
+  endpoint or coverage gate changed.
+- Not part of the three conflicts but in the same dump: Undercity elevator and
+  entrance nodes (would add an area and touch the Thrall/Undercity hard gate),
+  six TAXI_3276 flight rows (the client's own flights already decide these) and
+  non-travel points of interest. Not imported.

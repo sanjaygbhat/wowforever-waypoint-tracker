@@ -1381,7 +1381,7 @@ DOCK_SOUTHSHORE	DOCK_AUBERDINE_MENETHIL	ship	303	75	1	1
 DOCK_AUBERDINE_MENETHIL	DOCK_SOUTHSHORE	ship	488	260	1	1				
 DOCK_MENETHIL	DOCK_AUBERDINE_MENETHIL	ship	498	270	1	1				
 DOCK_SOUTHSHORE	DOCK_MENETHIL	ship	428	200	2	1				
-DOCK_STEAMWHEEDLE_CLIENT_STOP	DOCK_POWDERFUSE_CLIENT_STOP	ship	90		1					
+DOCK_STEAMWHEEDLE_CLIENT_STOP	DOCK_POWDERFUSE_CLIENT_STOP	ship	198	69	1					
 DOCK_MENETHIL_THERAMORE	DOCK_THERAMORE	ship	370	155	1					
 DOCK_AUBERDINE_RUTTHERAN	DOCK_RUTTHERAN	ship	190	65	0					
 DOCK_BOOTYBAY	DOCK_RATCHET	ship	250	95	1					
@@ -4467,17 +4467,17 @@ thunder_bluff	1638	INN_6746	Horde
 undercity	1497	INN_6741	Horde
 valanaar	16638	INN_C2521_622_727	Both
 ]],
-    -- spell, node it lands at, cast seconds
+    -- spell, node it lands at, cast seconds, reagent item, reagent count
     teleports = [[
-18960	TELEPORT_MOONGLADE	10
-3561	CITY_STORMWIND	10
-3562	CITY_IRONFORGE	10
-3565	CITY_DARNASSUS	10
-3563	CITY_UNDERCITY	10
-3566	CITY_THUNDER_BLUFF	10
-3567	CITY_ORGRIMMAR	10
+18960	TELEPORT_MOONGLADE	10		
+3561	CITY_STORMWIND	10	17031	1
+3562	CITY_IRONFORGE	10	17031	1
+3565	CITY_DARNASSUS	10	17031	1
+3563	CITY_UNDERCITY	10	17031	1
+3566	CITY_THUNDER_BLUFF	10	17031	1
+3567	CITY_ORGRIMMAR	10	17031	1
 ]],
-    -- travel abilities: hearth item, spell, cast, cooldown | item id, node, cast, cooldown, faction | form spell, bonus, indoors, talent spell, bonus per rank | riding spell, bonus | flier spell, bonus
+    -- travel abilities: hearth item, spell, cast, cooldown | item id, node, cast, cooldown, faction, equipped (1), charges (1), specialization spell, skill line, skill rank, level, can misfire (1) | form spell, bonus, indoors, talent spell, bonus per rank | riding spell, bonus | flier spell, bonus
     abilities = [[
 hearth	6948	8690	10	3600
 hearth		556	10	900
@@ -4488,6 +4488,12 @@ form	768	0	1	17002	0.15
 riding	33388	0.6
 riding	33391	1
 flier	1225490	0.2
+item	18984	INN_11118	10	14400				20222	202	260		1
+item	260820	INN_11118	10	14400		1	1				55	1
+item	18986	INN_7733	10	14400				20219	202	260		1
+item	260819	INN_7733	10	14400		1	1				55	1
+item	282006	CITY_ORGRIMMAR	10	0	Horde						1	
+item	282006	CITY_STORMWIND	10	0	Alliance						1	
 ]],
     -- map, how much longer walking is than the straight line
     factors = [[

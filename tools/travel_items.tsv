@@ -1,0 +1,28 @@
+# Real routes: teleport items, reviewed against the WoW Forever client's own
+# tables (pinned in tools/fixtures/travel/*-1.60.1.70862-enUS.csv by
+# tools/pin_travel_client.py; see docs/data-audit.md "Teleport items and
+# reagents"). The client has no destination for these spells (the landing is
+# server-side), so each row ties the client's spell text to an existing
+# network node. tools/build_travel.py checks that the client spell text names
+# the landing, and takes cast time, cooldown, charges, slot, required skill,
+# specialization and level from the client, never from this file.
+#
+# Columns: item, landing (node id, or town:<key> for that town's inn),
+#   faction (only when the client text picks the landing by faction),
+#   landing word that must appear in the client spell text,
+#   outcome (misfire = the client text says it can go wrong; the step says so).
+# Landings are estimated: the arrival point is the town, not a surveyed spot.
+#
+# Reviewed and left out (reasons in docs/data-audit.md): 260821 and 260823
+# (Kaylaena's Workshop on Mount Hyjal: no network node, "high chance" of
+# technical problems); 17690/17691/17900-17909/18149/18150 (Alterac Valley
+# battleground recalls); 191267/191288 (inside Naxxramas); 241128 (random,
+# New Avalon only); 213548 (to a party member); 22589/22630-22632, 12585,
+# 17191 (group portals to dungeons/cities); 21711 (Lunar Festival only);
+# 260830 (short-range Tinker teleport).
+18984	town:everlook		Everlook	misfire
+260820	town:everlook		Everlook	misfire
+18986	town:gadgetzan		Gadgetzan	misfire
+260819	town:gadgetzan		Gadgetzan	misfire
+282006	CITY_ORGRIMMAR	Horde	Orgrimmar
+282006	CITY_STORMWIND	Alliance	Stormwind

@@ -13,6 +13,9 @@ Inputs (in tools/.cache/travel/, not checked in):
     Flier perk TravelAbilities.lua reads.
   * tools/travel_extra.tsv (ours): more crossings, passes, sub-areas, zone
     levels and corrections on top of Mapzeroth's.
+  * the client's spell and item tables (<Table>-1.60.1.70862-enUS.csv, pinned by
+    tools/pin_travel_client.py): teleport reagents and cast times, and the
+    rules of the reviewed teleport items in tools/travel_items.tsv (ours).
 
 Flights come from the client: every flight path between two flight masters,
 timed by the length of its flight line at 30 yards a second (this matches
@@ -146,9 +149,86 @@ for f in read_tsv(os.path.join(CACHE, "mz_abilities.tsv")):
         raise ValueError("unknown Mapzeroth ability kind: " + f[0])
     abilities.append((f + [""] * (width + 1))[:width + 1])
 
+# --- the client's own rules for those abilities ----------------------------
+# Reagents and cast times of the teleports and hearthstones, and the reviewed
+# teleport items (tools/travel_items.tsv), from the Forever client's tables
+# pinned by tools/pin_travel_client.py.
+CLIENT_BUILD = "1.60.1.70862"
+
+
+def client_rows(table):
+    return read_csv("%s-%s-enUS.csv" % (table, CLIENT_BUILD))
+
+
+spell_reagents = {}
+for r in client_rows("SpellReagents"):
+    pairs = [(int(r["Reagent_%d" % i]), int(r["ReagentCount_%d" % i])) for i in range(8) if int(r["Reagent_%d" % i])]
+    if pairs:
+        spell_reagents[int(r["SpellID"])] = pairs
+cast_ms = {int(r["ID"]): int(r["Base"]) for r in client_rows("SpellCastTimes")}
+spell_cast = {int(r["SpellID"]): cast_ms[int(r["CastingTimeIndex"])] / 1000 for r in client_rows("SpellMisc")}
+spell_text = {int(r["ID"]): r["Description_lang"] for r in client_rows("Spell")}
+item_effects = {int(r["ID"]): r for r in client_rows("ItemEffect")}
+effects_of = {}
+for r in client_rows("ItemXItemEffect"):
+    effects_of.setdefault(int(r["ItemID"]), []).append(item_effects[int(r["ItemEffectID"])])
+sparse = {int(r["ID"]): r for r in client_rows("ItemSparse")}
+conditions = {int(r["ID"]): r for r in client_rows("PlayerCondition")}
+# Classic race IDs: a race mask is "Horde" when it has every Horde race and no Alliance one.
+HORDE_RACES, ALLIANCE_RACES = (2, 5, 6, 8), (1, 3, 4, 7)
+
+
+def condition_faction(cid):
+    mask = int(conditions[cid]["RaceMasks_0"]) & 0xFFFFFFFF
+    has = lambda race: bool(mask >> (race - 1) & 1)
+    if all(has(r) for r in HORDE_RACES) and not any(has(r) for r in ALLIANCE_RACES):
+        return "Horde"
+    if all(has(r) for r in ALLIANCE_RACES) and not any(has(r) for r in HORDE_RACES):
+        return "Alliance"
+    raise ValueError("player condition %d is not a faction" % cid)
+
+
+def one_reagent(spell):
+    pairs = spell_reagents.get(spell, [])
+    if len(pairs) > 1:
+        raise ValueError("spell %d needs more than one reagent" % spell)
+    return pairs[0] if pairs else ("", "")
+
+
+for a in abilities:
+    if a[0] == "hearth" and spell_reagents.get(int(a[2])):
+        raise ValueError("hearth spell %s needs a reagent; the abilities format can't say so" % a[2])
+    if a[0] == "hearth" and spell_cast.get(int(a[2])) not in (None, float(a[3])):
+        raise ValueError("hearth spell %s cast time differs from the client" % a[2])
+
+travel_items = []  # (item, landing, faction, cast, cooldown, equip, uses, ability, skill, rank, level, misfire)
+for f in read_tsv(os.environ.get("TRAVEL_ITEMS") or os.path.join(HERE, "travel_items.tsv")):
+    f = (f + [""] * 5)[:5]
+    item, landing, fac, word, outcome = int(f[0]), f[1], f[2], f[3], f[4]
+    uses = [e for e in effects_of.get(item, []) if int(e["TriggerType"]) == 0]
+    if len(uses) != 1 or item not in sparse:
+        raise ValueError("teleport item %d: expected one on-use effect in the client" % item)
+    e, s = uses[0], sparse[item]
+    spell = int(e["SpellID"])
+    text = spell_text.get(spell) or ""
+    branch = re.search(r"\$\?pc(\d+)\[([^\]]*)\]\[([^\]]*)\]", text)
+    if branch:  # "$?pc923[Orgrimmar][Stormwind]": the first text is for the condition's faction
+        first = condition_faction(int(branch.group(1)))
+        if not fac:
+            raise ValueError("teleport item %d lands by faction; give the faction" % item)
+        text = branch.group(2) if fac == first else branch.group(3)
+    if word.lower() not in text.lower():
+        raise ValueError("teleport item %d: the client's spell text doesn't name %s" % (item, word))
+    if spell_reagents.get(spell):
+        raise ValueError("teleport item %d's spell needs a reagent" % item)
+    cooldown = max(int(e["CoolDownMSec"]), int(e["CategoryCoolDownMSec"]), 0) / 1000
+    travel_items.append((item, landing, fac, spell_cast[spell], cooldown, int(s["InventoryType"]) != 0,
+                         int(e["Charges"]) > 0, int(s["RequiredAbility"]), int(s["RequiredSkill"]),
+                         int(s["RequiredSkillRank"]), int(s["RequiredLevel"]), outcome == "misfire"))
+
 # ours: extra nodes, links, sub-areas, zone levels, fixes
 extra_nodes, extra_links, regions, levels, drops, moves, rehome = [], [], [], {}, set(), {}, {}
-barriers = []
+barriers, retimes = [], []
 if os.path.exists(EXTRA):
     for f in read_tsv(EXTRA):
         kind = f[0]
@@ -174,6 +254,8 @@ if os.path.exists(EXTRA):
             rehome[f[1]] = f[2]
         elif kind == "move":  # move node-id map x y: a better position for one of Mapzeroth's
             moves[f[1]] = (int(f[2]), float(f[3]) / 100, float(f[4]) / 100)
+        elif kind == "retime":  # retime from to method seconds [seconds aboard] [note]: a better timing for one link
+            retimes.append(f[1:6])
 
 for nid, (m, x, y) in moves.items():
     if nid in mz_nodes:
@@ -371,6 +453,11 @@ for record in VERIFICATION['transport']:
             l[3] = '325'  # Conditional estimate: 140s each way, 30/60s pauses.
         if l[2] == 'tram':
             l[4] = '58.633'  # Keep the 120s exterior-to-exterior cost separate.
+for frm, to, method, seconds, aboard in ((r + [""] * 5)[:5] for r in retimes):
+    hits = [l for l in links if l[:3] == [frm, to, method]]
+    if len(hits) != 1:
+        raise ValueError("retime %s>%s %s: expected one link, found %d" % (frm, to, method, len(hits)))
+    hits[0][3], hits[0][4] = seconds, aboard
 teleports = [(spell, target, 10.0) for spell, target, _ in teleports]
 for l in links:
     if l[2] != "taxi" and l[5] == "" and nodes[l[0]]["cont"] != nodes[l[1]]["cont"]:
@@ -438,8 +525,38 @@ for key in sorted(settlements):
     inn = next((n["id"] for n in nodes.values() if n["kind"] == "inn" and (n["town"] == key or n["city"] == key)), "")
     if s["area"] and inn:
         settle_lines.append("%s\t%d\t%s\t%s" % (key, s["area"], inn, s["fac"]))
-tele_lines = ["%d\t%s\t%s" % (s, t, fmt(c)) for s, t, c in teleports if t in nodes]
+tele_lines = []
+for s, t, c in teleports:
+    if t in nodes:
+        reagent, amount = one_reagent(s)
+        tele_lines.append("%d\t%s\t%s\t%s\t%s" % (s, t, fmt(spell_cast.get(s, c)), reagent, amount))
 ability_lines = ["\t".join(a) for a in abilities if a[0] != "item" or a[2] in nodes]
+
+
+def landing_node(landing):
+    if landing.startswith("town:"):
+        key = landing[5:]
+        inn = [n["id"] for n in nodes.values() if n["kind"] == "inn" and (n["town"] == key or n["city"] == key)]
+        if len(inn) != 1:
+            raise ValueError("teleport item landing %s: expected one inn, found %d" % (landing, len(inn)))
+        return inn[0]
+    if landing not in nodes:
+        raise ValueError("teleport item landing %s is not a network node" % landing)
+    return landing
+
+
+def flag(v):
+    return "1" if v else ""
+
+
+def blank0(v):
+    return str(v) if v else ""
+
+
+for item, landing, fac, cast, cooldown, equip, uses, ability, skill, rank, level, misfire in travel_items:
+    ability_lines.append("\t".join(["item", str(item), landing_node(landing), fmt(cast), fmt(cooldown), fac,
+                                    flag(equip), flag(uses), blank0(ability), blank0(skill), blank0(rank), blank0(level),
+                                    flag(misfire)]))
 factor_lines = ["%d\t%s" % (m, fmt(f, 2)) for m, f in sorted(factors.items())]
 level_lines = ["%d\t%d\t%d" % (m, lo, hi) for m, (lo, hi) in sorted(levels.items())]
 indoor_ids = sorted(cidx[c] for c in indoor if c in cidx)
@@ -520,9 +637,10 @@ with open(OUT, "w", encoding="utf-8") as out:
                     "forward observed ghost paths; id, sequence, area, map, x, y, continent, world x, world y; docs/corpse-run-evidence.md"))
     out.write(block("cities", city_lines, "walled city map, faction"))
     out.write(block("towns", settle_lines, "town, area id (the hearthstone's bind name), inn node, faction"))
-    out.write(block("teleports", tele_lines, "spell, node it lands at, cast seconds"))
+    out.write(block("teleports", tele_lines, "spell, node it lands at, cast seconds, reagent item, reagent count"))
     out.write(block("abilities", ability_lines,
-                    "travel abilities: hearth item, spell, cast, cooldown | item id, node, cast, cooldown, faction"
+                    "travel abilities: hearth item, spell, cast, cooldown | item id, node, cast, cooldown, faction,"
+                    " equipped (1), charges (1), specialization spell, skill line, skill rank, level, can misfire (1)"
                     " | form spell, bonus, indoors, talent spell, bonus per rank | riding spell, bonus | flier spell, bonus"))
     out.write(block("factors", factor_lines, "map, how much longer walking is than the straight line"))
     out.write(block("levels", level_lines, "map, lowest and highest level of its creatures"))

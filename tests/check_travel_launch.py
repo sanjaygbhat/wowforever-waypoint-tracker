@@ -52,6 +52,17 @@ class LaunchTravel(unittest.TestCase):
         self.assertIn(['DOCK_STEAMWHEEDLE_CLIENT_STOP', 'DOCK_POWDERFUSE_CLIENT_STOP',
                        'ship', 'unmeasured-traversal'], block('unmeasuredLinks'))
 
+    def test_steamwheedle_ship_uses_reported_time_with_client_waits(self):
+        # 1.3.1: reported 2 x 69 s aboard + 60 s wait replaces the 90 s placeholder
+        # (docs/data-audit.md); the client path's own stop delays are that wait.
+        links = {tuple(r[:3]): r for r in block('links')}
+        ship = links['DOCK_STEAMWHEEDLE_CLIENT_STOP', 'DOCK_POWDERFUSE_CLIENT_STOP', 'ship']
+        self.assertEqual(ship[3:7], ['198', '69', '1', ''])
+        points = [p for p in csv.DictReader((FIXTURE / 'TaxiPathNode.csv').read_text().splitlines())
+                  if p['PathID'] == '11391' and int(p['Delay'])]
+        self.assertEqual(sorted((int(p['NodeIndex']), int(p['Delay'])) for p in points), [(5, 60), (23, 60)])
+        self.assertEqual(int(ship[3]), 2 * int(ship[4]) + 60)
+
     def test_launch_boats_and_skyships_have_spline_evidence(self):
         policy = json.loads((FIXTURE / 'verified-routing.json').read_text())
         records = {r['id']: r['values'] for r in policy['transport']}

@@ -777,5 +777,65 @@
     "sha256": "79267e8be8034e47daab14350411b3acc0b1f64e86efc9d821a217497254ca0a",
     "source": "https://wago.tools/db2/UiMapAssignment/csv?build=1.60.1.70862&locale=enUS",
     "selection": "full extraction"
+  },
+  "travel/SpellReagents-1.60.1.70862-enUS.csv": {
+    "source_sha256": "f37423f667c09a6aaada6f05bed12e6d307fe15b3596944e132492f7f1dc9cc8",
+    "sha256": "df03f940b1f2d08ba968170276509381877a14d649f01176ed24fd629797d6dc",
+    "source": "https://wago.tools/db2/SpellReagents/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/SpellMisc-1.60.1.70862-enUS.csv": {
+    "source_sha256": "1188fc9a62e24ca11c682cd8ae2ecb2e8eb19f72e7f76fd8bec1ef22e2732192",
+    "sha256": "bdcaa0d293e73103a289334888a852a0d5871da8f20edc14dbf221122c0ec39c",
+    "source": "https://wago.tools/db2/SpellMisc/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/SpellCastTimes-1.60.1.70862-enUS.csv": {
+    "source_sha256": "f94e1e3a3495d11af875fd7b007124fdd660a19ba626bc1de00a609da81f25d8",
+    "sha256": "8f0f5a711a0b187d706c5c3964a1c2c9bd3213baff5428d2ee1ed29168c9ae86",
+    "source": "https://wago.tools/db2/SpellCastTimes/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/SpellName-1.60.1.70862-enUS.csv": {
+    "source_sha256": "4358b3d1a2a859284b2f46cf614e6a1f85320be342acc1c4b68b625f30cf47a5",
+    "sha256": "3a8514e925a63cf77a6e0df7ac82748e70d7186c47fefdfdb4e03d4e982798b8",
+    "source": "https://wago.tools/db2/SpellName/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/Spell-1.60.1.70862-enUS.csv": {
+    "source_sha256": "935973b636b2f108ea84276dc992334e2880e216c4295cf9f2277c0a0b65f375",
+    "sha256": "799d983903a245ef220db8ea6a93b9abb28272a8dfb7efe91e146678dd8f40ce",
+    "source": "https://wago.tools/db2/Spell/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/SpellEffect-1.60.1.70862-enUS.csv": {
+    "source_sha256": "cc8f167fe246b495294b560196f6c59439f703e8f937ddb6acd81157bd5f8b9c",
+    "sha256": "49e9c2e65cb4b6b6e3f15b1966c4aa8ba11030ec975c63a201aa7b687b213b9d",
+    "source": "https://wago.tools/db2/SpellEffect/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/ItemXItemEffect-1.60.1.70862-enUS.csv": {
+    "source_sha256": "15dc36eec90ca5768e00469cb8065aedf82efcf205ca03281daf6aac69ca1885",
+    "sha256": "16e247a1e042ede301434bd8eb4796a2a24bfd954c853e58c2ac29ca087723a1",
+    "source": "https://wago.tools/db2/ItemXItemEffect/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/ItemEffect-1.60.1.70862-enUS.csv": {
+    "source_sha256": "df9f123861be4e180736e79dcee708151c6f79de9f5e6773ff8e2066430aa434",
+    "sha256": "56f3c1b0ac619873397ce9a16406134a339d555f7147b718481ee57f3cdffdfa",
+    "source": "https://wago.tools/db2/ItemEffect/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/ItemSparse-1.60.1.70862-enUS.csv": {
+    "source_sha256": "d175e5ef9f8a2ce87c232351eca34cdf6a9c672a5a3f4dd12d2f72bdcd380eda",
+    "sha256": "f95eac295aaaac9c64fe580b507c026e3da9579bcf4f200d9f7c5955e8cf8f39",
+    "source": "https://wago.tools/db2/ItemSparse/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "travel/PlayerCondition-1.60.1.70862-enUS.csv": {
+    "source_sha256": "a417c4dac3bce72a9dd83d5fc479b02cea26a3e9d7ada22a3d4e62f993fde1df",
+    "sha256": "6597ec56c78a15c3b7bb7293abfbc3bb32f9729defea36e801d4145d4d93a7a0",
+    "source": "https://wago.tools/db2/PlayerCondition/csv?build=1.60.1.70862&locale=enUS",
+    "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
   }
 }

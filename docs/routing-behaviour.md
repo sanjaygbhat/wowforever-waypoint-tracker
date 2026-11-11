@@ -38,10 +38,13 @@ positions were approximately 222 and 803 yards away respectively. Those old
 points remain ordinary passes so that their surveyed terrain connections keep
 their exact coordinates. The ship now connects separate `*_CLIENT_STOP`
 anchors. A vehicle stop does not certify a boarding platform: no walking links
-or terrain proofs were added at these anchors. The inherited 90-second service
-placeholder is explicitly `unmeasured-traversal`; stop evidence separately marks
-boarding/landing access unmeasured. Its true ride and wait times still require
-measurement. Existing same-area walking inference can approach these anchors;
+or terrain proofs were added at these anchors. Since 1.3.1 the service costs a
+reported live 198 seconds (69 aboard, 60 waiting) instead of the inherited
+90-second placeholder; the client path's 60-second stop delays match the
+reported wait (`docs/data-audit.md`, "Upstream network review for 1.3.1"). The
+link stays explicitly `unmeasured-traversal`; stop evidence separately marks
+boarding/landing access unmeasured. We have not measured the ride or the wait ourselves.
+Existing same-area walking inference can approach these anchors;
 that inference is not a new surveyed walking leg.
 
 The two existing Skyborne skyships have client TaxiPathNode evidence:
