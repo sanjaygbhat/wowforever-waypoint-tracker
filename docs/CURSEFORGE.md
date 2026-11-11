@@ -53,7 +53,7 @@ Addons that point their waypoint buttons at Waypoint Tracker:
 - **Pin colour:** make the active waypoint's pin on the world map and minimap gold, green, pink, purple, red or white, so it stands out from quest ! and ? icons (**Settings → Maps**).
 - **Share a spot:** right-click a waypoint and choose **Share** to put a clickable map pin in chat. Friends don't need the addon.
 - **Routes:** ready-made and your own lists of stops, with a map preview.
-- **Real routes:** the arrow follows the quickest way you can really go: through passes and gates, by flight path, boat or zeppelin, and with your hearthstone, Astral Recall, mage and druid teleports when that's quicker. It plans with your riding skill and travel forms. On by default; turn it off in **Settings → Routes**.
+- **Real routes:** the arrow follows the quickest way you can really go: through passes and gates, by flight path, boat or zeppelin, and with your hearthstone, Astral Recall, mage and druid teleports or an engineering transporter when that's quicker. It plans with your riding skill and travel forms. On by default; turn it off in **Settings → Routes**.
 - **Treasure hunt (beta):** a ping when a chest or rare appears nearby. Off by default; `/wp treasure`.
 - **Route sharing & votes (beta):** off by default; enable it in **Settings → Routes**.
 
