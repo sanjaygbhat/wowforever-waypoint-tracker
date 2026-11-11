@@ -271,11 +271,14 @@ class Audit:
         stop_anchors = launch['stop_anchors']
         transport_records = {r['id']: r['values'] for r in verification['transport']}
         corrections = {r['id']: r['values'] for r in verification['transport'] if r['verdict'] == 'CORRECTED'}
-        moves, homes, drops = {}, {}, set()
-        for _, r in self.tsv(self.extra):
+        moves, homes, drops, retimes = {}, {}, set(), {}
+        for rawline, r in self.tsv(self.extra):
             if r[0] == "move": moves[r[1]] = (int(r[2]), float(r[3]), float(r[4]))
             elif r[0] == "area": homes[r[1]] = r[2]
             elif r[0] == "drop": drops.add(r[1])
+            # A reviewed timing for one raw link (docs/data-audit.md); exact values only.
+            elif r[0] == "retime": retimes[(r[1], r[2], r[3])] = (rawline, (r + [""] * 6)[4:6])
+        used_retimes = set()
         transport_count = 0
         for nid, r in sorted(raw_nodes.items()):
             if r[1] not in TRANSPORT or nid in drops:
@@ -316,6 +319,9 @@ class Audit:
                 r[3] = str(correction['conditional_cost_seconds'])
             if r[2] == 'tram':
                 r[4] = '58.633'
+            if (r[0], r[1], r[2]) in retimes:
+                used_retimes.add((r[0], r[1], r[2]))
+                r[3], r[4] = retimes[r[0], r[1], r[2]][1]
             if r[2] == 'ship':
                 r[:2] = [stop_anchors.get(n, n) for n in r[:2]]
             options = directed.get((r[0], r[1], r[2]), [])
@@ -326,7 +332,16 @@ class Audit:
                 screens = r[5] or ("1" if self.nodes[r[0]][1][3] != self.nodes[r[1]][1][3] else "")
                 self.check(l[5] == screens, line, ">".join(r[:2]), l[5], f"loading screens expected {screens!r}")
 
-        teleport_rows = self.block("teleports", 3)
+        for key, (rawline, _) in sorted(retimes.items()):
+            self.check(key in used_retimes, rawline, ">".join(key[:2]), key[2], "retime names no raw transport link")
+
+        teleport_rows = self.block("teleports", 5)
+        # Reagents and cast times come from the client's pinned tables.
+        client = "-1.60.1.70862-enUS.csv"
+        reagents = {int(r["SpellID"]): (r["Reagent_0"], r["ReagentCount_0"]) for r in self.csv("SpellReagents" + client)
+                    if int(r["Reagent_0"])}
+        casts = {int(r["ID"]): int(r["Base"]) / 1000 for r in self.csv("SpellCastTimes" + client)}
+        spell_cast = {int(r["SpellID"]): casts[int(r["CastingTimeIndex"])] for r in self.csv("SpellMisc" + client)}
         actual_teleports = {int(r[0]): (line, r) for line, r in teleport_rows}
         source_teleports = {int(r[1]): r for _, r in self.tsv(self.cache / "mz_misc.tsv")
                             if r[0] == "teleport" and r[2] in self.nodes}
@@ -337,6 +352,9 @@ class Audit:
             self.check(r[1] in self.nodes, line, f"teleport {spell}", r[1], "teleport landing endpoint missing")
             self.check(bool(source) and r[1] == source[2] and float(r[2]) == float(source[3]),
                        line, f"teleport {spell}", r[1:], "landing endpoint/cast duration differs from mz_misc.tsv")
+            self.check(float(r[2]) == spell_cast.get(spell), line, f"teleport {spell}", r[2], "cast duration differs from client SpellMisc")
+            self.check(tuple(r[3:5]) == reagents.get(spell, ("", "")), line, f"teleport {spell}", r[3:5],
+                       "reagent differs from client SpellReagents")
 
         for fac in ("Alliance", "Horde"):
             for cont in (0, 1):
