@@ -66,14 +66,14 @@ M.FireEvent("PLAYER_LOGIN")
 M.FireEvent("PLAYER_ENTERING_WORLD")
 local WP, Travel, Trails, L = ns.WP, ns.Travel, ns.Trails, ns.L
 
--- Logging in must leave the Routes-tab notice for the player to acknowledge.
+-- Real routes is a standard feature: no opt-in notice flag, no chat teaser.
 M.Tick(13)
-check(not ns.Get("travelNoticeShown"), "login does not acknowledge the Real routes notice after 12 seconds")
+check(ns.settings.travelNoticeShown == nil, "login sets no Real routes notice flag")
 local teaser = false
 for _, message in ipairs(M.printed) do
-    if message:find(L.TRAVEL_NEW, 1, true) then teaser = true end
+    if message:find(L.REAL_ROUTES, 1, true) then teaser = true end
 end
-check(not teaser, "login never prints the Real routes teaser to chat")
+check(not teaser, "login never prints a Real routes message to chat")
 
 -- ---------------------------------------------------------------------------
 -- The shipped network
@@ -226,7 +226,9 @@ WP.ClearAll(true)
 MoveTo(-1000, -2400) -- Elwynn 80, 50
 local westfall = WP.Add(52, 0.9, 0.5, { title = "Moonbrook" })
 WP.SetActive(westfall, true)
-check(Steer(westfall) == nil, "off by default: the arrow points straight")
+check(ns.Get("realRoutes") == true, "Real routes is on by default")
+ns.Set("realRoutes", false)
+check(Steer(westfall) == nil, "turned off: the arrow points straight")
 
 ns.Set("realRoutes", true)
 local s = Steer(westfall)
@@ -456,11 +458,17 @@ s = Steer(westfall)
 local wantNew = math.atan2(-1800 - -1800, -2000 - -1900)
 check(s and s.bearing and math.abs(s.bearing - wantNew) < 0.5, "and routes use it")
 
--- what another player shares
+-- what another player shares (walked-path sharing is opt-in)
 local Enc, Key = Trails.Enc, Trails._Key
 local msg = ("TP^0^%s%s%s%s"):format(Enc(Key(500, 500), 4), Enc(0, 1), Enc(Key(501, 500), 4), Enc(0, 1))
+check(ns.Get("realRoutes") and not ns.Get("travelShare"), "walked-path sharing is off by default, with Real routes on")
 ns.RoutesNet.OnMessage("WPTR", msg, "CHANNEL", "Other-Realm")
+ns.RoutesNet.OnMessage("WPTR", msg, "CHANNEL", "Third-Realm")
 local _, shared = Trails.Stats()
+check(shared == 0, "by default other players' paths aren't taken")
+ns.Set("travelShare", true)
+ns.RoutesNet.OnMessage("WPTR", msg, "CHANNEL", "Other-Realm")
+_, shared = Trails.Stats()
 check(shared == 0, "one player's path waits for a second")
 ns.RoutesNet.OnMessage("WPTR", msg, "CHANNEL", "Third-Realm")
 _, shared = Trails.Stats()

@@ -1,4 +1,4 @@
--- Travel: Real routes (beta). Instead of pointing straight at the waypoint,
+-- Travel: Real routes. Instead of pointing straight at the waypoint,
 -- the arrow follows a way you can actually go there: around mountains and
 -- through the passes, gates and tunnels between zones, and by flight path,
 -- boat, zeppelin, the tram, your hearthstone or a teleport when that's
@@ -8,6 +8,8 @@
 -- are data (TravelData.lua): the zone crossings, city gates, docks and
 -- flights. Inside one area (a zone, or part of one) the way is a straight
 -- line between them. Trails.lua adds what players have walked themselves.
+-- TravelAbilities.lua says which hearthstone,
+-- teleports, teleport items, riding skills and speed forms the character has.
 --
 -- Flights land only at flight paths this character has found. A quicker
 -- trip may walk to an unknown flight master and unlock it before flying.
@@ -15,6 +17,7 @@
 -- written down then (per character), never by a hypothetical plan.
 local _, ns = ...
 local L, Geo, WP = ns.L, ns.Geo, ns.WP
+local Abilities = ns.TravelAbilities
 
 local Travel = {}
 ns.Travel = Travel
@@ -24,7 +27,7 @@ local sqrt, floor, min, max, huge = math.sqrt, math.floor, math.min, math.max, m
 local RUN_SPEED = 7 -- yards a second on foot
 local DEFAULT_FACTOR = 1.15 -- real walks are this much longer than the straight line
 local LOADING = 10 -- seconds a loading screen costs
-local CAST = 10 -- casting the hearthstone or a teleport
+local CAST = 10 -- casting a teleport
 local TAXI_TALK = 6 -- talking to the flight master and getting on
 local TAXI_UNLOCK = 6 -- registering a new flight path before boarding
 local NEAR = 15 -- yards: a stop this close is behind you
@@ -39,8 +42,6 @@ local KEEP_SECONDS, KEEP_FRACTION = 3, 0.02
 Travel.Thresholds = { dangerLevels = DANGER_LEVELS, dangerPenalty = DANGER_PENALTY,
     townRadius = TOWN_RADIUS, offerSeconds = OFFER_SECONDS, offerFraction = OFFER_FRACTION,
     offerLifetime = OFFER_LIFETIME, offerFade = OFFER_FADE, keepSeconds = KEEP_SECONDS, keepFraction = KEEP_FRACTION }
-local FREQUENT_FLIER = 1225490 -- WoW Forever's perk: flight paths 20% faster
-local HEARTHSTONE, ASTRAL_RECALL = 6948, 556
 
 local TRANSPORT = { taxi = true, ship = true, zeppelin = true, tram = true, portal = true, transition = true }
 local WALKING = { walk = true, gate = true, lift = true }
@@ -205,6 +206,7 @@ local function Parse()
     for _, id in ipairs((function()
         local ids = {}; for id in pairs(corridors) do ids[#ids + 1] = id end; table.sort(ids); return ids
     end)()) do d.ghostCorridors[#d.ghostCorridors + 1] = corridors[id] end
+    d.abilities = Abilities.Parse(T.abilities, d.nodes)
     if ns.Terrain then ns.Terrain.Load(T, d, Rows) end
     return d
 end
@@ -481,63 +483,6 @@ local function BindNode()
 end
 Travel.BindNode = BindNode
 
-local function Ready(start, duration)
-    start, duration = ns.Num(start), ns.Num(duration)
-    if not start or not duration then
-        return false
-    end
-    return start == 0 or (start + duration - GetTime()) <= 1
-end
-
-local function HearthReady()
-    local count = (C_Item and C_Item.GetItemCount) or GetItemCount
-    if not count then
-        return false
-    end
-    local ok, owned = pcall(count, HEARTHSTONE)
-    owned = ok and ns.Num(owned)
-    if not owned or owned <= 0 then
-        return false
-    end
-    local cd = (C_Container and C_Container.GetItemCooldown) or GetItemCooldown
-    if not cd then
-        return true
-    end
-    local ok, start, duration = pcall(cd, HEARTHSTONE)
-    return not ok or Ready(start, duration)
-end
-
-local function Knows(spell)
-    local bank = Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player
-    if C_SpellBook and C_SpellBook.IsSpellKnown and bank ~= nil then
-        local ok, known = pcall(C_SpellBook.IsSpellKnown, spell, bank)
-        if ok then return ns.Plain(known) and true or false end
-    end
-    if IsPlayerSpell then
-        local ok, known = pcall(IsPlayerSpell, spell)
-        if ok then return ns.Plain(known) and true or false end
-    end
-    if IsSpellKnown then
-        local ok, known = pcall(IsSpellKnown, spell)
-        return ok and ns.Plain(known) and true or false
-    end
-    return false
-end
-
-local function SpellReady(spell)
-    local start, duration
-    if C_Spell and C_Spell.GetSpellCooldown then
-        local ok, info = pcall(C_Spell.GetSpellCooldown, spell)
-        if ok and type(info) == "table" then
-            start, duration = ns.Num(info.startTime), ns.Num(info.duration)
-        end
-    elseif GetSpellCooldown then
-        start, duration = GetSpellCooldown(spell)
-        start, duration = ns.Num(start), ns.Num(duration)
-    end
-    return Ready(start, duration)
-end
-
 -- remember how fast this character rides, for when they aren't mounted yet
 local function NoteSpeed()
     if not (GetUnitSpeed and IsMounted) or not IsMounted() then
@@ -568,29 +513,33 @@ local function Context()
         local _, r = GetUnitSpeed("player")
         run = max(RUN_SPEED, ns.Num(r) or RUN_SPEED)
     end
-    c.run = run
-    c.ground = max(run, Know().mountSpeed or 0)
-    c.flightFactor = Knows(FREQUENT_FLIER) and (1 / 1.2) or 1
+    local d = Data()
+    local ab = d and d.abilities or Abilities.Parse(nil)
     c.dead = (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player")) and true or false
     c.ghost = (UnitIsGhost and UnitIsGhost("player")) and true or false
+    -- Riding skills and speed forms: a
+    -- character known to ride or shapeshift is planned at that speed even
+    -- before they're seen mounted. Spirits use neither.
+    local outdoor, indoor = 1, 1
+    if not c.dead then
+        outdoor, indoor = Abilities.SpeedFactors(ab)
+    end
+    c.run = max(run, RUN_SPEED * indoor)
+    c.ground = max(c.run, Know().mountSpeed or 0, RUN_SPEED * outdoor)
+    c.flightFactor = Abilities.FlightFactor(ab)
     if c.ghost then c.ground = c.run end -- remembered mount speed does not apply to spirits
     c.flights = not c.dead and ns.Get("travelFlights")
     c.boats = not c.dead and ns.Get("travelBoats")
     c.jumps = {}
     if not c.dead and ns.Get("travelHearth") then
+        -- the hearthstone or Astral Recall, class teleports and teleport items
+        -- that are known, carried and off cooldown
         local inn, name = BindNode()
-        if inn and (HearthReady() or (Knows(ASTRAL_RECALL) and SpellReady(ASTRAL_RECALL))) then
-            c.jumps[#c.jumps + 1] = { node = inn, cost = CAST + LOADING, kind = "hearth", name = name }
-        end
-        local d = Data()
-        for _, t in ipairs(d and d.teleports or {}) do
-            if Knows(t.spell) and SpellReady(t.spell) then
-                c.jumps[#c.jumps + 1] = { node = t.node, cost = t.cost + LOADING, kind = "teleport", spell = t.spell }
-            end
-        end
+        c.jumps = Abilities.Jumps(ab, inn, name, d and d.teleports, c.faction, LOADING)
     end
     return c
 end
+Travel._Context = Context -- tests: the planning context the game state gives
 
 -- ---------------------------------------------------------------------------
 -- Planning
@@ -1165,10 +1114,14 @@ local function StepText(path, i, wpName)
     local how = e.via
     if type(how) == "table" and how.kind == "discover" then
         return L.TRAVEL_UNLOCK_FLIGHT:format(PlaceName(e.node))
+    elseif type(how) == "table" and how.kind == "hearth" and how.spell then
+        return L.TRAVEL_TELEPORT:format(SpellName(how.spell)) -- Astral Recall: the bound inn, by spell
     elseif type(how) == "table" and how.kind == "hearth" then
         return L.TRAVEL_HEARTH:format(how.name or PlaceName(e.node))
     elseif type(how) == "table" and how.kind == "teleport" then
         return L.TRAVEL_TELEPORT:format(SpellName(how.spell))
+    elseif type(how) == "table" and how.kind == "item" then
+        return L.TRAVEL_USE_ITEM:format(Abilities.ItemName(how.item))
     elseif type(how) == "table" and how.dialogue then
         return L.TRAVEL_DIALOG_FLIGHT:format(PlaceName(e.node))
     elseif type(how) == "table" and TRANSPORT[how.method] then
@@ -1982,5 +1935,6 @@ function Travel._Reset()
     data, plan, riding, taxiNames, atDock, planWp = nil, nil, nil, nil, nil, nil
     bindCache, samples = {}, {}
     wipe(reached)
+    Abilities._Reset()
     Travel.Invalidate()
 end

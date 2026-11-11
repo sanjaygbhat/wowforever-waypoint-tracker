@@ -40,7 +40,7 @@ local R, Net, Trails = ns.Routes, ns.RoutesNet, ns.Trails
 local function receive(msg, sender)
     M.FireEvent("CHAT_MSG_ADDON", "WPTR", msg, "GUILD", sender or "Peer-TestRealm")
 end
-check(not ns.Get("routeSharing") and WaypointTrackerDB.version == 4, "fresh profile starts opted out at schema 4")
+check(not ns.Get("routeSharing") and WaypointTrackerDB.version == 5, "fresh profile starts opted out at schema 5")
 M.Tick(20, 1)
 check(registered.WPTR and joined == 0 and #sent == 0, "shared prefix registers, but route sharing off neither joins nor greets")
 local mine = R.SaveMine({ name = "Local route", public = true, pts = {
@@ -69,8 +69,10 @@ check(not R.Get(remote.id) and up == 1 and down == 0 and Net.Status().got == 0,
 check(#sent == 0 and Net.Status().queued == 0, "local actions, self-test, incoming requests and periodic ticks send nothing while off")
 
 -- Travel uses this prefix/channel independently, including actual path listeners.
+check(ns.Get("realRoutes") and not ns.Get("travelShare"), "Real routes is on by default; walked-path sharing stays opt-in")
 ns.Set("realRoutes", true)
-check(ns.Get("travelShare") and not ns.Get("routeSharing"), "enabling Real routes leaves route sharing off")
+ns.Set("travelShare", true)
+check(ns.Get("travelShare") and not ns.Get("routeSharing"), "opting into walked-path sharing leaves route sharing off")
 M.Tick(3, 1)
 check(joined == 1 and #sent == 0, "travel alone joins the transport without a route hello, list or votes")
 local Enc, Key = Trails.Enc, Trails._Key

@@ -4477,6 +4477,18 @@ valanaar	16638	INN_C2521_622_727	Both
 3566	CITY_THUNDER_BLUFF	10
 3567	CITY_ORGRIMMAR	10
 ]],
+    -- travel abilities: hearth item, spell, cast, cooldown | item id, node, cast, cooldown, faction | form spell, bonus, indoors, talent spell, bonus per rank | riding spell, bonus | flier spell, bonus
+    abilities = [[
+hearth	6948	8690	10	3600
+hearth		556	10	900
+form	783	0.4			
+form	2645	0.4			
+form	5118	0.3	1		
+form	768	0	1	17002	0.15
+riding	33388	0.6
+riding	33391	1
+flier	1225490	0.2
+]],
     -- map, how much longer walking is than the straight line
     factors = [[
 1429	1.06

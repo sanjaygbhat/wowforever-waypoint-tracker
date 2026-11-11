@@ -60,15 +60,19 @@ check(ns.Str(secretString)==nil and ns.Num(secretNumber)==nil, 1, 'typed secret 
 check(ns.Str('Player')=='Player' and ns.Str(nil)==nil and ns.Str(42)==nil
     and ns.Num(20)==20 and ns.Num(nil)==nil and ns.Num('20')==nil and ns.Num(0/0)==nil,
     1, 'normal guards', 'plain values', 'normal types survive, invalid types are rejected')
-local ready=find(ns.Travel.Steer,'Ready')
-assert(ready,'Travel Ready helper not found; update the test for a renamed helper')
+-- Cooldowns moved to TravelAbilities.lua (1.3.0): Ready(memo, id, start, duration).
+local ready=find(ns.TravelAbilities.SpellReady,'Ready')
+assert(ready,'TravelAbilities Ready helper not found; update the test for a renamed helper')
 local readyLine=debug.getinfo(ready,'S').linedefined
-local ok, result=pcall(ready,secret,30)
+local ok, result=pcall(ready,{},3561,secret,30)
 check(ok and result==false, readyLine, 'Ready(secret start)', result,
     'restricted cooldown must be skipped without comparing or adding it')
-ok,result=pcall(ready,1000,secret)
+ok,result=pcall(ready,{},3561,1000,secret)
 check(ok and result==false, readyLine, 'Ready(secret duration)', result,
     'restricted cooldown duration must be skipped without arithmetic')
+ok,result=pcall(ready,{[3561]=0},3561,secret,secret)
+check(ok and result==true, readyLine, 'Ready(secret, remembered over)', result,
+    'a secret cooldown falls back to the last readable answer without touching the secret')
 local log=find(ns.Travel.Steer,'Log')
 assert(log,'Travel Log helper not found; update the test for a renamed helper')
 local facing=GetPlayerFacing

@@ -221,7 +221,7 @@ Press **Settings** in the window, use `/wp settings`, or open **Settings → Add
 | Maps — Minimap | Pins and keeping the arrow's waypoint on the minimap edge |
 | Maps — Coordinates box | Show a box with your coordinates; move it in Edit Mode |
 | Routes | When starting a route: ask, replace existing waypoints or add to them; Route sharing & votes (beta), off by default; show low-rated routes |
-| Routes — Real routes (beta) | Enable Real routes; flight paths; boats, zeppelins and the tram; hearthstone and teleports; map route line; learn walked paths; share paths |
+| Routes — Real routes | Real routes (on by default); flight paths; boats, zeppelins and the tram; hearthstone and teleports; map route line; learn walked paths; share paths |
 | Treasure Hunt (beta) | Enable treasure hunt; chests, rares and other markers; known chest spots; pings; point the arrow at finds |
 | Find & Sharing — Find | Learn NPCs, quests and objects as you play; only your faction; only this zone |
 | Find & Sharing — Sharing | Start shared spots with [Waypoint Tracker] |
@@ -240,9 +240,9 @@ Click the preview or one of its pins to open the same route on the normal world 
 
 You can also press **Start Route** or double-click a row to begin. While following it, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** holds copying, editing and removal actions where available.
 
-**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Learned-path sharing for Real routes (beta) has a separate setting.
+**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Walked-path sharing for Real routes has a separate setting, off by default.
 
-**Real routes (beta)** guides you through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone or teleports when quicker. Turn it on from the Routes tab notice, the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
+**Real routes** guides you along the quickest way you can really go: through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone, Astral Recall or mage and druid teleports when quicker, planned with your riding skill and travel forms. It is on by default; turn it off from the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
 
 ---
 
@@ -268,7 +268,7 @@ You can also press **Start Route** or double-click a row to begin. While followi
 | `/wp arrow` | Show or hide the arrow |
 | `/wp closest` · `/cway` | Point to the closest waypoint |
 | `/wp treasure [status]` · `/wp hunt` | Toggle treasure hunt (beta), or show what it sees with `status` |
-| `/wp travel [on\|off\|steps\|status]` · `/wp realroutes` · `/wp rr` | Toggle Real routes (beta), set it on/off, list travel steps or show status |
+| `/wp travel [on\|off\|steps\|status]` · `/wp realroutes` · `/wp rr` | Toggle Real routes, set it on/off, list travel steps or show status |
 | `/wp help` · `/wp ?` · `/way` | Show the command list |
 
 `/waypoint` and `/waypointtracker` are aliases for `/wp`. Coordinates or a name also work directly after `/wp`.

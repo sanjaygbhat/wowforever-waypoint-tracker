@@ -8,7 +8,9 @@ Inputs (in tools/.cache/travel/, not checked in):
   * Mapzeroth's Forever data (MIT, github.com/tr0tsky0/Mapzeroth, branch
     "rebuild", Data/Forever), dumped to mz_*.tsv by tools/mapzeroth_dump.lua:
     zone crossings, city gates, docks, zeppelin towers, the tram, portals,
-    inns, the ships and zeppelins with their measured times.
+    inns, the ships and zeppelins with their measured times; and (mz_abilities.tsv)
+    the hearthstones, teleport items, speed forms, riding skills and Frequent
+    Flier perk TravelAbilities.lua reads.
   * tools/travel_extra.tsv (ours): more crossings, passes, sub-areas, zone
     levels and corrections on top of Mapzeroth's.
 
@@ -134,6 +136,15 @@ for f in read_tsv(os.path.join(CACHE, "mz_misc.tsv")):
         indoor.add(f[1])
     elif f[0] == "teleport":
         teleports.append((int(f[1]), f[2], float(f[3])))
+# Mapzeroth's travel abilities (Abilities/RidingSkills/Game.lua, see tools/mapzeroth_dump.lua):
+# hearthstones, teleport items, speed forms, riding skills and Frequent Flier, for TravelAbilities.lua.
+ABILITY_FIELDS = {"hearth": 4, "item": 5, "form": 5, "riding": 2, "flier": 2}
+abilities = []
+for f in read_tsv(os.path.join(CACHE, "mz_abilities.tsv")):
+    width = ABILITY_FIELDS.get(f[0])
+    if width is None:
+        raise ValueError("unknown Mapzeroth ability kind: " + f[0])
+    abilities.append((f + [""] * (width + 1))[:width + 1])
 
 # ours: extra nodes, links, sub-areas, zone levels, fixes
 extra_nodes, extra_links, regions, levels, drops, moves, rehome = [], [], [], {}, set(), {}, {}
@@ -428,6 +439,7 @@ for key in sorted(settlements):
     if s["area"] and inn:
         settle_lines.append("%s\t%d\t%s\t%s" % (key, s["area"], inn, s["fac"]))
 tele_lines = ["%d\t%s\t%s" % (s, t, fmt(c)) for s, t, c in teleports if t in nodes]
+ability_lines = ["\t".join(a) for a in abilities if a[0] != "item" or a[2] in nodes]
 factor_lines = ["%d\t%s" % (m, fmt(f, 2)) for m, f in sorted(factors.items())]
 level_lines = ["%d\t%d\t%d" % (m, lo, hi) for m, (lo, hi) in sorted(levels.items())]
 indoor_ids = sorted(cidx[c] for c in indoor if c in cidx)
@@ -509,6 +521,9 @@ with open(OUT, "w", encoding="utf-8") as out:
     out.write(block("cities", city_lines, "walled city map, faction"))
     out.write(block("towns", settle_lines, "town, area id (the hearthstone's bind name), inn node, faction"))
     out.write(block("teleports", tele_lines, "spell, node it lands at, cast seconds"))
+    out.write(block("abilities", ability_lines,
+                    "travel abilities: hearth item, spell, cast, cooldown | item id, node, cast, cooldown, faction"
+                    " | form spell, bonus, indoors, talent spell, bonus per rank | riding spell, bonus | flier spell, bonus"))
     out.write(block("factors", factor_lines, "map, how much longer walking is than the straight line"))
     out.write(block("levels", level_lines, "map, lowest and highest level of its creatures"))
     out.write("}\n")

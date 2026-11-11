@@ -7,6 +7,10 @@
     "sha256": "cb75b94a71e455cf6aa19674ca694e6ce750d26fe670bb4de62219e00197bce0",
     "source": "Mapzeroth Forever rebuild extraction"
   },
+  "travel/mz_abilities.tsv": {
+    "sha256": "d8c15c1bd29bbe14f02850398ce2d963435138619719c4bf149e9809bf7cd201",
+    "source": "Mapzeroth Forever rebuild 1976d4f35e0460fdc587dd8361612a1b98095364 Data/Forever/{Abilities,RidingSkills,Game}.lua via tools/mapzeroth_dump.lua"
+  },
   "travel/mz_settlements.tsv": {
     "sha256": "d77de3c4753058344a47c387fcc8c55c331abf8462087abf292b27d08922bc44",
     "source": "Mapzeroth Forever rebuild extraction"

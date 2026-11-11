@@ -38,6 +38,7 @@ ns.Get = function() return false end
 ns.Call = function(fn) return fn() end
 CreateFrame = function() return {SetScript = function() end} end
 assert(loadfile("WaypointTracker/Terrain.lua"))("WaypointTracker", ns)
+assert(loadfile("WaypointTracker/TravelAbilities.lua"))("WaypointTracker", ns)
 assert(loadfile("WaypointTracker/Travel.lua"))("WaypointTracker", ns)
 local T, d = ns.Travel, ns.Travel.Data()
 -- Test the production predicate itself without copying it into the test.

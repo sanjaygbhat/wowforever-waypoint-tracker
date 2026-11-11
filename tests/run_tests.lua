@@ -30,7 +30,7 @@ local Geo, WP, L = ns.Geo, ns.WP, ns.L
 check(ns.settings ~= nil, "settings created")
 check(ns.Get("arrowAlpha") == 0.8 and ns.Get("fadeOnCourse") == true, "old settings moved to the new softer defaults")
 check(ns.Get("arrowPos") == nil and ns.settings.arrowLocked == nil, "arrow moved back over the character")
-check(WaypointTrackerDB.version == 4, "settings version 4")
+check(WaypointTrackerDB.version == 5, "settings version 5")
 check(ns.Arrow.frame:IsMouseEnabled() == false, "arrow ignores the mouse (right-click to attack works)")
 check(SlashCmdList.WAYPOINTTRACKER ~= nil, "/wp registered")
 check(SlashCmdList.WAYPOINTTRACKERWAY ~= nil, "/way registered without TomTom")

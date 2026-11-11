@@ -27,7 +27,7 @@ end
 check(ns.defaults.routeApply == "ask", "routes ask by default")
 check(ns.defaults.routeSharing == false and ns.Get("routeSharing") == false, "route sharing beta defaults off before initialization")
 local fresh = init({})
-check(fresh.routeSharing == false and WaypointTrackerDB.version == 4, "fresh sparse profile starts with sharing off at version 4")
+check(fresh.routeSharing == false and WaypointTrackerDB.version == 5, "fresh sparse profile starts with sharing off at version 5")
 for _, settings in ipairs({ {}, { routeSharing = true }, { routeSharing = false } }) do
     local migrated = init(settings, 3)
     check(migrated.routeSharing == false, "1.2.0 account profile opts out, whether defaults were saved or omitted")
@@ -36,11 +36,39 @@ for _, settings in ipairs({ {}, { routeSharing = true }, { routeSharing = false 
     WaypointTrackerCharDB = { waypoints = {} }
     ns.eventFrame:RunScript("OnEvent", "ADDON_LOADED", "WaypointTracker")
     check(ns.Get("routeSharing") == true and ns.settings == WaypointTrackerDB.settings,
-        "version 4 keeps a later opt-in across reloads and characters")
+        "version 5 keeps a later opt-in across reloads and characters")
     check(WaypointTrackerCharDB.settings == nil, "character state has no separate sharing profile")
 end
 check(init({ routeSharing = true }, 4).routeSharing == true, "existing version 4 opt-in is preserved")
 check(init({}, 4).routeSharing == false, "version 4 sparse profile still defaults off")
+-- 1.3.0: Real routes is a standard feature, on by default. Version 4 saved
+-- false both for the old default and for a choice, so 4 -> 5 turns it on
+-- once for everyone; a later choice to turn it off is kept.
+check(ns.defaults.realRoutes == true, "Real routes is on by default")
+check(init({}).realRoutes == true, "fresh profile has Real routes on")
+for _, version in ipairs({ 1, 2, 3, 4 }) do
+    for _, saved in ipairs({ false, true }) do
+        local migrated = init({ realRoutes = saved, travelNoticeShown = true, travelShare = false,
+            routeSharing = false, treasureHunt = false }, version)
+        check(migrated.realRoutes == true, ("version %d profile with realRoutes=%s turns Real routes on once"):format(version, tostring(saved)))
+        check(migrated.travelNoticeShown == nil, "the opt-in notice flag is dropped by the migration")
+        check(migrated.travelShare == false and migrated.routeSharing == false and migrated.treasureHunt == false,
+            "the migration leaves the other betas and walked-path sharing alone")
+        check(WaypointTrackerDB.version == 5, "migrated to settings version 5")
+    end
+end
+-- Walked-path sharing only ever ran with Real routes on: it stays opt-in.
+check(ns.defaults.travelShare == false and init({}).travelShare == false, "fresh profile does not share walked paths")
+check(init({ realRoutes = true, travelShare = true }, 4).travelShare == true, "a Real routes user's walked-path sharing is kept")
+check(init({ realRoutes = true, travelShare = false }, 4).travelShare == false, "a Real routes user's sharing opt-out is kept")
+check(init({ realRoutes = false, travelShare = true }, 4).travelShare == false, "a player who never had Real routes on does not start sharing")
+check(init({ realRoutes = true, travelShare = true }, 5).travelShare == true, "version 5 keeps a sharing opt-in")
+init({ realRoutes = false }, 4)
+ns.Set("realRoutes", false)
+ns.eventFrame:RunScript("OnEvent", "ADDON_LOADED", "WaypointTracker")
+check(ns.Get("realRoutes") == false, "turning Real routes off after the migration is kept across reloads")
+check(init({ realRoutes = false }, 5).realRoutes == false, "a version 5 opt-out is not turned back on")
+check(init({}, 5).realRoutes == true, "a version 5 sparse profile gets the default on")
 check(ns.defaults.routeAsk == nil and ns.defaults.showAdvanced == nil and ns.defaults.windowPos == nil and ns.defaults.coordsLocked == nil, "retired defaults are gone")
 
 for _, case in ipairs({
@@ -59,7 +87,7 @@ for _, case in ipairs({
     local st = init(case.settings, 2)
     check(st.routeApply == case.want, "old route choice becomes " .. case.want)
     check(st.routeAsk == nil and st.showAdvanced == nil and st.windowPos == nil and st.coordsLocked == nil, "retired settings deleted")
-    check(WaypointTrackerDB.version == 4, "settings version 4")
+    check(WaypointTrackerDB.version == 5, "settings version 5")
 end
 
 local st = init({ arrowAlpha = 1, fadeOnCourse = false, arrowLocked = true,
@@ -67,7 +95,7 @@ local st = init({ arrowAlpha = 1, fadeOnCourse = false, arrowLocked = true,
 check(st.arrowAlpha == 0.8 and st.fadeOnCourse == true, "version 1 arrow look still migrates")
 check(st.arrowPos == nil and st.arrowLocked == nil, "version 1 arrow position still resets")
 check(st.coordsLocked == nil, "version 1 also retires the coordinates lock")
-check(st.routeApply == "add" and WaypointTrackerDB.version == 4, "version 1 advances through all migrations")
+check(st.routeApply == "add" and WaypointTrackerDB.version == 5, "version 1 advances through all migrations")
 
 for _, choice in ipairs({ "ask", "replace", "add" }) do
     st = init({ routeApply = choice }, 3)
@@ -83,7 +111,8 @@ check(type(st.tipsShown) == "table" and next(st.tipsShown) == nil, "damaged tips
 check(st.tipsShown ~= firstTips and next(ns.defaults.tipsShown) == nil, "tips defaults copied independently")
 check(type(st.singleColor) == "table" and st.singleColor.r == 1, "existing table type repair retained")
 check(st.uiLastTab == "waypoints", "damaged tab setting repaired")
-check(st.routesHelpShown == false and st.travelNoticeShown == false and st.welcomeShown == false and st.wayNoticeShown == false, "notice flags declared")
+check(st.routesHelpShown == false and st.welcomeShown == false and st.wayNoticeShown == false, "notice flags declared")
+check(st.travelNoticeShown == nil and ns.defaults.travelNoticeShown == nil, "the Real routes opt-in notice flag is retired")
 
 st = init({ arrowShown = false, routeApply = "add", uiLastTab = "routes", minimapAngle = 123,
     tipsShown = { add = true }, routesHelpShown = true, welcomeShown = true,
