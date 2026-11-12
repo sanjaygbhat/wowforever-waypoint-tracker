@@ -39,6 +39,34 @@ local DANGER_LEVELS, DANGER_PENALTY = 3, 0.6
 local TOWN_RADIUS = 200 -- estimated guard exposure around a faction town's inn; not an access boundary
 local OFFER_SECONDS, OFFER_FRACTION, OFFER_LIFETIME, OFFER_FADE = 15, 0.05, 10, 2
 local KEEP_SECONDS, KEEP_FRACTION = 3, 0.02
+-- Planning while steering is done a little each frame, never a whole route
+-- search inside one frame. Budget per frame, in milliseconds of planning
+-- (debugprofilestop), or in node expansions when there is no usable clock.
+local SLICE_MS = 1 -- a background job: the route still holds where you are (or still no way)
+local SLICE_URGENT_MS = 4 -- an urgent job: no route yet, or what it was planned for has changed
+local SLICE_NODES, SLICE_URGENT_NODES = 20, 80 -- the same, counted in node expansions
+-- Work in a slice, whatever the clock says (a clock another addon restarts,
+-- or one that stops), in units of a few microseconds: a node expanded; a
+-- stop inside an area passed over, an eighth; a walk to it tried, one, and
+-- two more when it can be walked (pausing at most each AREA_TICK); two
+-- of the network's nodes looked over for surveyed points near the start
+-- (pausing each NODES_TICK nodes). The clock is read at least each
+-- CLOCK_UNITS units.
+local SLICE_WORK, SLICE_URGENT_WORK = 1000, 4000
+local AREA_TICK, NODES_TICK, CLOCK_UNITS = 8, 64, 128
+-- A walk from the start (a place no node is: Terrain checks it against
+-- every surveyed chord) can take up to a millisecond: each counts
+-- START_WEIGHT units (the clock is read after each), and the slice ends
+-- START_MARGIN ms early rather than begin one it may not have time for.
+local START_WEIGHT, START_MARGIN = 64, 0.5
+-- While the followed route still holds where you are (re-anchored), moving
+-- along it or the periodic re-plan searches again at most this often, in
+-- seconds from the end of the last job; so does a standing "no route", and
+-- any route while you stand still.
+local SLICE_REFRESH = 5
+-- A job not resumed for longer than this (seconds: the arrow hidden, or
+-- aboard a ride) starts again from where you are.
+local SLICE_IDLE = 1
 Travel.Thresholds = { dangerLevels = DANGER_LEVELS, dangerPenalty = DANGER_PENALTY,
     townRadius = TOWN_RADIUS, offerSeconds = OFFER_SECONDS, offerFraction = OFFER_FRACTION,
     offerLifetime = OFFER_LIFETIME, offerFade = OFFER_FADE, keepSeconds = KEEP_SECONDS, keepFraction = KEEP_FRACTION }
@@ -50,6 +78,7 @@ local WALKING = { walk = true, gate = true, lift = true }
 -- Data
 -- ---------------------------------------------------------------------------
 local data -- the parsed network, built the first time a route is asked for
+local dataShape = 0 -- counts nodes/links added to it later (players' crossings)
 
 local function Fields(line)
     local out, from = {}, 1
@@ -238,6 +267,7 @@ function Travel.AddCrossing(id, areaA, areaB, m, x, y)
     end
     AddLink(d, a, b, { method = "walk", cost = 0, screens = 0, key = a.id })
     AddLink(d, b, a, { method = "walk", cost = 0, screens = 0, key = b.id })
+    dataShape = dataShape + 1 -- a route being worked out over several frames starts again
 end
 
 -- Where a node is in the world. The game's own map maths when it knows the
@@ -267,9 +297,12 @@ Travel.Dist, Travel.Pos = Dist, Pos
 
 -- Closest point on a polyline, measured by segment projection, with a
 -- monotonic arc-length floor. The caller bounds the search at unreached gates.
-function Travel.ProjectPolyline(points, here, first, last, minimum)
+-- Closest returns the answer's fields (segment, t, progress, distance and
+-- the point's cont, wx, wy), or nothing; Travel.ProjectPolyline makes them a table.
+local function Closest(points, here, first, last, minimum)
     first, last, minimum = first or 1, last or #points, minimum or 0
-    local best, walked = nil, 0
+    local best, bestT, bestProgress, bestDistance, bestCont, bestX, bestY
+    local walked = 0
     for i = 1, last - 1 do
         local ac, ax, ay = Pos(points[i])
         local bc, bx, by = Pos(points[i + 1])
@@ -280,34 +313,48 @@ function Travel.ProjectPolyline(points, here, first, last, minimum)
             local x, y = ax + t * (bx - ax), ay + t * (by - ay)
             local distance = sqrt((here.wx - x)^2 + (here.wy - y)^2)
             local progress = walked + t * length
-            if not best or distance < best.distance - 1e-6
-                or (math.abs(distance - best.distance) <= 1e-6 and progress > best.progress) then
-                best = { segment = i, t = t, progress = progress, distance = distance,
-                    point = { cont = ac, wx = x, wy = y } }
+            if not best or distance < bestDistance - 1e-6
+                or (math.abs(distance - bestDistance) <= 1e-6 and progress > bestProgress) then
+                best, bestT, bestProgress, bestDistance, bestCont, bestX, bestY = i, t, progress, distance, ac, x, y
             end
         end
         walked = walked + length
     end
-    return best
+    if best then
+        return best, bestT, bestProgress, bestDistance, bestCont, bestX, bestY
+    end
+end
+
+function Travel.ProjectPolyline(points, here, first, last, minimum)
+    local segment, t, progress, distance, cont, wx, wy = Closest(points, here, first, last, minimum)
+    if segment then
+        return { segment = segment, t = t, progress = progress, distance = distance,
+            point = { cont = cont, wx = wx, wy = wy } }
+    end
+    return nil
 end
 
 function Travel.LookAhead(points, projection, yards, last)
-    local point, remaining = projection.point, yards
+    -- the point walked to so far, in locals (Pos of a point with wx: its fields)
+    local pc, px, py = Pos(projection.point)
+    local remaining = yards
     for i = projection.segment + 1, last or #points do
-        local distance = Dist(point, points[i])
-        if not distance then break end
+        local cont, x, y = Pos(points[i])
+        -- Dist(point, points[i])
+        if not (pc and cont and px and x) or pc ~= cont then break end
+        local dx, dy = px - x, py - y
+        local distance = sqrt(dx * dx + dy * dy)
         if distance > remaining then
-            local cont, x, y = Pos(points[i])
             local t = remaining / distance
-            return { cont = cont, wx = point.wx + t * (x - point.wx), wy = point.wy + t * (y - point.wy) }
+            return { cont = cont, wx = px + t * (x - px), wy = py + t * (y - py) }
         end
         remaining = remaining - distance
-        local cont, x, y = Pos(points[i])
-        point = { cont = cont, wx = x, wy = y }
+        pc, px, py = cont, x, y
     end
-    local cont, x, y = Pos(point)
-    return { cont = cont, wx = x, wy = y }
+    return { cont = pc, wx = px, wy = py }
 end
+
+local NO_REGIONS = {} -- a map without regions of its own (never written)
 
 -- The area a map position is in: a part of a map that is its own area, the
 -- map's area, or (for a cave or a small map) the area of a map above it.
@@ -315,7 +362,9 @@ end
 -- An optional registered node ID supplies captured indoor WMO context at
 -- that exact anchor, without assigning a guessed footprint to nearby points.
 -- Player/waypoint coordinates alone still use the surface map classification.
-function Travel.AreaAt(m, x, y, nodeID)
+-- `live`: a position that keeps changing (the player's, or one worked out
+-- from it), kept out of Geo's cache of fixed points (Geo.TranslateToMap).
+function Travel.AreaAt(m, x, y, nodeID, live)
     local d = Data()
     if not d or not m then
         return nil
@@ -329,7 +378,7 @@ function Travel.AreaAt(m, x, y, nodeID)
         if d.cities[m] then
             city = city or m
         end
-        for _, r in ipairs(d.regions[m] or {}) do
+        for _, r in ipairs(d.regions[m] or NO_REGIONS) do
             local dx, dy = x - r.x, y - r.y
             if dx * dx + dy * dy <= r.r * r.r then
                 return r.area, city
@@ -344,7 +393,7 @@ function Travel.AreaAt(m, x, y, nodeID)
         if not parent or parent == 0 or (info.mapType or 3) < 3 then
             return nil
         end
-        local px, py = Geo.TranslateToMap(m, x, y, parent)
+        local px, py = Geo.TranslateToMap(m, x, y, parent, live)
         if not px then
             return nil
         end
@@ -433,6 +482,29 @@ function Travel.ReadFlightMap()
     Travel.Invalidate()
     return nodes
 end
+
+-- ---------------------------------------------------------------------------
+-- The route being followed (declared here, before anything that resets it)
+-- ---------------------------------------------------------------------------
+local plan -- { wp, path, total, built, index, target }
+local lastPlanTime, generation, planGeneration, planWp = 0, 0, -1, nil
+local noRoute = false -- both ends are on the network and the last search for planWp found no way
+local job -- the route being worked out a few node expansions a frame (sliced planning)
+local replanQueued = false -- a re-plan fell due while the job ran: start one more after it
+local queuedUrgent = false -- ...and that one is urgent
+local jobPlace -- the player's place (PlayerPlace's table) when the last answered job began
+local passed = 0 -- counts the followed plan's steps past (its index moving on)
+local seenPlan, seenIndex -- the plan and its step when Steer last looked (sliced)
+local rejected = false -- the last job's answer was dropped: you had moved on past it (Finish)
+local held -- a job that answered under settings no longer true (Finish): taken if they come back
+local answered -- the planning context of the last search answered (what the abilities said then)
+local jobEnded -- when the last planning job answered or was dropped (GetTime)
+local lastPump -- when a job was last resumed (GetTime): once a frame at most
+local seenM, seenX, seenY -- where the waypoint was at the last re-plan (sliced)
+local reached = {} -- stops you've been at on the way to this waypoint
+local atDock -- { link, t }: the last dock the plan sent you to
+local riding -- { link, from, to, until } while aboard a boat, zeppelin or flight
+local samples = {} -- the last few player positions, to tell a moving boat from walking
 
 -- plan again now (after a flight master's map has said what's found)
 function Travel.Refresh()
@@ -525,6 +597,7 @@ local function Context()
     if not c.dead then
         outdoor, indoor = Abilities.SpeedFactors(ab)
     end
+    c.outdoor, c.indoor = outdoor, indoor -- what the abilities said (AbilitiesChanged)
     c.run = max(run, RUN_SPEED * indoor)
     c.ground = max(c.run, Know().mountSpeed or 0, RUN_SPEED * outdoor)
     c.flightFactor = Abilities.FlightFactor(ab)
@@ -649,6 +722,11 @@ local function Danger(a, b, c, seconds)
 end
 Travel.Danger = Danger
 
+-- which side of the line p->q the point r is on (CanWalk)
+local function Side(px, py, qx, qy, rx, ry)
+    return (qx - px) * (ry - py) - (qy - py) * (rx - px)
+end
+
 -- Areas allow implicit walking edges, but known ridges/cliffs can cut an
 -- area in two. Test in world coordinates so overlapping zone maps agree.
 -- Explicit links remain authoritative (a surveyed pass, tunnel or gate can
@@ -662,9 +740,6 @@ local function CanWalk(a, b)
     end
     if ax == bx and ay == by then
         return true
-    end
-    local function Side(px, py, qx, qy, rx, ry)
-        return (qx - px) * (ry - py) - (qy - py) * (rx - px)
     end
     for _, barrier in ipairs(data.barriers) do
         local ac, cx, cy = Pos(barrier[1])
@@ -758,13 +833,17 @@ end
 -- The quickest way from `start` to `goal` (both { area, city, cont, wx, wy }
 -- places). Returns the list of stops { node, via, at } or nil.
 local function Search(start, goal, c, allowUncertain)
+    -- sliced planning (c.tick): a search's set-up begins a slice of its own,
+    -- never in one that has already done other planning work
+    local tick = c.tick
+    if tick then tick("search") end
     if ns.Terrain then ns.Terrain.Refresh() end
     local d = data
     local corridorOut, joins = {}, {}
     local function Connector(point, endpoint, id)
         local x, y = Geo.WorldToMap(point.cont, point.wx, point.wy, endpoint.m)
         if not x then return nil end
-        local area, city = Travel.AreaAt(endpoint.m, x, y)
+        local area, city = Travel.AreaAt(endpoint.m, x, y, nil, true) -- live: a point projected from the start (the player) or goal
         if area ~= endpoint.area or city ~= endpoint.city or not CanWalk(point, endpoint) then return nil end
         return { id = id, corridor = id, kind = "pass", m = endpoint.m, x = x, y = y,
             area = area, city = city, cont = point.cont, wx = point.wx, wy = point.wy }
@@ -916,6 +995,7 @@ local function Search(start, goal, c, allowUncertain)
     end
     local expanded, finish = 0, nil
     while heap[1] do
+        if tick then tick(expanded) end -- sliced planning may pause here: no loop over shared tables is open
         local top = Pop(heap)
         local u = top[2]
         if finish and top[1] > best[finish] + 1e-6 then break end
@@ -930,13 +1010,29 @@ local function Search(start, goal, c, allowUncertain)
                 expanded = expanded + 1
                 -- walking inside the area, on the same side of a city wall
                 if n.area and not n.corridor and not n.terrainOnly then
+                    -- (from the start, a place of no node's, each walk costs
+                    -- far more: Terrain checks it against every surveyed chord)
+                    local w, weight = 0, u == first and START_WEIGHT or 1
+                    local margin = u == first and START_MARGIN or nil
                     for _, v in ipairs(d.byArea[n.area] or {}) do
+                        -- a large area is many walks: sliced planning may pause
+                        -- between them (the list is the network's, which never
+                        -- changes under a job: a changed network ends it)
+                        if tick and w >= AREA_TICK then tick(nil, w, margin); w = 0 end
+                        w = w + 0.125 -- one passed over
                         if v ~= n and not v.terrainOnly and v.city == n.city
-                            and (not Hostile(v.city, c) or v.city == goal.city or v.city == start.city)
-                            and CanWalk(n, v) then
-                            Relax(u, v, WalkCost(n, v, c), "walk")
+                            and (not Hostile(v.city, c) or v.city == goal.city or v.city == start.city) then
+                            w = w + weight -- a walk tried (a quick no costs nothing to count)
+                            -- (from the start, a pause point before each walk
+                            -- as well: no pause holds more than 2 * START_WEIGHT)
+                            if tick and w >= AREA_TICK then tick(nil, w, margin); w = 0 end
+                            if CanWalk(n, v) then
+                                w = w + 2 * weight
+                                Relax(u, v, WalkCost(n, v, c), "walk")
+                            end
                         end
                     end
+                    if tick and w >= AREA_TICK then tick(nil, w, margin) end -- the last walk's work
                     if goal.area == n.area and goal.city == n.city and CanWalk(n, goal) then
                         Relax(u, goal, WalkCost(n, goal, c), "walk")
                     end
@@ -955,7 +1051,12 @@ local function Search(start, goal, c, allowUncertain)
                     Relax(u, goal, WalkCost(n, goal, c), "walk")
                 end
                 if u == first then
+                    local k = 0
                     for _, v in pairs(d.nodes) do
+                        -- every node of the network: sliced planning may pause
+                        -- (no node is added under a job: a changed network ends it)
+                        k = k + 1
+                        if tick and k % NODES_TICK == 0 then tick(nil, NODES_TICK / 2) end
                         if v.terrainOnly and Dist(n,v) and Dist(n,v) <= 3 and CanWalk(n,v) then
                             Relax(u,v,WalkCost(n,v,c),"walk")
                         end
@@ -1037,6 +1138,49 @@ function Travel.Routes(start, goal, c, preference)
     local safer = { path = sp, total = st, risk = sr, terrainPenalty = sg, preference = "safer" }
     return { fastest, safer }, preference == "fastest" and fastest or safer
 end
+
+-- The route to steer by: the candidate Travel.Routes chooses for this
+-- preference, from only the search that chooses it (the safer one falls
+-- back to the fastest when it finds nothing). `both`: the trip's offer
+-- compares the two, so the fastest is searched as well. `tick` lets a
+-- search pause between node expansions (sliced planning).
+-- Returns the chosen candidate, then the fastest and safer ones found.
+local function Preferred(start, goal, c, preference, tick, both)
+    local ctx = {}; for k, v in pairs(c) do ctx[k] = v end
+    ctx.measureDanger, ctx.tick = true, tick
+    -- the start as the caller gave it: a search notes things on its start
+    local pristine = {}; for k, v in pairs(start) do pristine[k] = v end
+    local fastest, safer, searched
+    local function Fastest(from)
+        searched = true
+        ctx.preference = "fastest"
+        local p, t, r, g = Search(from, goal, ctx)
+        if p then fastest = { path = p, total = t, risk = r, terrainPenalty = g, preference = "fastest" } end
+    end
+    -- Travel.Routes' order: the fastest search first, on the start as given
+    if preference == "fastest" or both then
+        Fastest(start)
+        if not fastest then return nil end -- Travel.Routes: no fastest way, no route
+    end
+    if preference ~= "fastest" then
+        if not searched and ns.Terrain and ns.Terrain.Decide then
+            -- Travel.Routes' fastest search marks a start standing on a
+            -- surveyed trace (Terrain.Decide) before its safer search begins.
+            -- Mark it the same way, so the safer search starts as it does there.
+            ns.Terrain.Decide(start, start)
+        end
+        ctx.preference = "safer"
+        local p, t, r, g = Search(start, goal, ctx)
+        if p then safer = { path = p, total = t, risk = r, terrainPenalty = g, preference = "safer" } end
+        if not safer and not searched then
+            local from = {}; for k, v in pairs(pristine) do from[k] = v end
+            Fastest(from)
+        end
+    end
+    if searched and not fastest then return nil end
+    return (preference == "fastest" and fastest) or safer or fastest, fastest, safer
+end
+Travel._Preferred = Preferred -- tests
 
 function Travel.CanOffer(fast, safe)
     return fast and safe and fast.risk > safe.risk + 1e-6
@@ -1159,13 +1303,6 @@ Travel.StepText = StepText
 -- ---------------------------------------------------------------------------
 -- Following a plan
 -- ---------------------------------------------------------------------------
-local plan -- { wp, path, total, built, index, target }
-local lastPlanTime, generation, planGeneration, planWp = 0, 0, -1, nil
-local reached = {} -- stops you've been at on the way to this waypoint
-local atDock -- { link, t }: the last dock the plan sent you to
-local riding -- { link, from, to, until } while aboard a boat, zeppelin or flight
-local samples = {} -- the last few player positions, to tell a moving boat from walking
-
 function Travel.Invalidate()
     generation = generation + 1
 end
@@ -1174,22 +1311,48 @@ function Travel.Enabled()
     return ns.Get("realRoutes") and Data() ~= nil
 end
 
+-- Where the player stands. The same table again while they haven't moved
+-- (the arrow asks every frame): places are kept in plans as anchors, so a
+-- returned place is never changed by this file.
+local lastPlace, lastM, lastX, lastY, lastData
 local function PlayerPlace()
     local m, x, y = Geo.GetPlayerMapPosition()
     if not m then
         return nil
     end
+    if lastPlace and m == lastM and x == lastX and y == lastY and data == lastData then
+        return lastPlace
+    end
     -- from the map, the way the stops' positions are worked out (a phased
-    -- copy of a continent has an instance id of its own)
-    local cont, wx, wy = Geo.MapToWorld(m, x, y)
+    -- copy of a continent has an instance id of its own); not kept in Geo's
+    -- cache of fixed points, as a moving position would fill it forever
+    local cont, wx, wy = Geo.MapToWorldLive(m, x, y)
+    local fromMap = cont ~= nil
     if not cont then
         cont, wx, wy = Geo.GetPlayerWorld()
     end
     if not cont then
         return nil
     end
-    local area, city = Travel.AreaAt(m, x, y)
-    return { id = nil, area = area, city = city, cont = cont, wx = wx, wy = wy, m = m, x = x, y = y, player = true }
+    local area, city = Travel.AreaAt(m, x, y, nil, true)
+    local place = { id = nil, area = area, city = city, cont = cont, wx = wx, wy = wy, m = m, x = x, y = y, player = true }
+    -- only a position worked out from the map alone is the same for the same map point
+    if fromMap then
+        lastPlace, lastM, lastX, lastY, lastData = place, m, x, y, data
+    else
+        lastPlace = nil
+    end
+    return place
+end
+Travel._PlayerPlace = PlayerPlace -- tests
+
+-- A new copy of the player's place for a route search to start from. A
+-- search notes things on its start (Terrain.lua marks a start standing on a
+-- surveyed trace), so every search starts from a place no search has seen,
+-- as each did when every frame made a new one.
+local function Fresh(p)
+    return p and { id = nil, area = p.area, city = p.city, cont = p.cont, wx = p.wx, wy = p.wy,
+        m = p.m, x = p.x, y = p.y, player = true } or nil
 end
 
 local function GoalPlace(wp)
@@ -1245,6 +1408,55 @@ local function Target(path, here, index)
     return i
 end
 
+-- Planning sliced, the followed route is held while the search for the area
+-- you have just come into runs, and Target (which moves on only from within
+-- a few yards of a stop) can leave its step on one you have already taken.
+-- The step to steer at meanwhile: nil as the route says, false the plain
+-- arrow. Never past a step you haven't taken:
+-- - a crossing walked through: the route (where it was planned or last
+--   re-anchored) was on its near side, you are now in the area its far side
+--   is in, and nearer the step after it than the crossing is. On to that
+--   step when you can walk there from here (the same area, nothing in
+--   between), else the plain arrow.
+-- - a hearthstone, teleport or item: you stand where it lands (in its area,
+--   within BOARD_NEAR), away from where it was to be cast. On to the next step.
+local function Beyond(p, i, here)
+    local path, start = p.path, p.here
+    local e, nextE = path[i], path[i + 1]
+    if not (e and here and here.area and start) then return nil end
+    local how = e.via
+    if type(how) == "table" and how.kind then
+        if how.kind == "discover" or i <= 1 then return nil end
+        local landing, from = e.node, path[i - 1].node
+        local at, left = Dist(here, landing), Dist(here, from)
+        if landing.area == here.area and landing.city == here.city and at and at <= BOARD_NEAR
+            and (not left or left > BOARD_NEAR) then
+            return i < #path and i + 1 or false
+        end
+        return nil
+    end
+    if not nextE or (start.area == here.area and start.city == here.city) then return nil end
+    local a, b = e.node, nextE.node
+    local walked = how == "walk" or (type(how) == "table" and WALKING[how.method])
+    local crossing = nextE.via == "walk" or (type(nextE.via) == "table" and WALKING[nextE.via.method])
+    if not (walked and crossing and a.area == start.area and a.city == start.city
+        and b.area == here.area and b.city == here.city and (a.area ~= b.area or a.city ~= b.city)) then
+        return nil
+    end
+    -- and past it: nearer the step after it than the crossing is (not just
+    -- over the area's edge a little beside the crossing, still coming to it)
+    local after = path[i + 2]
+    local toAfter, crossingToAfter = after and Dist(here, after.node), after and Dist(a, after.node)
+    if not (toAfter and crossingToAfter and toAfter < crossingToAfter) then return nil end
+    if (after.via == "walk" or (type(after.via) == "table" and WALKING[after.via.method]))
+        and Approach(here, after.node) then return i + 2 end
+    return false
+end
+
+-- ProjectPlan's projection, filled again on every call (it runs every
+-- frame): Steer reads it before the next call, and nothing keeps it.
+local planProjection = { point = {} }
+
 -- Progress belongs to segments, not the nearest vertex. Stop the projection
 -- at the next action/doorway or road bend whose shortcut is not walkable.
 local function ProjectPlan(p, here)
@@ -1268,8 +1480,11 @@ local function ProjectPlan(p, here)
         if not observed and not verified and not crossed and (not OptionalStop(e, nextE) or not Approach(here, nextE.node)) then break end
         limit = limit + 1
     end
-    local projection = Travel.ProjectPolyline(p.points, here, index - 1, limit, p.progress)
-    if not projection then return nil end
+    local segment, t, progress, distance, cont, wx, wy = Closest(p.points, here, index - 1, limit, p.progress)
+    if not segment then return nil end
+    local projection, point = planProjection, planProjection.point
+    projection.segment, projection.t, projection.progress, projection.distance = segment, t, progress, distance
+    point.cont, point.wx, point.wy = cont, wx, wy
     p.progress = projection.progress
     local nextIndex = projection.segment + 1
     for i = index, nextIndex - 1 do reached[path[i].node] = true end
@@ -1303,7 +1518,7 @@ local function Reprice(p, here, c, index, shortcut)
         local x, y
         if projection then x, y = Geo.WorldToMap(projection.point.cont, projection.point.wx, projection.point.wy, here.m) end
         local area, city
-        if x and y then area, city = Travel.AreaAt(here.m, x, y) end
+        if x and y then area, city = Travel.AreaAt(here.m, x, y, nil, true) end -- live: from the player's position
         if not c.ghost or not projection or projection.distance > CORRIDOR_JOIN
             or area ~= here.area or city ~= here.city
             or not CanWalk(here, projection.point) then return nil end
@@ -1328,7 +1543,7 @@ local function Reprice(p, here, c, index, shortcut)
     for i = index, #p.path do
         local e, from = p.path[i], path[#path].node
         local how, seconds = e.via, nil
-        if type(how) == "table" and how.terrain then return nil end -- rebuild exact evidence/observed bends
+        if type(how) == "table" and how.terrain then return nil, "terrain" end -- rebuild exact evidence/observed bends
         if i == index and firstWalk then
             if corridor then
                 local retained = {}; for k, v in pairs(how) do retained[k] = v end
@@ -1367,8 +1582,8 @@ end
 -- approach. Join a later stop only using the planner's same-area, same-city,
 -- barrier checks. Never trim an entrance, action or surveyed crossing.
 local function Remaining(p, here, c)
-    local best = Reprice(p, here, c, p.index)
-    if not best then return nil end
+    local best, why = Reprice(p, here, c, p.index)
+    if not best then return nil, why end
     local function Score(route)
         return route.total + (p.preference == "safer" and route.risk or 0)
     end
@@ -1422,36 +1637,55 @@ end
 
 function Travel.Choices(wp)
     if not wp or not Travel.Enabled() then return {} end
-    local here, goal = PlayerPlace(), GoalPlace(wp)
+    local here, goal = Fresh(PlayerPlace()), GoalPlace(wp)
     if not (here and goal and here.area and goal.area) then return {} end
     return Travel.Routes(here, goal, Context(), wp.travelPreference or ns.Get("travelPreference"))
 end
 
+-- A found route becomes the plan, unless the followed one (what remains of
+-- it) is about as good. `now`: where the player is now (the search may
+-- have started a few frames ago). `old`: what remained of the followed
+-- route when the re-plan fell due (sliced planning works that out then).
+local function Adopt(wp, c, preference, candidate, now, sliced, old)
+    local new = { wp = wp, path = candidate.path, total = candidate.total, risk = candidate.risk, terrainPenalty = candidate.terrainPenalty,
+        preference = preference, here = candidate.path[1].node, built = GetTime(), c = c, followed = WP.GetActive() == wp }
+    -- sliced: first from where the search began (as planning all at once
+    -- does there), then on from where you are now
+    new.index = sliced and Target(new.path, now, Target(new.path, new.here)) or Target(new.path, now)
+    new.target = new.path[new.index]
+    if sliced then
+        if old and new.followed and Travel.KeepFollowed(old, new, preference, wp.travelChosen) then
+            -- keep the followed route, as re-anchored since
+            return (plan and plan.followed and plan.wp == wp and plan.preference == preference) and plan or old
+        end
+    elseif plan and plan.followed and new.followed and plan.wp == wp and plan.preference == preference then
+        old = Remaining(plan, now, c)
+        if Travel.KeepFollowed(old, new, preference, wp.travelChosen) then return old end
+    end
+    return new
+end
+
+-- Plan now, all at once (when planning can't be spread over frames).
+-- Returns the plan; or nil, true when both ends are on the network and
+-- there's no way; or nil when the player or the waypoint can't be placed.
 local function Plan(wp)
     local d = Data()
     if not d then
         return nil
     end
-    local here = PlayerPlace()
+    local here = Fresh(PlayerPlace())
     local goal = GoalPlace(wp)
     if not (here and goal and here.area and goal.area) then
         return nil
     end
     local c = Context()
     local preference = wp.travelPreference or ns.Get("travelPreference")
-    local _, candidate = Travel.Routes(here, goal, c, preference)
+    local candidate = Preferred(here, goal, c, preference)
+    answered = c
     if not candidate then
-        return nil
+        return nil, true
     end
-    local new = { wp = wp, path = candidate.path, total = candidate.total, risk = candidate.risk, terrainPenalty = candidate.terrainPenalty,
-        preference = preference, here = here, built = GetTime(), c = c, followed = WP.GetActive() == wp }
-    new.index = Target(new.path, here)
-    new.target = new.path[new.index]
-    if plan and plan.followed and new.followed and plan.wp == wp and plan.preference == preference then
-        local old = Remaining(plan, here, c)
-        if Travel.KeepFollowed(old, new, preference, wp.travelChosen) then return old end
-    end
-    return new
+    return Adopt(wp, c, preference, candidate, here, false)
 end
 
 local trip, offerFrame
@@ -1490,6 +1724,8 @@ function Travel.Select(wp, candidate)
         preference = candidate.preference, here = here, built = GetTime(), c = Context(),
         index = index, target = path[index], followed = true }
     planWp, planGeneration, lastPlanTime = wp, generation, GetTime()
+    -- the choice replaces any route still being worked out
+    noRoute, job, replanQueued, held, answered = false, nil, false, nil, plan.c
     ns.Fire("TRAVEL_PLANNED", plan)
 end
 
@@ -1553,26 +1789,55 @@ local function BuildOffer()
     return button
 end
 
--- Only a route start can attempt an offer. Replans and repeated tracking
--- clicks share the trip token; ignoring the offer leaves the safe plan alone.
-function Travel.Offer(wp)
-    if not wp or WP.GetActive() ~= wp then return end
-    local currentTrip = TripFor(wp)
-    if not currentTrip or currentTrip.attempted or not Travel.Enabled() then return end
-    if ns.Get("travelPreference") == "fastest" or wp.travelPreference == "fastest" then
-        currentTrip.attempted = true
-        return
-    end
-    local candidates, safe = Travel.Choices(wp)
-    if not safe then return end -- no position yet: retry when steering starts
-    currentTrip.attempted = true
-    local fast = candidates[1]
+local function ShowOffer(currentTrip, fast, safe)
     if not Travel.CanOffer(fast, safe) then return end
     local button = BuildOffer()
     button.trip, button.remaining, button.hovered = currentTrip, OFFER_LIFETIME, false
     button:SetText(L.TRAVEL_FASTER_OFFER:format(Geo.FormatTime(safe.total - fast.total)) .. "\n" .. RiskReason(fast, safe, Context()))
     button:SetAlpha(1)
     button:Show()
+end
+
+-- Is planning spread over frames? It is when the client can pause a Lua
+-- function (coroutines) and has a frame clock (debugprofilestop). Without
+-- them it all happens at once, as before. Tests can choose (nil: decide).
+local forceSliced
+local function Sliced()
+    local co = coroutine
+    if forceSliced == false or type(co) ~= "table" or type(co.create) ~= "function" or type(co.resume) ~= "function"
+        or type(co.yield) ~= "function" or type(co.status) ~= "function" or type(co.running) ~= "function" then
+        return false
+    end
+    return forceSliced == true or type(debugprofilestop) == "function"
+end
+
+-- Only a route start can attempt an offer. Replans and repeated tracking
+-- clicks share the trip token; ignoring the offer leaves the safe plan alone.
+-- Attempted once a trip: also when there's no route to offer (only a
+-- missing player position waits, and waiting never searches).
+function Travel.Offer(wp)
+    if not wp or WP.GetActive() ~= wp then return end
+    local currentTrip = TripFor(wp)
+    if not currentTrip or currentTrip.attempted or currentTrip.wanted or not Travel.Enabled() then return end
+    if ns.Get("travelPreference") == "fastest" or wp.travelPreference == "fastest" then
+        currentTrip.attempted = true
+        return
+    end
+    local here = PlayerPlace()
+    if not here then return end -- no position yet: retry when steering starts
+    local goal = GoalPlace(wp)
+    if not (here.area and goal and goal.area) then
+        currentTrip.attempted = true -- can't be placed on the network: nothing to compare
+        return
+    end
+    if Sliced() then
+        -- the trip's first planning job searches both ways and offers then
+        currentTrip.wanted = true
+        return
+    end
+    local candidates, safe = Travel.Choices(wp)
+    currentTrip.attempted = true
+    ShowOffer(currentTrip, candidates[1], safe)
 end
 
 ns.On("LOGIN", BuildOffer)
@@ -1629,6 +1894,7 @@ local function FinishRide(destination)
     plan = nil
 end
 
+local rideCandidates = {}
 local function UpdateRiding(here)
     if UnitIsGhost and UnitIsGhost("player") then
         riding, atDock = nil, nil
@@ -1655,7 +1921,8 @@ local function UpdateRiding(here)
         end
         -- a boat or zeppelin of the plan's: has it set off with us? (the dock
         -- the plan sent you to, or any of its rides leaving from near here)
-        local candidates = {}
+        local candidates = rideCandidates -- reused every frame; only read in here
+        wipe(candidates)
         if atDock and GetTime() - atDock.t < 900 then
             candidates[1] = atDock.link
         end
@@ -1717,11 +1984,13 @@ local function Log(here, target, s)
         return
     end
     local now = GetTime()
-    local key = tostring(target.id) .. ">" .. tostring(here.area) .. ">" .. tostring(s.trail ~= nil)
-    if lastLog and lastLog.key == key and now - lastLog.t < 15 then
+    -- the same step as last time (compared field by field: this runs every frame)
+    local trail = s.trail ~= nil
+    if lastLog and lastLog.id == target.id and lastLog.area == here.area and lastLog.trail == trail
+        and now - lastLog.t < 15 then
         return
     end
-    lastLog = { key = key, t = now }
+    lastLog = { id = target.id, area = here.area, trail = trail, t = now }
     local log = type(WaypointTrackerDB.travelLog) == "table" and WaypointTrackerDB.travelLog or {}
     WaypointTrackerDB.travelLog = log
     local d = data or {}
@@ -1748,9 +2017,293 @@ local function Log(here, target, s)
     end
 end
 
+-- ---------------------------------------------------------------------------
+-- Planning a little each frame
+-- ---------------------------------------------------------------------------
+-- A route search can take tens of milliseconds, which the arrow (asked
+-- every frame) must never wait for. While planning is sliced, a re-plan is a
+-- job: a coroutine running the search, resumed once a frame by Steer for a
+-- small budget, pausing between node expansions (Search's c.tick). Until it
+-- answers the arrow follows the route it has, re-anchored where you stand.
+
+-- The frame clock in milliseconds, or nil (no clock, or an unreadable answer).
+local function Clock()
+    local clock = debugprofilestop
+    if type(clock) ~= "function" then return nil end
+    return ns.Num(clock())
+end
+
+local sliceStart, sliceLimit, sliceNodes, sliceMax = nil, SLICE_MS, 0, SLICE_NODES
+local sliceWork, sliceWorkMax, sinceClock = 0, SLICE_WORK, 0 -- work units (SLICE_WORK)
+
+-- Has this slice had its budget? The work cap holds whatever the clock
+-- says. With a clock: its milliseconds, and an unreadable answer or a clock
+-- that went back (another addon restarted it) counts as spent. Without one:
+-- the node expansions.
+local function Spent(margin)
+    if sliceWork >= sliceWorkMax then return true end
+    if sliceStart then
+        sinceClock = 0
+        local now = Clock()
+        return not now or now < sliceStart or now - sliceStart >= sliceLimit - (margin or 0)
+    end
+    return sliceNodes > sliceMax
+end
+
+-- Search's checkpoints: "search" as a search begins (before its set-up);
+-- the number of nodes expanded so far, before each node expansion; nil with
+-- `units` of work, inside a long expansion (`margin`: ms of the budget to
+-- leave unused when the next work may be that long). It only ever pauses the
+-- planning job's own coroutine.
+local function Tick(expanded, units, margin)
+    if not job or coroutine.running() ~= job.co then return end
+    if expanded == "search" then
+        -- a search's set-up (Terrain's corridors) is a slice's work of its
+        -- own: never after other work (the search before it, say)
+        if sliceWork > 0 then coroutine.yield() end
+        return
+    end
+    if expanded == 0 then
+        -- a search's set-up and its first node never share a frame:
+        -- no frame ever holds a whole search
+        coroutine.yield()
+    elseif expanded then
+        sliceNodes, sliceWork = sliceNodes + 1, sliceWork + 1
+        if not Spent() then return end
+        coroutine.yield()
+    else
+        sliceWork, sinceClock = sliceWork + units, sinceClock + units
+        if sliceWork < sliceWorkMax and (sinceClock < CLOCK_UNITS or not Spent(margin)) then return end
+        coroutine.yield()
+    end
+    -- resumed in a new slice: the work that follows is this slice's (a
+    -- search that ends with it is followed by the next one's set-up only
+    -- in a slice of its own)
+    sliceWork = 1
+end
+
+-- The trip whose offer still waits for its first planning job, if it's this waypoint's.
+local function OfferWanted(wp)
+    local t = trip
+    return t and t.wanted and not t.attempted and t.wp == wp and wp.travelTrip == t and t or nil
+end
+
+-- A planning job: `urgent` ones get the bigger slice (SLICE_URGENT_MS) and
+-- start at once; background ones (the route still holds, or still no way)
+-- get SLICE_MS and come at most each SLICE_REFRESH after the last job ended.
+local function StartJob(wp, place, goal, c, preference, old, urgent)
+    local j = { wp = wp, m = wp.m, x = wp.x, y = wp.y, generation = generation, data = data, shape = dataShape,
+        here = Fresh(place), place = place, passed = passed, goal = goal, c = c, preference = preference, old = old,
+        offer = OfferWanted(wp), urgent = urgent and true or false, pumped = GetTime(),
+        -- the settings its context was read under (Holds)
+        flights = ns.Get("travelFlights") and true or false, boats = ns.Get("travelBoats") and true or false,
+        hearth = ns.Get("travelHearth") and true or false }
+    -- After a "no route", the check again searches the fastest way first and
+    -- stops when there's none (Travel.Routes: no fastest way, no route).
+    local both = j.offer ~= nil or noRoute
+    j.co = coroutine.create(function()
+        j.best, j.fastest, j.safer = Preferred(j.here, j.goal, j.c, j.preference, Tick, both)
+    end)
+    job, replanQueued, queuedUrgent = j, false, false
+end
+
+-- Why a job no longer plans for what's true now: "hard" when it can't go on
+-- (another waypoint; the network it is searching has changed under it), or
+-- "soft" when only the goal's position, the generation or the preference has
+-- changed (its answer is still a route, just an older one).
+local function Stale(j, wp)
+    if j.wp ~= wp or j.data ~= data or j.shape ~= dataShape then return "hard" end
+    if j.generation ~= generation or j.m ~= wp.m or j.x ~= wp.x or j.y ~= wp.y
+        or j.preference ~= (wp.travelPreference or ns.Get("travelPreference")) then return "soft" end
+end
+
+-- Are the settings the job planned under (every one the planner reads: the
+-- preference, flights, boats, the hearthstone and teleports) still the
+-- settings now? An answer planned under others is never taken.
+local function Holds(j)
+    return j.preference == (j.wp.travelPreference or ns.Get("travelPreference"))
+        and j.flights == (ns.Get("travelFlights") and true or false)
+        and j.boats == (ns.Get("travelBoats") and true or false)
+        and j.hearth == (ns.Get("travelHearth") and true or false)
+end
+
+-- A re-plan is due (sliced): re-anchor the followed route at once (cheap),
+-- and search in a job. `urgent`: a new waypoint, a moved goal,
+-- Travel.Invalidate, leaving the route, a new area or city; also a route
+-- that can't be re-anchored where you are, and no answer yet for this
+-- waypoint. An urgent search starts at once: a background job gives way to
+-- it, a running urgent one finishes first and the search follows it. The
+-- rest search in the background: while the route still holds where you are
+-- (re-anchored), there's still no way, or you haven't moved since the last
+-- search began, at most each SLICE_REFRESH after the last job ended. A route
+-- with a surveyed-terrain leg ahead can't be re-anchored (Reprice rebuilds
+-- that evidence only by searching): while you move it is searched again at
+-- every re-plan, as planning all at once does.
+local function Replan(wp, here, now, urgent)
+    if planWp ~= wp then
+        wipe(reached)
+        plan, noRoute, job, replanQueued, held, answered = nil, false, nil, false, nil, nil
+    end
+    lastPlanTime, planGeneration, planWp = now, generation, wp
+    seenM, seenX, seenY = wp.m, wp.x, wp.y
+    local goal = GoalPlace(wp)
+    if not (here and goal and here.area and goal.area) then
+        -- not on the network: no plan, so the arrow points the plain way
+        local had = plan
+        plan, noRoute, job, replanQueued = nil, false, nil, false
+        if had then ns.Fire("TRAVEL_PLANNED", nil) end
+        return
+    end
+    local c = Context()
+    local preference = wp.travelPreference or ns.Get("travelPreference")
+    -- only the periodic re-plan, and you haven't moved since the last search
+    -- began (PlayerPlace gives the very same table): whatever the route
+    local still = not urgent and here == jobPlace
+    local old, terrain
+    if plan then
+        if plan.followed and plan.wp == wp and plan.preference == preference and WP.GetActive() == wp then
+            local why
+            old, why = Remaining(plan, here, c)
+            if old then
+                plan = old
+                ns.Fire("TRAVEL_PLANNED", plan)
+            end
+            terrain = why == "terrain"
+        end
+        if not old and not terrain then urgent = true end
+    elseif not noRoute then
+        urgent = true -- no answer yet for this waypoint
+    end
+    if still or not urgent then
+        urgent = false
+        if still or old or not plan then
+            if job or (jobEnded and now - jobEnded < SLICE_REFRESH) then
+                return -- the arrow is right as it is: the search can wait
+            end
+        elseif job then
+            if not replanQueued then queuedUrgent = false end
+            replanQueued = true -- a held route, moving: search again after this job
+            return
+        end
+    elseif job then
+        if job.urgent then
+            queuedUrgent = true
+            replanQueued = true -- it answers first; this search follows at once
+            return
+        end
+        job, jobEnded = nil, now -- a background job gives way
+    end
+    StartJob(wp, here, goal, c, preference, old, urgent)
+end
+
+-- The job has answered: the same decision as planning all at once. An
+-- answer planned under settings no longer true (Holds) is dropped: the
+-- search queued since then follows; it is kept aside (`held`) and taken
+-- if those settings come back before another job answers. One for an older
+-- goal position or generation is still taken (it is newer than the route
+-- followed, as planning all at once leads to the goal as it was at its last
+-- re-plan); the search queued since then follows at once.
+local function Finish(j)
+    jobPlace = j.place
+    if not Holds(j) then
+        held = j
+        replanQueued, queuedUrgent = true, true
+        return
+    end
+    held = nil
+    -- Worked out from where you were: if you have since passed one of the
+    -- followed route's stops or come into another area or city, its first
+    -- steps may lie behind you. While there's a route to steer by, search
+    -- again from here at once instead (but take the next answer whatever).
+    local now = PlayerPlace()
+    if plan and not rejected and (passed ~= j.passed
+        or (now and (now.area ~= j.here.area or now.city ~= j.here.city))) then
+        rejected, replanQueued, queuedUrgent = true, true, true
+        return
+    end
+    rejected = false
+    answered = j.c
+    if not j.best then
+        local had = plan
+        plan, noRoute = nil, true
+        if had then ns.Fire("TRAVEL_PLANNED", nil) end
+    else
+        noRoute = false
+        local result = Adopt(j.wp, j.c, j.preference, j.best, now or j.here, true, j.old)
+        if result ~= plan then
+            plan = result
+            ns.Fire("TRAVEL_PLANNED", plan)
+        end
+    end
+    local t = j.offer
+    if t and t == trip and not t.attempted and WP.GetActive() == t.wp then
+        t.attempted = true
+        if ns.Get("travelPreference") ~= "fastest" and t.wp.travelPreference ~= "fastest" then
+            ShowOffer(t, j.fastest, j.safer or j.fastest)
+        end
+    end
+    if OfferWanted(j.wp) then replanQueued, queuedUrgent = true, true end -- a trip that began during this job
+end
+
+-- One slice of the job: a few milliseconds (or node expansions) of search.
+local function Pump(now)
+    local j = job
+    lastPump, j.pumped = now, now
+    sliceLimit = j.urgent and SLICE_URGENT_MS or SLICE_MS
+    sliceMax = j.urgent and SLICE_URGENT_NODES or SLICE_NODES
+    sliceWorkMax = j.urgent and SLICE_URGENT_WORK or SLICE_WORK
+    sliceNodes, sliceWork, sinceClock = 0, 0, 0
+    sliceStart = Clock()
+    local ok, err = coroutine.resume(j.co)
+    sliceStart = nil
+    if not ok then
+        -- reported once (ns.ReportError), never resumed again; the next
+        -- re-plan comes at the usual pace
+        job, replanQueued, lastPlanTime, jobEnded = nil, false, GetTime(), now
+        -- with the job's own stack when the client can give it
+        local traceback = type(debug) == "table" and debug.traceback
+        if type(traceback) == "function" then
+            local okTrace, text = pcall(traceback, j.co, tostring(err))
+            if okTrace and type(text) == "string" then err = text end
+        end
+        ns.ReportError(err)
+        return
+    end
+    if coroutine.status(j.co) == "dead" then
+        job, jobEnded = nil, now
+        Finish(j)
+    end
+end
+
+-- tests: true/false forces planning sliced or all at once; nil decides from the client
+function Travel._SetSliced(on)
+    forceSliced = on
+    job, replanQueued, held = nil, false, nil
+    if trip then trip.wanted = nil end
+end
+
+-- The step's text for the arrow, the same string while the step is (asked
+-- every frame). Only for steps whose text comes from fixed data: never a
+-- cast or an item (an item's name can arrive from the server later).
+local stepPath, stepIndex, stepName, stepText
+local function SteerText(path, i, wpName)
+    if path == stepPath and i == stepIndex and wpName == stepName then
+        return stepText
+    end
+    local text = StepText(path, i, wpName)
+    local how, nextE = path[i].via, path[i + 1]
+    local after = nextE and nextE.via
+    if (type(how) == "table" and how.kind) or (type(after) == "table" and after.kind) then
+        stepPath = nil
+    else
+        stepPath, stepIndex, stepName, stepText = path, i, wpName, text
+    end
+    return text
+end
+
 function Travel.Steer(wp)
     if not wp or not Travel.Enabled() then
-        plan = nil
+        plan, noRoute, job, replanQueued, held = nil, false, nil, false, nil
         return nil
     end
     Travel.Offer(wp)
@@ -1762,6 +2315,8 @@ function Travel.Steer(wp)
     end
     local aboard = UpdateRiding(here)
     if aboard then
+        if job then job.rode = true end -- it waits, and starts again where you land
+        held = nil
         local title = riding.method == "taxi" and L.TRAVEL_ON_TAXI or L.TRAVEL_ON_BOAT
         local s = { title = title:format(riding.to and PlaceName(riding.to) or WP.ShortName(wp)), sub = WP.ShortName(wp) }
         if riding.to and here then
@@ -1774,13 +2329,80 @@ function Travel.Steer(wp)
         and (here.area ~= plan.here.area or here.city ~= plan.here.city)
     local projection = plan and ProjectPlan(plan, here)
     local deviated = projection and projection.distance > DEVIATION
-    if planWp ~= wp or planGeneration ~= generation or now - lastPlanTime >= REPLAN_EVERY
-        or (now - lastPlanTime >= REPLAN_MIN and (deviated or changedArea or (moved and moved >= REPLAN_MOVED))) then
+    local due = planWp ~= wp or planGeneration ~= generation or now - lastPlanTime >= REPLAN_EVERY
+        or (now - lastPlanTime >= REPLAN_MIN and (deviated or changedArea or (moved and moved >= REPLAN_MOVED)))
+    if Sliced() then
+        -- what must search now, whatever the last search's age
+        local urgent = planWp ~= wp or planGeneration ~= generation or deviated or changedArea
+        if (wp.m ~= seenM or wp.x ~= seenX or wp.y ~= seenY) and now - lastPlanTime >= REPLAN_MIN then
+            due, urgent = true, true -- the waypoint moved
+        end
+        -- the followed plan's steps past since the last frame (Finish)
+        if plan and plan == seenPlan and plan.index and seenIndex and plan.index > seenIndex then
+            passed = passed + 1
+        end
+        seenPlan, seenIndex = plan, plan and plan.index
+        local j = job
+        if j then
+            local why = Stale(j, wp)
+            local idle = now - j.pumped > SLICE_IDLE
+            if why == "hard" or (idle and (j.rode or not here or here.area ~= j.here.area or here.city ~= j.here.city)) then
+                -- it can't go on, or it waited too long aboard a ride or
+                -- into another area: start again from what's true now, at once
+                job, due, urgent = nil, true, urgent or j.urgent or why == "hard" or idle
+                if why == "hard" then jobEnded = now end
+            elseif idle then
+                -- it waited while the arrow was hidden, in the same area: it
+                -- goes on at the urgent budget (so it ends in a short window
+                -- shown); if you have moved meanwhile, the search from where
+                -- you are now follows it at once
+                j.urgent = true
+                if here ~= j.place then replanQueued, queuedUrgent = true, true end
+            elseif why and not (replanQueued and queuedUrgent) then
+                due, urgent = true, true -- Replan: a background job gives way, an urgent one is followed
+            elseif (deviated or changedArea) and not j.urgent then
+                due = true -- a background job gives way at once
+            end
+        end
+        -- an answer kept aside for settings that have come back (Finish):
+        -- only while it is still about where you are (the area and city it
+        -- was planned in, within REPLAN_MOVED of there) and no older than
+        -- REPLAN_EVERY; else the search queued since answers
+        local h = held
+        local away = h and here and h.here.area == here.area and h.here.city == here.city and Dist(here, h.here)
+        if h and (h.wp ~= wp or h.data ~= data or h.shape ~= dataShape
+            or not (away and away <= REPLAN_MOVED) or now - h.pumped > REPLAN_EVERY) then
+            held = nil
+        elseif h and Holds(h) then
+            held = nil
+            Finish(h)
+        end
+        -- one slice a frame (Travel.Refresh steers from an event as well):
+        -- of the running job, unless it is about to give way; else of the
+        -- one this frame starts
+        j = job
+        if j and lastPump ~= now and not (due and urgent and not j.urgent) then
+            Pump(now)
+        end
+        if replanQueued and not job then
+            -- what fell due while it ran starts now
+            replanQueued, due, urgent = false, true, queuedUrgent
+            queuedUrgent = false
+        end
+        if due then
+            Replan(wp, here, now, urgent)
+        end
+        if job and lastPump ~= now then
+            Pump(now)
+        end
+    elseif due then
         if planWp ~= wp then
             wipe(reached)
         end
         lastPlanTime, planGeneration, planWp = now, generation, wp
-        plan = Plan(wp)
+        local none
+        plan, none = Plan(wp)
+        noRoute = none and true or false
         ns.Fire("TRAVEL_PLANNED", plan)
     end
     if plan and not here then
@@ -1793,6 +2415,11 @@ function Travel.Steer(wp)
         return nil
     end
     if not plan then
+        if not noRoute then
+            -- the player or the waypoint isn't on the network (or the first
+            -- route is still being worked out): the plain arrow
+            return nil
+        end
         -- No reachable graph route: do not replace it with a straight arrow
         -- through a known barrier or an unavailable transport connection.
         return { title = L.TRAVEL_NO_PLAN, sub = WP.ShortName(wp), pin = true }
@@ -1804,15 +2431,31 @@ function Travel.Steer(wp)
     end
     local i = Target(path, here, plan.index)
     plan.index, plan.target = i, path[i]
-    local progress, aim = ProjectPlan(plan, here)
-    i = plan.index
+    local progress, aim
+    -- sliced: the route held while its new search runs may still show a
+    -- step you have taken (Beyond); this frame steers past it
+    local over
+    if Sliced() then over = Beyond(plan, i, here) end
+    if over == false then
+        return nil
+    elseif over then
+        i = over
+        if i == #path and path[i].via == "walk" then
+            return nil -- what remains is a plain walk to the waypoint: the normal arrow
+        end
+    else
+        progress, aim = ProjectPlan(plan, here)
+        i = plan.index
+    end
     local e = path[i]
     local how = e.via
     if type(how) == "table" and (how.method == "ship" or how.method == "zeppelin") then
         atDock = { link = how, t = now }
     end
-    local s = { total = plan.total, step = i - 1, steps = #path - 1, sub = WP.ShortName(wp) }
-    s.title = StepText(path, i, WP.ShortName(wp))
+    -- every field the result can get, sized once (nil until set)
+    local s = { total = plan.total, step = i - 1, steps = #path - 1, sub = WP.ShortName(wp), title = nil,
+        dist = nil, pin = nil, wait = nil, aim = nil, progress = nil, deviation = nil, bearing = nil, trail = nil }
+    s.title = SteerText(path, i, WP.ShortName(wp))
     if type(how) == "table" and (how.kind or TRANSPORT[how.method]) then
         -- at the dock, flight master or portal (or about to cast): no direction
         local from = path[i - 1].node
@@ -1904,12 +2547,52 @@ ns.RegisterEvent("HEARTHSTONE_BOUND", function()
     end
 end)
 
-for _, e in ipairs({ "ZONE_CHANGED_NEW_AREA", "PLAYER_ENTERING_WORLD", "PLAYER_LEVEL_UP", "SPELLS_CHANGED", "BAG_UPDATE_COOLDOWN",
+-- Spells learned and cooldowns (SPELLS_CHANGED, BAG_UPDATE_COOLDOWN, which
+-- can come several times a second) don't plan again at once: every re-plan,
+-- at least each REPLAN_EVERY seconds, reads them afresh (Context), and
+-- TravelAbilities reads them again at most a second after such an event
+-- (TRAVEL_ABILITIES_READ, below).
+for _, e in ipairs({ "ZONE_CHANGED_NEW_AREA", "PLAYER_ENTERING_WORLD", "PLAYER_LEVEL_UP",
     "PLAYER_DEAD", "PLAYER_ALIVE", "PLAYER_UNGHOST" }) do
     ns.RegisterEvent(e, function()
         Travel.Invalidate()
     end)
 end
+
+-- Does what the abilities say now differ from what context `c` was read
+-- with? A hearthstone, teleport or teleport item ready or not, known or not,
+-- its reagent or charges there or not, worn or usable or not; riding skills,
+-- speed forms and Frequent Flier. (Spirits use none of them.)
+local function AbilitiesChanged(c)
+    local d = data
+    if not (d and c) or c.dead then return false end
+    local ab = d.abilities
+    local outdoor, indoor = Abilities.SpeedFactors(ab)
+    if outdoor ~= c.outdoor or indoor ~= c.indoor or Abilities.FlightFactor(ab) ~= c.flightFactor then return true end
+    if not ns.Get("travelHearth") then return false end
+    local inn, name = BindNode()
+    local now, was = Abilities.Jumps(ab, inn, name, d.teleports, c.faction, LOADING, c.level), c.jumps
+    if #now ~= #was then return true end
+    for k = 1, #now do
+        local a, b = now[k], was[k]
+        if a.node ~= b.node or a.cost ~= b.cost or a.kind ~= b.kind or a.item ~= b.item or a.spell ~= b.spell then
+            return true
+        end
+    end
+    return false
+end
+Travel._AbilitiesChanged = AbilitiesChanged -- tests
+
+-- TravelAbilities has read them again (a second at most after the game said
+-- something changed): when the route followed, or the one being worked out,
+-- was planned with what no longer holds, plan again at once (as
+-- Travel.Invalidate does). Otherwise nothing: these come often.
+ns.On("TRAVEL_ABILITIES_READ", function()
+    if not (data and planWp and ns.Get("realRoutes")) then return end
+    if AbilitiesChanged((job and job.c) or answered) then
+        Travel.Invalidate()
+    end
+end)
 
 ns.On("ACTIVE_CHANGED", function(wp)
     C_Timer.After(0, function()
@@ -1917,6 +2600,7 @@ ns.On("ACTIVE_CHANGED", function(wp)
         if wp then Travel.Offer(wp) else HideOffer(); trip = nil end
     end)
     plan, riding, atDock = nil, nil, nil
+    noRoute, job, replanQueued, held, answered = false, nil, false, nil, nil
     wipe(reached)
     Travel.Invalidate()
 end)
@@ -1934,6 +2618,9 @@ function Travel._Reset()
     HideOffer()
     trip = nil
     data, plan, riding, taxiNames, atDock, planWp = nil, nil, nil, nil, nil, nil
+    noRoute, job, replanQueued, lastPlace = false, nil, false, nil
+    jobEnded, lastPump, seenM, seenX, seenY = nil, nil, nil, nil, nil
+    queuedUrgent, jobPlace, seenPlan, seenIndex, rejected, held, answered = false, nil, nil, nil, false, nil, nil
     bindCache, samples = {}, {}
     wipe(reached)
     Abilities._Reset()

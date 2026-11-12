@@ -6,7 +6,7 @@ local Tracker = { buttons = {} }
 ns.QuestTracker = Tracker
 local bindings, hooked, pool = {}, {}, {}
 local pending = false
-local Refresh, Schedule
+local Refresh, Schedule, Arm
 
 local function PlainLeft(button)
     return ns.Str(button) == "LeftButton"
@@ -30,7 +30,10 @@ local function Track(block, module, mouseButton)
         return
     end
     local button = bindings[block]
-    if button then button.flashUntil = GetTime() + 0.45 end
+    if button then
+        button.flashUntil = GetTime() + 0.45
+        Arm(button)
+    end
 end
 
 -- Blizzard's quest icon in front of each tracked quest (the "..." or "?"
@@ -63,15 +66,63 @@ local function Valid(button)
         and bindings[button.block] == button and QuestID(button.block, button.module)
 end
 
+-- Each button remembers what it last set (wtAlpha, wtMouse, wtShown, wtTint,
+-- wtAnchor); these setters are the only writers, so a value that is already
+-- in place is never set again.
+local function SetAlpha(button, alpha)
+    if button.wtAlpha ~= alpha then
+        button.wtAlpha = alpha
+        button:SetAlpha(alpha)
+    end
+end
+
+local function SetMouse(button, enabled)
+    if button.wtMouse ~= enabled then
+        button.wtMouse = enabled
+        button:EnableMouse(enabled)
+    end
+end
+
+local function SetShown(button, shown)
+    if button.wtShown ~= shown then
+        button.wtShown = shown
+        if shown then button:Show() else button:Hide() end
+    end
+end
+
+local function SetTint(button, tracked)
+    if button.wtTint ~= tracked then
+        button.wtTint = tracked
+        button.icon:SetVertexColor(tracked and 0.35 or 1, 1, tracked and 0.55 or 1)
+    end
+end
+
+-- Other code (a tracker skin, Blizzard) can show, hide, fade or disable our
+-- overlays behind those setters. At each layout, out of combat, take the real
+-- state as the remembered one so the setters below put it right again. Alpha
+-- is stored as float32 by the client, hence the tolerance.
+local function Resync(button)
+    local shown = ns.Plain(button:IsShown())
+    if type(shown) == "boolean" then button.wtShown = shown end
+    if type(button.IsMouseEnabled) == "function" then
+        local mouse = ns.Plain(button:IsMouseEnabled())
+        if type(mouse) == "boolean" then button.wtMouse = mouse end
+    end
+    local alpha = ns.Num(button:GetAlpha())
+    if alpha and math.abs(alpha - (button.wtAlpha or -1)) > 0.001 then button.wtAlpha = alpha end
+end
+
+-- One step of a visible button's fade. Returns true while it must run again
+-- next frame (fading, hovered or flashing).
 local function Fade(button, elapsed)
     local id = Valid(button)
     if not id then
-        button:SetAlpha(0)
+        SetAlpha(button, 0)
         -- Never intercept a header belonging to a different pooled module.
-        if not ns.InCombat() then button:EnableMouse(false) end
-        return
+        if not ns.InCombat() then SetMouse(button, false) end
+        return false
     end
-    if not ns.InCombat() then button:EnableMouse(true) end
+    if not ns.InCombat() then SetMouse(button, true) end
     local tracked = Follow.GetTrackedQuestID() == id
     local hovered = button.hovered or (button.header and ns.Plain(button.header:IsMouseOver()))
     local flashing = (button.flashUntil or 0) > GetTime()
@@ -80,15 +131,95 @@ local function Fade(button, elapsed)
     local step = math.min(1, (ns.Num(elapsed) or 0) * 12)
     alpha = alpha + (target - alpha) * step
     if math.abs(target - alpha) < 0.01 then alpha = target end
-    button:SetAlpha(alpha)
-    button.icon:SetVertexColor(tracked and 0.35 or 1, 1, tracked and 0.55 or 1)
+    SetAlpha(button, alpha)
+    SetTint(button, tracked)
+    return alpha ~= target or hovered or flashing
 end
+
+-- Would Fade change anything on this button now? Same inputs as Fade, no
+-- side effects.
+local function Pending(button)
+    local combat = ns.InCombat()
+    local id = Valid(button)
+    if not id then
+        return button.wtAlpha ~= 0 or (not combat and button.wtMouse ~= false)
+    end
+    if not combat and button.wtMouse ~= true then return true end
+    local tracked = Follow.GetTrackedQuestID() == id
+    if button.wtTint ~= tracked then return true end
+    if button.hovered or (button.header and ns.Plain(button.header:IsMouseOver())) then return true end
+    if (button.flashUntil or 0) > GetTime() then return true end
+    return button.wtAlpha ~= (tracked and 0.08 or 0)
+end
+
+-- Buttons have no OnUpdate of their own. A button is "armed" while it fades,
+-- is hovered or flashes, or when something that can change it happened
+-- (enter/leave, a flash, attach/release, the setting, combat ending, the
+-- arrow's quest changing). One shared frame steps armed buttons every frame,
+-- only while they are visible (as their own OnUpdate used to run). Title
+-- hover is only visible through polling the Blizzard header, so idle
+-- buttons are checked a few times a second instead of every frame.
+local POLL_SECONDS = 0.05
+local armed = {}
+local current, frameElapsed, sincePoll = nil, 0, 0
+
+Arm = function(button)
+    armed[button] = true
+end
+
+local function ArmAll()
+    for i = 1, #Tracker.buttons do armed[Tracker.buttons[i]] = true end
+end
+
+-- Argument-free so ns.Call allocates nothing per frame.
+local function StepCurrent()
+    local button = current
+    if not button:IsVisible() or not Fade(button, frameElapsed) then
+        armed[button] = nil
+    end
+end
+
+-- Hidden buttons are skipped (they are armed again when shown); an error in
+-- one button's check is reported and the others are still checked.
+local function PollCurrent()
+    local button = current
+    if not armed[button] and button:IsVisible() and Pending(button) then
+        armed[button] = true
+    end
+end
+
+local function Poll()
+    for i = 1, #Tracker.buttons do
+        current = Tracker.buttons[i]
+        ns.Call(PollCurrent)
+    end
+    current = nil
+end
+
+local watcher = CreateFrame("Frame")
+watcher:SetScript("OnUpdate", function(_, elapsed)
+    frameElapsed = elapsed
+    sincePoll = sincePoll + (ns.Num(elapsed) or 0)
+    if sincePoll >= POLL_SECONDS then
+        sincePoll = 0
+        Poll()
+    end
+    if next(armed) == nil then return end
+    for i = 1, #Tracker.buttons do
+        local button = Tracker.buttons[i]
+        if armed[button] then
+            current = button
+            ns.Call(StepCurrent)
+        end
+    end
+    current = nil
+end)
 
 local function CreateButton()
     local button = CreateFrame("Button", nil, UIParent)
     button:SetSize(14, 14)
     button:RegisterForClicks("LeftButtonUp")
-    button:SetAlpha(0)
+    SetAlpha(button, 0)
     button.icon = button:CreateTexture(nil, "ARTWORK")
     button.icon:SetAllPoints()
     -- Shipped TGA, already used by the addon's map pins on this client.
@@ -99,20 +230,24 @@ local function CreateButton()
     button:SetScript("OnEnter", ns.Safe(function(self)
         if not Valid(self) then return end
         self.hovered = true
-        self:SetAlpha(1)
+        SetAlpha(self, 1)
+        Arm(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(L.QUEST_TRACK_BUTTON)
         GameTooltip:Show()
     end))
     button:SetScript("OnLeave", function(self)
         self.hovered = nil
+        Arm(self)
         if GameTooltip:IsOwned(self) then GameTooltip:Hide() end
     end)
     button:SetScript("OnHide", function(self)
         self.hovered, self.flashUntil = nil, nil
         if GameTooltip:IsOwned(self) then GameTooltip:Hide() end
     end)
-    button:SetScript("OnUpdate", ns.Safe(Fade))
+    -- Also runs when a hidden parent (the tracker, a collapsed block) is
+    -- shown: the first shown frame corrects alpha, mouse and tint.
+    button:SetScript("OnShow", Arm)
     Tracker.buttons[#Tracker.buttons + 1] = button
     return button
 end
@@ -127,11 +262,12 @@ local function Release(block)
     button.block, button.module, button.header = nil, nil, nil
     button.hovered, button.flashUntil = nil, nil
     if GameTooltip:IsOwned(button) then GameTooltip:Hide() end
-    button:SetAlpha(0)
+    SetAlpha(button, 0)
     if not ns.InCombat() then
-        button:EnableMouse(false)
-        button:Hide()
+        SetMouse(button, false)
+        SetShown(button, false)
     end
+    Arm(button)
     pool[#pool + 1] = button
 end
 
@@ -142,16 +278,25 @@ local function Attach(block, module)
     if not button then
         button = table.remove(pool) or CreateButton()
         bindings[block] = button
-        button:SetAlpha(0)
+        Resync(button)
+        SetAlpha(button, 0)
+    else
+        Resync(button)
     end
     button.block, button.module, button.header = block, module, header
-    button:SetParent(header)
-    button:ClearAllPoints()
-    -- Overlay the header edge. Do not alter text anchors, block width or the
-    -- right-edge item controls, and leave Blizzard's left-hand POI untouched.
-    button:SetPoint("TOPRIGHT", header, "TOPRIGHT", 0, 0)
-    button:EnableMouse(true)
-    button:Show()
+    -- Parent and anchor stay put until the button moves to another header
+    -- (Release never touches them), so an unchanged header is not re-anchored.
+    if button.wtAnchor ~= header then
+        button:SetParent(header)
+        button:ClearAllPoints()
+        -- Overlay the header edge. Do not alter text anchors, block width or the
+        -- right-edge item controls, and leave Blizzard's left-hand POI untouched.
+        button:SetPoint("TOPRIGHT", header, "TOPRIGHT", 0, 0)
+        button.wtAnchor = header
+    end
+    SetMouse(button, true)
+    SetShown(button, true)
+    if Pending(button) then Arm(button) end
 end
 
 local function HookModule(module)
@@ -172,8 +317,9 @@ Refresh = function()
     -- Release can put a still-shown protected-parent button into the pool
     -- during combat. Finish its deferred cleanup before attaching new blocks.
     for _, button in ipairs(pool) do
-        button:EnableMouse(false)
-        button:Hide()
+        Resync(button)
+        SetMouse(button, false)
+        SetShown(button, false)
     end
     HookModule(QuestObjectiveTracker)
     HookModule(CampaignQuestObjectiveTracker)
@@ -205,5 +351,12 @@ for _, event in ipairs({ "ADDON_LOADED", "PLAYER_ENTERING_WORLD", "PLAYER_REGEN_
     "QUEST_WATCH_LIST_CHANGED", "QUEST_LOG_UPDATE" }) do ns.RegisterEvent(event, Schedule) end
 ns.On("LOGIN", Schedule)
 ns.On("SETTING_CHANGED", function(key)
-    if key == "questClickTrack" or key == nil then Schedule() end
+    if key == "questClickTrack" or key == nil then
+        ArmAll()
+        Schedule()
+    end
 end)
+-- Mouse state waits for combat to end; the arrow's quest sets the marker.
+ns.RegisterEvent("PLAYER_REGEN_ENABLED", ArmAll)
+ns.On("ACTIVE_CHANGED", ArmAll)
+ns.On("QUEST_TRACKING_CHANGED", ArmAll)

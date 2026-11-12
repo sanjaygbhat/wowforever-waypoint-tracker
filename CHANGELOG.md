@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.2
+
+- **Fixes the stutter while moving with Real routes on** (since 1.3.0). The route was worked out again in one go, as often as twice a second while you moved, and the game froze for a moment each time: longer the farther away the destination was. The route, and the path along ground you have walked before, is now worked out a little at a time in the background, a few thousandths of a second per frame at most, and the arrow keeps following the route it already has in the meantime. The routes chosen are the same as before. For a new waypoint on a long trip the arrow points straight at it for up to about a second while the first route is worked out.
+- Fixes memory use that kept growing while you moved with Real routes on.
+- Fixes a freeze on every frame while the waypoint could not be reached by any route.
+- A waypoint that Real routes cannot place on its map now gets the plain straight arrow instead of "no route".
+- A hearthstone or teleport in your route is no longer dropped and re-added when a fight starts or ends; bag, spell and cooldown changes reach the route within a couple of seconds.
+- The quest icons in the objective tracker no longer do any work while nothing changes, and following a tracked quest searches for its position far less often.
+- New regression tests cover background planning (same routes as before, no long frames, moving destinations, unreachable waypoints), the position cache, cooldown and bag changes, the quest tracker at rest and quest position lookups.
+
 ## 1.3.1
 
 - Mage city teleports now need a **Rune of Teleportation** in your bags, as in the game. Without one, Real routes no longer tells a mage to cast Teleport: Stormwind, Ironforge, Darnassus, Orgrimmar, Undercity or Thunder Bluff. Teleport: Moonglade and Astral Recall need nothing and are unchanged.

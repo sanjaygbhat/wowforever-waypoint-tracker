@@ -13,6 +13,14 @@ ns.Places = Places
 
 local CACHE_SECONDS = 10
 local cache, cacheTime = nil, -100
+-- Zone changes and loading screens seen so far, and how many had been seen
+-- when cache was built (only Follow's automatic lookup reads this).
+local zoneEpoch, cacheZone = 0, nil
+local function ZoneChanged()
+    zoneEpoch = zoneEpoch + 1
+end
+ns.RegisterEvent("ZONE_CHANGED_NEW_AREA", ZoneChanged)
+ns.RegisterEvent("PLAYER_ENTERING_WORLD", ZoneChanged)
 
 local ZONE = (Enum and Enum.UIMapType and Enum.UIMapType.Zone) or 3
 
@@ -200,7 +208,7 @@ function Places.GetAll(force)
     for _, step in ipairs(steps) do
         ns.Call(step)
     end
-    cache, cacheTime = out, now
+    cache, cacheTime, cacheZone = out, now, zoneEpoch
     return out
 end
 
@@ -256,7 +264,83 @@ end
 -- Find where a quest is right now (for "Point to the quest I'm tracking").
 local questMiss = {} -- questID -> time before which not to look again
 
-function Places.QuestPosition(questID)
+-- Follow's automatic updates (twice a second) ask again and again for the
+-- one quest the arrow follows. They pass "auto" and reuse the shared scan:
+-- a found quest is rescanned at most once per CACHE_SECONDS, a missed one
+-- after AUTO_MISS_SECONDS, and at once when its objectives progress, it
+-- completes, a quest is accepted, the zone changes, a loading screen ends
+-- or the player clicks it. Every other lookup scans exactly as before.
+local AUTO_MISS_SECONDS = 30
+-- The followed quest: id, progress at its last scan, zoneEpoch then, and
+-- missUntil (set only when that scan did not find it).
+local followed = {}
+
+-- Completion and objective progress, as a comparable string.
+local function Progress(questID)
+    local state = Plain(Call(C_QuestLog and C_QuestLog.IsComplete, questID)) and "done" or "open"
+    local objectives = Plain(Call(C_QuestLog and C_QuestLog.GetQuestObjectives, questID))
+    if type(objectives) == "table" then
+        for _, o in ipairs(objectives) do
+            if type(o) == "table" then
+                state = state .. ":" .. (ns.Num(o.numFulfilled) or "-") .. (Plain(o.finished) and "f" or "")
+            end
+        end
+    end
+    return state
+end
+
+-- Follow names the quest it follows (nil: none); a new or clicked quest
+-- starts with no remembered scan.
+function Places.FollowQuest(questID)
+    followed = { id = questID }
+end
+
+ns.RegisterEvent("QUEST_ACCEPTED", function()
+    followed.state = nil
+end)
+
+-- A continent scan for the quest; remembered when it is the followed one.
+local function Scan(questID)
+    for _, p in ipairs(Places.GetAll(true)) do
+        if p.questID == questID then
+            if followed.id == questID then
+                followed.state, followed.zone, followed.missUntil = Progress(questID), zoneEpoch, nil
+            end
+            return p.m, p.x, p.y
+        end
+    end
+    if followed.id == questID then
+        followed.state, followed.zone, followed.missUntil = Progress(questID), zoneEpoch, GetTime() + AUTO_MISS_SECONDS
+    end
+end
+
+local function AutoPosition(questID)
+    if followed.id ~= questID then
+        Places.FollowQuest(questID)
+    end
+    local f, now = followed, GetTime()
+    if f.state ~= Progress(questID) or f.zone ~= zoneEpoch then
+        return Scan(questID)
+    end
+    if f.missUntil then
+        if f.missUntil > now then
+            return nil
+        end
+        return Scan(questID)
+    end
+    -- Found last time: the shared scan answers while it is young and from
+    -- this zone; a quest it does not hold is scanned for at once.
+    if cache and now - cacheTime < CACHE_SECONDS and cacheZone == zoneEpoch then
+        for _, p in ipairs(cache) do
+            if p.questID == questID then
+                return p.m, p.x, p.y
+            end
+        end
+    end
+    return Scan(questID)
+end
+
+function Places.QuestPosition(questID, mode)
     if not questID or questID == 0 then
         return nil
     end
@@ -266,6 +350,7 @@ function Places.QuestPosition(questID)
         if type(quests) == "table" then
             for _, q in ipairs(quests) do
                 if q.questID == questID and ns.Num(q.x) and ns.Num(q.y) then
+                    if followed.id == questID then followed.missUntil = nil end
                     return current, q.x, q.y
                 end
             end
@@ -273,17 +358,20 @@ function Places.QuestPosition(questID)
     end
     local m, x, y = Call(C_QuestLog and C_QuestLog.GetNextWaypoint, questID)
     if m and ns.Num(x) and ns.Num(y) then
+        if followed.id == questID then followed.missUntil = nil end
         return m, x, y
+    end
+    if mode == "auto" then
+        return AutoPosition(questID)
     end
     -- rescanning every map is slow, so a quest that isn't on any of them
     -- isn't looked for again for a few seconds
     if (questMiss[questID] or 0) > GetTime() then
         return nil
     end
-    for _, p in ipairs(Places.GetAll(true)) do
-        if p.questID == questID then
-            return p.m, p.x, p.y
-        end
+    m, x, y = Scan(questID)
+    if m then
+        return m, x, y
     end
     questMiss[questID] = GetTime() + 10
 end

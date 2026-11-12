@@ -206,11 +206,19 @@ check(Uses(path, "teleport", "spell", 18960), "Teleport: Moonglade (no reagent) 
 known[18960] = nil
 
 -- The reagent count: a secret, missing or failing answer means no rune.
+-- (A secret answer falls back to the last readable count; with nothing
+-- remembered it is no rune, so forget the readable counts seen above.)
 known[3561] = true
 bags[RUNE] = 1
 local realCount = C_Item.GetItemCount
 C_Item.GetItemCount = function(id) if id == RUNE then return secret end return realCount(id) end
-check(not Jump(Context(), "teleport", "spell", 3561), "a secret reagent count is not a rune in the bags")
+A._Reset()
+check(not Jump(Context(), "teleport", "spell", 3561), "a secret reagent count with nothing remembered is not a rune in the bags")
+-- the mirror image: a rune count read as 1, then secret, still counts
+C_Item.GetItemCount = realCount
+check(Jump(Context(), "teleport", "spell", 3561), "a readable rune count of 1: the teleport is a jump")
+C_Item.GetItemCount = function(id) if id == RUNE then return secret end return realCount(id) end
+check(Jump(Context(), "teleport", "spell", 3561), "remembered as 1, then secret: still counted as a rune in the bags")
 C_Item.GetItemCount = function(id) if id == RUNE then error("unavailable") end return realCount(id) end
 check(not Jump(Context(), "teleport", "spell", 3561), "a failing reagent count is not a rune in the bags")
 local savedItem, savedCount = C_Item, GetItemCount
@@ -284,7 +292,13 @@ local realUsable = C_Item.IsUsableItem
 C_Item.IsUsableItem = nil
 check(not ItemJump(18984), "no IsUsableItem: the Engineering skill can't be confirmed, no jump")
 C_Item.IsUsableItem = function() return secret, false end
-check(not ItemJump(18984), "a secret IsUsableItem answer: skill unconfirmed, no jump")
+A._Reset()
+check(not ItemJump(18984), "a secret IsUsableItem answer with nothing remembered: skill unconfirmed, no jump")
+-- the mirror image: read as usable, then secret, still usable
+C_Item.IsUsableItem = realUsable
+check(ItemJump(18984), "IsUsableItem read as usable: the Dimensional Ripper is a jump")
+C_Item.IsUsableItem = function() return secret, false end
+check(ItemJump(18984), "remembered as usable, then a secret IsUsableItem answer: still a jump")
 C_Item.IsUsableItem = function() error("unavailable") end
 check(not ItemJump(18984), "a failing IsUsableItem: skill unconfirmed, no jump")
 C_Item.IsUsableItem = realUsable
@@ -330,7 +344,13 @@ local realWorn = C_Item.IsEquippedItem
 C_Item.IsEquippedItem = nil
 check(not ItemJump(260820), "no IsEquippedItem: a trinket isn't assumed worn")
 C_Item.IsEquippedItem = function() return secret end
-check(not ItemJump(260820), "a secret IsEquippedItem answer: not worn")
+A._Reset()
+check(not ItemJump(260820), "a secret IsEquippedItem answer with nothing remembered: not worn")
+-- the mirror image: read as worn, then secret, still worn
+C_Item.IsEquippedItem = realWorn
+check(ItemJump(260820), "IsEquippedItem read as worn: the SAF-T Ripper is a jump")
+C_Item.IsEquippedItem = function() return secret end
+check(ItemJump(260820), "remembered as worn, then a secret IsEquippedItem answer: still a jump")
 C_Item.IsEquippedItem, C_Item.IsUsableItem = realWorn, realUsable
 itemCD[260820] = GetTime()
 check(not ItemJump(260820), "the SAF-T Ripper on cooldown: no jump")
@@ -498,11 +518,440 @@ check(not A.SpellReady(3561), "a secret answer keeps the remembered cooldown")
 M.now = M.now + 61
 check(A.SpellReady(3561), "once the remembered cooldown is over, a secret answer counts as ready")
 C_SpellBook.IsSpellKnown = function() return secret end
-check(A.Knows(3561) == false, "a secret spellbook answer is not known")
+check(A.Knows(3561) == false, "a secret spellbook answer with nothing remembered is not known")
+-- the mirror image: read as known, then secret, still known
+C_SpellBook.IsSpellKnown = Book().IsSpellKnown
+check(A.Knows(3561) == true, "a readable spellbook answer: known")
+C_SpellBook.IsSpellKnown = function() return secret end
+check(A.Knows(3561) == true, "remembered as known, then a secret spellbook answer: still known")
 C_Item.GetItemCount = function() return secret end
-check(A.ItemCount(6948) == 0, "a secret item count is not carried")
+check(A.ItemCount(6948) == 0, "a secret item count with nothing remembered is not carried")
+-- the mirror image: read as 1, then secret, still counted
+C_Item.GetItemCount = Item().GetItemCount
+check(A.ItemCount(6948) == 1, "a readable item count of 1")
+C_Item.GetItemCount = function() return secret end
+check(A.ItemCount(6948) == 1, "remembered as 1, then a secret item count: still counted")
 C_SpellBook, C_Spell, C_Item = Book(), Spell(), Item()
 bags[6948], bags[RUNE], known[556], known[3561], known[33391] = nil, nil, nil, nil, nil
+
+-- ---------------------------------------------------------------------------
+-- Combat: what was last read stays true while the game hides it
+-- ---------------------------------------------------------------------------
+local secretSpellCD = function() return { startTime = secret, duration = secret } end
+local secretItemCD = function() return secret, secret, 1 end
+-- A cooldown last read as ready stays ready when it turns secret.
+A._Reset()
+check(A.SpellReady(3561), "a readable ready spell is ready")
+C_Spell.GetSpellCooldown = secretSpellCD
+check(A.SpellReady(3561), "a spell last read as ready stays ready when its cooldown turns secret")
+C_Spell = Spell()
+check(A.ItemReady(6948), "a readable ready item is ready")
+C_Item.GetItemCooldown = secretItemCD
+check(A.ItemReady(6948), "an item last read as ready stays ready when its cooldown turns secret")
+C_Item = Item()
+-- On cooldown: the secret answer uses the remembered end, then turns ready.
+A._Reset()
+spellCD[3561], spellDur[3561] = GetTime(), 30
+itemCD[6948] = GetTime()
+check(not A.SpellReady(3561) and not A.ItemReady(6948), "readable cooldowns are not ready")
+C_Spell.GetSpellCooldown, C_Item.GetItemCooldown = secretSpellCD, secretItemCD
+check(not A.SpellReady(3561) and not A.ItemReady(6948), "secret cooldowns keep the remembered end time")
+M.now = M.now + 31
+check(A.SpellReady(3561) and not A.ItemReady(6948), "a remembered spell cooldown that has passed is ready; the item's hour has not")
+M.now = M.now + 3600
+check(A.ItemReady(6948), "a remembered item cooldown that has passed is ready")
+C_Spell, C_Item = Spell(), Item()
+spellCD[3561], spellDur[3561], itemCD[6948] = nil, nil, nil
+-- Never readable: not ready.
+A._Reset()
+C_Spell.GetSpellCooldown, C_Item.GetItemCooldown = secretSpellCD, secretItemCD
+check(not A.SpellReady(3561) and not A.ItemReady(6948), "a cooldown never readable is not trusted ready")
+C_Spell, C_Item = Spell(), Item()
+-- A missing answer still only trusts a remembered cooldown end (as before).
+A._Reset()
+check(A.SpellReady(3561), "ready before the API goes away")
+C_Spell.GetSpellCooldown = function() return nil end
+check(not A.SpellReady(3561), "a missing (not secret) cooldown answer is not trusted ready")
+C_Spell = Spell()
+-- The route keeps the hearthstone and the teleport through combat.
+A._Reset()
+known[3561], bags[RUNE], bags[6948] = true, 1, 1
+c = Context()
+check(Jump(c, "hearth", "item", 6948) and Jump(c, "teleport", "spell", 3561), "out of combat: hearth and teleport jumps")
+C_Spell.GetSpellCooldown, C_Item.GetItemCooldown = secretSpellCD, secretItemCD
+c = Context()
+check(Jump(c, "hearth", "item", 6948) and Jump(c, "teleport", "spell", 3561),
+    "secret cooldowns in combat keep the hearth and teleport jumps")
+C_SpellBook.IsSpellKnown = function() return secret end
+C_Item.GetItemCount = function() return secret end
+c = Context()
+check(Jump(c, "hearth", "item", 6948) and Jump(c, "teleport", "spell", 3561),
+    "secret spellbook and bag answers in combat keep them too")
+C_SpellBook, C_Spell, C_Item = Book(), Spell(), Item()
+known[3561], bags[RUNE], bags[6948] = nil, nil, nil
+-- Knowledge under secrets.
+A._Reset()
+known[3561] = true
+check(A.Knows(3561), "a readable known spell is known")
+C_SpellBook.IsSpellKnown = function() return secret end
+check(A.Knows(3561), "a spell last read as known stays known when the answer turns secret")
+check(not A.Knows(3562), "a spell never readably known is not known while secret")
+C_SpellBook = Book()
+known[3561] = nil
+check(not A.Knows(3561), "a readable no wins and refreshes the memo")
+C_SpellBook.IsSpellKnown = function() return secret end
+check(not A.Knows(3561), "a spell last read as unknown stays unknown when the answer turns secret")
+C_SpellBook = Book()
+known[3561] = true
+A.Knows(3561)
+A._Reset()
+C_SpellBook.IsSpellKnown = function() return secret end
+check(not A.Knows(3561), "_Reset forgets what was known")
+C_SpellBook = Book()
+known[3561] = nil
+-- The first API that answers decides (run_travel.lua: modern false is
+-- authoritative); a secret answer uses that spell's remembered verdict.
+local savedPlayerSpell = IsPlayerSpell
+IsPlayerSpell = function(id) return id == 3561 end
+check(not A.Knows(3561), "the spellbook says no, IsPlayerSpell yes: the spellbook decides")
+C_SpellBook.IsSpellKnown = function() return secret end
+check(not A.Knows(3561), "a secret spellbook answer uses the remembered no, not the legacy yes")
+C_SpellBook.IsSpellKnown = function() error("unavailable") end
+check(A.Knows(3561), "a throwing spellbook: the legacy IsPlayerSpell answers")
+IsPlayerSpell = function() return secret end
+check(A.Knows(3561), "then a secret legacy answer keeps the remembered yes")
+C_SpellBook = Book()
+IsPlayerSpell = savedPlayerSpell
+-- Bag counts under secrets.
+A._Reset()
+bags[6948], bags[260820], charges[260820] = 2, 1, 3
+check(A.ItemCount(6948) == 2 and A.ItemCount(260820, true) == 3, "readable counts")
+C_Item.GetItemCount = function() return secret end
+check(A.ItemCount(6948) == 2 and A.ItemCount(260820, true) == 3 and A.ItemCount(260820) == 0,
+    "secret counts use the last readable count of the same kind; none read means 0")
+C_Item = Item()
+bags[6948] = 0
+check(A.ItemCount(6948) == 0, "a readable 0 wins")
+C_Item.GetItemCount = function() return secret end
+check(A.ItemCount(6948) == 0, "and is remembered")
+A._Reset()
+check(A.ItemCount(260820, true) == 0, "_Reset forgets the counts")
+C_Item = Item()
+bags[6948], bags[260820], charges[260820] = nil, nil, nil
+-- The legacy cooldown global is guarded too.
+A._Reset()
+local savedLegacyCD = GetSpellCooldown
+C_Spell, GetSpellCooldown = nil, function() error("unavailable") end
+local okLegacy, legacyReady = pcall(A.SpellReady, 3561)
+check(okLegacy and legacyReady == false, "a throwing legacy GetSpellCooldown: not ready, no error")
+GetSpellCooldown = savedLegacyCD
+C_Spell = Spell()
+-- Item names: asked until the game has one, then kept.
+A._Reset()
+local nameCalls, nameReady = 0, false
+C_Item.GetItemNameByID = function(id)
+    nameCalls = nameCalls + 1
+    if nameReady then return "Item " .. id end
+end
+check(A.ItemName(18986) == "#18986" and A.ItemName(18986) == "#18986" and nameCalls == 2,
+    "no name yet: the number, and the game is asked again")
+nameReady = true
+check(A.ItemName(18986) == "Item 18986" and nameCalls == 3, "the name once the game has it")
+for _ = 1, 10 do A.ItemName(18986) end
+check(A.ItemName(18986) == "Item 18986" and nameCalls == 3, "a known name is not asked for again")
+A._Reset()
+check(A.ItemName(18986) == "Item 18986" and nameCalls == 4, "_Reset forgets item names")
+C_Item = Item()
+A._Reset()
+
+-- ---------------------------------------------------------------------------
+-- What is remembered stays current while no route is planned
+-- ---------------------------------------------------------------------------
+-- The game's events (cooldowns, bags, spells, equipment, leaving combat)
+-- re-read what the planner last asked about, one second later and at most
+-- once a second; a secret answer leaves what is remembered as it was.
+local refreshes = 0
+local realRefresh = A.Refresh
+A.Refresh = function()
+    refreshes = refreshes + 1
+    return realRefresh()
+end
+local function Peace() C_SpellBook, C_Spell, C_Item = Book(), Spell(), Item() end
+local function Combat() -- every answer secret
+    C_SpellBook.IsSpellKnown = function() return secret end
+    C_Spell.GetSpellCooldown = secretSpellCD
+    C_Item.GetItemCount = function() return secret end
+    C_Item.GetItemCooldown = secretItemCD
+    C_Item.IsEquippedItem = function() return secret end
+    C_Item.IsUsableItem = function() return secret, secret end
+end
+local function Clear()
+    for _, t in ipairs({ known, spellCD, spellDur, bags, itemCD, charges, worn, usable }) do
+        for k in pairs(t) do t[k] = nil end
+    end
+    Peace()
+    A._Reset()
+end
+
+-- The reviewer's case: the hearthstone read as ready while planning; used
+-- while no route is planned; two seconds later combat starts and a
+-- waypoint is set.
+Clear()
+bags[6948] = 1
+check(Jump(Context(), "hearth", "item", 6948), "planned out of combat: the hearthstone is ready")
+M.Tick(5, 0.5)
+itemCD[6948] = GetTime() -- used; nothing plans
+M.FireEvent("BAG_UPDATE_COOLDOWN")
+M.Tick(2, 0.5)
+Combat()
+check(not Jump(Context(), "hearth"),
+    "hearthstone used while nothing was planned (BAG_UPDATE_COOLDOWN), then combat: no hearth jump")
+-- Without the event nothing can know: the last read (ready) stands, as documented.
+Clear()
+bags[6948] = 1
+check(Jump(Context(), "hearth", "item", 6948), "planned again: ready")
+M.Tick(5, 0.5)
+itemCD[6948] = GetTime() -- used, and the game says nothing
+M.Tick(2, 0.5)
+Combat()
+check(Jump(Context(), "hearth", "item", 6948),
+    "documented fallback: used with no event and no plan since, in combat the last readable answer (ready) stands")
+-- Leaving combat reads it again, so the next combat knows.
+Peace()
+M.FireEvent("PLAYER_REGEN_ENABLED")
+M.Tick(2, 0.5)
+Combat()
+check(not Jump(Context(), "hearth"), "after PLAYER_REGEN_ENABLED the cooldown was read again: the next combat has no hearth jump")
+
+-- A rune sold, a spell unlearned, a trinket taken off: then combat.
+Clear()
+known[3561], bags[RUNE] = true, 1
+check(Jump(Context(), "teleport", "spell", 3561), "planned: Teleport: Stormwind with a rune in the bags")
+bags[RUNE] = 0
+M.FireEvent("BAG_UPDATE_DELAYED")
+M.Tick(2, 0.5)
+Combat()
+check(not Jump(Context(), "teleport", "spell", 3561), "rune sold (BAG_UPDATE_DELAYED), then combat: the teleport is not offered")
+Clear()
+known[3561], bags[RUNE] = true, 1
+check(Jump(Context(), "teleport", "spell", 3561), "planned: the teleport again")
+known[3561] = nil
+M.FireEvent("SPELLS_CHANGED")
+M.Tick(2, 0.5)
+Combat()
+check(not Jump(Context(), "teleport", "spell", 3561), "spell unlearned (SPELLS_CHANGED), then combat: the teleport is not offered")
+Clear()
+bags[260820], charges[260820], worn[260820] = 1, 2, true
+check(ItemJump(260820), "planned: the SAF-T Ripper worn")
+worn[260820] = nil
+M.FireEvent("PLAYER_EQUIPMENT_CHANGED")
+M.Tick(2, 0.5)
+Combat()
+check(not ItemJump(260820), "trinket taken off (PLAYER_EQUIPMENT_CHANGED), then combat: not offered")
+
+-- The original fix stays: ready, then combat (the events keep coming, their
+-- re-reads are secret): still ready.
+Clear()
+known[3561], bags[RUNE], bags[6948] = true, 1, 1
+c = Context()
+check(Jump(c, "hearth", "item", 6948) and Jump(c, "teleport", "spell", 3561), "out of combat: hearth and teleport")
+Combat()
+for _ = 1, 20 do
+    M.FireEvent("SPELL_UPDATE_COOLDOWN")
+    M.FireEvent("BAG_UPDATE_COOLDOWN")
+    M.Tick(0.5, 0.5)
+end
+c = Context()
+check(Jump(c, "hearth", "item", 6948) and Jump(c, "teleport", "spell", 3561),
+    "ready, then ten seconds of combat events with secret re-reads: still ready")
+-- On cooldown, then combat: ready once the remembered end has passed.
+Clear()
+known[3561], bags[RUNE] = true, 1
+spellCD[3561], spellDur[3561] = GetTime(), 30
+check(not Jump(Context(), "teleport", "spell", 3561), "on cooldown out of combat: no teleport")
+Combat()
+for _ = 1, 20 do
+    M.FireEvent("SPELL_UPDATE_COOLDOWN")
+    M.Tick(0.5, 0.5)
+end
+check(not Jump(Context(), "teleport", "spell", 3561), "in combat, ten seconds in: still on the remembered cooldown")
+for _ = 1, 50 do
+    M.FireEvent("SPELL_UPDATE_COOLDOWN")
+    M.Tick(0.5, 0.5)
+end
+check(Jump(Context(), "teleport", "spell", 3561), "in combat, once the remembered end has passed: the teleport is ready")
+
+-- A Refresh while every answer is secret changes nothing remembered, even
+-- when the game changed meanwhile.
+Clear()
+known[3561], known[20222], bags[RUNE], bags[6948], bags[18984] = true, true, 1, 1, 1
+bags[260820], charges[260820], worn[260820] = 1, 2, true
+spellCD[3561], spellDur[3561] = GetTime(), 30
+Context()
+check(ItemJump(18984) and ItemJump(260820), "both teleport items read as usable")
+Combat()
+local function Snapshot()
+    return table.concat({ tostring(A.Knows(3561)), A.ItemCount(RUNE), A.ItemCount(6948), A.ItemCount(260820, true),
+        tostring(A.SpellReady(3561)), tostring(A.ItemReady(6948)), tostring(A.IsEquipped(260820)),
+        tostring(A.IsUsable(18984)) }, ",")
+end
+local before = Snapshot()
+known[3561], bags[RUNE], bags[6948], charges[260820], worn[260820], usable[18984] = nil, 0, 0, 0, nil, false
+itemCD[6948] = GetTime()
+refreshes = 0
+A.Refresh()
+M.FireEvent("SPELL_UPDATE_COOLDOWN")
+M.Tick(2, 0.5)
+check(refreshes == 2 and Snapshot() == before,
+    ("a Refresh with every answer secret changes nothing remembered (%s / %s, %d)"):format(before, Snapshot(), refreshes))
+
+-- Worn and usable: the last readable answer; never readable is no.
+Clear()
+worn[260820] = true
+check(A.IsEquipped(260820) == true and A.IsUsable(18984) == true, "readable: worn and usable")
+usable[18986] = false
+check(A.IsUsable(18986) == false, "readable: not usable")
+Combat()
+check(A.IsEquipped(260820) == true and A.IsUsable(18984) == true, "read as worn and usable, then secret: still worn and usable")
+check(A.IsUsable(18986) == false, "read as not usable, then secret: still not usable")
+check(A.IsEquipped(260819) == false and A.IsUsable(260819) == nil,
+    "never readable, then secret: not worn, and usability unknown (as before: skill items fail closed)")
+
+-- Coalescing: 200 events inside a second make one Refresh; a steady stream
+-- never more than one a second; an event costs no allocation but the flag.
+Clear()
+Context()
+local events = { "BAG_UPDATE_COOLDOWN", "SPELL_UPDATE_COOLDOWN", "SPELLS_CHANGED", "BAG_UPDATE_DELAYED",
+    "PLAYER_EQUIPMENT_CHANGED", "PLAYER_REGEN_ENABLED" }
+refreshes = 0
+for i = 1, 200 do
+    M.FireEvent(events[i % #events + 1])
+    M.Tick(0.004, 0.004)
+end
+check(refreshes == 0, "during the burst's first second nothing is read yet (" .. refreshes .. ")")
+M.Tick(2, 0.05)
+check(refreshes == 1, "200 events in under a second: exactly one Refresh (" .. refreshes .. ")")
+refreshes = 0
+for i = 1, 1000 do
+    M.FireEvent(events[i % #events + 1])
+    M.Tick(0.01, 0.01)
+end
+check(refreshes >= 9 and refreshes <= 10, "1000 events over ten seconds: at most one Refresh a second (" .. refreshes .. ")")
+M.Tick(2, 0.05)
+M.FireEvent("SPELL_UPDATE_COOLDOWN") -- a Refresh is now waiting
+-- the addon's own event dispatch (Core.lua's OnEvent), not the mock's
+-- FireEvent, which allocates for its varargs
+local frame = M.eventFrames.SPELL_UPDATE_COOLDOWN[1]
+local onEvent = frame._scripts.OnEvent
+collectgarbage("collect")
+collectgarbage("stop")
+local kb = collectgarbage("count")
+for _ = 1, 1000 do onEvent(frame, "SPELL_UPDATE_COOLDOWN") end
+local grew = collectgarbage("count") - kb
+collectgarbage("restart")
+check(grew < 1, ("1000 more events while a Refresh waits allocate nothing (%.2f KB)"):format(grew))
+M.Tick(2, 0.05)
+
+-- Without C_Timer: read when the planner next asks, at most once a second.
+local savedTimer = C_Timer
+C_Timer = nil
+Clear()
+Context()
+refreshes = 0
+M.FireEvent("SPELLS_CHANGED")
+check(refreshes == 0, "no C_Timer: an event alone reads nothing")
+Context()
+check(refreshes == 1, "no C_Timer: the planner's next ask reads again first")
+M.FireEvent("SPELLS_CHANGED")
+Context()
+check(refreshes == 1, "no C_Timer: not again within a second")
+M.now = M.now + 1.1
+Context()
+check(refreshes == 2, "no C_Timer: again a second later")
+C_Timer = savedTimer
+
+-- Nothing asked about yet: an event or a Refresh calls no game API.
+Clear()
+local calls = 0
+local function Counted(t)
+    local out = {}
+    for k, fn in pairs(t) do
+        out[k] = function(...)
+            calls = calls + 1
+            return fn(...)
+        end
+    end
+    return out
+end
+C_SpellBook, C_Spell, C_Item = Counted(Book()), Counted(Spell()), Counted(Item())
+refreshes = 0
+for _, e in ipairs(events) do M.FireEvent(e) end
+M.Tick(2, 0.5)
+check(refreshes == 0, "nothing asked about yet: events schedule no Refresh")
+A.Refresh()
+check(calls == 0, "nothing asked about yet: a Refresh calls no game API (" .. calls .. ")")
+-- After a plan, one Refresh re-reads everything the planner asked about.
+Context()
+calls = 0
+A.Refresh()
+print(("one Refresh after a plan with the shipped data: %d game API calls"):format(calls))
+check(calls > 0 and calls <= 60, "one Refresh after a plan makes a bounded number of game API calls (" .. calls .. ")")
+
+A.Refresh = realRefresh
+Clear()
+
+-- ---------------------------------------------------------------------------
+-- What a route was planned with against what the abilities say now: Travel
+-- plans again at once only when it differs (Travel._AbilitiesChanged), and
+-- hears of every read (TRAVEL_ABILITIES_READ) a second after an event.
+-- ---------------------------------------------------------------------------
+local reads = 0
+ns.On("TRAVEL_ABILITIES_READ", function() reads = reads + 1 end)
+local changed = Travel._AbilitiesChanged or function() return nil end
+bags[6948], bags[RUNE], known[3561] = 1, 2, true
+local planned = Context()
+check(Jump(planned, "hearth") and Jump(planned, "teleport", "spell", 3561), "planned with: (control) the hearthstone and Teleport: Stormwind")
+check(changed(planned) == false, "nothing changed: what the route was planned with still holds")
+bags[RUNE] = 1
+check(changed(planned) == false, "a rune used, one left: still holds (the teleport still has its reagent)")
+bags[RUNE] = 0
+check(changed(planned) == true, "the last rune gone: changed (the teleport is no jump now)")
+bags[RUNE] = 2
+itemCD[6948] = GetTime()
+check(changed(planned) == true, "the hearthstone used: changed (on cooldown)")
+itemCD[6948] = nil
+known[3561] = nil
+check(changed(planned) == true, "the teleport unlearned: changed")
+known[3561] = true
+known[33388] = true
+check(changed(planned) == true, "riding learned: changed (faster on the ground)")
+known[33388] = nil
+check(changed(planned) == false, "all back as it was planned: holds again")
+itemCD[6948] = GetTime()
+local planned2 = Context()
+itemCD[6948] = nil
+check(not Jump(planned2, "hearth") and changed(planned2) == true, "planned while the hearthstone was on cooldown, now ready: changed")
+Combat()
+check(changed(planned) == false and changed(planned2) == true,
+    "in combat (every answer secret) the last readable answers stand: no change from secrets")
+Peace()
+reads = 0
+M.FireEvent("BAG_UPDATE_COOLDOWN")
+M.Tick(0.5, 0.5)
+check(reads == 0, "an event alone tells Travel nothing yet")
+M.Tick(1, 0.5)
+check(reads == 1, "a second after the event the answers are read again, and Travel is told once (" .. reads .. ")")
+reads = 0
+for i = 1, 100 do M.FireEvent(events[i % #events + 1]); M.Tick(0.01, 0.01) end
+M.Tick(2, 0.5)
+check(reads == 1, "a burst of events: told once, with the one read (" .. reads .. ")")
+itemCD[6948] = GetTime()
+ns.Set("travelHearth", false)
+check(changed(planned) == false, "hearthstone and teleports turned off: their state does not count")
+ns.Set("travelHearth", true)
+check(changed(planned) == true, "(control) turned on again: the hearthstone on cooldown counts")
+itemCD[6948] = nil
+Clear()
 
 check(#M.errors == 0, "no reported Lua errors: " .. tostring(M.errors[1]))
 print(("Travel abilities: %d passed, %d failed"):format(passed, failed))

@@ -38,6 +38,15 @@ local MAX_DETOUR = 2.2 -- a path this much longer than the straight line isn't t
 local SEARCH_LIMIT = 3000
 local SEARCH_AGAIN = 3 -- seconds before looking for a path to the same place again
 local NO_PATH_AGAIN = 10 -- and after finding none
+-- A search spread over frames (Trails.Steer, when the client has a frame
+-- clock) does at most this much in one frame:
+local SLICE_MS = 1 -- milliseconds by the frame clock,
+-- (100 squares: 0.4 ms typical, 1.3 ms worst measured with Lua 5.1 on a busy machine)
+local SLICE_SQUARES = 100 -- and squares looked around from, clock or not,
+local SLICE_POPS = 400 -- and entries taken off the search's list (about 2 a square)
+local CLOCK_EVERY = 16 -- (the clock is read every this many taken off)
+local SLICE_IDLE = 1 -- seconds a search not carried on is kept
+local KEEP_IDLE = 10 -- seconds the path found is kept unused
 local DOCK_WAIT = 60 -- seconds a boat or zeppelin stays at each end
 local TIMETABLE_HOURS = 8 -- how long a seen departure is trusted
 
@@ -126,6 +135,23 @@ local function Added(which, cont)
     counts[which .. cont] = (counts[which .. cont] or 0) + 1
 end
 
+-- Counts the changes to the walked squares that can turn a failed path
+-- search (Trails.Steer) into a found one: a step between two squares
+-- already walked, a square taken from other players, or a new square near
+-- the square Steer is looking for a way to (its nearest walked square may
+-- change). A new square at the end of a path you walk is only a dead end.
+local joins = 0
+local watchCont, watchX, watchY -- the square Steer last looked for a way to
+
+local function Walked(st, cont, k)
+    local own, shared = st.own[cont], st.shared[cont]
+    return ((own and own[k]) or 0) > 0 or ((shared and shared[k]) or 0) > 0
+end
+
+local function NearWatched(cont, x, y)
+    return cont == watchCont and abs(x - watchX) <= 2 and abs(y - watchY) <= 2
+end
+
 -- a step from one square to the next, in both
 local function Link(g, which, cont, ax, ay, bx, by)
     local b1 = BIT[(bx - ax) .. "," .. (by - ay)]
@@ -133,12 +159,14 @@ local function Link(g, which, cont, ax, ay, bx, by)
     if not (b1 and b2) then
         return false
     end
+    local st = Store()
+    local joined = st and Walked(st, cont, Key(ax, ay)) and Walked(st, cont, Key(bx, by))
     local added = false
     for _, s in ipairs({ { Key(ax, ay), b1 }, { Key(bx, by), b2 } }) do
         local old = g[s[1]]
         if not old then
             if not Room(which, cont, g) then
-                return added
+                break
             end
             Added(which, cont)
             old = 0
@@ -147,6 +175,9 @@ local function Link(g, which, cont, ax, ay, bx, by)
             g[s[1]] = old + s[2]
             added = true
         end
+    end
+    if added and (joined or NearWatched(cont, ax, ay) or NearWatched(cont, bx, by)) then
+        joins = joins + 1
     end
     return added
 end
@@ -184,7 +215,7 @@ local function Here()
     if not m then
         return nil
     end
-    local cont, wx, wy = Geo.MapToWorld(m, x, y)
+    local cont, wx, wy = Geo.MapToWorldLive(m, x, y)
     if not cont then
         return nil
     end
@@ -261,7 +292,7 @@ local function Record()
     local T = ns.Travel
     local area, city
     if Network() then
-        area, city = T.AreaAt(m, x, y)
+        area, city = T.AreaAt(m, x, y, nil, true) -- live: the player's position
     end
     local now = GetTime()
     local here = { cont = cont, cx = cx, cy = cy, wx = wx, wy = wy, m = m, x = x, y = y, area = area, city = city, t = now }
@@ -273,9 +304,11 @@ local function Record()
         if moved < 80 and speed < 30 and (cx ~= last.cx or cy ~= last.cy) then
             local g = Grid("own", cont, true)
             local cells = Line(last.cx, last.cy, cx, cy)
+            -- steps are kept for sharing only while sharing is on
+            local share = ns.Get("travelShare")
             for i = 2, #cells do
                 local a, b = cells[i - 1], cells[i]
-                if Link(g, "own", cont, a[1], a[2], b[1], b[2]) then
+                if Link(g, "own", cont, a[1], a[2], b[1], b[2]) and share then
                     fresh[#fresh + 1] = { cont, a[1], a[2], b[1], b[2], now }
                 end
             end
@@ -395,81 +428,132 @@ end
 -- ---------------------------------------------------------------------------
 -- Following a path inside an area
 -- ---------------------------------------------------------------------------
--- A* over the walked squares, own and confirmed shared. Returns the list of
--- squares or nil.
-local function FindPath(cont, sx, sy, gx, gy)
-    local own, shared = Grid("own", cont) or {}, Grid("shared", cont) or {}
-    local function Bits(k)
-        local a, b = own[k] or 0, shared[k] or 0
-        if a == 0 then
-            return b
-        elseif b == 0 then
-            return a
+-- A* over the walked squares, own and confirmed shared, as a search that can
+-- stop and go on later: NewSearch sets it up, Expand carries it on (all of
+-- it, or a slice). Stopped or not, it takes the same steps in the same
+-- order, so it ends with the same answer: search.path, the list of squares,
+-- or nil once search.done.
+local function Heuristic(k, gx, gy)
+    local x, y = Unkey(k)
+    local dx, dy = x - gx, y - gy
+    return sqrt(dx * dx + dy * dy)
+end
+
+-- a binary heap of { f, key }
+local function Push(heap, f, k)
+    local i = #heap + 1
+    heap[i] = { f, k }
+    while i > 1 do
+        local p = floor(i / 2)
+        if heap[p][1] <= heap[i][1] then
+            break
         end
-        return Or(a, b)
+        heap[p], heap[i] = heap[i], heap[p]
+        i = p
     end
-    local start, goal = Key(sx, sy), Key(gx, gy)
-    local function H(k)
-        local x, y = Unkey(k)
-        local dx, dy = x - gx, y - gy
-        return sqrt(dx * dx + dy * dy)
-    end
-    -- a binary heap of { f, key }
-    local heap = { { H(start), start } }
-    local function Push(f, k)
-        local i = #heap + 1
-        heap[i] = { f, k }
-        while i > 1 do
-            local p = floor(i / 2)
-            if heap[p][1] <= heap[i][1] then
+end
+
+local function Pop(heap)
+    local top = heap[1]
+    local lastItem = table.remove(heap)
+    local n = #heap
+    if n > 0 then
+        heap[1] = lastItem
+        local i = 1
+        while true do
+            local l, r, s = i * 2, i * 2 + 1, i
+            if l <= n and heap[l][1] < heap[s][1] then
+                s = l
+            end
+            if r <= n and heap[r][1] < heap[s][1] then
+                s = r
+            end
+            if s == i then
                 break
             end
-            heap[p], heap[i] = heap[i], heap[p]
-            i = p
+            heap[s], heap[i] = heap[i], heap[s]
+            i = s
         end
     end
-    local function Pop()
-        local top = heap[1]
-        local lastItem = table.remove(heap)
-        local n = #heap
-        if n > 0 then
-            heap[1] = lastItem
-            local i = 1
-            while true do
-                local l, r, s = i * 2, i * 2 + 1, i
-                if l <= n and heap[l][1] < heap[s][1] then
-                    s = l
-                end
-                if r <= n and heap[r][1] < heap[s][1] then
-                    s = r
-                end
-                if s == i then
-                    break
-                end
-                heap[s], heap[i] = heap[i], heap[s]
-                i = s
-            end
-        end
-        return top
+    return top
+end
+
+-- the squares from the start to `k`, start first
+local function Trace(prev, k)
+    local out = {}
+    while k do
+        out[#out + 1] = k
+        k = prev[k]
     end
-    local g, prev, closed, n = { [start] = 0 }, {}, {}, 0
+    local i, j = 1, #out
+    while i < j do
+        out[i], out[j] = out[j], out[i]
+        i, j = i + 1, j - 1
+    end
+    return out
+end
+
+-- The frame clock in milliseconds, or nil (no clock, or an unreadable answer).
+local function Clock()
+    local clock = debugprofilestop
+    if type(clock) ~= "function" then
+        return nil
+    end
+    return ns.Num(clock())
+end
+
+-- Has the slice begun at `started` (frame clock) used its time? A clock
+-- that went back (debugprofilestart from anyone) or stopped answering: yes.
+local function Spent(started)
+    if not started then
+        return false
+    end
+    local now = Clock()
+    return not now or now < started or now - started >= SLICE_MS
+end
+
+local function NewSearch(cont, sx, sy, gx, gy)
+    local start = Key(sx, sy)
+    return { own = Grid("own", cont) or {}, shared = Grid("shared", cont) or {}, gx = gx, gy = gy, goal = Key(gx, gy),
+        heap = { { Heuristic(start, gx, gy), start } }, g = { [start] = 0 }, prev = {}, closed = {}, n = 0,
+        done = false, path = nil }
+end
+
+-- Carries the search on: to the end, or (with `squares`) until it has looked
+-- around from that many squares, taken `pops` off its list, or (begun at
+-- frame-clock time `started`) used SLICE_MS.
+local function Expand(s, squares, pops, started)
+    local heap, g, prev, closed, own, shared = s.heap, s.g, s.prev, s.closed, s.own, s.shared
+    local goal, gx, gy = s.goal, s.gx, s.gy
+    local expanded, popped = 0, 0
     while heap[1] do
-        local k = Pop()[2]
+        if squares and (expanded >= squares or popped >= pops
+            or (popped % CLOCK_EVERY == 0 and popped > 0 and Spent(started))) then
+            return
+        end
+        local k = Pop(heap)[2]
+        popped = popped + 1
         if k == goal then
-            local out = {}
-            while k do
-                table.insert(out, 1, k)
-                k = prev[k]
-            end
-            return out
+            s.done, s.path = true, Trace(prev, k)
+            return
         end
         if not closed[k] then
             closed[k] = true
-            n = n + 1
-            if n > SEARCH_LIMIT then
-                return nil
+            s.n = s.n + 1
+            if s.n > SEARCH_LIMIT then
+                s.done = true
+                return
             end
-            local bits = Bits(k)
+            expanded = expanded + 1
+            local a, b = own[k] or 0, shared[k] or 0
+            local bits
+            if a == 0 then
+                bits = b
+            elseif b == 0 then
+                bits = a
+            else
+                bits = Or(a, b)
+            end
             local x, y = Unkey(k)
             for i = 1, 8 do
                 if HasBit(bits, BITS[i]) then
@@ -479,13 +563,21 @@ local function FindPath(cont, sx, sy, gx, gy)
                         local cost = g[k] + ((d[1] ~= 0 and d[2] ~= 0) and 1.414 or 1)
                         if not g[nk] or cost < g[nk] then
                             g[nk], prev[nk] = cost, k
-                            Push(cost + H(nk), nk)
+                            Push(heap, cost + Heuristic(nk, gx, gy), nk)
                         end
                     end
                 end
             end
         end
     end
+    s.done = true
+end
+
+-- All at once: the list of squares or nil.
+local function FindPath(cont, sx, sy, gx, gy)
+    local s = NewSearch(cont, sx, sy, gx, gy)
+    Expand(s)
+    return s.path
 end
 
 -- the nearest walked square within two of this one
@@ -508,7 +600,71 @@ local function Snap(cont, cx, cy)
     end
 end
 
-local cache -- { key = target square, cont, path, at }
+local cache -- { key = target square, path, at, pcx, pcy, points, progress, searched, joins }
+
+local function NewCache(key, cont, path, at, pcx, pcy, searched, joinsAt)
+    local c = { key = key, path = path, at = at, pcx = pcx, pcy = pcy, points = {}, searched = searched, joins = joinsAt }
+    for _, k in ipairs(path or {}) do
+        local x, y = Unkey(k)
+        c.points[#c.points + 1] = { cont = cont, wx = (x + .5) * CELL, wy = (y + .5) * CELL }
+    end
+    return c
+end
+
+-- A search can take tens of milliseconds, and Steer is asked every frame.
+-- When the client has a frame clock (debugprofilestop) a search is a job,
+-- carried on a slice a frame (SLICE_MS, SLICE_SQUARES, SLICE_POPS) until it
+-- answers; meanwhile Steer answers from the path it had, as it would without
+-- a search. The answer is the search's as of its start (`at`, the player's
+-- square `pcx`/`pcy`, `joins`), so the usual re-search rules follow it up.
+-- Without a clock a search is done all at once, as before.
+-- job: { key, cont, search, at, pcx, pcy, straight, joins, pumped, trails, own, shared }
+local job
+local used -- when Steer last used the cache or the job (sliced)
+local forceSliced -- tests: true/false, or nil to decide from the client
+
+local function Sliced()
+    if forceSliced ~= nil then
+        return forceSliced
+    end
+    return type(debugprofilestop) == "function"
+end
+
+-- the walked squares the job's search reads are still the stored ones (a
+-- reset or a first square on its continent replaces them)
+local function Current(j)
+    local db = WaypointTrackerDB
+    local st = type(db) == "table" and db.trails
+    if type(st) ~= "table" or st ~= j.trails or type(st.own) ~= "table" or type(st.shared) ~= "table" then
+        return false
+    end
+    return st.own[j.cont] == j.own and st.shared[j.cont] == j.shared
+end
+
+local pumping, sliceStarted -- the job Slice carries on, and the frame clock then
+local function Slice()
+    Expand(pumping.search, SLICE_SQUARES, SLICE_POPS, sliceStarted)
+end
+
+local function WithStack(err)
+    local stack = type(debugstack) == "function" and debugstack(2)
+    return type(stack) == "string" and (tostring(err) .. "\n" .. stack) or err
+end
+
+-- One slice of the job. Returns true when its search is done, or false and
+-- the error it stopped with (reported once; the job is let go).
+local function Pump(j, now)
+    j.pumped = now
+    pumping, sliceStarted = j, Clock()
+    local ok, err = xpcall(Slice, WithStack)
+    pumping, sliceStarted = nil, nil
+    if not ok then
+        job = nil
+        ns.ReportError(err)
+        return false, true
+    end
+    return j.search.done
+end
 
 -- The way to face to follow a walked path to `target` (a node), or nil
 function Trails.Steer(here, target)
@@ -534,8 +690,56 @@ function Trails.Steer(here, target)
     local projection = path and T.ProjectPolyline(cache.points, here, nil, nil, cache.progress)
     local moved = same and (pcx ~= cache.pcx or pcy ~= cache.pcy)
     local wait = same and (cache.path and SEARCH_AGAIN or NO_PATH_AGAIN) or 0
-    if not same or ((not projection or projection.distance > CELL * 2)
-        and (now - cache.at >= wait or (moved and now - cache.at >= SAMPLE_EVERY))) then
+    -- After a search that found no way, a new square alone doesn't search
+    -- again (it would find none again): only the time, or the walked squares
+    -- joining up (see `joins`).
+    local again = moved
+    if same and cache.searched and not cache.path then
+        again = joins ~= cache.joins
+    end
+    local due = not same or ((not projection or projection.distance > CELL * 2)
+        and (now - cache.at >= wait or (again and now - cache.at >= SAMPLE_EVERY)))
+    if Sliced() then
+        used = now
+        -- Another stop, a search not carried on lately, or the squares
+        -- replaced: let it go (one is started below when due). A new square
+        -- of yours or newly walked squares don't: the search goes on and
+        -- the re-search rules follow it up.
+        if job and (job.key ~= key or now - job.pumped > SLICE_IDLE or not Current(job)) then
+            job = nil
+        end
+        if not job and due then
+            local sx, sy = Snap(cont, pcx, pcy)
+            local gx, gy = Snap(cont, tcx, tcy)
+            watchCont, watchX, watchY = cont, tcx, tcy
+            local st = sx and gx and Store()
+            if st then
+                job = { key = key, cont = cont, search = NewSearch(cont, sx, sy, gx, gy), at = now, pcx = pcx,
+                    pcy = pcy, straight = straight, joins = joins, pumped = now, trails = st,
+                    own = st.own[cont], shared = st.shared[cont] }
+            else
+                cache = NewCache(key, cont, nil, now, pcx, pcy, nil, joins)
+                projection = nil
+            end
+        end
+        if job then
+            local j = job
+            local done, failed = Pump(j, now)
+            if done then
+                job = nil
+                path = j.search.path
+                if path and #path * CELL > j.straight * MAX_DETOUR + CELL * 4 then
+                    path = nil -- a long way round: the straight line may well be fine
+                end
+                cache = NewCache(key, cont, path, j.at, j.pcx, j.pcy, true, j.joins)
+                projection = path and T.ProjectPolyline(cache.points, here)
+            elseif failed then
+                -- as a search that found no way: tried again at that pace
+                cache = NewCache(key, cont, nil, now, pcx, pcy, true, joins)
+                projection = nil
+            end
+        end
+    elseif due then
         path = nil
         local sx, sy = Snap(cont, pcx, pcy)
         local gx, gy = Snap(cont, tcx, tcy)
@@ -545,11 +749,8 @@ function Trails.Steer(here, target)
                 path = nil -- a long way round: the straight line may well be fine
             end
         end
-        cache = { key = key, path = path, at = now, pcx = pcx, pcy = pcy, points = {} }
-        for _, k in ipairs(path or {}) do
-            local x, y = Unkey(k)
-            cache.points[#cache.points + 1] = { cont = cont, wx = (x + .5) * CELL, wy = (y + .5) * CELL }
-        end
+        watchCont, watchX, watchY = cont, tcx, tcy
+        cache = NewCache(key, cont, path, now, pcx, pcy, (sx and gx) and true or nil, joins)
         projection = path and T.ProjectPolyline(cache.points, here)
     end
     if not projection or projection.distance > CELL * 2 then
@@ -761,6 +962,7 @@ local function TakeShared(cont, sender, x, y, d)
         if Room("shared", cont, shared) then
             Added("shared", cont)
             shared[k] = p.bits
+            joins = joins + 1
             Link(shared, "shared", cont, x, y, x + d[1], y + d[2])
         end
     elseif not p and Room("pending", cont, pending) then
@@ -841,6 +1043,19 @@ end
 -- ---------------------------------------------------------------------------
 -- Wiring
 -- ---------------------------------------------------------------------------
+-- Sliced: a search Steer no longer carries on, and a path it no longer
+-- follows (the waypoint cleared, another kind of step, another zone, the
+-- setting off) are let go.
+local function Tidy()
+    local now, on = GetTime(), Enabled()
+    if job and (not on or now - job.pumped > SLICE_IDLE) then
+        job = nil
+    end
+    if used and (not on or now - used > KEEP_IDLE) then
+        cache, used = nil, nil
+    end
+end
+
 local ticker = CreateFrame("Frame")
 local acc, shareAcc = 0, 0
 ticker:SetScript("OnUpdate", function(_, elapsed)
@@ -850,10 +1065,18 @@ ticker:SetScript("OnUpdate", function(_, elapsed)
     end
     shareAcc = shareAcc + acc
     acc = 0
+    if job or used then
+        ns.Call(Tidy)
+    end
     ns.Call(Record)
     if shareAcc >= SHARE_EVERY then
         shareAcc = 0
-        if Enabled() then
+        if not ns.Get("travelShare") then
+            -- not sharing: steps kept from before are never sent
+            for i = #fresh, 1, -1 do
+                fresh[i] = nil
+            end
+        elseif Enabled() then
             ns.Call(SharePaths)
             ns.Call(ShareCrossings)
         end
@@ -913,6 +1136,23 @@ function Trails.Clear()
         db.trails = nil
     end
     counts, fresh, cache, last, continents = {}, {}, nil, nil, nil
+    job, used = nil, nil
 end
 
 Trails._Record, Trails._FindPath, Trails._Key, Trails._fresh = Record, FindPath, Key, fresh
+
+-- tests: true/false forces searches sliced or all at once; nil decides from the client
+function Trails._SetSliced(on)
+    forceSliced = on
+    job, used = nil, nil
+end
+
+-- tests: the search pieces and limits, the job under way, the path kept
+Trails._Search = { New = NewSearch, Expand = Expand, SQUARES = SLICE_SQUARES, POPS = SLICE_POPS,
+    CLOCK_EVERY = CLOCK_EVERY, MS = SLICE_MS, IDLE = SLICE_IDLE, KEEP = KEEP_IDLE, LIMIT = SEARCH_LIMIT }
+function Trails._Job()
+    return job
+end
+function Trails._Cache()
+    return cache
+end
