@@ -88,27 +88,58 @@ end
 -- ---------------------------------------------------------------------------
 -- What the game says
 -- ---------------------------------------------------------------------------
+-- A value the game hid from addons (in combat it can hand back "secret"
+-- values). Only these fall back to the last readable answer below; a
+-- missing, failing or empty answer keeps meaning "no".
+local function Secret(v)
+    return type(issecretvalue) == "function" and issecretvalue(v) and true or false
+end
+
+-- The last readable answers, for when the game's answer is secret.
+local knownMemo = {}
+local countMemo = { count = {}, uses = {} }
+
 -- Does the player know this spell? Modern spellbook first, then the
--- deprecated globals; an API that throws counts as absent.
+-- deprecated globals; an API that throws counts as absent. The first API
+-- that answers decides; when its answer is secret, its last readable
+-- answer stands (not known if there was none).
+local function Ask(fn, ...)
+    local ok, known = pcall(fn, ...)
+    local plain = ok and ns.Plain(known)
+    if not ok then
+        return nil -- no answer
+    end
+    if plain == nil and Secret(known) then
+        return "hidden"
+    end
+    return plain and "yes" or "no"
+end
+
 function A.Knows(spell)
+    local say
     local bank = Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player
     if C_SpellBook and C_SpellBook.IsSpellKnown and bank ~= nil then
-        local ok, known = pcall(C_SpellBook.IsSpellKnown, spell, bank)
-        if ok then return ns.Plain(known) and true or false end
+        say = Ask(C_SpellBook.IsSpellKnown, spell, bank)
     end
-    if IsPlayerSpell then
-        local ok, known = pcall(IsPlayerSpell, spell)
-        if ok then return ns.Plain(known) and true or false end
+    if say == nil and IsPlayerSpell then
+        say = Ask(IsPlayerSpell, spell)
     end
-    if IsSpellKnown then
-        local ok, known = pcall(IsSpellKnown, spell)
-        return ok and ns.Plain(known) and true or false
+    if say == nil and IsSpellKnown then
+        say = Ask(IsSpellKnown, spell)
     end
-    return false
+    if say == "hidden" then
+        return knownMemo[spell] == true
+    end
+    if say == nil then
+        return false
+    end
+    knownMemo[spell] = say == "yes"
+    return say == "yes"
 end
 
 -- How many of an item the bags hold (0 when the game can't say). With
--- `uses`, an item with charges counts its charges left instead.
+-- `uses`, an item with charges counts its charges left instead. A secret
+-- answer falls back to the last readable one (0 if there is none).
 function A.ItemCount(item, uses)
     local count = (C_Item and C_Item.GetItemCount) or GetItemCount
     if not count then
@@ -120,20 +151,43 @@ function A.ItemCount(item, uses)
     else
         ok, owned = pcall(count, item)
     end
-    return ok and ns.Num(owned) or 0
+    if not ok then
+        return 0
+    end
+    local memo = uses and countMemo.uses or countMemo.count
+    if Secret(owned) then
+        return memo[item] or 0
+    end
+    owned = ns.Num(owned)
+    if owned then
+        memo[item] = owned
+    end
+    return owned or 0
 end
 
--- Is this item worn? (A trinket only works equipped.) No API: not worn.
+-- Is this item worn? (A trinket only works equipped.) No API, or a failing
+-- one: not worn. A secret answer falls back to the last readable one (not
+-- worn if there is none).
+local wornMemo, usableMemo = {}, {}
 function A.IsEquipped(item)
     if not (C_Item and C_Item.IsEquippedItem) then
         return false
     end
     local ok, worn = pcall(C_Item.IsEquippedItem, item)
-    return ok and ns.Plain(worn) == true
+    if not ok then
+        return false
+    end
+    if Secret(worn) then
+        return wornMemo[item] == true
+    end
+    worn = ns.Plain(worn) == true
+    wornMemo[item] = worn
+    return worn
 end
 
 -- Does the game say this character can use the item (skill, specialization,
--- level)? true or false, or nil when it can't say.
+-- level)? true or false, or nil when it can't say. A secret answer falls
+-- back to the last readable true or false (nil if there is none).
 function A.IsUsable(item)
     if not (C_Item and C_Item.IsUsableItem) then
         return nil
@@ -142,26 +196,36 @@ function A.IsUsable(item)
     if not ok then
         return nil
     end
+    if Secret(usable) then
+        return usableMemo[item]
+    end
     usable = ns.Plain(usable)
     if usable == nil then
         return nil
     end
-    return usable and true or false
+    usable = usable and true or false
+    usableMemo[item] = usable
+    return usable
 end
 
--- The time each cooldown ends, from the last readable answer: in combat the
--- game can hand back secret values, and those fall back to this. With no
--- readable answer yet, a secret one means not ready.
+-- From the last readable answer: `true` when it was ready, else the time
+-- its cooldown ends. In combat the game can hand back secret values, and
+-- those fall back to this. With no readable answer yet, a secret one means
+-- not ready. A missing answer (no API, a failing one) only trusts a
+-- remembered cooldown end, as before.
 local readyAt = { spell = {}, item = {} }
 
-local function Ready(memo, id, start, duration)
+local function Ready(memo, id, start, duration, hidden)
     local s, dur = ns.Num(start), ns.Num(duration)
     if not s or not dur then
         local at = memo[id]
+        if at == true then
+            return hidden and true or false
+        end
         return at ~= nil and at - GetTime() <= 1
     end
     if s == 0 or dur <= GLOBAL_COOLDOWN then
-        memo[id] = nil
+        memo[id] = true
         return true
     end
     memo[id] = s + dur
@@ -170,17 +234,19 @@ end
 
 -- Is this spell off cooldown? No cooldown API at all: not ready.
 function A.SpellReady(spell)
-    local start, duration
+    local start, duration, hidden
     if C_Spell and C_Spell.GetSpellCooldown then
         local ok, info = pcall(C_Spell.GetSpellCooldown, spell)
         if ok and type(info) == "table" then
             start, duration = ns.Num(info.startTime), ns.Num(info.duration)
+            hidden = Secret(info.startTime) or Secret(info.duration)
         end
     elseif GetSpellCooldown then
-        start, duration = GetSpellCooldown(spell)
-        start, duration = ns.Num(start), ns.Num(duration)
+        local ok, s, dur = pcall(GetSpellCooldown, spell)
+        start, duration = ns.Num(s), ns.Num(dur)
+        hidden = ok and (Secret(s) or Secret(dur))
     end
-    return Ready(readyAt.spell, spell, start, duration)
+    return Ready(readyAt.spell, spell, start, duration, hidden)
 end
 
 -- Is this item off cooldown? No item cooldown API, or one that fails: ready
@@ -194,14 +260,22 @@ function A.ItemReady(item)
     if not ok then
         return true
     end
-    return Ready(readyAt.item, item, start, duration)
+    return Ready(readyAt.item, item, start, duration, Secret(start) or Secret(duration))
 end
 
+-- An item's name, kept once the game has given one (the arrow's step text
+-- asks every frame). No answer yet is not kept: item info can arrive late.
+local itemNames = {}
 local function ItemName(item)
+    local cached = itemNames[item]
+    if cached then
+        return cached
+    end
     if C_Item and C_Item.GetItemNameByID then
         local ok, name = pcall(C_Item.GetItemNameByID, item)
         name = ok and ns.Str(name)
         if name and name ~= "" then
+            itemNames[item] = name
             return name
         end
     end
@@ -254,12 +328,99 @@ function A.TalentRank(spell)
 end
 
 -- ---------------------------------------------------------------------------
+-- Keeping the remembered answers current
+-- ---------------------------------------------------------------------------
+-- The answers above are remembered when they are read, and the planner
+-- reads them. A hearthstone used, a rune sold or a spell unlearned while no
+-- route is planned would leave them saying what they were, and in combat
+-- (secret answers) the planner would trust that. So when the game says such
+-- things changed, everything the planner last asked about is read again, at
+-- most once a second (the events can come many times a second in combat).
+-- A secret answer leaves what is remembered as it was. Talent ranks are not
+-- read again here: they keep their own TALENT_REFRESH. After the read,
+-- TRAVEL_ABILITIES_READ tells Travel, which plans again at once only when
+-- what its route was planned with no longer holds.
+local REFRESH_EVERY = 1
+local NOTHING = {}
+local refAb, refTeleports -- what the planner last asked about
+local dirty, pending, refreshedAt = false, false, nil
+
+-- `quiet`: the planner is reading them right now (Flush): nobody to tell.
+function A.Refresh(quiet)
+    dirty = false
+    refreshedAt = GetTime()
+    local ab = refAb
+    if ab then
+        for _, h in ipairs(ab.hearths or NOTHING) do
+            if h.item then
+                A.ItemCount(h.item)
+                A.ItemReady(h.item)
+            else
+                A.Knows(h.spell)
+                A.SpellReady(h.spell)
+            end
+        end
+        for _, it in ipairs(ab.items or NOTHING) do
+            A.ItemCount(it.item, it.charges)
+            A.ItemReady(it.item)
+            if it.equip then A.IsEquipped(it.item) end
+            if it.ability then A.Knows(it.ability) end
+            A.IsUsable(it.item)
+        end
+        for _, f in ipairs(ab.forms or NOTHING) do
+            A.Knows(f.spell)
+        end
+        for _, r in ipairs(ab.riding or NOTHING) do
+            A.Knows(r.spell)
+        end
+        if ab.flier then
+            A.Knows(ab.flier.spell)
+        end
+    end
+    for _, t in ipairs(refTeleports or NOTHING) do
+        A.Knows(t.spell)
+        A.SpellReady(t.spell)
+        if t.reagent then A.ItemCount(t.reagent) end
+    end
+    if not quiet then ns.Fire("TRAVEL_ABILITIES_READ") end
+end
+
+-- Without C_Timer the read happens when the planner next asks.
+local function Flush()
+    if dirty and not (C_Timer and C_Timer.After)
+        and (not refreshedAt or GetTime() - refreshedAt >= REFRESH_EVERY) then
+        A.Refresh(true)
+    end
+end
+
+local function RefreshLater()
+    pending = false
+    if dirty then
+        ns.Call(A.Refresh)
+    end
+end
+
+-- An event: only marks it, and asks for one read a second later.
+local function Changed()
+    if not (refAb or refTeleports) then
+        return -- the planner hasn't asked about anything: nothing to keep current
+    end
+    dirty = true
+    if not pending and C_Timer and C_Timer.After then
+        pending = true
+        C_Timer.After(REFRESH_EVERY, RefreshLater)
+    end
+end
+
+-- ---------------------------------------------------------------------------
 -- What it means for a trip
 -- ---------------------------------------------------------------------------
 -- Multipliers on run speed outdoors and indoors. Outdoors the best of the
 -- riding skills the character knows (a character mounts as fast as they've
 -- trained) and their speed forms; indoors only forms that work there.
 function A.SpeedFactors(ab)
+    Flush()
+    refAb = ab or refAb
     local outdoor, indoor, form = 1, 1, nil
     for _, r in ipairs(ab and ab.riding or {}) do
         if 1 + r.bonus > outdoor and A.Knows(r.spell) then
@@ -285,6 +446,8 @@ end
 
 -- Flight-path time multiplier: Frequent Flier makes the flight mount faster.
 function A.FlightFactor(ab)
+    Flush()
+    refAb = ab or refAb
     local perk = ab and ab.flier
     if perk and A.Knows(perk.spell) then
         return 1 / (1 + perk.bonus)
@@ -331,6 +494,8 @@ A.ItemUsable = ItemUsable
 -- the network's class teleports, `faction` the player's, `loading` the
 -- seconds a loading screen costs, `level` the character's.
 function A.Jumps(ab, inn, name, teleports, faction, loading, level)
+    Flush()
+    refAb, refTeleports = ab or refAb, teleports or refTeleports
     local jumps = {}
     if inn then
         local best
@@ -360,5 +525,18 @@ end
 
 function A._Reset()
     readyAt = { spell = {}, item = {} }
+    knownMemo = {}
+    countMemo = { count = {}, uses = {} }
+    wornMemo, usableMemo = {}, {}
+    itemNames = {}
     talentCache = {}
+    refAb, refTeleports = nil, nil
+    dirty, pending, refreshedAt = false, false, nil
+end
+
+-- What can change these answers. (They are read again a second later at
+-- most, and Travel is told then: A.Refresh.)
+for _, event in ipairs({ "BAG_UPDATE_COOLDOWN", "SPELL_UPDATE_COOLDOWN", "SPELLS_CHANGED",
+    "BAG_UPDATE_DELAYED", "PLAYER_EQUIPMENT_CHANGED", "PLAYER_REGEN_ENABLED" }) do
+    ns.RegisterEvent(event, Changed)
 end

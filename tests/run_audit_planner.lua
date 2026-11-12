@@ -93,6 +93,7 @@ ns.Geo.MapToWorld = function(m, x, y)
     local g = geometry[m]
     if g then return g.cont, g.top - y * g.h, g.left - x * g.w end
 end
+ns.Geo.MapToWorldLive = ns.Geo.MapToWorld -- the player's position (Travel's PlayerPlace) too
 ns.Trails = nil -- fresh-character, no observed transport timetable or trails
 T._Reset(); T.Data()
 print("Coordinate source: " .. (assignments and maps and "cached Classic client UiMapAssignment/UiMap" or "shipped world coordinates (client cache absent)"))
@@ -525,11 +526,16 @@ T.Know().flights[102] = true
 local wp = {m=9901, x=.9, y=.9, title="audit goal", id="audit"}
 local player = {area=1, cont=0, wx=0, wy=0, m=9901, x=.1, y=.1}
 local goal = {area=1, cont=0, wx=5000, wy=0, m=9901, x=.9, y=.9}
-ns.Geo.GetPlayerMapPosition = function() return player.m, player.x, player.y end
+-- The player's map position follows where the test puts them (player.wx;
+-- on this map x is .1 at wx 0 and .9 at wx 5000), as in the game: Travel
+-- keeps the player's place while the map position stays the same.
+local function PlayerMapX() return player.x + player.wx * .8 / 5000 end
+ns.Geo.GetPlayerMapPosition = function() return player.m, PlayerMapX(), player.y end
 ns.Geo.MapToWorld = function(m, x, y)
     if m == wp.m and x == wp.x and y == wp.y then return goal.cont, goal.wx, goal.wy end
-    if m == player.m and x == player.x and y == player.y then return player.cont, player.wx, player.wy end
+    if m == player.m and x == PlayerMapX() and y == player.y then return player.cont, player.wx, player.wy end
 end
+ns.Geo.MapToWorldLive = ns.Geo.MapToWorld -- the player's position (Travel's PlayerPlace) too
 ns.Geo.GetPlayerWorld = function() return player.cont, player.wx, player.wy end
 ns.Set("realRoutes", true); ns.Set("travelHearth", false); ns.Set("travelTrails", false)
 ns.Set("travelFlights", true); ns.Set("travelBoats", true)

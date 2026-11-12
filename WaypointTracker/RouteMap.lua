@@ -216,7 +216,7 @@ function RouteMap.Create(parent, w, h)
         if not self.route or not self.mapID then return end
         local m, x, y = Call(Geo.GetPlayerMapPosition)
         if not m then return end
-        x, y = Geo.ProjectToMap(m, x, y, self.mapID)
+        x, y = Geo.ProjectToMap(m, x, y, self.mapID, true) -- live: the player's position
         if not x or not y then return end
         self.player:ClearAllPoints()
         self.player:SetPoint("CENTER", art, "TOPLEFT", x * art:GetWidth(), -y * art:GetHeight())

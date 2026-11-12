@@ -44,9 +44,40 @@ function Geo.IsValidMap(mapID)
     return Geo.GetMapInfo(mapID) ~= nil
 end
 
+-- One 2D point reused for live lookups, when the game's point can be
+-- refilled (SetXY); otherwise a fresh one per call, as before.
+local liveVector
+local function LiveVector(x, y)
+    if liveVector == nil then
+        local v = Vector(0, 0)
+        liveVector = (type(v) == "table" and type(v.SetXY) == "function") and v or false
+    end
+    if liveVector then
+        liveVector:SetXY(x, y)
+        return liveVector
+    end
+    return Vector(x, y)
+end
+
+-- The game's answer for one map point: cont, wx, wy, or nil.
+local function WorldPos(mapID, vec)
+    local ok, cont, pos = pcall(C_Map.GetWorldPosFromMapPos, mapID, vec)
+    if ok and cont and pos then
+        local wx, wy = ns.XY(pos)
+        wx, wy = Num(wx), Num(wy)
+        if wx and wy then
+            return cont, wx, wy
+        end
+    end
+end
+
 -- World position (continent/instance id, x, y) of a point on a map.
--- Results are cached because map geometry never changes.
-local worldCache = {}
+-- Results are cached because map geometry never changes. The cache is for
+-- fixed points (waypoints, nodes); a moving position (the player's) goes
+-- through Geo.MapToWorldLive instead. As a safety net the cache starts
+-- again once it holds WORLD_CACHE_MAX entries.
+local WORLD_CACHE_MAX = 20000
+local worldCache, worldCount = {}, 0
 function Geo.MapToWorld(mapID, x, y)
     if type(mapID) ~= "number" or type(x) ~= "number" or type(y) ~= "number" then
         return nil
@@ -55,19 +86,33 @@ function Geo.MapToWorld(mapID, x, y)
     local c = worldCache[key]
     if c == nil then
         c = false
-        local ok, cont, pos = pcall(C_Map.GetWorldPosFromMapPos, mapID, Vector(x, y))
-        if ok and cont and pos then
-            local wx, wy = ns.XY(pos)
-            wx, wy = Num(wx), Num(wy)
-            if wx and wy then
-                c = { cont, wx, wy }
-            end
+        local cont, wx, wy = WorldPos(mapID, Vector(x, y))
+        if cont then
+            c = { cont, wx, wy }
+        end
+        if worldCount >= WORLD_CACHE_MAX then
+            worldCache, worldCount = {}, 0
         end
         worldCache[key] = c
+        worldCount = worldCount + 1
     end
     if c then
         return c[1], c[2], c[3]
     end
+end
+
+-- The same answer as Geo.MapToWorld, without the cache: for positions that
+-- keep changing (the player's), which would otherwise fill it forever.
+function Geo.MapToWorldLive(mapID, x, y)
+    if type(mapID) ~= "number" or type(x) ~= "number" or type(y) ~= "number" then
+        return nil
+    end
+    return WorldPos(mapID, LiveVector(x, y))
+end
+
+-- test hook: entries in the MapToWorld cache
+function Geo._WorldCacheSize()
+    return worldCount
 end
 
 -- Two map IDs for the same ground: the game has a few (phased copies, and
@@ -109,12 +154,19 @@ function Geo.WorldToMap(cont, wx, wy, mapID)
 end
 
 -- Position of a map point translated onto another map (for showing pins on
--- continent maps). Returns nil when it isn't on that map.
-function Geo.TranslateToMap(fromMap, x, y, toMap)
+-- continent maps). Returns nil when it isn't on that map. `live`: the point
+-- keeps changing (the player's), so it isn't kept in the cache (the same
+-- answer, Geo.MapToWorldLive).
+function Geo.TranslateToMap(fromMap, x, y, toMap, live)
     if fromMap == toMap then
         return x, y
     end
-    local cont, wx, wy = Geo.MapToWorld(fromMap, x, y)
+    local cont, wx, wy
+    if live then
+        cont, wx, wy = Geo.MapToWorldLive(fromMap, x, y)
+    else
+        cont, wx, wy = Geo.MapToWorld(fromMap, x, y)
+    end
     if not cont then
         return nil
     end
@@ -192,7 +244,8 @@ end
 
 -- A world map has no yard coordinates: first translate onto the continent,
 -- then place that point within the continent's rectangle on the world map.
-function Geo.ProjectToMap(fromMap, x, y, toMap)
+-- `live`: as for Geo.TranslateToMap (the player's position).
+function Geo.ProjectToMap(fromMap, x, y, toMap, live)
     fromMap, toMap, x, y = Num(fromMap), Num(toMap), Num(x), Num(y)
     if not fromMap or fromMap <= 0 or not toMap or toMap <= 0
         or not x or not y or x < 0 or x > 1 or y < 0 or y > 1 then
@@ -205,12 +258,12 @@ function Geo.ProjectToMap(fromMap, x, y, toMap)
     end
     if Geo.SameMap(fromMap, toMap) then return x, y end
     if not Geo.IsWorldMap(toMap) then
-        return Geo.TranslateToMap(fromMap, x, y, toMap)
+        return Geo.TranslateToMap(fromMap, x, y, toMap, live)
     end
     if type(C_Map.GetMapRectOnMap) ~= "function" then return nil end
     local continent = Geo.ContinentID(fromMap)
     if not continent then return nil end
-    local cx, cy = Geo.TranslateToMap(fromMap, x, y, continent)
+    local cx, cy = Geo.TranslateToMap(fromMap, x, y, continent, live)
     if not cx or not cy then return nil end
     local ok, minX, maxX, minY, maxY = pcall(C_Map.GetMapRectOnMap, continent, toMap)
     if not ok then return nil end
@@ -335,17 +388,18 @@ end
 -- (phased copies of a continent can do that).
 -- (the answer is cached for the current frame: the Find window may ask for
 -- hundreds of distances at once)
-local posCacheTime, posCacheCont, posCache = nil, nil, nil
+-- (the answer is kept in locals, not a table: this is asked every frame)
+local posCacheTime, posCacheCont, posC, posX, posY = nil, nil, nil, nil, nil
 local GetPlayerWorldUncached
 
 function Geo.GetPlayerWorld(wantCont)
     local now = GetTime()
-    if posCacheTime == now and posCacheCont == wantCont and posCache then
-        return posCache[1], posCache[2], posCache[3]
+    if posCacheTime == now and posCacheCont == wantCont and posC then
+        return posC, posX, posY
     end
     local c, x, y = GetPlayerWorldUncached(wantCont)
     posCacheTime, posCacheCont = now, wantCont
-    posCache = c and { c, x, y } or nil
+    if c then posC, posX, posY = c, x, y else posC, posX, posY = nil, nil, nil end
     return c, x, y
 end
 

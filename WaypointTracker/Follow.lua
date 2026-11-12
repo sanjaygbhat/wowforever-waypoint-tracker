@@ -57,10 +57,13 @@ end
 
 -- Explicit clicks and automatic super-tracking share one waypoint. A click
 -- works even when automatic following is off, and immediately takes the arrow.
+-- A click looks the quest up as always; automatic updates ask Places to
+-- reuse its recent continent scan ("auto").
 local function TrackQuest(id, explicit)
     id = ns.Int(ns.Num(id))
     if not id then return end
-    local ok, m, x, y = pcall(Places.QuestPosition, id)
+    if explicit then Places.FollowQuest(id) end
+    local ok, m, x, y = pcall(Places.QuestPosition, id, not explicit and "auto" or nil)
     if not ok then return end
     m, x, y = ns.Int(ns.Num(m)), ns.Num(x), ns.Num(y)
     if not m or not x or not y or x < 0 or x > 1 or y < 0 or y > 1 then return end
@@ -133,6 +136,7 @@ local function UpdateTrackedQuest()
     end
     if not id or id == 0 then
         ClearQuestWaypoint()
+        Places.FollowQuest(nil)
         return
     end
     TrackQuest(id)
@@ -152,7 +156,12 @@ local function Schedule()
 end
 
 ns.RegisterEvent("SUPER_TRACKING_CHANGED", function()
-    if ns.Get("followQuest") then clickedQuest = nil end
+    if ns.Get("followQuest") then
+        clickedQuest = nil
+        -- Untracked: the next quest tracked (even this one again) is looked up afresh.
+        local id = C_SuperTrack and C_SuperTrack.GetSuperTrackedQuestID and ns.Num(C_SuperTrack.GetSuperTrackedQuestID())
+        if not id or id == 0 then Places.FollowQuest(nil) end
+    end
     Schedule()
 end)
 ns.RegisterEvent("QUEST_TURNED_IN", function(id)

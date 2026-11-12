@@ -6,6 +6,8 @@ ns.Terrain = Terrain
 local sqrt, abs, min, max, floor = math.sqrt, math.abs, math.min, math.max, math.floor
 local LIMIT, POINTS, SAMPLE, TTL = 128, 128, .2, 600
 local evidence, endpoints, buckets, active, blocked = {}, {}, {}, {}, {}
+-- the same buckets by number, grid[cont][ix][iy] (no key strings to build)
+local grid = {}
 local loaded, database, last, elapsed, floorPosition = nil, nil, nil, 0, nil
 
 local function Number(v)
@@ -28,6 +30,7 @@ local function Scope()
     end
     return id
 end
+local NONE = {} -- an empty bucket (never written)
 local function Bucket(cont, x, y) return cont .. ":" .. floor(x/64) .. ":" .. floor(y/64) end
 local function Position(n)
     local c, x, y = ns.Geo.MapToWorld(n.m, n.x, n.y)
@@ -102,6 +105,7 @@ end
 
 function Terrain.Load(T, d, rows)
     evidence, endpoints, buckets, active, blocked, last, loaded = {}, {}, {}, {}, {}, nil, d
+    grid = {}
     rows(T.walkCandidates, function(f)
         if not d.nodes[f[1]] then
             d.nodes[f[1]] = { id = f[1], kind = "pass", area = tonumber(f[3]), cont0 = tonumber(f[4]),
@@ -120,6 +124,14 @@ function Terrain.Load(T, d, rows)
         endpoints[n.id] = p
         local key = Bucket(cont,x,y); buckets[key] = buckets[key] or {}
         buckets[key][#buckets[key]+1] = p
+        -- the same list by number; a "-0" key (x or y exactly -0) is never
+        -- asked for by its string, so it isn't found by number either
+        local ix, iy = floor(x/64), floor(y/64)
+        if not (ix == 0 and 1/ix < 0) and not (iy == 0 and 1/iy < 0) then
+            local byX = grid[cont] or {}; grid[cont] = byX
+            local byY = byX[ix] or {}; byX[ix] = byY
+            byY[iy] = buckets[key]
+        end
         return p
     end
     d.walkEvidence = evidence
@@ -165,15 +177,31 @@ end
 local function Resolve(n)
     if n.id then return endpoints[n.id] end
     if n.terrainEndpoint ~= nil then return n.terrainEndpoint or nil end
-    local cont, x, y = Position(n)
-    if n.cont ~= nil then cont, x, y = n.cont, n.wx, n.wy end
+    -- a place that carries its world position (the player's) is never looked
+    -- up on the map: that lookup's answer went unused, and kept a moving
+    -- position in Geo's cache of fixed points
+    local cont, x, y
+    if n.cont ~= nil then cont, x, y = n.cont, n.wx, n.wy else cont, x, y = Position(n) end
     if not cont or not x or not y then return nil end
     local best, dd = nil, 1.1
-    Nearby(cont,x,y,function(p)
-        local distance = sqrt((p.wx-x)^2+(p.wy-y)^2)
-        if distance < dd and (not n.area or p.node.area == n.area)
-            and (not n.m or p.node.m == n.m) then best,dd = p,distance end
-    end)
+    -- Nearby's nine buckets in Nearby's order, without a key string or a
+    -- function per call (this runs every frame for the player)
+    local byX = grid[cont]
+    if byX then
+        local ix, iy = floor(x/64), floor(y/64)
+        for gx = ix-1, ix+1 do
+            local byY = byX[gx]
+            if byY then
+                for gy = iy-1, iy+1 do
+                    for _, p in ipairs(byY[gy] or NONE) do
+                        local distance = sqrt((p.wx-x)^2+(p.wy-y)^2)
+                        if distance < dd and (not n.area or p.node.area == n.area)
+                            and (not n.m or p.node.m == n.m) then best,dd = p,distance end
+                    end
+                end
+            end
+        end
+    end
     n.terrainEndpoint = best or false
     return best
 end
@@ -186,6 +214,17 @@ function Terrain.At(n)
     local p = Resolve(n)
     return p and p.edges or {}
 end
+-- A route search spread over frames (a coroutine, Travel's sliced planning)
+-- reads the floor position it began with, never one Terrain.Sample wrote
+-- between its slices: each search's own, by the coroutine it runs in (false:
+-- none). Searches in the main thread read floorPosition, as always.
+local searchFloor = setmetatable({}, { __mode = "k" })
+local function Thread()
+    local running = type(coroutine) == "table" and coroutine.running
+    if not running then return nil end
+    local co, main = running()
+    if co and not main then return co end
+end
 function Terrain.Refresh()
     floorPosition=nil
     if UnitPosition then
@@ -193,6 +232,8 @@ function Terrain.Refresh()
         x,y,z,c=ns.Num(x),ns.Num(y),ns.Num(z),ns.Num(c)
         if x and y and z and c then floorPosition={wx=x,wy=y,z=z,cont=c} end
     end
+    local co = Thread()
+    if co then searchFloor[co] = floorPosition or false end
 end
 function Terrain.Record(e)
     local st = Store()
@@ -202,11 +243,14 @@ function Terrain.Record(e)
         local _,build = GetBuildInfo();build=ns.Str(build)
         if build and tostring(build) ~= "70338" then return nil end
     end
-    if r.points and floorPosition and floorPosition.cont==e.a.cont then
+    local floorAt = floorPosition
+    local co = Thread()
+    if co and searchFloor[co] ~= nil then floorAt = searchFloor[co] or nil end
+    if r.points and floorAt and floorAt.cont==e.a.cont then
         for _,index in ipairs({1,#r.points}) do
             local p=r.points[index]
-            if p[3] and (floorPosition.wx-p[1])^2+(floorPosition.wy-p[2])^2 <= 36
-                and abs(floorPosition.z-p[3]) > 3 then return nil end
+            if p[3] and (floorAt.wx-p[1])^2+(floorAt.wy-p[2])^2 <= 36
+                and abs(floorAt.z-p[3]) > 3 then return nil end
         end
     end
     if r.state == "refuted" and (r.expires or 0) <= Clock() then st.records[e.key] = nil; return nil end
@@ -260,9 +304,12 @@ function Terrain.Decide(a,b,explicit)
             for _,proof in ipairs(blocked) do
                 if c == proof.a.cont then
                     local ta,da = Projection(proof.a,proof.b,ax,ay)
-                    local tb,db = Projection(proof.a,proof.b,bx,by)
-                    if da <= 3 and db <= 3 and abs(min(1,max(0,ta))-min(1,max(0,tb)))*Distance(proof.a,proof.b) > 30 then
-                        return false,0,proof
+                    -- b's projection only matters when a lies on the chord
+                    if da <= 3 then
+                        local tb,db = Projection(proof.a,proof.b,bx,by)
+                        if db <= 3 and abs(min(1,max(0,ta))-min(1,max(0,tb)))*Distance(proof.a,proof.b) > 30 then
+                            return false,0,proof
+                        end
                     end
                 end
             end
@@ -301,7 +348,7 @@ function Terrain.Sample()
     local m,x,y = ns.Geo.GetPlayerMapPosition()
     m,x,y = Number(m),Number(x),Number(y)
     if not speed or not m or not x or not y then last=nil; active={}; return end
-    local cont,wx,wy = ns.Geo.MapToWorld(m,x,y)
+    local cont,wx,wy = ns.Geo.MapToWorldLive(m,x,y)
     cont,wx,wy = Number(cont),Number(wx),Number(wy)
     local z,positionInstance
     if UnitPosition then
