@@ -104,14 +104,14 @@ command("editmode")
 check(Printed(L.EDIT_MODE_HINT), "editmode failure gives the existing hint")
 ns.EditMode.Enter = enter
 
--- Help has a header and all 18 command lines, even with chat turned off.
+-- Help has a header and all 19 command lines, even with chat turned off.
 local helpKeys = { "HELP_OPEN", "HELP_OPTIONS", "HELP_EDITMODE", "HELP_WAY", "HELP_WAY_SEARCH", "HELP_FIND", "HELP_HERE",
-    "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_STATUS",
+    "HELP_SHARE", "HELP_CLEAR", "HELP_LIST", "HELP_ARROW", "HELP_CLOSEST", "HELP_TREASURE", "HELP_TREASURE_SHOW", "HELP_TREASURE_STATUS",
     "HELP_ROUTES", "HELP_ROUTES_MORE", "HELP_TRAVEL", "HELP_HELP" }
 for _, msg in ipairs({ "help", "?" }) do
     M.printed = {}
     command(msg)
-    check(#M.printed == 19 and Printed(L.HELP_HEADER), msg .. " prints a header and 18 lines")
+    check(#M.printed == 20 and Printed(L.HELP_HEADER), msg .. " prints a header and 19 lines")
     for i, key in ipairs(helpKeys) do
         check(M.printed[i + 1] == "   " .. L[key], msg .. " includes " .. key .. " in order")
     end
@@ -233,7 +233,7 @@ if way then
     check(Printed(L.INVALID_COORDS), "/way rejects coordinates out of range")
     M.printed = {}
     command("", way)
-    check(#M.printed == 19, "/way without arguments retains help")
+    check(#M.printed == 20, "/way without arguments retains help")
 end
 command("#52 20 30 Direct")
 check(WP.GetActive().m == 52 and WP.GetActive().title == "Direct", "/wp accepts coordinates directly")

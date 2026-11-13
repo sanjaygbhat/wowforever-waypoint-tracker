@@ -81,6 +81,7 @@ ns.defaults = {
     treasureRares = true,
     treasureOther = true,
     treasureKnownSpots = false,
+    treasureKnownRares = false,
     treasurePing = true,
     treasureFocus = true,
     -- Find tab

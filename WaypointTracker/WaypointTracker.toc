@@ -55,6 +55,7 @@ EditMode.lua
 CoordsBox.lua
 Recorder.lua
 TabWaypoints.lua
+TabTreasure.lua
 UI.lua
 Find.lua
 Routes.lua

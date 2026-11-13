@@ -351,19 +351,15 @@ end
 -- Player position
 -- ---------------------------------------------------------------------------
 function Geo.GetPlayerMapPosition()
-    local mapID = C_Map.GetBestMapForUnit("player")
-    if not mapID then
-        return nil
-    end
-    local pos = C_Map.GetPlayerMapPosition(mapID, "player")
-    if not pos then
-        return nil
-    end
+    if not (C_Map and type(C_Map.GetBestMapForUnit) == "function"
+        and type(C_Map.GetPlayerMapPosition) == "function") then return end
+    local mapID = ns.Int(Num(C_Map.GetBestMapForUnit("player")))
+    if not mapID then return end
+    local pos = ns.Plain(C_Map.GetPlayerMapPosition(mapID, "player"))
+    if type(pos) ~= "table" then return end
     local x, y = ns.XY(pos)
     x, y = Num(x), Num(y)
-    if not x or not y or (x == 0 and y == 0) then
-        return nil
-    end
+    if not x or not y or x < 0 or x > 1 or y < 0 or y > 1 or (x == 0 and y == 0) then return end
     return mapID, x, y
 end
 

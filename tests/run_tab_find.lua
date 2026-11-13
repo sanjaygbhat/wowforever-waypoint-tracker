@@ -23,7 +23,7 @@ local function OnlyKnownFrames()
         WaypointTrackerArrowSelection = true, WaypointTrackerTextSelection = true,
         WaypointTrackerCoordsSelection = true, WaypointTrackerRecorderSelection = true,
         WaypointTrackerMinimapButton = true, WaypointTrackerMapButton = true,
-        WaypointTrackerFrameTab1 = true, WaypointTrackerFrameTab2 = true, WaypointTrackerFrameTab3 = true,
+        WaypointTrackerFrameTab1 = true, WaypointTrackerFrameTab2 = true, WaypointTrackerFrameTab3 = true, WaypointTrackerFrameTab4 = true,
     }
     for _, frame in ipairs(M.frames) do
         local name = frame:GetName()
