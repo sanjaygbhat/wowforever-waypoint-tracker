@@ -478,7 +478,7 @@ function DB.Snapshot(e, created)
     for service in pairs(e.svc or {}) do services[service] = true end
     for service, fac in pairs(e.svcAccess or {}) do access[service] = fac end
     return { fresh = created, name = e.name, title = e.title, spots = #(e.extra or {}),
-        enemy = DB.IsEnemy(e), fac = e.fac, services = services, access = access }
+        enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }
 end
 
 local function MergeStore(st, source)
@@ -507,14 +507,14 @@ local function MergeStore(st, source)
                 if not mine then
                     e.svc = e.svc or {}
                     e.svc[service] = true
-                    if ns.Trainers.services[service] and not l.hostile then
+                    if ns.Trainers.IsService(service) and not l.hostile then
                         e.svcAccess = e.svcAccess or {}
                         e.svcAccess[service] = ns.Trainers.MergeAccess(e.svcAccess[service], l.fac)
                     end
                 end
                 if e.kind == "npc" then
                     DB.services[service] = DB.services[service] or {}
-                    table.insert(DB.services[service], { id = e.id, fac = ns.Trainers.services[service] and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or letter)) })
+                    table.insert(DB.services[service], { id = e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or letter)) })
                 end
             end
         end
@@ -671,6 +671,13 @@ local function MergeStore(st, source)
     for key, list in pairs(T(st.fixes)) do
         local kind, id = tostring(key):match("^([NO])(%d+)$")
         local e = kind and (kind == "N" and DB.units or DB.objects)[tonumber(id)]
+        -- A roster-only identity may have no raw/observed entry yet. Keep its
+        -- corrections so a later fallback cannot resurrect a rejected spot.
+        if kind and not e then
+            local tbl = kind == "N" and DB.units or DB.objects
+            e = { kind = kind == "N" and "npc" or "object", id = tonumber(id), name = "", key = "", learned = source }
+            tbl[tonumber(id)] = e
+        end
         if e then
             for _, fix in ipairs(T(list)) do
                 e.fixes = e.fixes or {}
@@ -936,13 +943,21 @@ function DB.AddsSomething(kind, id, value)
     if (value.name and ship.name == "") or (value.title and not ship.title) then
         return true
     end
-    -- friend or foe the other way round
-    if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and value.hostile ~= ship.enemy then
+    -- General Find infers enemies from an empty faction. A trainer roster
+    -- supplies positive access, so retain an explicit hostile observation
+    -- even when that inference would otherwise make it look redundant.
+    local trainerHostility
+    if kind == "npc" and value.hostile and ship.hostile == nil then
+        local roster = WaypointTrackerData and WaypointTrackerData.trainers or ""
+        trainerHostility = ns.Trainers.HasService(e.svc) or ns.Trainers.HasService(value.services)
+            or roster:find("\t" .. id .. ":", 1, true) or roster:find("," .. id .. ":", 1, true)
+    end
+    if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and (value.hostile ~= ship.enemy or trainerHostility) then
         return true
     end
     for service in pairs(type(value.services) == "table" and value.services or {}) do
         if not ship.services[service] then return true end
-        if ns.Trainers.services[service] and value.fac then
+        if ns.Trainers.IsService(service) and value.fac then
             local known = ship.access[service] or ""
             for letter in value.fac:gmatch("[AH]") do
                 if not known:find(letter, 1, true) then return true end
@@ -1555,6 +1570,9 @@ function DB.TrainerEntries(service)
     local function Add(id, fac, e)
         if fac and fac ~= "" and fac:find(letter, 1, true) and not seen[id] then
             e = e or DB.units[id]
+            -- Trainer availability is stricter than general Find (which also
+            -- searches enemies). Resolved observations override roster access.
+            if e and e.hostile then return end
             -- Resolve after every discovery merge. Observed fallback positions
             -- never replace a database position, including a personal sighting.
             if not e or #DB.Points(e) == 0 then
@@ -1575,7 +1593,7 @@ function DB.TrainerEntries(service)
                         -- used only in English; other locales use the service
                         -- label until a localized observation supplies a name.
                         name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and (ns.CleanText(name) or "") or "")
-                        e = { kind = "npc", id = id, fac = fac, name = name, points = points }
+                        e = { kind = "npc", id = id, fac = fac, name = name, extra = points, fixes = e and e.fixes }
                         break
                     end
                 end

@@ -376,7 +376,7 @@ local function Describe(e, unit, id)
     if hostile ~= nil then
         e.hostile = hostile
     end
-    local trainer = e.services and e.services.trainer
+    local trainer = ns.Trainers.HasService(e.services)
     e.fac = trainer and ns.Trainers.MergeAccess(e.fac, fac) or (fac or e.fac)
     local level = Int(Plain(UnitLevel(unit)))
     e.level = level or e.level
@@ -1177,12 +1177,9 @@ function Learn.Import(text, st, quiet)
             end
             e.level = e.level or Int(f[5])
             local fac = (f[8] == "A" or f[8] == "H" or f[8] == "AH") and f[8] or nil
-            local trainer = e.services and e.services.trainer
-            for token in pairs(e.services or {}) do
-                if ns.Trainers.services[token] then trainer = true end
-            end
+            local trainer = ns.Trainers.HasService(e.services)
             for token in (f[6] or ""):gmatch("[^,]+") do
-                if token == "trainer" or ns.Trainers.services[token] then trainer = true end
+                if ns.Trainers.IsService(token) then trainer = true end
             end
             e.fac = trainer and ns.Trainers.MergeAccess(e.fac, fac) or (e.fac or fac)
             e.title = e.title or CleanText(f[9], 60)

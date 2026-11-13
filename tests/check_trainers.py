@@ -123,6 +123,57 @@ class Trainers(unittest.TestCase):
             rows.append(row)
         self.invalid(mutate, 'conflicting class subkinds')
 
+    def test_single_row_role_and_faction_mutations(self):
+        # Exercise each source family and mixed evidence, with one changed row.
+        # No duplicate-ID guard or stale-output/checksum check can mask the gate.
+        selectors = {
+            'att': lambda r: build.SOURCE not in r['source'] and 'ATTWoWAddon' in r['source'],
+            'forever': lambda r: build.SOURCE not in r['source'] and '/Forever.lua' in r['source'],
+            'observed': lambda r: r['source'].startswith(build.SOURCE),
+            'mixed': lambda r: build.SOURCE in r['source'] and not r['source'].startswith(build.SOURCE),
+        }
+        mutations = [
+            ('wrong class', lambda r: r['kind'] == 'class', dict(subkind='warrior')),
+            ('wrong profession', lambda r: r['kind'] == 'profession', dict(subkind='mining')),
+            ('wrong faction', lambda r: r['faction'] in ('A','H'), dict(faction='H')),
+            ('kind/subkind swap', lambda r: r['kind'] in ('weapon', 'riding'), dict(kind='class', subkind='mage')),
+        ]
+        for source, select in selectors.items():
+            for label, eligible, change in mutations:
+                rows = build.read_rows()
+                candidates = [r for r in rows if select(r) and eligible(r)
+                              and (label == 'wrong faction' or any(r[k] != v for k, v in change.items()))]
+                if not candidates:
+                    continue  # This source has no such role/faction assertion.
+                ident = candidates[0]['npc_id']
+                if label == 'wrong faction':
+                    change = dict(faction='H' if candidates[0]['faction'] == 'A' else 'A')
+                with self.subTest(source=source, mutation=label, npc=ident):
+                    def mutate(rows):
+                        next(r for r in rows if r['npc_id'] == ident).update(change)
+                    self.invalid(mutate, 'title|profession|faction')
+        # Both empty-subkind roles must reject a valid kind/subkind substitution.
+        for kind, other in [('weapon','riding'), ('riding','weapon')]:
+            with self.subTest(swap=kind):
+                self.invalid(lambda rows: next(r for r in rows if r['kind'] == kind).update(kind=other), 'title')
+
+    def test_literal_evidence_cannot_disagree_with_pinned_role_or_faction(self):
+        def mutate(rows):
+            next(r for r in rows if r['npc_id'] == '3597').update(evidence='not actually a trainer; faction=packaged units')
+        self.invalid(mutate, 'unrecognized literal trainer evidence')
+        def contradictory(rows):
+            row = next(r for r in rows if r['source'].startswith(build.SOURCE) and r['faction'] == 'H')
+            row['evidence'] += ' | explicit NPC title <Druid Trainer>; faction=side=Alliance'
+        self.invalid(contradictory, 'title|faction')
+        def title(rows):
+            row = next(r for r in rows if r['npc_id'] == '4892')
+            row['evidence'] = row['evidence'].replace('Hunter Trainer & Bowyer','Mage Trainer')
+        self.invalid(title, 'literal title role')
+        def faction(rows):
+            row = next(r for r in rows if 'faction=side=Horde' in r['evidence'])
+            row['evidence'] = row['evidence'].replace('faction=side=Horde','faction=side=Alliance')
+        self.invalid(faction, 'faction contradicts')
+
     def test_source_and_licence_allowlist(self):
         self.invalid(lambda rows: rows[0].update(source='https://example.org/trainers'), 'unrecorded source')
         self.invalid(lambda rows: rows[0].update(licence='GPL'), 'unrecorded licence/source')
@@ -137,7 +188,7 @@ class Trainers(unittest.TestCase):
         self.assertEqual(c('Herbalist', True), ('profession', 'herbalism'))
         self.assertIsNone(c('Expert Blacksmith'))
         self.assertEqual(c('Expert Blacksmith', False, {'Expert Blacksmith'}), ('profession', 'blacksmithing'))
-        for title in ('Alchemy Supplies', 'Master Mage', 'Rogue Trainer?', 'Master Weaponsmith', 'Superior Herbalist'):
+        for title in ('Alchemy Supplies', 'Master Mage', 'Rogue Trainer?', 'Master Weaponsmith', 'Superior Herbalist', 'Invented Riding Trainer'):
             self.assertIsNone(c(title, True), title)
         data = json.loads(build.EVIDENCE.read_text())
         title = next(t for t, p in data['patterns'].items() if p['basis'] == 'window')
@@ -173,6 +224,36 @@ class Trainers(unittest.TestCase):
             row = next(r for r in rows if not r['faction'] and build.SOURCE in r['source'])
             row['faction'] = 'A'
         self.invalid(mutate, 'faction lacks pinned evidence')
+
+    def test_reviewed_position_corrections_follow_newest_observations(self):
+        import csv
+        from decimal import Decimal, ROUND_HALF_UP
+        from stage_quest_corrections import corrected
+        data = json.loads(build.EVIDENCE.read_text())
+        with (ROOT / 'tools/corrections_trainers.tsv').open() as stream:
+            corrections = list(csv.DictReader(stream, delimiter='\t'))
+        source = (ROOT / 'WaypointTracker_Data/Curated.lua').read_text()
+        original = source
+        for row in corrections:
+            ident = row['record'][1:]
+            proof = data['npcs'][ident]['position']
+            position = proof['record']['positions'][0]
+            # Retain the format's 0.1% precision; never average source points.
+            x, y = (int((Decimal(str(position[k])) * 1000).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+                    for k in ('mapX','mapY'))
+            self.assertEqual(row['value'], f"{position['uiMap']}:{x},{y}")
+            self.assertIn(proof['path'], data['files'])
+            actual = next(line for line in source.splitlines() if line.startswith('N\t' + ident + '\t'))
+            self.assertEqual(actual.split('\t')[6], row['value'], ident + ' published position resolution')
+            original = original.replace(actual, actual.replace(row['value'], row['expected']))
+        reapplied, additions = corrected(original, corrections)
+        self.assertEqual(reapplied, source)
+        self.assertFalse(additions)
+        with self.assertRaisesRegex(ValueError, 'Stale expected value'):
+            corrected(source, corrections)
+        rows = build.read_rows()
+        for ident in ('251991','257020'):
+            self.assertIn('newest positioned Forever observation', next(r['evidence'] for r in rows if r['npc_id'] == ident))
 
     def test_evidence_fixture_checksums(self):
         manifest = json.loads((ROOT / 'tools/fixtures/manifest.json').read_text())

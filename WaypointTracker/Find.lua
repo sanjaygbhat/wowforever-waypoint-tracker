@@ -172,27 +172,35 @@ function Find.GoToNearest(service, profession)
     elseif service == "trainer_riding" then
         title = L.SERVICE_RIDING_TRAINER
     end
-    if not DB.Load() then
+    local loaded, loadReason = DB.Load()
+    if not loaded then
         Status(L.DB_BROKEN)
         return nil
     end
     if title then
-        local wp, reason = WaypointToNearest(DB.TrainerEntries(service), title, true)
+        local entries = DB.TrainerEntries(service)
+        local wp, reason = WaypointToNearest(entries, title, true)
         if wp then
             local message = L.ADDED:format(WP.Describe(wp))
             if profession then message = L.TRAINER_KNOWN_ADDED:format(message) end
             Status(message, true)
         else
-            Status(reason == "position" and L.TRAINER_POSITION_UNKNOWN or (profession and (L.TRAINER_NONE .. " " .. L.TRAINER_KNOWN_DESC) or L.TRAINER_NONE))
+            Status((#entries == 0 and loadReason == "missing") and L.DB_BROKEN or reason == "position" and L.TRAINER_POSITION_UNKNOWN or (profession and (L.TRAINER_NONE .. " " .. L.TRAINER_KNOWN_DESC) or L.TRAINER_NONE))
         end
         return wp
     end
-    return GoToNearest(DB.ServiceEntries(service))
+    local entries = DB.ServiceEntries(service)
+    if #entries == 0 and loadReason == "missing" then Status(L.DB_BROKEN); return end
+    return GoToNearest(entries)
 end
 
 function Find.ProfessionMenu(root, hasTitle)
     if not hasTitle then root:CreateTitle(L.SERVICE_PROFESSION_TRAINER) end
-    local loaded = DB.Load()
+    local loaded, reason = DB.Load()
+    if not loaded or reason == "missing" then
+        root:CreateTitle(L.DB_BROKEN)
+        Status(L.DB_BROKEN)
+    end
     for _, p in ipairs(ns.Trainers.professions) do
         local available = loaded and #DB.TrainerEntries("trainer_profession_" .. p.key) > 0
         local text = L["PROFESSION_" .. p.key:upper()]
@@ -603,8 +611,10 @@ local function Build(content)
             picker = Widgets.Picker(frame, 160, options, function() return selected end, function(i)
                 if not frame:IsVisible() or not Window.IsShown() then return end
                 selected = i
-                availability = DB.Load() and #DB.TrainerEntries("trainer_profession_" .. ns.Trainers.professions[i].key) > 0
-                Status(options[i].text .. " - " .. (availability and L.TRAINER_AVAILABLE or L.TRAINER_UNAVAILABLE), availability)
+                local loaded, reason = DB.Load()
+                availability = loaded and #DB.TrainerEntries("trainer_profession_" .. ns.Trainers.professions[i].key) > 0
+                Status((not availability and (not loaded or reason == "missing")) and L.DB_BROKEN
+                    or (options[i].text .. " - " .. (availability and L.TRAINER_AVAILABLE or L.TRAINER_UNAVAILABLE)), availability)
             end)
             local action = Widgets.Button(picker, L.TRAINER_ACTION, 140, 22)
             local actionFont = action.GetFontString and action:GetFontString()

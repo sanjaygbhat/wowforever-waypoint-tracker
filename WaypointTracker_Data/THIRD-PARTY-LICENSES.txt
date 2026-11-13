@@ -61,8 +61,9 @@ Creative Commons Attribution 4.0 International (CC BY 4.0).
 Licence: https://creativecommons.org/licenses/by/4.0/
 Source: https://github.com/JIVESCORP/eg-link-output-wowf
 Pinned commit: 164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1
-Modified: selected trainer titles/window observations, normalized access and
-extracted positions only for NPCs without existing database positions.
+Modified: selected trainer titles/window observations, normalized access,
+extracted missing-position fallbacks, and applied reviewed position corrections
+preferring the newest positioned Forever observations.
 
 World of Warcraft game content remains the property of Blizzard Entertainment.
 The licence covers Efficient Games' selection, structure, compilation and

@@ -17,6 +17,18 @@ Trainers.services = { trainer_weapon = true, trainer_riding = true }
 for key in pairs(Trainers.classes) do Trainers.services["trainer_class_" .. key] = true end
 for _, p in ipairs(Trainers.professions) do Trainers.services["trainer_profession_" .. p.key] = true end
 
+-- Generic and typed trainer observations share the same access semantics.
+function Trainers.IsService(service)
+    return service == "trainer" or Trainers.services[service] == true
+end
+
+function Trainers.HasService(services)
+    for service, value in pairs(type(services) == "table" and services or {}) do
+        if value and Trainers.IsService(service) then return true end
+    end
+    return false
+end
+
 -- Access is account-wide; a second observed faction must not erase the first.
 function Trainers.MergeAccess(a, b)
     a, b = ns.Str(a) or "", ns.Str(b) or ""

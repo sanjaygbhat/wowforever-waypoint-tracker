@@ -26,34 +26,55 @@ CLASSES = 'warrior paladin hunter rogue priest shaman mage warlock druid'.split(
 PROFESSIONS = 'alchemy blacksmithing enchanting engineering herbalism leatherworking mining skinning tailoring cooking firstaid fishing'.split()
 SUBKINDS = dict(class_=CLASSES, profession=PROFESSIONS, weapon=[''], riding=[''], pet=['hunter'], demon=['warlock'], portal=['mage'])
 SUBKINDS['class'] = SUBKINDS.pop('class_')
-OCCUPATIONS = dict(zip(PROFESSIONS, ['Alchemist', 'Blacksmith', 'Enchanter', 'Engineer',
-    'Herbalist', 'Leatherworker|Leathercrafter', 'Miner', 'Skinner', 'Tailor', 'Cook', 'Physician', 'Fisherman']))
 PROFESSION_IDS = dict(zip(PROFESSIONS, [171, 164, 333, 202, 182, 165, 186, 393, 197, 185, 129, 356]))
-PROFESSION_TITLES = dict(zip(PROFESSIONS, ['Alchemy', 'Blacksmithing', 'Enchanting', 'Engineering',
-    'Herbalism', 'Leatherworking', 'Mining', 'Skinning', 'Tailoring', 'Cooking', 'First Aid', 'Fishing']))
+# Exact English titles in the pinned sources, including approved compounds.
+# This is the single role oracle for all sources and evidence assertions.
+TITLE_GROUPS = {
+    ('class', 'druid'): ['Druid Trainer'],
+    ('class', 'hunter'): ['Hunter Trainer', 'Hunter Trainer & Bowyer'],
+    ('class', 'mage'): ['Mage Trainer'],
+    ('class', 'paladin'): ['Paladin Trainer'],
+    ('class', 'priest'): ['Priest Trainer'],
+    ('class', 'rogue'): ['Rogue Trainer'],
+    ('class', 'shaman'): ['Shaman Trainer'],
+    ('class', 'warlock'): ['Warlock Trainer'],
+    ('class', 'warrior'): ['Warrior Trainer'],
+    ('weapon', ''): ['Weapon Master'],
+    ('riding', ''): ['Riding Trainer', 'Kodo Riding Instructor', 'Raptor Riding Trainer',
+                     'Undead Horse Riding Instructor', 'Wolf Riding Instructor'],
+    ('pet', 'hunter'): ['Pet Trainer'],
+    ('demon', 'warlock'): ['Demon Trainer'],
+    ('portal', 'mage'): ['Portal Trainer'],
+    ('profession', 'alchemy'): ['Alchemist', 'Journeyman Alchemist', 'Journeyman Alchemist Trainer',
+        'Expert Alchemist', 'Artisan Alchemist', 'Master Alchemist'],
+    ('profession', 'blacksmithing'): ['Blacksmith', 'Journeyman Blacksmith', 'Expert Blacksmith',
+        'Artisan Blacksmith', 'Master Blacksmith'],
+    ('profession', 'enchanting'): ['Enchanter', 'Journeyman Enchanter', 'Expert Enchanter',
+        'Artisan Enchanter', 'Enchanting Trainer'],
+    ('profession', 'engineering'): ['Journeyman Engineer', 'Expert Engineer', 'Artisan Engineer',
+        'Master Engineer', 'Master Goblin Engineer', 'Goblin Engineering Trainer'],
+    ('profession', 'herbalism'): ['Herbalist', 'Apprentice Herbalist', 'Herbalism Trainer', 'Junior Herbalism Trainer'],
+    ('profession', 'leatherworking'): ['Leatherworker', 'Journeyman Leatherworker', 'Expert Leatherworker',
+        'Artisan Leatherworker', 'Master Leatherworker', 'Tribal Leatherworking Trainer'],
+    ('profession', 'mining'): ['Miner', 'Mining Trainer', 'Junior Mining Trainer'],
+    ('profession', 'skinning'): ['Skinner', 'Skinning Trainer', 'Junior Skinning Trainer'],
+    ('profession', 'tailoring'): ['Tailor', 'Journeyman Tailor', 'Expert Tailor', 'Artisan Tailor', 'Master Tailor'],
+    ('profession', 'cooking'): ['Cook', 'Cooking Trainer'],
+    ('profession', 'firstaid'): ['Physician', 'First Aid Trainer'],
+    ('profession', 'fishing'): ['Fisherman', 'Fishing Trainer'],
+}
+TITLE_ROLES = {title: role for role, titles in TITLE_GROUPS.items() for title in titles}
+# Occupational titles require a real window/interaction or a pinned witness.
+OCCUPATIONAL = {title for title, role in TITLE_ROLES.items()
+                if role[0] == 'profession' and ('Trainer' not in title or title == 'Journeyman Alchemist Trainer')}
 
 
 def classify(title, interaction=False, corroborated=()):
-    """Only literal titles establish a role; never NPC names or recipe names."""
-    for key in CLASSES:
-        if title == key.title() + ' Trainer':
-            return 'class', key
-    if title == 'Weapon Master':
-        return 'weapon', ''
-    if re.fullmatch(r'(?:.+ Riding (?:Instructor|Trainer)|Riding Trainer)', title):
-        return 'riding', ''
-    for key, label in PROFESSION_TITLES.items():
-        if re.fullmatch(r'(?:(?:Junior|Apprentice|Journeyman|Expert|Artisan|Master|Tribal|Elemental|Dragonscale|Goblin|Gnome) )?' + label + ' Trainer', title):
-            return 'profession', key
-    for key, noun in OCCUPATIONS.items():
-        if re.fullmatch(r'(?:Apprentice|Journeyman|Expert|Artisan|Master) (?:Elemental |Tribal |Dragonscale |Shadoweave |Goblin |Gnome )?(?:' + noun + r')(?: Trainer)?', title):
-            if interaction or title in corroborated:
-                return 'profession', key
-        if interaction and re.fullmatch('(?:' + noun + ')', title):
-            return 'profession', key
-    for kind, sub in [('pet', 'hunter'), ('demon', 'warlock'), ('portal', 'mage')]:
-        if title == kind.title() + ' Trainer':
-            return kind, sub
+    """Only exact, corroborated literal titles establish a trainer role."""
+    role = TITLE_ROLES.get(title)
+    if title in OCCUPATIONAL and not (interaction or title in corroborated):
+        return None
+    return role
 
 
 def packaged_units():
@@ -121,6 +142,7 @@ def observed_faction(record, ident, units):
 def trainer_evidence(evidence, profession=None, rank=None):
     """Require a complete assertion identifying this profession, not a keyword."""
     for part in evidence.split(' | '):
+        part = re.sub(r'; faction=(?:packaged units|unknown)$', '', part)
         match = re.fullmatch(r'NPC under prof\((\d+)\); teaches recipe\(\d+\); highest explicit profession rank=(apprentice|journeyman|expert|artisan)', part)
         if match:
             key = next((k for k, v in PROFESSION_IDS.items() if v == int(match[1])), None)
@@ -134,6 +156,55 @@ def trainer_evidence(evidence, profession=None, rank=None):
             if role and role[0] == 'profession' and (profession is None or role[1] == profession):
                 return True
     return False
+
+
+def validate_assertions(row, units):
+    """Check every literal assertion, including earlier sources in mixed rows."""
+    expected = row['kind'], row['subkind']
+    ident = row['npc_id']
+    factions = []
+    for part in row['evidence'].split(' | '):
+        title = re.match(r'explicit NPC title <([^<>]+)>', part)
+        if not title:
+            title = re.match(r'(?:observed )?title=([^;]+)', part)
+        if not title:
+            title = re.match(r'(?:explicit |NPC under )(Demon Trainer|Riding Trainer|Weapon Master) header\(-(?:25|48|59)\)', part)
+        if title and ' header(' in part:
+            header = {'Demon Trainer': '-25', 'Riding Trainer': '-48', 'Weapon Master': '-59'}[title[1]]
+            if 'header(' + header + ')' not in part:
+                raise ValueError('literal header role contradicts kind/subkind: ' + ident)
+        recipe = re.match(r'NPC under prof\((\d+)\); teaches recipe\(\d+\); highest explicit profession rank=(apprentice|journeyman|expert|artisan)(?:;|$)', part)
+        if title:
+            if TITLE_ROLES.get(title[1]) != expected:
+                raise ValueError('literal title role contradicts kind/subkind: ' + ident)
+        elif recipe:
+            key = next((k for k, v in PROFESSION_IDS.items() if v == int(recipe[1])), None)
+            if expected != ('profession', key) or recipe[2] != row['rank']:
+                raise ValueError('profession lacks trainer evidence: ' + ident)
+        else:
+            raise ValueError('unrecognized literal trainer evidence: ' + ident)
+        faction = re.search(r'(?:^|; )faction=([^;]+)', part)
+        if not faction:
+            continue
+        factions.append(faction[1])
+        basis = faction[1]
+        if basis == 'packaged units':
+            if row['faction'] != units.get(ident, ['', '', ''])[2]:
+                raise ValueError('faction contradicts packaged units: ' + ident)
+        elif basis == 'unknown':
+            if row['faction']:
+                raise ValueError('faction contradicts unknown evidence: ' + ident)
+        elif basis.startswith('side='):
+            if row['faction'] != {'side=Alliance': 'A', 'side=Horde': 'H'}.get(basis):
+                raise ValueError('faction contradicts literal side evidence: ' + ident)
+        elif basis.startswith('friendly reaction='):
+            if row['faction'] != basis.removeprefix('friendly reaction='):
+                raise ValueError('faction contradicts literal reaction evidence: ' + ident)
+        else:
+            raise ValueError('unrecognized faction evidence: ' + ident)
+
+    if not factions:
+        raise ValueError('faction evidence missing (mark packaged derivation): ' + ident)
 
 
 def safe_name(value):
@@ -189,6 +260,7 @@ def read_rows(path=FIXTURE):
                 raise ValueError('faction lacks pinned evidence: ' + str(ident))
         if kind == 'profession' and not observed and not trainer_evidence(row['evidence'], subkind, row['rank']):
             raise ValueError('profession lacks trainer evidence: ' + str(ident))
+        validate_assertions(row, units)
         if row['faction'] not in ('', 'A', 'H', 'AH') or row['rank'] not in ('', 'apprentice', 'journeyman', 'expert', 'artisan') or row['has_position'] not in ('yes', 'no'):
             raise ValueError('invalid metadata: ' + str(ident))
         safe_name(row.get('name_enUS', ''))

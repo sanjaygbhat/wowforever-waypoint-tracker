@@ -20,11 +20,12 @@ if os.getenv('WT_PERF_CLOCK') then
     clockName = 'monotonic wall clock'
 end
 print('Treasure performance: ' .. (baseline and 'BEFORE' or 'AFTER') .. ', ' .. clockName)
--- Ceilings are tuned for a developer machine. Shared CI runners are slower
--- and noisier, so there (CI is set) each ceiling gets headroom; set
+-- Ceilings are tuned for an idle developer machine and get 2x headroom for
+-- background load. Shared CI runners are slower and noisier, so there (CI
+-- is set) the headroom is 5x; set
 -- WT_PERF_SLACK to choose the factor yourself. The work counters and
 -- allocation checks below are exact everywhere.
-local slack = tonumber(os.getenv('WT_PERF_SLACK')) or (os.getenv('CI') and 5 or 1)
+local slack = tonumber(os.getenv('WT_PERF_SLACK')) or (os.getenv('CI') and 5 or 2)
 local function measure(name, fn, ceiling, count, prepare)
     ceiling = ceiling * slack
     -- Independent fixtures must not inherit garbage from a previous fixture's

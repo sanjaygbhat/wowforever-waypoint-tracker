@@ -676,7 +676,8 @@ print('Coverage proof: searches=' .. searches .. ' log=50 zone=200')
 coverage:close()
 local function shellQuote(text) return "'" .. text:gsub("'", "'\\''") .. "'" end
 local coverageLua = os.getenv('LUA51') or arg[-1] or 'lua5.1'
-local coverageResult = os.execute(shellQuote(coverageLua) .. ' ' .. shellQuote(coverageScript) .. ' > ' .. shellQuote(coverageLog) .. ' 2>&1')
+-- this run proves coverage (real searches, exact fixture); timing ceilings are run_treasure_perf's own job
+local coverageResult = os.execute('WT_PERF_SLACK=20 ' .. shellQuote(coverageLua) .. ' ' .. shellQuote(coverageScript) .. ' > ' .. shellQuote(coverageLog) .. ' 2>&1')
 local coverageOutput = assert(io.open(coverageLog)); local coverageText = coverageOutput:read('*a'); coverageOutput:close()
 os.remove(coverageScript); os.remove(coverageLog)
 check(coverageResult == 0 and coverageText:find('Coverage proof: searches=%d+ log=50 zone=200'), 'performance harness executes real searches with exact 50/200 fixture')
