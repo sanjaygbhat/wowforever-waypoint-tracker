@@ -15,10 +15,10 @@ The in-game addon list, folders and API identifiers stay `Waypoint Tracker` / `W
 ## Summary (CurseForge and Wago)
 
 ```text
-Follow the 3D arrow by the fastest route. Find quests, NPCs and items, or use Nearest for services and trainers. /way and TomTom-compatible waypoints for WoW Forever.
+Find any quest, NPC or item and a 3D arrow takes you there by the fastest route. One-click Nearest: mailbox, repair, flight master, class and profession trainers and more. /way and TomTom-compatible waypoints for WoW Forever.
 ```
 
-Lead with the 3D arrow and fastest routes (on by default), then Find and Nearest services and trainers. Keep the summary under 250 characters. Refresh the descriptions and their "New in" block with every feature release; keep Treasure hunt (beta) below the main features.
+Lead with Find and the arrow by the fastest route (Real routes, on by default), then one-click Nearest for services and trainers. Keep the summary under 250 characters. Refresh the descriptions and their "New in" block with every feature release; keep Treasure hunt (beta) below the main features.
 
 ## Categories
 
