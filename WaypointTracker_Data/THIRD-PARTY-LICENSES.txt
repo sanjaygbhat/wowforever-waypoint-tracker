@@ -1,5 +1,5 @@
-Waypoint Tracker's database bundles data from these MIT-licensed projects.
-Their licences are reproduced below, as the MIT licence requires.
+Waypoint Tracker's database bundles data from the sources listed below.
+Their licences and required attribution notices are included here.
 
 ========================================================================
 All The Things (https://github.com/ATTWoWAddon/AllTheThings)
@@ -52,3 +52,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+========================================================================
+EG Link output: World of Warcraft: Forever — Efficient Games
+========================================================================
+Data from Efficient Games (https://efficient.games), licensed under
+Creative Commons Attribution 4.0 International (CC BY 4.0).
+Licence: https://creativecommons.org/licenses/by/4.0/
+Source: https://github.com/JIVESCORP/eg-link-output-wowf
+Pinned commit: 164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1
+Modified: selected trainer titles/window observations, normalized access,
+extracted missing-position fallbacks, and applied reviewed position corrections
+preferring the newest positioned Forever observations.
+
+World of Warcraft game content remains the property of Blizzard Entertainment.
+The licence covers Efficient Games' selection, structure, compilation and
+player-contributed observations; it grants no rights in Blizzard's content.
+The full upstream CC BY 4.0 licence accompanies the pinned evidence in
+ tools/fixtures/trainers/observed-164bd1e2/LICENSE.

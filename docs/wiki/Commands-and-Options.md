@@ -1,8 +1,8 @@
-[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
+[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
 
 # Commands & Settings
 
-Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find** and **Routes** tabs. Editors, imports and help stay inside the tabs; **Back** returns to the previous page. Feedback appears below the title, above the tab content. Right-click the minimap button for the quick menu; Shift + left-click adds a waypoint where you stand. The Addon Compartment also opens the window or quick menu.
+Open `/wp` or left-click the minimap button for one window with **Waypoints**, **Find**, **Routes** and **Treasure (beta)** tabs. Editors, imports and help stay inside the tabs; **Back** returns to the previous page. Feedback appears below the title, above the tab content. Right-click the minimap button for the quick menu; Shift + left-click adds a waypoint where you stand. The Addon Compartment also opens the window or quick menu.
 
 ## Commands
 
@@ -25,7 +25,9 @@ Open `/wp` or left-click the minimap button for one window with **Waypoints**, *
 | `/wp list` | List waypoints and distances in chat |
 | `/wp arrow` | Show or hide the arrow |
 | `/wp closest` · `/cway` | Point to the closest waypoint |
-| `/wp treasure [status]` · `/wp hunt` | Toggle treasure hunt (beta), or show what it sees with `status` |
+| `/wp treasure` · `/wp hunt` | Toggle Treasure hunt (beta) |
+| `/wp treasure show` | Open the Treasure (beta) tab without toggling |
+| `/wp treasure status` | Report what it sees and recent finds |
 | `/wp travel [on\|off\|steps\|status]` · `/wp realroutes` · `/wp rr` | Toggle Real routes, set it on/off, list travel steps or show status |
 | `/wp help` · `/wp ?` · `/way` | Show the command list |
 
@@ -39,14 +41,14 @@ Open **Settings → AddOns → Waypoint Tracker**, press **Settings** in the win
 |---|---|
 | Waypoint Tracker (root) | Open Waypoint Tracker, Open Edit Mode, Key Bindings, Reset All Settings; show the arrow, always point to the closest waypoint, corpse waypoint, remember waypoints, minimap button, chat messages, metres, other addons' waypoints, also show the game's own map pin |
 | Arrow — Arrow Display | Arrow size (50–200%), visibility (20–100%), colour style and colour picker, fade when heading the right way, hide during combat or on flight paths |
-| Arrow — Arrow Text | Text size and visibility, name, distance, time to arrive, move the text separately |
+| Arrow — Arrow Text | Text size and visibility, name, distance, Show time to arrive (off by default), move the text separately |
 | Arrow — When You Arrive | Arrival distance (3–50 yards), remove the waypoint, play a sound, point to the next closest waypoint |
 | Maps — World map | Pins, coordinates, Ctrl + right-click to add, follow the game's map pins, point to the tracked quest |
 | Maps — Minimap | Pins and keeping the arrow's waypoint on the minimap edge |
 | Maps — Coordinates box | Show a box with your coordinates; move it in Edit Mode |
 | Routes | When starting a route: ask, replace existing waypoints or add to them; Route sharing & votes (beta), off by default; show low-rated routes |
-| Routes — Real routes | Real routes (on by default); flight paths; boats, zeppelins and the tram; hearthstone and teleports; map route line; learn walked paths; share paths |
-| Treasure Hunt (beta) | Enable treasure hunt; chests, rares and other markers; known chest spots; pings; point the arrow at finds |
+| Routes — Real routes | Real routes (on by default); Route preference (Safe route by default; Always fastest available); flight paths; boats, zeppelins and the tram; hearthstone and teleports; map route line; learn walked paths; share paths |
+| Treasure Hunt (beta) | Open the Treasure (beta) tab; enable Treasure hunt (beta), off by default; chests, rares and events; known chest spots and rare spawns; pings; immediate arrow focus |
 | Find & Sharing — Find | Learn NPCs, quests and objects as you play; only your faction; only this zone |
 | Find & Sharing — Sharing | Start shared spots with [Waypoint Tracker] |
 
@@ -70,4 +72,48 @@ Click the preview or a pin to open the route on the normal world map, outside co
 
 **Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Walked-path sharing for Real routes has a separate setting, off by default.
 
-**Real routes** guides you along the quickest way you can really go: through passes and gates, using known flight paths, boats, zeppelins, the tram, your hearthstone, Astral Recall or mage and druid teleports when quicker, planned with your riding skill and travel forms. It is on by default; turn it off from the quick menu or Settings → Routes. Open a flight master's map once to learn your available flights. It uses a travel network and learned paths, so it may still miss a better way.
+### Fastest route (Real routes)
+
+The arrow guides you through passes and gates and onto flight paths, boats, zeppelins or the tram when they save time. It also considers your hearthstone, Astral Recall, mage and druid teleports and engineering transporters, with your riding skill and travel forms included in the travel time. Real routes is on by default and works for every destination, including Nearest results, using the travel links and paths it knows.
+
+**Safe or fastest, your choice.** The default **Safe route** preference is danger-aware. When a quicker, riskier route saves at least 15 seconds and 5% of the trip, the arrow offers it for ten seconds and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take the quickest route every time without asking.
+
+It checks the travel abilities you have and their cooldowns. Open a flight master's map to learn your available flights. Distance appears under the arrow. For time to arrive too, turn on **Settings → Arrow → Show time to arrive** (off by default). As you move, it re-plans and works the route out a little at a time in the background, so the game stays smooth while you follow the current route.
+
+Turn Real routes off in **Settings → Routes** for a straight arrow.
+
+## Nearest
+
+Open the **Find** tab and click a **Nearest** button. Or right-click the minimap button and open **Nearest...**. Each choice sets a waypoint for your faction, and the arrow takes you there by the fastest route.
+
+| Button | Where it takes you |
+|---|---|
+| Mailbox | The nearest known mailbox |
+| Innkeeper | An innkeeper to set your home |
+| Flight Master | A flight master |
+| Repair | A vendor who repairs gear |
+| Merchant | A vendor to buy or sell items |
+| Bank | A banker |
+| Auction House | An auctioneer |
+| Stable Master | A stable master for your pets |
+| Spirit Healer | A spirit healer |
+| Battlemaster | A battlemaster |
+| Meeting Stone | A dungeon meeting stone |
+| Class Trainer | The nearest trainer for **your class**, picked automatically |
+| Profession Trainer | A menu of **Alchemy, Blacksmithing, Enchanting, Engineering, Herbalism, Leatherworking, Mining, Skinning, Tailoring, Cooking, First Aid and Fishing**; pick one to find the nearest trainer it knows |
+| Weapon Master | The nearest known weapon master |
+| Riding Trainer | The nearest known riding trainer |
+
+Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list.
+
+## Treasure hunt (beta)
+
+**Off by default. How to turn it on:**
+
+1. Type `/wp`.
+2. Open the **Treasure (beta)** tab.
+3. Click **Enable treasure hunt (beta)**.
+
+You can also type `/wp treasure` to toggle it, or enable **Treasure hunt (beta)** under **Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta)**. `/wp treasure show` opens the tab without changing whether it is on.
+
+The tab has option checkboxes, **Nearby now** with distance and double-click/right-click actions, **In this zone** with known spots and recent rare sighting times, and **Recent finds** with 50 saved finds per character. See the [guide](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) for every option.

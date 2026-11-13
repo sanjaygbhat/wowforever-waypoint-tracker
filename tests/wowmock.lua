@@ -843,6 +843,11 @@ local function NewMenuRoot()
     local function Add(self, item)
         item.items = {}
         -- element descriptions record what the menu would show
+        -- Forever MenuElementDescriptionProxyMixin:HandleOnEnter invokes
+        -- this hook before the menu manager generates its submenu.
+        function item:SetOnEnter(fn)
+            self.onEnter = fn
+        end
         function item:SetTooltip(fn)
             self.tooltip = fn
         end

@@ -14,10 +14,13 @@ end
 function QuickMenu.Build(root)
     root:CreateTitle(L.MENU_QUICK_TITLE)
     Checkbox(root, L.SHOW_ARROW, "arrowShown")
-    Checkbox(root, L.TREASURE_HUNT, "treasureHunt")
+    root:CreateCheckbox(L.TREASURE_HUNT, function() return ns.Get("treasureHunt") end, ns.Safe(function()
+        ns.Treasure.SetOption("treasureHunt", not ns.Get("treasureHunt"))
+    end))
     Checkbox(root, L.REAL_ROUTES, "realRoutes")
     root:CreateDivider()
     root:CreateButton(L.BINDING_HERE, ns.Safe(function() WP.AddHere() end))
+    root:CreateButton(L.TREASURE_TAB, ns.Safe(function() ns.Window.Show("treasure") end))
     root:CreateButton(L.BINDING_SHARE, ns.Safe(function()
         if WaypointTracker_ShareHere then WaypointTracker_ShareHere() end
     end))
@@ -34,7 +37,27 @@ function QuickMenu.Build(root)
         end))
         if near and type(near.CreateButton) == "function" then
             for _, s in ipairs(Find.SERVICES) do
-                near:CreateButton(L[s.label], ns.Safe(function() Find.GoToNearest(s.key) end))
+                if s.key == "profession" then
+                    local prof = near:CreateButton(L[s.label], ns.Safe(function() Find.Show() end))
+                    if prof and prof.SetTooltip then
+                        prof:SetTooltip(function(tooltip) tooltip:AddLine(L.TRAINER_KNOWN_DESC, 1, 0.82, 0, true) end)
+                    end
+                    -- A context-menu build must not load the world database.
+                    -- Forever calls this hook before opening the submenu; add
+                    -- its choices only when the player actually enters it.
+                    if prof and prof.SetOnEnter and type(prof.CreateButton) == "function" and prof.CreateTitle then
+                        prof:CreateTitle(L.SERVICE_PROFESSION_TRAINER)
+                        local populated = false
+                        prof:SetOnEnter(ns.Safe(function()
+                            if not populated then
+                                populated = true
+                                Find.ProfessionMenu(prof, true)
+                            end
+                        end))
+                    end
+                else
+                    near:CreateButton(L[s.label], ns.Safe(function() Find.GoToNearest(s.key) end))
+                end
             end
         end
     end

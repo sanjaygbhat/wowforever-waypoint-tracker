@@ -1,75 +1,63 @@
-[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
+[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
 
-# Treasure Hunt (beta): rare and chest alerts for WoW Forever
+# Treasure hunt (beta)
 
-Treasure hunt turns Waypoint Tracker into a rare scanner and treasure finder. The moment a chest, a rare spawn or an event appears near you, you get a ping and the arrow points straight at it. New in version **1.1.0** and still in beta: please [report](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues) what it catches and what it misses, with `/wp treasure status` output if you can.
+## How to turn it on
 
-![Illustration of treasure hunt: a chest marker appears with a ping, the alert reads Treasure nearby, and the arrow turns to it and closes the distance](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/treasure-hunt.gif)
+**Off by default. How to turn it on:**
 
-*Treasure hunt, illustrated with the addon's own arrow.*
+1. Type `/wp`.
+2. Open the **Treasure (beta)** tab.
+3. Click **Enable treasure hunt (beta)**.
 
-## Turn it on
+You can also type `/wp treasure` to toggle it, or enable **Treasure hunt (beta)** under **Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta)**. `/wp treasure show` opens the tab without changing whether it is on.
 
-Any of these:
+## The Treasure (beta) tab
 
-- Turn on **Treasure hunt (beta)** in Settings or the quick menu (`/wp`).
-- Type `/wp treasure`.
-- Bind a key under **Key Bindings → AddOns → Turn treasure hunt on or off**.
+- **Nearby now:** live finds with distance. Double-click to point the arrow; right-click to ignore a find.
+- **In this zone:** known rare spawns and chest spots, nearest first, with when you last saw each rare if it is in your saved log. A known spot is a place to check, not a promise that something is there now.
+- **Recent finds:** your last **50 finds per character**, kept between sessions, with **looted**, **killed** or **gone** when the outcome is known.
 
-It's off until you turn it on, and stays on across sessions.
+Rares seen on a nameplate or target get a waypoint even when their spawn is unknown: it marks where you saw them, not an exact tracked position. Alerts show their level and **rare**, **rare elite** or **boss** classification when available. Your own waypoint keeps the arrow unless **Point the arrow at it right away** is on; double-click a find whenever you want to follow it.
 
-## What it watches for
+## Options
 
-| Kind | Where it comes from |
-|---|---|
-| **Chests and treasure** | Treasure the game marks on your minimap, and a chest right in front of you |
-| **Rare spawns** | Rare and rare elite enemies on your minimap, nameplates, target or under your mouse, placed at their known spawn |
-| **Events and other markers** | Anything else the game marks on your minimap, like events |
+- **Chests and treasure:** watch for treasure on your minimap and a chest right in front of you.
+- **Rare spawns:** watch for rares on your minimap, nameplates or target; skip ones someone else is already fighting.
+- **Events and other markers:** watch for other nearby markers the game shares.
+- **Lead me to known chest spots:** visit known chest spots across the whole zone while no live find needs attention.
+- **Lead me to known rare spawns:** visit known rare spawn spots in the zone while no live find needs attention.
+- **Ping me when something appears:** play a sound, show an alert and flash the taskbar icon.
+- **Point the arrow at it right away:** let a find take over the arrow; switching it on points to the nearest live find once; turn it off to keep your own waypoint active.
 
-Rares someone else is already fighting are left out, so you don't run across the zone for a kill that's already taken.
+Known-spot guidance also works when you stand in a sub-zone map of the zone.
 
-## What happens when something appears
+Chests, rares, events, pings and immediate arrow focus are on when you first enable the feature. Both known-spot exploration options are off by default. Your choices are remembered. The same options are in the tab and in **Settings → Treasure Hunt (beta)**.
 
-1. **A ping:** a sound, a message on screen ("Treasure nearby: …" with the distance) and a blinking taskbar icon if you're in another window.
-2. **The arrow points at it** right away. A rare that wanders is followed.
-3. **It lets go** once the chest is looted, the rare is killed or the marker is gone ("… is gone."), then the arrow goes back to your own waypoint.
+## Explore known spots
 
-Prefer to keep the arrow where it is? Turn off **Point the arrow at it right away**: finds are added to your waypoint list instead.
+Both exploration options cover the current zone, including when you stand in one of its sub-zone maps, not just the next 300 yards. They choose the nearest unchecked known spot while no live find needs attention. Checked or ignored spots are skipped for ten minutes. Your own waypoint keeps the arrow unless immediate focus is on.
 
-## Lead me to known chest spots
+## What the game can show
 
-With **Lead me to known chest spots** on, and while nothing has appeared, the arrow points at the nearest spot where a chest can spawn, then at the next one once you've checked it. Handy for farming chests in a zone.
+Live detection uses nearby minimap markers, nameplates, your target and the chest in front of you. It does not scan the whole zone for live spawns. A rare with no known spawn gets a waypoint where you saw it, labelled **Seen near here**. Rares someone else is already fighting are left out.
 
-## See what it sees
+Temporary find waypoints are removed when the chest is looted, the rare is killed or the find is gone. Outcomes are recorded when known; a disappearance is not proof that someone looted or killed it. Last-seen times come from the saved 50-find log, not a complete sighting history.
 
-`/wp treasure status` lists:
+## Report what it sees
 
-- how many minimap markers the game shows where you are (and how many are on the world map only),
-- what it's tracking now,
-- your recent finds this session, with how each was found (minimap, nameplate or target, or in front of you).
+Type `/wp treasure status` for minimap marker counts, current detections and recent finds. Some places share no minimap markers; enemy nameplates (**V**) and your target still help detect rares. [Report a problem](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues) with this output.
 
-Some places share no minimap markers. There, rares are still found on nameplates and your target. Turning on enemy nameplates (**V**) helps it notice more rares.
+![Illustration of Treasure hunt (beta) with immediate arrow focus enabled](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/treasure-hunt.gif)
 
-## Settings
-
-Under **Settings → Treasure Hunt (beta)**:
-
-| Option | Default |
-|---|---|
-| Treasure hunt | Off |
-| Chests and treasure | On |
-| Rare spawns | On |
-| Events and other markers | On |
-| Lead me to known chest spots | Off |
-| Ping me when something appears | On |
-| Point the arrow at it right away | On |
+*Treasure hunt (beta), illustrated with the addon's own arrow.*
 
 ## Questions
 
-**Does it replace RareScanner or SilverDragon?** Not yet: it's a lighter, beta take on alerts for rares, chests and events near you, with an arrow to get there. If you already use a rare or treasure addon that sends TomTom waypoints, those waypoints land on Waypoint Tracker's arrow too.
+**Does it replace RareScanner or SilverDragon?** It is a lighter beta for nearby rare, chest and event alerts. Addons that send TomTom waypoints can also send them to Waypoint Tracker.
 
-**Does it scan the whole zone?** No. It sees what the game shows you: minimap markers, nameplates, your target and the object in front of you. Nothing is sent or fetched from outside the game.
+**Does it scan the whole zone?** Live detections are nearby only. The zone list and exploration options use known spawn locations across the zone; they cannot tell you whether a spawn is up.
 
-**Will it interrupt my current waypoint?** Only while something is up. Once it's taken, killed or gone, the arrow returns to your waypoint.
+**Will it interrupt my current waypoint?** Only if **Point the arrow at it right away** is on, or you double-click a find to select it. Turn that option off to keep your own waypoint active.
 
 Next: [Troubleshooting & Compatibility](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility).

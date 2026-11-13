@@ -837,5 +837,24 @@
     "sha256": "6597ec56c78a15c3b7bb7293abfbc3bb32f9729defea36e801d4145d4d93a7a0",
     "source": "https://wago.tools/db2/PlayerCondition/csv?build=1.60.1.70862&locale=enUS",
     "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
+  },
+  "trainers/trainers.tsv": {
+    "sha256": "e552e4ce088c0940b10fefe33dae05ce0e39f428f635d2b3cb53905d0aac0b15",
+    "source": "Reviewed pinned sources; per-row URLs, licences and evidence; see docs/data-audit.md"
+  },
+  "trainers/observed-164bd1e2/COMMIT": {
+    "sha256": "37eac937151e2ae24d13563fb3f1e96868b6f778f3031d7639734b6058379595",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1",
+    "selection": "Upstream licence and pin; reduced records retain only fields used by the trainer roster. Full-file hashes and build metadata in records.json."
+  },
+  "trainers/observed-164bd1e2/LICENSE": {
+    "sha256": "5eebefd3682e32d661f307a28539b304e5e52fb1eb33ba214e61d7a57663e4f0",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1",
+    "selection": "Upstream licence and pin; reduced records retain only fields used by the trainer roster. Full-file hashes and build metadata in records.json."
+  },
+  "trainers/observed-164bd1e2/records.json": {
+    "sha256": "2b1e3f57a5cd751e8cd83bc4b0f78e1dc08582e1723394831a2a526050e14c41",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1",
+    "selection": "Reduced trainer role/access/position records, including reviewed position corrections; original full-file hashes and build metadata in records.json."
   }
 }

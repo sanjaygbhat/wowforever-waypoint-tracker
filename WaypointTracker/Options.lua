@@ -262,12 +262,17 @@ local function Populate(api, categories)
     api.Bool(cat, "travelShare", L.TRAVEL_SHARE, L.TRAVEL_SHARE_DESC)
 
     cat = categories.treasure
+    api.ButtonRow(cat, L.TREASURE_TAB, L.OPEN_WINDOW, function()
+        ns.Window.Show("treasure")
+        if SettingsPanel and SettingsPanel:IsShown() then ns.Window.RaiseAbove(SettingsPanel) end
+    end, L.TREASURE_INTRO)
     local hunt = api.Bool(cat, "treasureHunt", L.TREASURE_HUNT, L.TREASURE_HUNT_DESC)
     for _, o in ipairs({
         { "treasureChests", L.TREASURE_CHESTS, L.TREASURE_CHESTS_DESC },
         { "treasureRares", L.TREASURE_RARES, L.TREASURE_RARES_DESC },
         { "treasureOther", L.TREASURE_OTHER, L.TREASURE_OTHER_DESC },
         { "treasureKnownSpots", L.TREASURE_KNOWN, L.TREASURE_KNOWN_DESC },
+        { "treasureKnownRares", L.TREASURE_KNOWN_RARES, L.TREASURE_KNOWN_RARES_DESC },
         { "treasurePing", L.TREASURE_PING, L.TREASURE_PING_DESC },
         { "treasureFocus", L.TREASURE_FOCUS, L.TREASURE_FOCUS_DESC },
     }) do

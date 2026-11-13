@@ -2365,7 +2365,7 @@ N	251905	Zerril Softbreeze				2521:438,438
 N	251906	Teeri Wellwind				2521:444,450	
 N	251965	Fevrath Skyhammer				2521:434,235	
 N	251968	Ayessa Dawnsinger				2521:590,796	
-N	251991	Taleen Shimmerthread				2521:448,442,773,513	
+N	251991	Taleen Shimmerthread				2521:448,442	
 N	251993	Indari Sunseam				2521:446,444	
 N	252095	Hanaa Nightwind				2521:382,302	
 N	252155	Peacekeeper Vaaniel				2521:424,620	
@@ -2412,7 +2412,7 @@ N	256733	Fritz Fizzle				1433:104,744	A
 N	256734	Daniel Stitchsong				1433:100,726	A
 N	256735	Mivin Shadowweave				1433:100,728	A
 N	257006	Nyalah Brightfire				2521:606,726	
-N	257020	Nasalanna Windsinger				2521:608,442	
+N	257020	Nasalanna Windsinger				2521:432,433	
 N	257065	Missionary Jasaan				2521:468,562	
 N	257087	Gretchen Mayberry			flight	2548:606,816	A
 N	257421	Tephri Thriceforged				2521:448,442	

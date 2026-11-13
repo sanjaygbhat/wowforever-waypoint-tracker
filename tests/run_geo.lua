@@ -172,11 +172,32 @@ C_Map.GetMapInfo = function() error("info unavailable") end
 check(#Geo.ParentChain(11401) == 1, "throwing map info API has a finite fallback")
 C_Map.GetMapInfo = mapInfo
 
+-- The general helper accepts finite extrapolated points; Treasure has its
+-- own strict map rectangle validator. UnitPosition cannot mask this fallback.
+local best, playerPos, unitPos = C_Map.GetBestMapForUnit, C_Map.GetPlayerMapPosition, UnitPosition
+C_Map.GetBestMapForUnit = function() return 37 end
+C_Map.GetPlayerMapPosition = function() return {x = 1.0001, y = .5} end
+UnitPosition = function() return nil end
+M.now = M.now + 1
+local edgeMap, edgeX = Geo.GetPlayerMapPosition()
+local edgeDistance = Geo.GetVector(point(37))
+check(edgeMap == 37 and edgeX == 1.0001, "finite map-edge position remains available")
+check(close(edgeDistance, 1500.3), "arrow retains map fallback at x=1.0001 without UnitPosition")
+for _, coord in ipairs({math.huge, -math.huge, 0/0}) do
+    C_Map.GetPlayerMapPosition = function() return {x = coord, y = .5} end
+    check(Geo.GetPlayerMapPosition() == nil, "nonfinite map coordinate rejected")
+end
+for _, id in ipairs({0, -1, 37.5, math.huge, 0/0, "37"}) do
+    C_Map.GetBestMapForUnit = function() return id end
+    check(Geo.GetPlayerMapPosition() == nil, "invalid map ID rejected")
+end
+C_Map.GetBestMapForUnit, C_Map.GetPlayerMapPosition, UnitPosition = best, playerPos, unitPos
+
 -- Load a fresh Geo without Enum or the vector constructor. Restore the mock's
 -- constructor afterwards because its API returns vectors through that global.
 local enum, vector = Enum, CreateVector2D
 Enum, CreateVector2D = nil, nil
-local bareNS = { L = ns.L, Num = ns.Num, XY = ns.XY }
+local bareNS = { L = ns.L, Num = ns.Num, XY = ns.XY, Plain = ns.Plain, Str = ns.Str }
 assert(loadfile("WaypointTracker/Geo.lua"))("WaypointTracker", bareNS)
 Enum, CreateVector2D = enum, vector
 local bareMap, bareShown = bareNS.Geo.CommonMap({ point(37), point(1) })

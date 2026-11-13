@@ -824,6 +824,36 @@
       "status": "verified",
       "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/4cd0ab752a77164f654ccbca9d0c1fe8dafceebe/Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua",
       "note": "Forever branch, build 1.60.1.70888 (version.txt); guarded at runtime, missing means not worn / skill unconfirmed."
+    },
+    "C_Trainer.GetTrainerType": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/bebcb6bf309cf41b41bd74f8ca651e6a105b2676/Interface/AddOns/Blizzard_APIDocumentationGenerated/TrainerDocumentation.lua",
+      "note": "Forever branch bebcb6bf309cf41b41bd74f8ca651e6a105b2676, checked 2026-11-13; runtime capability guarded."
+    },
+    "C_TradeSkillUI.GetTradeSkillDisplayName": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/bebcb6bf309cf41b41bd74f8ca651e6a105b2676/Interface/AddOns/Blizzard_APIDocumentationGenerated/TradeSkillUIDocumentation.lua",
+      "note": "Forever branch bebcb6bf309cf41b41bd74f8ca651e6a105b2676, checked 2026-11-13; runtime capability guarded."
+    },
+    "GetNumTrainerServices": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/bebcb6bf309cf41b41bd74f8ca651e6a105b2676/Interface/AddOns/Blizzard_TrainerUI/Mainline/Blizzard_TrainerUI.lua",
+      "note": "Forever branch bebcb6bf309cf41b41bd74f8ca651e6a105b2676, checked 2026-11-13; runtime capability guarded."
+    },
+    "GetTrainerServiceSkillLine": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/bebcb6bf309cf41b41bd74f8ca651e6a105b2676/Interface/AddOns/Blizzard_TrainerUI/Mainline/Blizzard_TrainerUI.lua",
+      "note": "Forever branch bebcb6bf309cf41b41bd74f8ca651e6a105b2676, checked 2026-11-13; runtime capability guarded."
+    },
+    "IsTradeskillTrainer": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/bebcb6bf309cf41b41bd74f8ca651e6a105b2676/Interface/AddOns/Blizzard_TrainerUI/Mainline/Blizzard_TrainerUI.lua",
+      "note": "Forever branch bebcb6bf309cf41b41bd74f8ca651e6a105b2676, checked 2026-11-13; runtime capability guarded."
+    },
+    "MenuElementDescriptionProxyMixin.SetOnEnter": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/bebcb6bf309cf41b41bd74f8ca651e6a105b2676/Interface/AddOns/Blizzard_Menu/Menu.lua",
+      "note": "Forever branch checked 2026-11-13: lines 758-787 define the guarded hook; EnterFrame at 2429-2435 invokes it before deferred CheckForSubmenu. Used to populate profession choices only on entry, preserving lazy data loads."
     }
   },
   "native_binary_sha256": "0d89aed141d61541513aad0f02946f5cb76bc74e967ec35139811e280d488620"

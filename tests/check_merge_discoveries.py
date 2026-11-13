@@ -29,6 +29,30 @@ def records(source):
 
 
 class Discoveries(unittest.TestCase):
+    def test_whole_service_tokens(self):
+        for token in ('trainer_class_mage2', 'UNKNOWN-trainer_weapon',
+                      'trainer_profession_alchemy|Tbad|t', 'trainer_riding_UNKNOWN',
+                      'trainer_weapon trainer_riding', '2trainer_weapon'):
+            with self.subTest(token=token):
+                row = validate(['N', '999001', 'Trainer', '0', '60', token + ',vendor', '', 'A'], MAPS)
+                self.assertEqual(row[5], 'vendor')
+
+    def test_both_faction_access_roundtrip(self):
+        first = export(['N', '999001', 'Trainer', '0', '60', 'trainer_profession_alchemy', '1411:500,500', 'A'])
+        second = first.replace('\tA\n', '\tH\n')
+        before, _ = merge(EMPTY, first, MAPS)
+        after, _ = merge(before, second, MAPS)
+        self.assertEqual(records(after)['N999001'][7], 'AH')
+        self.assertEqual(merge(EMPTY, BLOCK.search(after)[1], MAPS)[0], after)
+
+    def test_typed_trainers_and_unknown_services(self):
+        typed = "trainer_class_mage,trainer_profession_alchemy,trainer_weapon,trainer_riding"
+        result, _ = merge(EMPTY, export(["N", "999001", "Visited trainer", "0", "60",
+                                      typed + ",trainer_class_unknown,trainer_profession_unknown,evil", "1411:500,500", "H"]), MAPS)
+        self.assertEqual(set(records(result)["N999001"][5].split(",")), set(typed.split(",")))
+        self.assertEqual(merge(result, export(["N", "999001", "Visited trainer", "0", "60", typed,
+                                              "1411:500,500", "H"]), MAPS)[0], result)
+
     def test_existing_fields_and_positions_win_and_new_fields_fill_gaps(self):
         first = export(["N", "1", "Original", "0", "60", "vendor", "1411:401,501,402,502", "H"],
                        ["Q", "2", "Quest", "", "U1", "", "1411:400,500"],
