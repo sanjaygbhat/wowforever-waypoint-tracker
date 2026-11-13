@@ -179,9 +179,8 @@ function Treasure.LastSeen(id)
     return latest
 end
 
-local function Log(t, via)
-    EnsureLog()
-    local h = { at = Stamp(), kind = t.kind, name = t.name, m = t.m, x = t.x, y = t.y, id = t.id, via = via }
+local function Log(t, via, at)
+    local h = { at = at, kind = t.kind, name = t.name, m = t.m, x = t.x, y = t.y, id = t.id, via = via }
     table.insert(history, 1, h)
     history[HISTORY_SIZE + 1] = nil
     t.log = h
@@ -195,7 +194,11 @@ local function Alert(t)
     if quiet or Known(t) or not ns.Get("treasurePing") then
         return
     end
-    local dist = t.m and Geo.GetVector(t)
+    local dist
+    if t.m then
+        local ok, value = pcall(Geo.GetVector, t)
+        if ok then dist = ns.Num(value) end
+    end
     local text
     if dist then
         text = L.TREASURE_FOUND_DIST:format(Label(t), t.name or "?", Geo.FormatDistance(dist))
@@ -236,7 +239,7 @@ local function Place(t)
     if t.wp then
         if WP.IsValid(t.wp) then
             if t.wp.m ~= t.m or math.abs(t.wp.x - t.x) > 0.001 or math.abs(t.wp.y - t.y) > 0.001 then
-                WP.Move(t.wp, t.m, t.x, t.y)
+                if not WP.Move(t.wp, t.m, t.x, t.y) then return false end
             end
             if t.wpName ~= t.name then
                 t.wpName = t.name
@@ -261,7 +264,8 @@ local function Place(t)
         -- while you're dead the arrow stays on your body
         setActive = ns.Get("treasureFocus") and true or false,
     })
-    if t.wp then t.wpName = t.name end
+    if t.wp then t.wpName = t.name; return true end
+    return false -- unavailable map metadata: retry discovery, without logging it
 end
 
 local function Forget(key, silent, outcome)
@@ -269,26 +273,28 @@ local function Forget(key, silent, outcome)
     if not t then
         return
     end
+    if t.wp and WP.IsValid(t.wp) then
+        pcall(WP.Remove, t.wp, true)
+        if WP.IsValid(t.wp) then return end
+    end
     targets[key] = nil
     if t.log and outcome then t.log.outcome = outcome end
-    if t.wp and WP.IsValid(t.wp) then
-        WP.Remove(t.wp, true)
-    end
     if not silent and not quiet and not Known(t) and t.announced and ns.Get("chatMessages") then
-        ns.Print(L.TREASURE_GONE:format(t.name or "?"))
+        pcall(ns.Print, L.TREASURE_GONE:format(t.name or "?"))
     end
+    return true
 end
 
 -- Something was taken or killed: let it go and don't announce it again.
 local function Done(key, outcome, silent)
-    done[key] = done[key] or Now()
-    Forget(key, silent, outcome)
+    local now = Now()
+    if not targets[key] or Forget(key, silent, outcome) then done[key] = done[key] or now end
 end
 function Treasure.Ignore(t)
     if not (t and t.key and targets[t.key] == t) then return end
     if Known(t) then
-        if t.visitKey then visited[t.visitKey] = Now() end
-        Forget(t.key, true)
+        local now = Now()
+        if Forget(t.key, true) and t.visitKey then visited[t.visitKey] = now end
     else
         Done(t.key, nil, true)
     end
@@ -302,9 +308,11 @@ function Treasure.Point(t)
     return wp
 end
 function Treasure.SetOption(key, value)
+    local wasQuiet = quiet
     quiet = true
-    ns.Set(key, value)
-    quiet = false
+    local ok, err = pcall(ns.Set, key, value)
+    quiet = wasQuiet
+    if not ok then error(err) end
 end
 
 -- Seen (again): remember it, ping the first time, and keep its waypoint
@@ -321,29 +329,45 @@ local function Seen(key, kind, name, m, x, y, via, class, level, near)
     if not Wanted(kind) then
         return
     end
-    local t = targets[key]
-    if not t then
-        t = { key = key, kind = kind, name = name or "?", id = Identity(key), class = class, level = level, near = near }
-        targets[key] = t
-        if m and x and y then
-            t.m, t.x, t.y = m, x, y
+    local old = targets[key]
+    local t = old
+    local changed = not old or (name and name ~= old.name and (name ~= "?" or old.name == "?"))
+        or (m and (m ~= old.m or x ~= old.x or y ~= old.y)) or (via == "marker" and m and old.near)
+    if changed then
+        -- Stage changing fields. A failed placement must preserve the old live
+        -- record and log; first discoveries are committed only after placement.
+        t = {}
+        if old then for k, v in pairs(old) do t[k] = v end
+        else
+            t.key, t.kind, t.name, t.id = key, kind, name or "?", Identity(key)
+            t.class, t.level, t.near = class, level, near
+            t.announced = not Known(t)
+            if not Known(t) then EnsureLog() end
         end
-        t.announced = not Known(t)
-        if not Known(t) then Log(t, via) end
-        Alert(t)
+        if name and (name ~= "?" or t.name == "?") then t.name = name end
+        if m then t.m, t.x, t.y = m, x, y end
+        if via == "marker" and m then t.near = nil end
     end
+    local stamp = not Known(t) and Stamp()
+    local ok, placed = pcall(Place, t)
+    if not ok or placed == false then return old end
     t.seen = now
-    if name and (name ~= "?" or t.name == "?") then t.name = name end
-    if m and x and y then
-        t.m, t.x, t.y = m, x, y
+    if not old and not Known(t) then Log(t, via, stamp) end
+    if old and changed then
+        -- Retain target identity for tab rows and outside references.
+        for k, v in pairs(t) do old[k] = v end
+        old.near, old.wp = t.near, t.wp
+        t = old
     end
-    if via == "marker" and m then t.near = nil end
+    targets[key] = t
     if t.log then
         t.log.name = t.name
         t.log.m, t.log.x, t.log.y = t.m, t.x, t.y
-        t.log.lastSeen = Stamp()
+        t.log.lastSeen = stamp
     end
-    Place(t)
+    -- Optional presentation can fail without interrupting discovery or later
+    -- targets. All live state, history and waypoint state are complete here.
+    if not old then pcall(Alert, t) end
     return t
 end
 
@@ -470,9 +494,10 @@ local function KnownSpawn(guid)
 end
 
 function Treasure.LookAt(unit)
+    if not On() then return end
     unit = ns.Str(unit)
     if not unit then return end
-    if not On() or not UnitExists or not Plain(UnitExists(unit)) then
+    if not UnitExists or not Plain(UnitExists(unit)) then
         return
     end
     local guid = UnitGUID and GUID(ns.Str(UnitGUID(unit)))
@@ -563,40 +588,52 @@ end
 
 -- Database work is done once per generation. No cross-zone vectors in a pick,
 -- no DB.Points allocations or formatted keys in the steady-state scan.
-local zoneMaps = {}
+local zoneMaps, zoneRetry = {}, {}
 local function ZoneMap(map)
     map = ns.Int(ns.Num(map))
     if not map then return end
     if zoneMaps[map] then return zoneMaps[map] end
+    local now = Now()
+    if zoneRetry[map] and now < zoneRetry[map] then return end
     local current, containing = map, map
-    for _ = 1, 12 do
-        if not (C_Map and C_Map.GetMapInfo) then break end
-        local info = Plain(Geo.GetMapInfo(current))
-        if type(info) ~= "table" then break end
-        local kind, parent = ns.Num(info.mapType), ns.Int(ns.Num(info.parentMapID))
-        if kind == 3 or kind == 4 then containing = current; break end -- Zone or Dungeon
-        if kind ~= 5 and kind ~= 6 then break end -- only Micro/Orphan children
-        if not parent or parent == current then break end
+    for hop = 1, 12 do
+        local info = Geo.GetMapInfo(current)
+        if not info then zoneRetry[map] = now + 5; return end
+        local kind, parent = info.mapType, info.parentMapID
+        if kind == 3 or kind == 4 then containing = current; break end
+        if kind ~= 5 and kind ~= 6 then break end
+        if parent == 0 or parent == current then break end
+        if hop == 12 then break end
         current = parent
     end
-    zoneMaps[map] = containing
+    zoneMaps[map], zoneRetry[map] = containing, nil
     return containing
 end
 Treasure.ZoneMap = ZoneMap
+local pendingMaps, pendingCursor, pendingAt
+local function IndexMap(map, spots)
+    local zone = ZoneMap(map)
+    if not zone then return false end
+    local list = spotIndex[zone]
+    if not list then list = {}; spotIndex[zone] = list end
+    for _, spot in ipairs(spots) do list[#list + 1] = spot end
+    return true
+end
 function Treasure.ZoneSpots(map)
     map = ns.Int(ns.Num(map))
     local DB = ns.DB
     if not (map and DB and DB.ready and C_Map and type(C_Map.GetMapInfo) == "function") then return empty end
     if not spotIndex or indexGeneration ~= DB.generation then
-        spotIndex, indexGeneration, zoneMaps = {}, DB.generation, {}
+        spotIndex, zoneMaps, zoneRetry = {}, {}, {}
+        pendingMaps, pendingCursor, pendingAt = {}, 1, 0
+        local byMap = {}
         local function Add(e, kind, id)
             local name = Name(e.name) or "?"
             for _, p in ipairs(DB.Points(e)) do
                 local m, x, y = Position(p.m, p.x, p.y)
                 if m then
-                    local zoneMap = ZoneMap(m)
-                    local list = spotIndex[zoneMap]
-                    if not list then list = {}; spotIndex[zoneMap] = list end
+                    local list = byMap[m]
+                    if not list then list = {}; byMap[m] = list end
                     local spot = { m = m, x = x, y = y, kind = kind, id = id, name = name }
                     spot.visitKey = SpotKey(spot)
                     list[#list + 1] = spot
@@ -611,8 +648,28 @@ function Treasure.ZoneSpots(map)
             local validID = ns.Int(ns.Num(id))
             if validID and (e.rank == "2" or e.rank == "4") and DB.IsEnemy(e) then Add(e, "spawn", validID) end
         end
+        for m, spots in pairs(byMap) do
+            if not IndexMap(m, spots) then pendingMaps[#pendingMaps + 1] = { map = m, spots = spots } end
+        end
+        indexGeneration = DB.generation
     end
-    return spotIndex[ZoneMap(map)] or empty
+    -- Fixed work bound, independent of DB size. Unresolved source buckets are
+    -- retained and attached exactly once on recovery, without another Points scan.
+    local now = Now()
+    if #pendingMaps > 0 and now >= pendingAt then
+        local count = math.min(8, #pendingMaps)
+        for _ = 1, count do
+            if pendingCursor > #pendingMaps then pendingCursor = 1 end
+            local entry = pendingMaps[pendingCursor]
+            if IndexMap(entry.map, entry.spots) then
+                pendingMaps[pendingCursor] = pendingMaps[#pendingMaps]
+                pendingMaps[#pendingMaps] = nil
+            else pendingCursor = pendingCursor + 1 end
+        end
+        pendingAt = now + 5
+    end
+    local zone = ZoneMap(map)
+    return zone and spotIndex[zone] or empty
 end
 
 local function KnownSpots()
@@ -623,8 +680,8 @@ local function KnownSpots()
     if cur then
         local dist = Geo.GetVector(cur)
         if (dist and dist <= VISIT_DIST) or cur.dismissed or (cur.wp and not WP.IsValid(cur.wp)) then
+            if not Forget("spot", true) then return end
             visited[cur.visitKey] = now
-            Forget("spot", true)
             cur = nil
         end
     end
@@ -779,15 +836,18 @@ end
 -- ---------------------------------------------------------------------------
 -- Events
 -- ---------------------------------------------------------------------------
+local UpdateTicker
 ns.On("SETTING_CHANGED", function(key, value)
     local wasFocus = focusEnabled
     if key == nil or key == "treasureFocus" then focusEnabled = ns.Get("treasureFocus") and true or false end
     if key == nil or key == "treasureHunt" then
+        UpdateTicker()
         if On() then
             local wasQuiet = quiet
             quiet = true
-            Start()
+            local ok, err = pcall(Start)
             quiet = wasQuiet
+            if not ok then error(err) end
         else
             Treasure.Clear()
         end
@@ -820,6 +880,7 @@ ns.On("SETTING_CHANGED", function(key, value)
 end)
 
 ns.On("LOGIN", function()
+    UpdateTicker()
     if On() then
         C_Timer.After(2, function()
             ns.Call(Start)
@@ -829,7 +890,8 @@ end)
 
 local pending = false
 local function Soon()
-    if pending or not On() then
+    if not On() then return end
+    if pending then
         return
     end
     pending = true
@@ -841,12 +903,15 @@ end
 ns.RegisterEvent("VIGNETTE_MINIMAP_UPDATED", Soon)
 ns.RegisterEvent("VIGNETTES_UPDATED", Soon)
 ns.RegisterEvent("NAME_PLATE_UNIT_ADDED", function(unit)
+    if not On() then return end
     Treasure.LookAt(unit)
 end)
 ns.RegisterEvent("PLAYER_TARGET_CHANGED", function()
+    if not On() then return end
     Treasure.LookAt("target")
 end)
 ns.RegisterEvent("PLAYER_SOFT_INTERACT_CHANGED", function()
+    if not On() then return end
     Treasure.CheckInFront()
 end)
 -- you looted it: it's taken
@@ -859,7 +924,11 @@ local function Looted()
         -- GUID/count pairs; a secret pair cannot hide a later valid source.
         for i = 1, select("#", ...), 2 do
             local guid, count = GUID(select(i, ...)), ns.Num(select(i + 1, ...))
-            if guid and count and count > 0 and targets[guid] then Done(guid, "looted") end
+            local t = guid and targets[guid]
+            -- Loot can be pickpocketing. Creature completion comes from the
+            -- death/disappearance observers, never from loot alone.
+            local creature = t and (t.kind == "rare" or guid:find("^Creature") or guid:find("^Vehicle"))
+            if t and not creature and count and count > 0 then Done(guid, "looted") end
         end
     end
     for slot = 1, n do Sources(GetLootSourceInfo(slot)) end
@@ -886,7 +955,7 @@ end)
 
 local ticker = CreateFrame("Frame")
 local acc, spotAcc = 0, 0
-ticker:SetScript("OnUpdate", function(_, elapsed)
+local function Tick(_, elapsed)
     if not On() then
         return
     end
@@ -900,4 +969,15 @@ ticker:SetScript("OnUpdate", function(_, elapsed)
         spotAcc = 0
         ns.Call(KnownSpots)
     end
-end)
+end
+UpdateTicker = function()
+    acc, spotAcc = 0, 0
+    if On() then
+        ticker:SetScript("OnUpdate", Tick)
+        ticker:Show()
+    else
+        ticker:Hide()
+        ticker:SetScript("OnUpdate", nil)
+    end
+end
+UpdateTicker()

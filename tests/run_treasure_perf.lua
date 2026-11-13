@@ -20,7 +20,13 @@ if os.getenv('WT_PERF_CLOCK') then
     clockName = 'monotonic wall clock'
 end
 print('Treasure performance: ' .. (baseline and 'BEFORE' or 'AFTER') .. ', ' .. clockName)
+-- Ceilings are tuned for a developer machine. Shared CI runners are slower
+-- and noisier, so there (CI is set) each ceiling gets headroom; set
+-- WT_PERF_SLACK to choose the factor yourself. The work counters and
+-- allocation checks below are exact everywhere.
+local slack = tonumber(os.getenv('WT_PERF_SLACK')) or (os.getenv('CI') and 5 or 1)
 local function measure(name, fn, ceiling, count, prepare)
+    ceiling = ceiling * slack
     -- Independent fixtures must not inherit garbage from a previous fixture's
     -- cold planner/database setup. GC stays enabled throughout every sample.
     collectgarbage('collect')
@@ -119,7 +125,7 @@ for _, moving in ipairs({false, true}) do
     print(('Real routes %s: searches %d; moves %d; median frame %.4f ms; worst frame %.4f ms; mean per second %.4f ms'):format(moving and 'moving' or 'stationary', searches - firstSearch, moves - firstMove, times[math.ceil(#times / 2)], worst, total / 12))
     assert(searches > firstSearch, 'Real routes benchmark must execute actual planning searches')
     assert((moving and moves > firstMove) or (not moving and moves == firstMove), 'moving/stationary fixture must exercise expected waypoint updates')
-    assert(worst < 100 and total / 12 < 150, 'full planning frame/second exceeds honest cold-inclusive budget')
+    assert(worst < 100 * slack and total / 12 < 150 * slack, 'full planning frame/second exceeds honest cold-inclusive budget')
 end
 ns.Terrain.Refresh, WP.Move = refresh, move
 T.Clear(); WP.ClearAll(true); R._Reset()

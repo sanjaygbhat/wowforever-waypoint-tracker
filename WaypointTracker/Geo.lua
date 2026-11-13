@@ -2,7 +2,7 @@
 -- typed coordinates. Only uses map APIs that return plain numbers.
 local _, ns = ...
 local L = ns.L
-local Num = ns.Num
+local Num, Plain = ns.Num, ns.Plain
 
 local Geo = {}
 ns.Geo = Geo
@@ -22,17 +22,41 @@ local MAPTYPE_ZONE = (Enum and Enum.UIMapType and Enum.UIMapType.Zone) or 3
 -- ---------------------------------------------------------------------------
 -- Map helpers
 -- ---------------------------------------------------------------------------
-local mapInfoCache = {}
+-- Cache only plain, resolved metadata. Misses get a short retry deadline,
+-- never a permanent negative entry. Consumers can safely read these copies.
+local mapInfoCache, mapInfoRetry = {}, {}
+local zoneList, zoneScanned
+local issecretvalue = issecretvalue
+local function MapInfo(raw)
+    raw = Plain(raw)
+    if type(raw) ~= "table" then return end
+    if issecretvalue and (issecretvalue(raw.mapID) or issecretvalue(raw.name)) then return end
+    local id, kind, parent = Num(raw.mapID), Num(raw.mapType), Num(raw.parentMapID)
+    if not id or id <= 0 or id == math.huge or id % 1 ~= 0 then return end
+    if not kind or kind < 0 or kind > 6 or kind % 1 ~= 0
+        or not parent or parent < 0 or parent == math.huge or parent % 1 ~= 0 then return end
+    return { mapID = id, name = ns.Str(raw.name), mapType = kind, parentMapID = parent }
+end
 function Geo.GetMapInfo(mapID)
-    if type(mapID) ~= "number" then
-        return nil
-    end
+    mapID = Num(mapID)
+    if not mapID or mapID <= 0 or mapID == math.huge or mapID % 1 ~= 0 then return end
     local info = mapInfoCache[mapID]
-    if info == nil then
-        info = C_Map.GetMapInfo(mapID) or false
-        mapInfoCache[mapID] = info
+    if info then return info end
+    local now = GetTime()
+    if mapInfoRetry[mapID] and now < mapInfoRetry[mapID] then return end
+    if not (C_Map and type(C_Map.GetMapInfo) == "function") then return end
+    local ok, raw = pcall(C_Map.GetMapInfo, mapID)
+    info = ok and MapInfo(raw)
+    if info then
+        info.mapID = mapID
+        -- Only a recovered/new map changes the derived catalogue. Never scan
+        -- all possible IDs again on a timer in Follow/arrow callers.
+        if zoneScanned and not next(mapInfoCache) then zoneScanned = nil end
+        zoneList = nil
+        mapInfoCache[mapID], mapInfoRetry[mapID] = info, nil
+        return info
     end
-    return info or nil
+    mapInfoRetry[mapID] = now + 5
 end
 
 function Geo.GetMapName(mapID)
@@ -61,11 +85,13 @@ end
 
 -- The game's answer for one map point: cont, wx, wy, or nil.
 local function WorldPos(mapID, vec)
-    local ok, cont, pos = pcall(C_Map.GetWorldPosFromMapPos, mapID, vec)
+    local ok, cont, pos = pcall(C_Map and C_Map.GetWorldPosFromMapPos, mapID, vec)
+    cont, pos = Num(cont), Plain(pos)
     if ok and cont and pos then
         local wx, wy = ns.XY(pos)
         wx, wy = Num(wx), Num(wy)
-        if wx and wy then
+        if wx and wy and math.abs(wx) < math.huge and math.abs(wy) < math.huge
+            and math.abs(cont) < math.huge then
             return cont, wx, wy
         end
     end
@@ -142,12 +168,13 @@ end
 
 -- Position of a world point on a given map (may be outside 0..1).
 function Geo.WorldToMap(cont, wx, wy, mapID)
-    local ok, resultMap, pos = pcall(C_Map.GetMapPosFromWorldPos, cont, Vector(wx, wy), mapID)
-    if ok and resultMap and pos then
+    local ok, resultMap, pos = pcall(C_Map and C_Map.GetMapPosFromWorldPos, cont, Vector(wx, wy), mapID)
+    resultMap, pos = Num(resultMap), Plain(pos)
+    if ok and resultMap and resultMap > 0 and resultMap < math.huge and resultMap % 1 == 0 and pos then
         local x, y = ns.XY(pos)
         x, y = Num(x), Num(y)
         -- both or nothing: a half-filled spot can't be compared or drawn
-        if x and y then
+        if x and y and math.abs(x) < math.huge and math.abs(y) < math.huge then
             return x, y, resultMap
         end
     end
@@ -191,14 +218,20 @@ local function PreviewMapInfo(mapID)
     return ok and info or nil
 end
 
-local parentChainCache = {}
+local parentChainCache, parentChainRetry = {}, {}
 function Geo.ParentChain(mapID)
-    if type(mapID) ~= "number" or mapID <= 0 then
+    mapID = Num(mapID)
+    if not mapID or mapID <= 0 or mapID == math.huge or mapID % 1 ~= 0 then
         return {}
     end
     local chain = parentChainCache[mapID]
     if not chain then
+        local now = GetTime()
+        if parentChainRetry[mapID] and now < parentChainRetry[mapID].at then
+            return parentChainRetry[mapID].chain
+        end
         chain = {}
+        local resolved = true
         local seen, current = {}, mapID
         -- Self plus at most twelve parent hops; cycles stop immediately.
         for _ = 0, 12 do
@@ -206,10 +239,15 @@ function Geo.ParentChain(mapID)
             chain[#chain + 1] = current
             seen[current] = true
             local info = PreviewMapInfo(current)
-            local parent = info and Num(info.parentMapID)
+            if not info then resolved = false; break end
+            local parent = info.parentMapID
             current = parent and parent > 0 and parent or nil
         end
-        parentChainCache[mapID] = chain
+        if resolved then
+            parentChainCache[mapID], parentChainRetry[mapID] = chain, nil
+        else
+            parentChainRetry[mapID] = { at = now + 5, chain = chain }
+        end
     end
     return chain
 end
@@ -330,7 +368,8 @@ function Geo.NormalizeToZone(mapID, x, y)
         return mapID, x, y
     end
     local ok, sub = pcall(C_Map.GetMapInfoAtPosition, mapID, x, y)
-    if not ok or not sub or not sub.mapID or sub.mapID == mapID then
+    sub = ok and MapInfo(sub)
+    if not sub or not sub.mapID or sub.mapID == mapID then
         return mapID, x, y
     end
     if (sub.mapType or 0) < MAPTYPE_ZONE then
@@ -359,7 +398,7 @@ function Geo.GetPlayerMapPosition()
     if type(pos) ~= "table" then return end
     local x, y = ns.XY(pos)
     x, y = Num(x), Num(y)
-    if not x or not y or x < 0 or x > 1 or y < 0 or y > 1 or (x == 0 and y == 0) then return end
+    if not x or not y or math.abs(x) == math.huge or math.abs(y) == math.huge or (x == 0 and y == 0) then return end
     return mapID, x, y
 end
 
@@ -369,14 +408,7 @@ local function PlayerWorldFromMap()
     if not mapID then
         return nil
     end
-    local ok, cont, pos = pcall(C_Map.GetWorldPosFromMapPos, mapID, Vector(x, y))
-    if ok and cont and pos then
-        local wx, wy = ns.XY(pos)
-        wx, wy = Num(wx), Num(wy)
-        if wx and wy then
-            return cont, wx, wy
-        end
-    end
+    return WorldPos(mapID, LiveVector(x, y))
 end
 
 -- Returns cont, wx, wy for the player. `wantCont` lets us fall back to the
@@ -482,7 +514,6 @@ end
 -- Zone list (built from the game's own map data, so it is always correct
 -- for WoW Forever and already translated into the player's language)
 -- ---------------------------------------------------------------------------
-local zoneList
 
 -- Lower-case ASCII, accented Latin (Ä, É, ...) and Cyrillic letters so
 -- searching works the same in every client language.
@@ -576,28 +607,34 @@ end
 -- language). We look at every map ID the client knows instead of only
 -- following the map tree, so nothing is missed.
 function Geo.GetZoneList()
-    if zoneList and #zoneList > 0 then
+    if zoneScanned and zoneList and #zoneList > 0 then
         return zoneList
     end
     local candidates = {}
     local function consider(info)
-        if not info or not info.mapID or candidates[info.mapID] ~= nil then
+        info = MapInfo(info)
+        if not info or not info.mapID or not info.name or candidates[info.mapID] ~= nil then
             return
         end
         local ok = PICKABLE[info.mapType] and info.name and info.name ~= "" and Geo.MapToWorld(info.mapID, 0.5, 0.5) ~= nil
         candidates[info.mapID] = ok and info or false
     end
 
-    for id = 1, MAX_MAP_ID do
-        local info = C_Map.GetMapInfo(id)
-        if info then
-            mapInfoCache[id] = info
-            consider(info)
+    if not zoneScanned then
+        for id = 1, MAX_MAP_ID do
+            local info = Geo.GetMapInfo(id)
+            if info then consider(info) end
         end
+        zoneScanned = true
+    else
+        -- A map-info retry succeeded. Rebuild only from resolved records;
+        -- blind rescans of thousands of unknown IDs would add periodic stalls.
+        for _, info in pairs(mapInfoCache) do consider(info) end
     end
     -- anything the scan couldn't reach (very high IDs) through the map tree
     local ok, fallback = pcall(C_Map.GetFallbackWorldMapID)
-    local current = C_Map.GetBestMapForUnit("player")
+    fallback = ok and Num(fallback)
+    local current = C_Map.GetBestMapForUnit and Num(C_Map.GetBestMapForUnit("player"))
     for _, root in ipairs({ ok and fallback or nil, current }) do
         if root then
             local top = Geo.GetMapInfo(root)
@@ -611,6 +648,7 @@ function Geo.GetZoneList()
             end
             if top then
                 local okc, children = pcall(C_Map.GetMapChildrenInfo, top.mapID, nil, true)
+                children = Plain(children)
                 if okc and type(children) == "table" then
                     for _, info in ipairs(children) do
                         consider(info)

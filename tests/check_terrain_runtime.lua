@@ -21,6 +21,10 @@ local ns = { L = {}, WP = {}, RegisterEvent = noop, On = noop, Fire = noop,
     charDB = { travel = { flights = {} } } }
 function ns.Num(value) return type(value) == "number" and value or nil end
 function ns.XY(pos) return pos.x, pos.y end
+-- Supply Core's boundary helpers before Geo captures them, as at addon load.
+ns.Plain = function(v) return v end
+ns.Str = function(v) return type(v) == "string" and v or nil end
+GetTime = function() return 0 end
 C_Map = {}
 function C_Map.GetWorldPosFromMapPos(m, pos)
     local a = maps[m]
@@ -33,7 +37,6 @@ function C_Map.GetMapPosFromWorldPos(cont, pos, m)
 end
 assert(loadfile("WaypointTracker/Geo.lua"))("WaypointTracker", ns)
 assert(loadfile("WaypointTracker/TravelData.lua"))("WaypointTracker", ns)
-ns.Plain = function(v) return v end
 ns.Get = function() return false end
 ns.Call = function(fn) return fn() end
 CreateFrame = function() return {SetScript = function() end} end
