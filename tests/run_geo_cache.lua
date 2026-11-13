@@ -224,6 +224,36 @@ do
     C_Map.GetBestMapForUnit = realBest
 end
 
+-- Native failures expire, and a mutable point identity cannot reuse old input.
+do
+    local G = load()
+    local native = C_Map.GetWorldPosFromMapPos
+    C_Map.GetWorldPosFromMapPos = function() return nil end
+    check(G.MapToWorld(37, .812345, .923456) == nil, "native projection initially unavailable")
+    C_Map.GetWorldPosFromMapPos = native
+    M.now = M.now + 5.1
+    check(G.MapToWorld(37, .812345, .923456) ~= nil, "native projection miss retries after its deadline")
+    local point = {}
+    local a = { G.MapToWorld(37, .234567, .345678, point) }
+    check(same(a, { G.MapToWorld(37, .234567, .345678, point) }), "point identity reuses its resolved projection")
+    local b = { G.MapToWorld(37, .334567, .345678, point) }
+    check(not same(a, b) and same(b, { G.MapToWorldLive(37, .334567, .345678) }), "changed point inputs invalidate its projection")
+end
+
+-- Fixed queries can share the same synchronous API input vector too.
+do
+    local G = load()
+    local native = C_Map.GetWorldPosFromMapPos
+    local first, reused = nil, true
+    C_Map.GetWorldPosFromMapPos = function(m, v)
+        if not first then first = v elseif first ~= v then reused = false end
+        return native(m, v)
+    end
+    for i=1,20 do G.MapToWorld(37,.6+i*.001,.4) end
+    C_Map.GetWorldPosFromMapPos = native
+    check(reused, "fixed projections reuse their mutable input vector")
+end
+
 print(("run_geo_cache: %d passed, %d failed"):format(passed, failed))
 if failed > 0 then
     os.exit(1)

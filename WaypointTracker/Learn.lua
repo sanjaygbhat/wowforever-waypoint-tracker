@@ -67,13 +67,14 @@ end
 local checkedStore -- the saved table already checked this session
 local npcCount -- NPCs in it, counted when first needed
 
-function Learn.Store()
+function Learn.Store(existingOnly)
     local db = WaypointTrackerDB
     if type(db) ~= "table" then
         return nil
     end
     local st = db.learned
     if type(st) ~= "table" then
+        if existingOnly then return nil end
         st = {}
         db.learned = st
     end
@@ -956,7 +957,7 @@ end
 -- Counting, sharing, importing
 -- ---------------------------------------------------------------------------
 function Learn.Count()
-    local st = Learn.Store()
+    local st = Learn.Store(true)
     if not st then
         return 0
     end
@@ -1358,7 +1359,7 @@ end)
 -- ---------------------------------------------------------------------------
 local ASK_EVERY, ASK_PER_STEP = 0.5, 3
 
-function Learn.QuestTitles()
+function Learn.QuestTitles(existingOnly)
     local db = WaypointTrackerDB
     if type(db) ~= "table" then
         return nil
@@ -1366,6 +1367,7 @@ function Learn.QuestTitles()
     local locale = GetLocale and GetLocale() or "enUS"
     local t = db.questTitles
     if type(t) ~= "table" or t.locale ~= locale or type(t.names) ~= "table" then
+        if existingOnly then return nil end
         t = { locale = locale, names = {} }
         db.questTitles = t
     end
@@ -1437,7 +1439,7 @@ end
 function Learn.TitleProgress()
     ForeverSet()
     local n = 0
-    for _ in pairs(Learn.QuestTitles() or {}) do
+    for _ in pairs(Learn.QuestTitles(true) or {}) do
         n = n + 1
     end
     return n, #askList
@@ -1468,9 +1470,9 @@ function Learn.ScanProgress()
     if scanDone or not (C_QuestLog and C_QuestLog.GetTitleForQuestID) then
         return false, 100
     end
-    Learn.QuestTitles()
-    local t = type(WaypointTrackerDB) == "table" and WaypointTrackerDB.questTitles
-    if type(t) == "table" and t.complete then
+    local names = Learn.QuestTitles(true)
+    local t = names and WaypointTrackerDB.questTitles
+    if t and t.complete then
         return false, 100
     end
     ForeverSet()

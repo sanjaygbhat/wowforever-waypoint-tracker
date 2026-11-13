@@ -42,7 +42,7 @@ for _,service in ipairs(services) do
  ns.Find.GoToNearest(service);ns.WP.ClearAll(true)
  local start=os.clock()
  ns.Find.GoToNearest(service);ns.WP.ClearAll(true)
- assert((os.clock()-start)*1000<5, 'warm Nearest exceeded 5 ms: '..service)
+ assert((os.clock()-start)*1000<3, 'warm Nearest exceeded 3 ms: '..service)
 end
 -- Mined rows are community data; later personal observations still win.
 faction='Alliance'

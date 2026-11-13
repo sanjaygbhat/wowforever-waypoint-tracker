@@ -16,6 +16,29 @@ import build_services as b
 import audit_services as audit
 import service_maps
 
+# Reviewed helper exclusions with faction bits: obsolete test endpoints. Other
+# helpers lack service bits; instanced battleground stops are outside this addon.
+FLIGHT_EXCLUSIONS={
+    '3206': "zzOLDBolder'ok, Riverglades",
+    '3207': 'zzOLDRiverglades, Farholde Keep',
+    '3208': 'zzOLDPowderfuse Port, Riverglades',
+}
+
+def check_flight_inventory(test, text):
+    source={r['ID']:r for r in service_maps.read_csv(ROOT/f'tools/fixtures/client/TaxiNodes-{service_maps.BUILD}-enUS.csv')}
+    for rid,name in FLIGHT_EXCLUSIONS.items():test.assertEqual(source[rid]['Name_lang'],name)
+    expected={rid for rid,r in source.items() if r['ContinentID'] in ('0','1') and int(r['Flags'] or 0)&3}-FLIGHT_EXCLUSIONS.keys()
+    block=re.search(r'flights = \[\[(.*?)\]\]',text,re.S)[1]
+    ids=[line.split('\t')[0] for line in block.strip().splitlines()]
+    test.assertEqual(set(ids),expected,'complete client flight ID inventory')
+    test.assertEqual(len(ids),len(expected),'unique client flight IDs')
+    names=re.findall(r'(enUS|deDE|frFR|esES|esMX|ptBR|ruRU|zhCN|zhTW|koKR) = \{\s*flights = \[\[(.*?)\]\]',text,re.S)
+    test.assertEqual({loc for loc,_ in names},set('enUS deDE frFR esES esMX ptBR ruRU zhCN zhTW koKR'.split()))
+    for loc,block in names:
+        ids=[line.split('\t')[0] for line in block.strip().splitlines()]
+        test.assertEqual(set(ids),expected,loc+' complete flight names')
+        test.assertEqual(len(ids),len(expected),loc+' unique flight names')
+
 class Services(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -29,8 +52,8 @@ class Services(unittest.TestCase):
         self.assertEqual(text.count(b.END),1)
         self.assertEqual(text,b.generate(text,self.rows))
         self.assertEqual(text.split(b.START)[0],b.generate(text,self.rows).split(b.START)[0])
-        self.assertEqual(len(self.rows),794)
-        self.assertGreaterEqual(sum(len(r['positions']) for r in self.rows),2233)
+        self.assertEqual(len(self.rows),801)
+        self.assertGreaterEqual(sum(len(r['positions']) for r in self.rows),2245)
 
     def test_pinned_inputs(self):
         manifest=json.loads((ROOT/'tools/fixtures/manifest.json').read_text())
@@ -168,13 +191,47 @@ class Services(unittest.TestCase):
         self.assertAlmostEqual(m['w'],1737.504,places=2)
         self.assertAlmostEqual(m['h'],1158.34,places=2)
 
+    def test_complete_metadata_access_inventory(self):
+        expected=json.loads((ROOT/'tools/fixtures/services/pfquest-roster.json').read_text())['roster']
+        self.assertEqual(set(b.pf_services()),b.SERVICES)
+        for service,rows in expected.items():
+            self.assertEqual(b.pf_services()[service],{int(rid):row['fac'] for rid,row in rows.items()},service)
+
+    def test_neutral_witnessed_services(self):
+        rows={r['id']:r for r in self.rows if r['kind']=='N'}
+        for rid,name,x,y,services in [(260559,'Gilliwigs',.7929,.5467,['vendor']),
+                                    (260566,'Fizzix Boomshot',.7856,.5358,['repair','vendor'])]:
+            r=rows[rid]
+            self.assertEqual((r['name'],r['fac'],r['services']),(name,'H',services))
+            self.assertEqual([(p['m'],p['x'],p['y']) for p in r['positions']],[(2548,x,y)])
+
+    def test_reactions_need_service_evidence_per_faction(self):
+        for reactions,witnessed,wanted in [({'Horde':[4]},True,'H'),({'Alliance':[4],'Horde':[4]},True,'AH'),
+                ({'Horde':[4]},False,None),({'Horde':[3,4]},True,None),({},True,None),({'Horde':[5]},False,None)]:
+            evidence=json.loads(b.FIXTURE.read_text());files=evidence['eg']['files']
+            prefix='data/wowf/1.60.1.70888/'
+            files[prefix+'creatures.json']['collections']['creatures']['999999']={'name':'Synthetic','reactions':reactions}
+            files[prefix+'creature_details.enUS.json']['collections']['creatures']['999999']={'name':'Synthetic','title':'Trade Goods'}
+            files[prefix+'npcs.json']['collections']['npcs']['999999']={'name':'Synthetic','interactions':['Merchant'] if witnessed else ['Gossip']}
+            rows,_=b.derive(evidence)
+            actual=[r for r in rows if r['id']==999999]
+            self.assertEqual(actual[0]['fac'] if actual else None,wanted,(reactions,witnessed))
+
     def test_no_taxi_helpers_or_precision_loss(self):
         text=(ROOT/'WaypointTracker_Data/Client.lua').read_text()
+        check_flight_inventory(self,text)
         block=re.search(r'flights = \[\[(.*?)\]\]',text,re.S)[1]
         source={r['ID']:r for r in service_maps.read_csv(ROOT/f'tools/fixtures/client/TaxiNodes-{service_maps.BUILD}-enUS.csv')}
         for line in block.strip().splitlines():
             f=line.split('\t');r=source[f[0]]
             self.assertTrue(int(r['Flags'])&3)
             self.assertEqual((f[3],f[4]),(r['Pos_0'],r['Pos_1']))
+
+    def test_flight_inventory_rejects_lost_real_stop_and_locales(self):
+        text=(ROOT/'WaypointTracker_Data/Client.lua').read_text()
+        mutated=re.sub(r'^559\t[^\n]*\n','',text,flags=re.M)
+        self.assertNotEqual(mutated,text)
+        with self.assertRaisesRegex(AssertionError,'559'):
+            check_flight_inventory(self,mutated)
 
 if __name__=='__main__':unittest.main()

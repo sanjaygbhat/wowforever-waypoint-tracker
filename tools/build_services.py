@@ -25,9 +25,9 @@ SERVICES=set('mailbox innkeeper flight repair vendor banker auctioneer stablemas
 def pf_services():
     text=(ROOT/'tools/fixtures/services/pfquest-meta.lua').read_text()
     out=defaultdict(dict)
-    for m in re.finditer(r'\["(\w+)"\] = \{(.*?)\n  \}',text,re.S):
+    for m in re.finditer(r'^  \["(\w+)"\] = \{(.*?)\n  \}',text,re.S|re.M):
         if m[1] in SERVICES:
-            for i,f in re.findall(r'\[(-?\d+)\] = "([AH]+)"',m[2]):out[m[1]][int(i)]=f
+            for i,f in re.findall(r'\[(-?\d+)\] = "([AH]*)"',m[2]):out[m[1]][int(i)]=f
     return out
 
 def derive(evidence=None):
@@ -77,10 +77,19 @@ def derive(evidence=None):
         side=npc.get('side');fac={'Alliance':'A','Horde':'H'}.get(side,'');fref=nref if fac else None
         if not fac and int(i) in basefac:fac=basefac[int(i)];fref={'pfquest':int(i)}
         if not fac:
+            # Reactions alone do not prove a service window is usable (class
+            # and reputation gates can coexist with a neutral/friendly NPC).
+            witnessed={INTERACTIONS[v] for v in npc.get('interactions',[]) if v in INTERACTIONS}
+            if vref:witnessed.add('vendor')
+            if vendor.get('repairs') is True:witnessed.add('repair')
+            svc &= witnessed
+            if not svc:
+                rejected.append({'kind':'N','id':int(i),'name':name,'reason':'no witnessed service interaction for reaction-based access'})
+                continue
             refs=[]
             for side,letter in [('Alliance','A'),('Horde','H')]:
                 values,ref=reaction.get((i,side),([],None))
-                if values and all(isinstance(v,(int,float)) and 5<=v<=8 for v in values):fac+=letter;refs.append(ref)
+                if values and all(isinstance(v,(int,float)) and 4<=v<=8 for v in values):fac+=letter;refs.append(ref)
             fref=refs
         pts=positions(snapshots[i],multi=(i=='6491'))
         if not fac:

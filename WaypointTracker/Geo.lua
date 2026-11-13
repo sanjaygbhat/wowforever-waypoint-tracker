@@ -70,14 +70,25 @@ end
 
 -- One 2D point reused for live lookups, when the game's point can be
 -- refilled (SetXY); otherwise a fresh one per call, as before.
-local liveVector
+local liveVector, setVectorXY
+local function SetVectorFields(v, x, y)
+    v.x, v.y = x, y
+end
 local function LiveVector(x, y)
     if liveVector == nil then
-        local v = Vector(0, 0)
-        liveVector = (type(v) == "table" and type(v.SetXY) == "function") and v or false
+        local v = Plain(Vector(0, 0))
+        local setter = type(v) == "table" and Plain(v.SetXY)
+        if type(setter) == "function" then
+            liveVector, setVectorXY = v, setter
+        elseif type(v) == "table" and Num(rawget(v, "x")) and Num(rawget(v, "y"))
+            and pcall(SetVectorFields, v, 0, 0) then
+            liveVector, setVectorXY = v, SetVectorFields
+        else
+            liveVector = false
+        end
     end
     if liveVector then
-        liveVector:SetXY(x, y)
+        setVectorXY(liveVector, x, y)
         return liveVector
     end
     return Vector(x, y)
@@ -101,26 +112,30 @@ end
 -- Results are cached because map geometry never changes. The cache is for
 -- fixed points (waypoints, nodes); a moving position (the player's) goes
 -- through Geo.MapToWorldLive instead. As a safety net the cache starts
--- again once it holds WORLD_CACHE_MAX entries.
+-- again once it holds WORLD_CACHE_MAX entries. Misses retry after five seconds.
 local WORLD_CACHE_MAX = 20000
-local worldCache, worldCount = {}, 0
-function Geo.MapToWorld(mapID, x, y)
+local worldCache, worldRetry, worldCount = {}, {}, 0
+function Geo.MapToWorld(mapID, x, y, point)
     if type(mapID) ~= "number" or type(x) ~= "number" or type(y) ~= "number" then
         return nil
     end
-    local key = mapID .. ":" .. floor(x * 1e6) .. ":" .. floor(y * 1e6)
+    -- Database observations already have a stable point identity.
+    point = type(point) == "table" and point or nil
+    local key = point or (mapID .. ":" .. floor(x * 1e6) .. ":" .. floor(y * 1e6))
     local c = worldCache[key]
-    if c == nil then
+    if point and (c == false or (c and (c[4] ~= mapID or c[5] ~= x or c[6] ~= y))) then c = nil end
+    if c == nil or (c == false and GetTime() >= (worldRetry[key] or 0)) then
         c = false
-        local cont, wx, wy = WorldPos(mapID, Vector(x, y))
+        local cont, wx, wy = WorldPos(mapID, LiveVector(x, y))
         if cont then
-            c = { cont, wx, wy }
+            c = point and { cont, wx, wy, mapID, x, y } or { cont, wx, wy }
         end
-        if worldCount >= WORLD_CACHE_MAX then
-            worldCache, worldCount = {}, 0
+        if worldCount >= WORLD_CACHE_MAX and worldCache[key] == nil then
+            worldCache, worldRetry, worldCount = {}, {}, 0
         end
+        if worldCache[key] == nil then worldCount = worldCount + 1 end
         worldCache[key] = c
-        worldCount = worldCount + 1
+        worldRetry[key] = not cont and GetTime() + 5 or nil
     end
     if c then
         return c[1], c[2], c[3]
@@ -517,22 +532,21 @@ end
 
 -- Lower-case ASCII, accented Latin (Ä, É, ...) and Cyrillic letters so
 -- searching works the same in every client language.
+local function LowerLatin(c)
+    local b = c:byte()
+    if b == 151 then return "\195" .. c end
+    return "\195" .. string.char(b + 32)
+end
+local function LowerCyrillic(c)
+    local b = c:byte()
+    if b < 160 then return "\208" .. string.char(b + 32) end
+    return "\209" .. string.char(b - 32)
+end
 local function Lower(s)
     s = s:lower()
-    s = s:gsub("\195([\128-\158])", function(c)
-        local b = c:byte()
-        if b == 151 then
-            return "\195" .. c
-        end
-        return "\195" .. string.char(b + 32)
-    end)
-    s = s:gsub("\208([\144-\175])", function(c)
-        local b = c:byte()
-        if b < 160 then
-            return "\208" .. string.char(b + 32)
-        end
-        return "\209" .. string.char(b - 32)
-    end)
+    if not s:find("[\195\208]") then return s end
+    s = s:gsub("\195([\128-\158])", LowerLatin)
+    s = s:gsub("\208([\144-\175])", LowerCyrillic)
     s = s:gsub("\208\129", "\209\145")
     return s
 end

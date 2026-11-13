@@ -2537,6 +2537,7 @@ SN	12795	H	First Sergeant Hola'mahi	vendor	R
 SN	12962	H	Wik'Tar	vendor	R	1440:0.1175,0.3403,1;1440:0.1177,0.3417,1
 SN	13476	H	Balai Lok'Wein	vendor	R	1445:0.364,0.3035,1
 SN	14581	AH	Sergeant Thunderhorn	repair,vendor	R	1454:0.3702,0.675,1
+SN	14828	A	Gelvas Grimegate	vendor	R	1429:0.4152,0.69,0
 SN	14844	AH	Sylannia	vendor	R	1429:0.4213,0.6999,0
 SN	14845	AH	Stamp Thunderhorn	vendor	R	1429:0.4212,0.7004,0
 SN	14942	H	Kartra Bloodsnarl	battlemaster	R
@@ -2548,6 +2549,8 @@ SN	15126	H	Rutherford Twing	repair,vendor	R	1417:0.734,0.2983,0
 SN	15131	H	Qeeju	stablemaster	R
 SN	15675	H	Auctioneer Stockton	auctioneer	R	1458:0.7142,0.4736,0
 SN	15676	H	Auctioneer Yarly	auctioneer	R	1458:0.7131,0.4144,0
+SN	15677	AH	Auctioneer Graves	auctioneer	R	1434:0.2843,0.7588,0
+SN	15681	AH	Auctioneer O'reely	auctioneer	R	1434:0.2658,0.7638,0
 SN	15682	H	Auctioneer Cain	auctioneer	R	1458:0.6798,0.361,0
 SN	15683	H	Auctioneer Naxxremis	auctioneer	R	1458:0.642,0.356,0
 SN	15684	H	Auctioneer Tricket	auctioneer	R	1458:0.6051,0.4146,0
@@ -2572,14 +2575,13 @@ SN	251537	AH	Uualia Suncrest	repair,vendor	R	2521:0.4278,0.2444,2991
 SN	251905	AH	Zerril Softbreeze	vendor	R	2521:0.4382,0.4386,2991
 SN	251913	AH	Aedi Thriceforged	repair,vendor	R	2521:0.4482,0.4432,2991
 SN	251965	AH	Fevrath Skyhammer	repair,vendor	R	2521:0.4332,0.2345,2991
-SN	251980	A	Rueben Lauren	vendor	R
 SN	251991	AH	Taleen Shimmerthread	vendor	R	2521:0.4484,0.4424,2991
 SN	251992	AH	Fenn Fairweather	repair,vendor	R	2521:0.4506,0.4838,2991
 SN	251993	AH	Indari Sunseam	repair,vendor	R	2521:0.4463,0.4456,2991;2521:0.4473,0.4449,2991
-SN	252040	A	Hagatha Moorehead	vendor	R
 SN	252390	AH	Antelariaa Cloudgaze	vendor	R	2521:0.6305,0.7779,2991
 SN	252449	AH	Iallion Featherfall	vendor	R	2521:0.5892,0.7549,2991
 SN	253004	A	Iaadaria Bitterwind	vendor	R	2521:0.6632,0.7957,2991
+SN	253139	H	Gorhak	vendor	R	1443:0.6637,0.7946,1
 SN	253140	H	Molkar	vendor	R	1443:0.3568,0.9211,1
 SN	254089	AH	Coriella Calmbreeze	innkeeper,vendor	R	2521:0.4304,0.433,2991
 SN	254358	AH	Veena Vericloud	vendor	R	2521:0.4475,0.4545,2991
@@ -2606,13 +2608,18 @@ SN	257037	AH	Zelena Favorbreeze	auctioneer	R	2521:0.5788,0.7702,2991
 SN	257421	AH	Tephri Thriceforged	repair,vendor	R	2521:0.4476,0.4425,2991;2521:0.448,0.4409,2991
 SN	257422	AH	Railee Thriceforged	repair,vendor	R	2521:0.5893,0.7543,2991
 SN	258415	H	Angela Ward	vendor	R	1458:0.701,0.3014,0
-SN	258463	H	Darah	vendor	R
 SN	258466	H	Boramu	vendor	R	1456:0.4414,0.4494,1
 SN	258568	A	Antonio Bolero	vendor	R	1453:0.5353,0.8179,0
+SN	258878	H	Auctioneer Quickcoin	auctioneer	R	1413:0.4992,0.2946,1
 SN	259190	H	Ephram Barbaro	stablemaster	R	1420:0.2024,0.4658,0
+SN	260559	H	Gilliwigs	vendor	R	2548:0.7929,0.5467,0
+SN	260566	H	Fizzix Boomshot	repair,vendor	R	2548:0.7856,0.5358,0
 SN	262469	H	Tuu'li	vendor	R	1442:0.7152,0.9979,1
+SN	262471	H	Xaphod Bizznox	vendor	R	1442:0.7142,0.9951,1
 SN	263570	H	Creeg Bothunk	repair,vendor	R	1413:0.6503,0.3464,1
 SN	263646	H	Rugbul Boomfirst	battlemaster	R	1458:0.5991,0.8665,0;1458:0.6033,0.8712,0
+SN	264078	H	Sutara Plainstalker	vendor	R	1412:0.3452,0.2295,1
+SN	265574	H	Winklespark	vendor	R	1413:0.6255,0.3757,1
 SN	267324	H	Margaret Weaver	vendor	R	1420:0.3257,0.6573,0
 SN	267325	H	Walter Mason	vendor	R	1420:0.3224,0.6567,0
 SN	267327	H	Kagil	vendor	R	1411:0.4075,0.6797,1
@@ -2626,7 +2633,7 @@ SN	271478	AH	Elaria Anvilwind	repair,vendor	R	2521:0.5952,0.7606,2991
 SN	271480	AH	Taliaa Brightsky	repair,vendor	R	2521:0.5929,0.7615,2991
 SN	271483	AH	Ergaan Eastwind	repair,vendor	R	2521:0.5969,0.7597,2991
 SN	276067	H	Angus Hammerhand	repair,vendor	R	1420:0.211,0.4584,0
-SN	278875	H	Spirit Healer	spirithealer	R
+SN	278680	H	Gabbi Goodwhistle	repair,vendor	R	1411:0.428,0.6815,1;1411:0.4293,0.6811,1
 SO	142075	A	Mailbox	mailbox	M	1429:0.4249,0.6555,0;1429:0.4251,0.6553,0;1429:0.4251,0.6567,0;1429:0.4255,0.6582,0;1429:0.4265,0.6531,0;1429:0.4265,0.6581,0;1429:0.4266,0.6601,0;1429:0.4269,0.6602,0;1429:0.4271,0.6497,0;1429:0.4274,0.6567,0;1429:0.4276,0.6549,0;1429:0.4276,0.6552,0;1429:0.4279,0.6573,0;1429:0.428,0.6606,0;1429:0.4281,0.6562,0;1429:0.4284,0.6575,0;1429:0.4285,0.6488,0;1429:0.4285,0.6564,0;1429:0.4286,0.6549,0;1429:0.4286,0.6551,0;1429:0.429,0.6564,0;1429:0.4291,0.6561,0;1429:0.4306,0.6563,0;1429:0.4306,0.6567,0;1429:0.4318,0.6578,0;1429:0.4319,0.6597,0;1429:0.432,0.6583,0;1429:0.432,0.6598,0;1429:0.4321,0.6598,0;1429:0.4322,0.6571,0;1429:0.4329,0.6583,0
 SO	142093	A	Mailbox	mailbox	M	1433:0.2137,0.4663,0;1433:0.2145,0.4659,0
 SO	142109	A	Mailbox	mailbox	M	1438:0.5586,0.5842,1;1438:0.5597,0.5861,1;1438:0.5598,0.5814,1;1438:0.5598,0.5834,1;1438:0.5598,0.5844,1;1438:0.5602,0.5854,1;1438:0.5605,0.5841,1;1438:0.5607,0.5825,1;1438:0.5611,0.5833,1;1438:0.5614,0.5799,1;1438:0.5615,0.5824,1;1438:0.5621,0.5802,1;1438:0.5621,0.583,1;1438:0.5628,0.5806,1;1438:0.5638,0.5861,1;1438:0.564,0.5834,1

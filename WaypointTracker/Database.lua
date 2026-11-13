@@ -31,7 +31,16 @@ DB.loaded = false
 -- ---------------------------------------------------------------------------
 -- Loading
 -- ---------------------------------------------------------------------------
-local function Split(line)
+-- Shipped rows split in one native pattern; discoveries keep the general parser.
+local fieldPatterns = {}
+for _, count in ipairs({ 3, 4, 5, 12 }) do
+    fieldPatterns[count] = "^" .. string.rep("([^\t]*)\t", count - 1) .. "([^\t]*)$"
+end
+local function Split(line, columns)
+    if columns then
+        local fields = { line:match(fieldPatterns[columns]) }
+        if fields[1] then return fields end
+    end
     local out, pos = {}, 1
     while true do
         local tab = line:find("\t", pos, true)
@@ -48,6 +57,47 @@ local function Lines(s)
     return (s or ""):gmatch("[^\n]+")
 end
 
+-- Keep the supplement as text until a service or a discovery needs its facts.
+local supplementSource, supplementCache
+local function ServiceRows(service, kind, id)
+    local text = WaypointTrackerData and WaypointTrackerData.serviceSupplement or ""
+    if text ~= supplementSource then
+        supplementSource, supplementCache = text, {}
+    end
+    local key = service or kind .. id
+    if supplementCache[key] then return supplementCache[key] end
+    local rows = {}
+    local function Add(line)
+        if service then
+            local services = line:match("^S[NO]\t%d+\t[^\t]*\t[^\t]*\t([^\t]*)\t")
+            if not services or not ("," .. services .. ","):find("," .. service .. ",", 1, true) then return end
+        end
+        local f = Split(line)
+        local row = { id = tonumber(f[2]), kind = f[1] == "SO" and "object" or "npc", fac = f[3],
+            name = f[4], services = f[5], mode = f[6], spots = {} }
+        if not row.id then return end
+        for m, x, y, c in (f[7] or ""):gmatch("(%d+):([%d.]+),([%d.]+),(%d+)") do
+            row.spots[#row.spots + 1] = { m = tonumber(m), x = tonumber(x), y = tonumber(y), c = tonumber(c) }
+        end
+        rows[#rows + 1] = row
+    end
+    if service then
+        for line in text:gmatch("[^\n]+") do Add(line) end
+    else
+        local prefix = (kind == "npc" and "SN" or "SO") .. "\t" .. id .. "\t"
+        local pos = 1
+        while true do
+            local first = text:find(prefix, pos, true)
+            if not first then break end
+            local last = text:find("\n", first, true) or (#text + 1)
+            if first == 1 or text:sub(first - 1, first - 1) == "\n" then Add(text:sub(first, last - 1)) end
+            pos = last + 1
+        end
+    end
+    supplementCache[key] = rows
+    return rows
+end
+
 local function NumList(s)
     local out = {}
     for n in (s or ""):gmatch("%-?%d+") do
@@ -57,16 +107,16 @@ local function NumList(s)
 end
 DB.NumList = NumList
 
-local function NameTable(block)
-    local t = {}
+local function NameTable(block, descriptions)
+    local names = {}
     for line in Lines(block) do
-        local f = Split(line)
-        local id = tonumber(f[1])
+        local id, name, more = line:match("^([^\t]+)\t([^\t]*)(.*)$")
+        id = tonumber(id)
         if id then
-            t[id] = f
+            names[id] = descriptions and { name, more:match("^\t([^\t]*)") } or name
         end
     end
-    return t
+    return names
 end
 
 local function Parse(data)
@@ -77,24 +127,29 @@ local function Parse(data)
     local en = data.names_enUS or {}
     local here = data["names_" .. loc] or {}
     local function names(kind)
-        local base, over = NameTable(en[kind]), NameTable(here[kind])
-        for id, f in pairs(over) do
-            base[id] = f
+        local localized = NameTable(here[kind], kind == "quests")
+        -- English is a fallback; avoid splitting/allocating a second complete
+        -- name table when the client locale already supplies the same IDs.
+        if here ~= en then
+            for line in Lines(en[kind]) do
+                local id = tonumber(line:match("^(%d+)\t"))
+                if id and not localized[id] then
+                    local _, name, more = line:match("^([^\t]+)\t([^\t]*)(.*)$")
+                    localized[id] = kind == "quests" and { name, more:match("^\t([^\t]*)") } or name
+                end
+            end
         end
-        return base
+        return localized
     end
     local unitNames, objectNames, questNames, itemNames, zoneNames = names("units"), names("objects"), names("quests"), names("items"), names("zones")
     -- the world's treasure chests, known by their English names in every language
-    local enObjects = NameTable(en.objects)
+    local enObjects = here == en and objectNames or NameTable(en.objects)
     local function IsChest(id)
         local f = enObjects[id]
-        return f and ns.Treasure and ns.Treasure.IsChestName(f[2]) or false
+        return f and ns.Treasure and ns.Treasure.IsChestName(f) or false
     end
 
-    DB.zoneNames = {}
-    for id, f in pairs(zoneNames) do
-        DB.zoneNames[id] = f[2]
-    end
+    DB.zoneNames = zoneNames
 
     local function entry(kind, id, name)
         -- .words is filled in later, only when a search needs it
@@ -103,36 +158,36 @@ local function Parse(data)
 
     local raw = data.raw or {}
     for line in Lines(raw.units) do
-        local f = Split(line)
+        local f = Split(line, 5)
         local id = tonumber(f[1])
         local n = id and unitNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("npc", id, n[2])
+        if n and n ~= "" then
+            local e = entry("npc", id, n)
             e.level, e.fac, e.rank, e.coords = f[2], f[3], f[4], f[5]
             DB.units[id] = e
         end
     end
     for line in Lines(raw.objects) do
-        local f = Split(line)
+        local f = Split(line, 3)
         local id = tonumber(f[1])
         local n = id and objectNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("object", id, n[2])
+        if n and n ~= "" then
+            local e = entry("object", id, n)
             e.fac, e.coords = f[2], f[3]
             e.chest = IsChest(id) or nil
             -- ore and herbs, for the suggested gathering routes
             local en = enObjects[id]
-            e.gather = en and ns.Routes and ns.Routes.GatherKind(en[2]) or nil
+            e.gather = en and ns.Routes and ns.Routes.GatherKind(en) or nil
             DB.objects[id] = e
         end
     end
     for line in Lines(raw.quests) do
-        local f = Split(line)
+        local f = Split(line, 12)
         local id = tonumber(f[1])
         local n = id and questNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("quest", id, n[2])
-            e.text = n[3]
+        if n and n[1] ~= "" then
+            local e = entry("quest", id, n[1])
+            e.text = n[2]
             e.level, e.min = tonumber(f[2]), tonumber(f[3])
             e.race, e.class = tonumber(f[4]), tonumber(f[5])
             e.startU, e.startO = NumList(f[6]), NumList(f[7])
@@ -142,11 +197,11 @@ local function Parse(data)
         end
     end
     for line in Lines(raw.items) do
-        local f = Split(line)
+        local f = Split(line, 4)
         local id = tonumber(f[1])
         local n = id and itemNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("item", id, n[2])
+        if n and n ~= "" then
+            local e = entry("item", id, n)
             e.dropU, e.dropO, e.soldBy = NumList(f[2]), NumList(f[3]), NumList(f[4])
             DB.items[id] = e
         end
@@ -175,7 +230,7 @@ function DB.Load()
         DB.MergeIfLearned()
         return true
     end
-    if not WaypointTrackerData then
+    if not (WaypointTrackerData and WaypointTrackerData.raw) then
         local load = (C_AddOns and C_AddOns.LoadAddOn) or LoadAddOn
         if load then
             pcall(load, DATA_ADDON)
@@ -251,11 +306,10 @@ end
 
 local function NameTable(text)
     local out = {}
-    Lines(text, function(f)
-        if f[2] and f[2] ~= "" then
-            out[tonumber(f[1])] = f[2]
-        end
-    end)
+    for line in (text or ""):gmatch("[^\n]+") do
+        local id, name = line:match("^(%-?%d+)\t([^\t]+)")
+        if id then out[tonumber(id)] = name end
+    end
     return out
 end
 
@@ -460,6 +514,23 @@ end
 -- What the database knows about an entry before your own discoveries are
 -- added to it (taken the first time they are, or when first asked), so
 -- only what's new is kept and shared.
+local function SupplementFacts(ship, kind, id)
+    local rows = ServiceRows(nil, kind, id)
+    if ship.supplement == rows then return ship end
+    ship.supplement = rows
+    for _, row in ipairs(rows) do
+        -- A newly created entry's name came from the discovery, not shipping.
+        if ship.fresh or ship.name == "" then ship.name = row.name end
+        ship.fresh = false
+        if kind == "npc" and row.fac ~= "" and ship.hostile == nil then ship.enemy = false end
+        for service in row.services:gmatch("[^,]+") do
+            ship.services[service] = true
+            ship.access[service] = ns.Trainers.MergeAccess(ship.access[service], row.fac)
+        end
+    end
+    return ship
+end
+
 function DB.Snapshot(e, created)
     if e.kind == "item" then
         local ship = { drop = {}, sold = {} }
@@ -477,8 +548,8 @@ function DB.Snapshot(e, created)
     local services, access = {}, {}
     for service in pairs(e.svc or {}) do services[service] = true end
     for service, fac in pairs(e.svcAccess or {}) do access[service] = fac end
-    return { fresh = created, name = e.name, title = e.title, spots = #(e.extra or {}),
-        enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }
+    return SupplementFacts({ fresh = created, name = e.name, title = e.title, spots = #(e.extra or {}),
+        enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }, e.kind, e.id)
 end
 
 local function MergeStore(st, source)
@@ -731,7 +802,7 @@ function DB.MergeLearned()
         before[service] = #list
     end
     -- WoW Forever's new quests, with the names the game gave us
-    local titles = ns.Learn and ns.Learn.QuestTitles and ns.Learn.QuestTitles()
+    local titles = ns.Learn and ns.Learn.QuestTitles and ns.Learn.QuestTitles(true)
     for id, title in pairs(titles or {}) do
         local q = DB.quests[id]
         if not q then
@@ -744,9 +815,10 @@ function DB.MergeLearned()
     end
     MergeStore(DB.curated, "curated")
     MergeStore(DB.community, "community")
-    MergeStore(ns.Learn and ns.Learn.Store(), "you")
+    local learned = ns.Learn and ns.Learn.Store(true)
+    MergeStore(learned, "you")
     -- keep only what adds to the database in your saved discoveries
-    if ns.Learn and ns.Learn.Compact then
+    if learned and ns.Learn.Compact then
         ns.Learn.Compact(true)
     end
     -- mark what was added so the next merge can take it out again
@@ -932,32 +1004,34 @@ function DB.AddsSomething(kind, id, value)
         return not e.ship[kind][value]
     end
     local e = (kind == "npc" and DB.units or DB.objects)[id]
-    if not e or type(value) ~= "table" then
-        return true
+    if type(value) ~= "table" then return true end
+    if not e then
+        if #ServiceRows(nil, kind, id) == 0 then return true end
+        e = { kind = kind, id = id, name = "" }
     end
     e.ship = e.ship or DB.Snapshot(e, false)
-    local ship = e.ship
+    local ship = SupplementFacts(e.ship, kind, id)
     if ship.fresh then
         return true
     end
-    if (value.name and ship.name == "") or (value.title and not ship.title) then
+    if (value.name and (ship.name == "" or (#ship.supplement > 0 and value.name ~= ship.name)))
+        or (value.title and not ship.title) then
         return true
     end
-    -- General Find infers enemies from an empty faction. A trainer roster
-    -- supplies positive access, so retain an explicit hostile observation
-    -- even when that inference would otherwise make it look redundant.
-    local trainerHostility
+    -- Find infers enemies from an empty faction. Service/roster evidence can
+    -- still offer that NPC, so an explicit hostile sighting must survive.
+    local serviceHostility
     if kind == "npc" and value.hostile and ship.hostile == nil then
         local roster = WaypointTrackerData and WaypointTrackerData.trainers or ""
-        trainerHostility = ns.Trainers.HasService(e.svc) or ns.Trainers.HasService(value.services)
+        serviceHostility = next(ship.services) or (type(value.services) == "table" and next(value.services))
             or roster:find("\t" .. id .. ":", 1, true) or roster:find("," .. id .. ":", 1, true)
     end
-    if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and (value.hostile ~= ship.enemy or trainerHostility) then
+    if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and (value.hostile ~= ship.enemy or serviceHostility) then
         return true
     end
     for service in pairs(type(value.services) == "table" and value.services or {}) do
         if not ship.services[service] then return true end
-        if ns.Trainers.IsService(service) and value.fac then
+        if (ns.Trainers.IsService(service) or ship.access[service]) and value.fac then
             local known = ship.access[service] or ""
             for letter in value.fac:gmatch("[AH]") do
                 if not known:find(letter, 1, true) then return true end
@@ -974,6 +1048,12 @@ function DB.AddsSomething(kind, id, value)
         if p then
             known[p.m] = known[p.m] or {}
             table.insert(known[p.m], p)
+        end
+    end
+    for _, row in ipairs(ship.supplement) do
+        for _, p in ipairs(row.spots) do
+            known[p.m] = known[p.m] or {}
+            known[p.m][#known[p.m] + 1] = p
         end
     end
     for m, list in pairs(spots) do
@@ -1034,8 +1114,7 @@ end
 
 -- False for NPCs/objects only friendly to the other faction, and quests
 -- only the other faction can do.
-function DB.ForMyFaction(e)
-    local letter, races = MyFaction()
+local function ForFaction(e, letter, races)
     if not letter then
         return true
     end
@@ -1050,6 +1129,10 @@ function DB.ForMyFaction(e)
         return true -- monsters and neutral things
     end
     return fac:find(letter, 1, true) ~= nil
+end
+
+function DB.ForMyFaction(e)
+    return ForFaction(e, MyFaction())
 end
 
 -- Enemies: monsters, plus anything you've seen be hostile.
@@ -1494,8 +1577,9 @@ local nearestWorld = setmetatable({}, { __mode = "k" })
 function DB.NearestOf(entries, opts)
     local bestE, bestP, bestD, fallbackE, fallbackP
     local players = {}
+    local letter, races = MyFaction()
     for _, e in ipairs(entries) do
-        if not (opts and opts.faction) or DB.ForMyFaction(e) then
+        if not (opts and opts.faction) or ForFaction(e, letter, races) then
             local pts = DB.Points(e)
             for _, p in ipairs(pts) do
                 -- Fixed targets convert once; player position is sampled once
@@ -1563,83 +1647,122 @@ end
 -- ---------------------------------------------------------------------------
 -- Services: nearest mailbox, innkeeper, flight master, ...
 -- ---------------------------------------------------------------------------
--- Precise community service observations live in the existing data file.
--- Parse once on a service request, never during login or a hidden UI scan.
--- Keep this index separate from trainer identities and personal discoveries.
-local serviceSupplement
-local function ServiceSupplement()
-    if serviceSupplement then return serviceSupplement end
-    if not WaypointTrackerData then return {} end
-    serviceSupplement = {}
-    local text = WaypointTrackerData and WaypointTrackerData.serviceSupplement
-    for line in (text or ""):gmatch("[^\n]+") do
-        local f = Split(line)
-        local id = tonumber(f[2])
-        if id then
-            local row = { id = id, kind = f[1] == "SO" and "object" or "npc", fac = f[3],
-                name = f[4], mode = f[6], spots = {} }
-            for m, x, y, c in (f[7] or ""):gmatch("(%d+):([%d.]+),([%d.]+),(%d+)") do
-                row.spots[#row.spots + 1] = { m = tonumber(m), x = tonumber(x), y = tonumber(y), c = tonumber(c) }
-            end
-            for key in (f[5] or ""):gmatch("[^,]+") do
-                local list = serviceSupplement[key] or {}
-                serviceSupplement[key] = list
-                list[#list + 1] = row
-            end
-        end
-    end
-    if WaypointTrackerData then WaypointTrackerData.serviceSupplement = nil end
-    return serviceSupplement
-end
-
-local function ServiceCandidate(row)
-    if row.generation == DB.generation then return row.entry end
+local function ServiceCandidate(row, access)
+    if row.generation == DB.generation and row.access == access then return row.entry end
     local base = (row.kind == "npc" and DB.units or DB.objects)[row.id]
-    local store = ns.Learn and ns.Learn.Store()
-    local own = store and (row.kind == "npc" and store.npcs or store.objects)
-    own = own and own[row.id]
-    -- Personal observations retain the normal discovery/correction precedence.
-    if base and own and not own.shared and next(own.spots or {}) then
+    local store = WaypointTrackerDB and WaypointTrackerDB.learned
+    local own = type(store) == "table" and (row.kind == "npc" and store.npcs or store.objects)
+    own = type(own) == "table" and own[row.id]
+    own = type(own) == "table" and own
+    -- Personal and imported observations retain normal discovery precedence.
+    if base and own and next(own.spots or {}) then
         row.entry = base
+        if base.fac ~= access then
+            local e = {}
+            for key, value in pairs(base) do e[key] = value end
+            e.fac = access
+            row.entry = e
+        end
     else
-        local e = { kind = row.kind, id = row.id, fac = row.fac,
+        local e = { kind = row.kind, id = row.id, fac = access,
             name = base and base.name ~= "" and base.name or row.name,
             learned = "community", minedService = true, extra = {}, fixes = base and base.fixes }
         e.key = Geo.Squash(e.name)
+        local pending = false
         for _, p in ipairs(row.spots) do
             -- Keep unsupported/phased metadata from placing an observation on
             -- a different continent; existing resolved positions can fall back.
-            local c = Geo.MapToWorld(p.m, p.x, p.y)
-            if c == p.c then e.extra[#e.extra + 1] = p end
+            local c, x, y = Geo.MapToWorld(p.m, p.x, p.y, p)
+            if c == p.c then
+                e.extra[#e.extra + 1] = p
+                nearestWorld[p] = { p.m, p.x, p.y, c, x, y }
+            elseif c == nil then
+                pending = true
+            end
         end
-        if (row.mode == "M" or #e.extra == 0) and base then
-            for _, p in ipairs(DB.Points(base)) do e.extra[#e.extra + 1] = p end
+        if base then
+            local merge = row.mode == "M" or #e.extra == 0
+            for _, p in ipairs(DB.Points(base)) do
+                if merge or p.fixed then e.extra[#e.extra + 1] = p end
+            end
         end
+        if not e.fixes then e.points = e.extra end
+        -- A transient map failure must retry without an unrelated merge.
+        if pending then return e end
         row.entry = e
     end
-    row.generation = DB.generation
+    row.generation, row.access = DB.generation, access
     return row.entry
+end
+
+-- Client taxi labels describe the same stop as a nearby observed flight NPC.
+-- Associate using the shipped point, before applying movement/removal fixes.
+local function FlightAliases(row)
+    if row.aliasGeneration == DB.generation then return row.aliases end
+    local aliases, pending = {}, false
+    for _, p in ipairs(row.spots) do
+        local c, x, y = Geo.MapToWorld(p.m, p.x, p.y)
+        if not c then pending = true end
+        if c == p.c then
+            for _, s in ipairs(DB.services.flight or {}) do
+                local e = s.entry
+                for _, w in ipairs(e and e.world or {}) do
+                    if w[1] == c and (w[3] - x)^2 + (w[4] - y)^2 <= 100^2 then aliases[e] = true end
+                end
+            end
+        end
+    end
+    if not pending then row.aliases, row.aliasGeneration = aliases, DB.generation end
+    return aliases
 end
 
 function DB.ServiceEntries(service)
     local letter = MyFaction()
-    local out, replaced, seen = {}, {}, {}
-    for _, row in ipairs(ServiceSupplement()[service] or {}) do
+    local out, replaced, seen, aliases = {}, {}, {}, {}
+    local rows = ServiceRows(service)
+    if rows.generation ~= DB.generation then
+        local access = {}
+        for _, s in ipairs(DB.services[service] or {}) do
+            if s.id and s.learned then
+                local fac = s.fac == "" and s.id < 0 and "AH" or s.fac
+                access[s.id] = ns.Trainers.MergeAccess(access[s.id], fac)
+            end
+        end
+        for _, row in ipairs(rows) do
+            local id = row.kind == "object" and -row.id or row.id
+            row.allowed = ns.Trainers.MergeAccess(row.fac, access[id]) or ""
+        end
+        rows.generation, rows.entries = DB.generation, {}
+    end
+    local cached = rows.entries[letter or ""]
+    if cached then return cached end
+    local pending = false
+    local learned = WaypointTrackerDB and WaypointTrackerDB.learned
+    for _, row in ipairs(rows) do
         local id = row.kind == "object" and -row.id or row.id
         replaced[id] = true
-        if not letter or row.fac:find(letter, 1, true) then
-            local e = ServiceCandidate(row)
+        local base = (row.kind == "npc" and DB.units or DB.objects)[row.id]
+        local personal = service == "flight" and learned and learned.npcs and learned.npcs[row.id]
+        if service == "flight" and base and (base.fixes or base.hostile or (personal and next(personal.spots or {}))) then
+            for e in pairs(FlightAliases(row)) do aliases[e] = true end
+            if row.aliasGeneration ~= DB.generation then pending = true end
+        end
+        local fac = row.allowed
+        if (not base or not base.hostile) and (not letter or fac:find(letter, 1, true)) then
+            local e = ServiceCandidate(row, fac)
+            if row.generation ~= DB.generation then pending = true end
             if e and not seen[e] then out[#out + 1], seen[e] = e, true end
         end
     end
     for _, s in ipairs(DB.services[service] or {}) do
         if not replaced[s.id] and (s.fac == "" or not letter or s.fac:find(letter, 1, true)) then
             local e = s.entry or (s.id < 0 and DB.objects[-s.id]) or DB.units[s.id]
-            if e and not seen[e] then
+            if e and not e.hostile and not aliases[e] and not seen[e] then
                 out[#out + 1], seen[e] = e, true
             end
         end
     end
+    if not pending then rows.entries[letter or ""] = out end
     return out
 end
 
