@@ -173,6 +173,15 @@ M.TypeSlash(SlashCmdList.WAYPOINTTRACKER, 'editmode')
 check(M.editModeEntered == entered + 1 and EditModeManagerFrame:IsEditModeActive(), '/wp editmode enters Edit Mode')
 Leave()
 local menu = M.OpenMenu(WaypointTrackerMinimapButton, 'RightButton')
+local nearest = menu and M.FindMenuItem(menu, L.NEAREST_MENU)
+check(nearest and #nearest.items == 15, 'minimap quick menu exposes all fifteen Nearest choices')
+if nearest then
+    for i, label in ipairs({ 'SERVICE_CLASS_TRAINER', 'SERVICE_PROFESSION_TRAINER', 'SERVICE_WEAPON_MASTER', 'SERVICE_RIDING_TRAINER' }) do
+        check(nearest.items[11 + i] and nearest.items[11 + i].text == L[label], 'minimap exposes ' .. label)
+    end
+    if nearest.items[13] and nearest.items[13].onEnter then nearest.items[13].onEnter() end
+    check(nearest.items[13] and #nearest.items[13].items == 13, 'minimap profession submenu has twelve professions and its title')
+end
 local item = menu and M.FindMenuItem(menu, L.OPEN_EDIT_MODE)
 check(item ~= nil, 'the quick menu has Edit Mode')
 if item then M.PickMenuItem(menu, L.OPEN_EDIT_MODE) end

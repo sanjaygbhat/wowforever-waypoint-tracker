@@ -433,7 +433,7 @@ local function Spots(store, out, curated)
 end
 
 local function MyLetter()
-    local f = UnitFactionGroup and UnitFactionGroup("player")
+    local f = ns.Str(UnitFactionGroup and UnitFactionGroup("player"))
     return (f == "Horde" and "H") or (f == "Alliance" and "A") or ""
 end
 
@@ -474,7 +474,11 @@ function DB.Snapshot(e, created)
         end
         return ship
     end
-    return { fresh = created, name = e.name, title = e.title, spots = #(e.extra or {}), enemy = DB.IsEnemy(e) }
+    local services, access = {}, {}
+    for service in pairs(e.svc or {}) do services[service] = true end
+    for service, fac in pairs(e.svcAccess or {}) do access[service] = fac end
+    return { fresh = created, name = e.name, title = e.title, spots = #(e.extra or {}),
+        enemy = DB.IsEnemy(e), fac = e.fac, services = services, access = access }
 end
 
 local function MergeStore(st, source)
@@ -503,10 +507,14 @@ local function MergeStore(st, source)
                 if not mine then
                     e.svc = e.svc or {}
                     e.svc[service] = true
+                    if ns.Trainers.services[service] and not l.hostile then
+                        e.svcAccess = e.svcAccess or {}
+                        e.svcAccess[service] = ns.Trainers.MergeAccess(e.svcAccess[service], l.fac)
+                    end
                 end
                 if e.kind == "npc" then
                     DB.services[service] = DB.services[service] or {}
-                    table.insert(DB.services[service], { id = e.id, fac = l.hostile and "" or (l.fac or letter) })
+                    table.insert(DB.services[service], { id = e.id, fac = ns.Trainers.services[service] and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or letter)) })
                 end
             end
         end
@@ -537,9 +545,7 @@ local function MergeStore(st, source)
             if l.level and (not e.level or e.level == "") then
                 e.level = tostring(l.level)
             end
-            if l.fac and (e.fac or "") == "" then
-                e.fac = l.fac
-            end
+            if l.fac then e.fac = ns.Trainers.MergeAccess(e.fac, l.fac) end
             e.extra = e.extra or {}
             Spots(l.spots, e.extra, source == "curated")
             e.points = nil
@@ -935,8 +941,12 @@ function DB.AddsSomething(kind, id, value)
         return true
     end
     for service in pairs(type(value.services) == "table" and value.services or {}) do
-        if not (e.svc and e.svc[service]) then
-            return true
+        if not ship.services[service] then return true end
+        if ns.Trainers.services[service] and value.fac then
+            local known = ship.access[service] or ""
+            for letter in value.fac:gmatch("[AH]") do
+                if not known:find(letter, 1, true) then return true end
+            end
         end
     end
     local spots = type(value.spots) == "table" and value.spots or {}
@@ -999,7 +1009,7 @@ end
 -- Faction
 -- ---------------------------------------------------------------------------
 local function MyFaction()
-    local f = UnitFactionGroup and UnitFactionGroup("player")
+    local f = ns.Str(UnitFactionGroup and UnitFactionGroup("player"))
     if f == "Horde" then
         return "H", HORDE_RACES
     elseif f == "Alliance" then
@@ -1534,10 +1544,65 @@ function DB.ServiceEntries(service)
     return out
 end
 
+-- Keep the tiny roster as text, resolving identities only on a user request.
+-- Supplemental/learned NPCs need not occur in raw Data.lua units. Unknown
+-- trainer factions fail closed, regardless of Find's general faction toggle.
+function DB.TrainerEntries(service)
+    local out, seen = {}, {}
+    if not ns.Trainers.services[service] then return out end
+    local letter = MyFaction()
+    if not letter then return out end
+    local function Add(id, fac, e)
+        if fac and fac ~= "" and fac:find(letter, 1, true) and not seen[id] then
+            e = e or DB.units[id]
+            -- Resolve after every discovery merge. Observed fallback positions
+            -- never replace a database position, including a personal sighting.
+            if not e or #DB.Points(e) == 0 then
+                local text = WaypointTrackerData and WaypointTrackerData.trainerLocations
+                for line in (text or ""):gmatch("[^\n]+") do
+                    local rid, name, spots = line:match("^(%d+)\t([^\t]*)\t(.+)$")
+                    if tonumber(rid) == id then
+                        local points = {}
+                        for token in spots:gmatch("[^;]+") do
+                            local m, x, y = token:match("^(%d+):([%d%.]+),([%d%.]+)$")
+                            m, x, y = ns.Int(m), tonumber(x), tonumber(y)
+                            if m and x and y and x >= 0 and x <= 1 and y >= 0 and y <= 1
+                                and Geo.IsValidMap(m) then
+                                points[#points + 1] = { m = m, x = x, y = y }
+                            end
+                        end
+                        -- Existing/localized names win. New English names are
+                        -- used only in English; other locales use the service
+                        -- label until a localized observation supplies a name.
+                        name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and (ns.CleanText(name) or "") or "")
+                        e = { kind = "npc", id = id, fac = fac, name = name, points = points }
+                        break
+                    end
+                end
+            end
+            if e and #DB.Points(e) > 0 then
+                seen[id], out[#out + 1] = true, e
+            end
+        end
+    end
+    local text = WaypointTrackerData and WaypointTrackerData.trainers
+    for line in (text or ""):gmatch("[^\n]+") do
+        local key, values = line:match("^([^\t]+)\t(.+)$")
+        if key == service then
+            for id, fac in values:gmatch("(%d+):(%a*)") do Add(tonumber(id), fac) end
+            break
+        end
+    end
+    for _, row in ipairs(DB.services[service] or {}) do
+        Add(row.id, row.fac, row.entry)
+    end
+    return out
+end
+
 -- Set the arrow on something from the database. Returns the waypoint.
-function DB.GoTo(e, p, title)
+function DB.GoTo(e, p, title, silent)
     if not e or not p then
         return nil
     end
-    return ns.WP.Add(p.m, p.x, p.y, { title = title or e.name, source = "find" })
+    return ns.WP.Add(p.m, p.x, p.y, { title = title or e.name, source = "find", silent = silent })
 end

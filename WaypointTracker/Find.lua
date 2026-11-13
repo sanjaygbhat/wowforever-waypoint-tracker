@@ -44,8 +44,11 @@ local SERVICES = {
     { key = "spirithealer", label = "SERVICE_SPIRITHEALER" },
     { key = "battlemaster", label = "SERVICE_BATTLEMASTER" },
     { key = "meetingstone", label = "SERVICE_MEETINGSTONE" },
+    { key = "class", label = "SERVICE_CLASS_TRAINER" },
+    { key = "profession", label = "SERVICE_PROFESSION_TRAINER" },
+    { key = "trainer_weapon", label = "SERVICE_WEAPON_MASTER" },
+    { key = "trainer_riding", label = "SERVICE_RIDING_TRAINER" },
 }
-local NEAREST_PER_ROW = 6
 
 local KIND_COLOUR = {
     quest = { 1, 0.82, 0 },
@@ -115,25 +118,34 @@ end
 
 local function Status(text, good)
     Window.SetStatus(text, good)
+    if not Window.IsShown() then
+        -- Quick-menu actions may precede the window, including in combat.
+        if UIErrorsFrame and UIErrorsFrame.AddMessage then
+            UIErrorsFrame:AddMessage(text, good and 0.3 or 1, good and 1 or 0.35, 0.3)
+        elseif not Window.frame then
+            ns.Print(text, true)
+        end
+    end
 end
 
 -- Sends the arrow to the nearest spawn of any of `entries`.
-local function WaypointToNearest(entries, title)
-    local e, p = DB.NearestOf(entries, { faction = ns.Get("findFaction") })
+local function WaypointToNearest(entries, title, measured)
+    local e, p, distance = DB.NearestOf(entries, { faction = ns.Get("findFaction") })
+    if measured and e and not distance then return nil, "position" end
     if not e then
         return nil
     end
     local name = e.name == "" and (title or Geo.GetMapName(p.m)) or (title and (title .. " - " .. e.name) or e.name)
-    local wp = DB.GoTo(e, p, name)
+    local wp = DB.GoTo(e, p, name, true)
     return wp
 end
 
 local function GoToNearest(entries, title)
-    local wp = WaypointToNearest(entries, title)
+    local wp, reason = WaypointToNearest(entries, title, true)
     if wp then
         Status(L.ADDED:format(WP.Describe(wp)), true)
     else
-        Status(L.NO_LOCATION)
+        Status(reason == "position" and L.TRAINER_POSITION_UNKNOWN or L.NO_LOCATION)
     end
     return wp
 end
@@ -142,12 +154,56 @@ Find.SERVICES = SERVICES
 
 -- The arrow to the closest mailbox, innkeeper, flight master, repair vendor,
 -- bank or auction house for your faction. Returns the waypoint.
-function Find.GoToNearest(service)
+function Find.GoToNearest(service, profession)
+    if service == "profession" and not profession then
+        return Find.ShowProfessionMenu(frame or UIParent)
+    end
+    local title
+    if service == "class" then
+        local class = ns.Trainers.PlayerClass()
+        if not class then Status(L.TRAINER_CLASS_UNKNOWN); return end
+        service, title = "trainer_class_" .. class, L.SERVICE_CLASS_TRAINER
+    elseif service == "profession" then
+        service = "trainer_profession_" .. profession
+        if not ns.Trainers.services[service] then return end
+        title = L.SERVICE_PROFESSION_TRAINER .. " (" .. L["PROFESSION_" .. profession:upper()] .. ")"
+    elseif service == "trainer_weapon" then
+        title = L.SERVICE_WEAPON_MASTER
+    elseif service == "trainer_riding" then
+        title = L.SERVICE_RIDING_TRAINER
+    end
     if not DB.Load() then
         Status(L.DB_BROKEN)
         return nil
     end
+    if title then
+        local wp, reason = WaypointToNearest(DB.TrainerEntries(service), title, true)
+        if wp then
+            local message = L.ADDED:format(WP.Describe(wp))
+            if profession then message = L.TRAINER_KNOWN_ADDED:format(message) end
+            Status(message, true)
+        else
+            Status(reason == "position" and L.TRAINER_POSITION_UNKNOWN or (profession and (L.TRAINER_NONE .. " " .. L.TRAINER_KNOWN_DESC) or L.TRAINER_NONE))
+        end
+        return wp
+    end
     return GoToNearest(DB.ServiceEntries(service))
+end
+
+function Find.ProfessionMenu(root, hasTitle)
+    if not hasTitle then root:CreateTitle(L.SERVICE_PROFESSION_TRAINER) end
+    local loaded = DB.Load()
+    for _, p in ipairs(ns.Trainers.professions) do
+        local available = loaded and #DB.TrainerEntries("trainer_profession_" .. p.key) > 0
+        local text = L["PROFESSION_" .. p.key:upper()]
+        if not available then text = text .. " (" .. L.TRAINER_UNAVAILABLE .. ")" end
+        local item = root:CreateButton(text, available and ns.Safe(function() Find.GoToNearest("profession", p.key) end) or nil)
+        if item and item.SetEnabled then item:SetEnabled(available and true or false) end
+    end
+end
+
+function Find.ShowProfessionMenu(owner)
+    return Widgets.Menu(owner, Find.ProfessionMenu)
 end
 
 -- Sets the arrow for an entry (a quest's next step, an item's source...).
@@ -512,38 +568,103 @@ local function Build(content)
     local nearLabel = Widgets.Label(frame, L.NEAREST, "GameFontNormal")
     nearLabel:SetPoint("TOPLEFT", 6, -72)
     local nearest = {}
+    local grid = CreateFrame("Frame", nil, frame)
+    grid:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -88)
+    local measure = Widgets.Label(grid, "", "GameFontNormalSmall")
+    measure:Hide()
     local function LayoutNearest()
         local width = ns.Num(frame:GetWidth()) or 0
         if width < 300 then width = 618 end
-        local labelWidth = ns.Num(nearLabel:GetStringWidth()) or 60
-        local each = math.floor((width - 8 - labelWidth - 10 - (NEAREST_PER_ROW - 1) * 4) / NEAREST_PER_ROW)
-        each = math.max(48, math.min(110, each))
-        for i, b in ipairs(nearest) do
+        width = width - 12
+        local x, y, rowHeight = 0, 0, 22
+        for _, b in ipairs(nearest) do
+            measure:SetText(b.text and b.text:GetText() or L[b.serviceLabel])
+            local textWidth = ns.Num(measure:GetStringWidth()) or 80
+            local each = math.min(width, math.max(b.action and b.action:GetWidth() or 48, textWidth + (b.text and 56 or 20)))
+            if x > 0 and x + each > width then x, y, rowHeight = 0, y + rowHeight + 4, 22 end
+            rowHeight = math.max(rowHeight, b.action and 48 or 22)
             b:SetWidth(each)
             b:ClearAllPoints()
-            if i == 1 then
-                b:SetPoint("LEFT", nearLabel, "RIGHT", 10, 0)
-            elseif (i - 1) % NEAREST_PER_ROW == 0 then
-                b:SetPoint("TOPLEFT", nearest[i - NEAREST_PER_ROW], "BOTTOMLEFT", 0, -4)
-            else
-                b:SetPoint("LEFT", nearest[i - 1], "RIGHT", 4, 0)
-            end
+            b:SetPoint("TOPLEFT", grid, "TOPLEFT", x, -y)
+            x = x + each + 4
         end
+        grid:SetSize(width, y + rowHeight)
     end
     for _, s in ipairs(SERVICES) do
-        local b = Widgets.Button(frame, L[s.label], 80, 22)
+        local b
+        if s.key == "profession" and not (MenuUtil and MenuUtil.CreateContextMenu) then
+            -- Shared picker fallback lets all professions remain selectable on
+            -- clients without context menus, inside the same Find tab.
+            local options, selected, availability = {}, 1, nil
+            for i, p in ipairs(ns.Trainers.professions) do
+                options[i] = { value = i, text = L["PROFESSION_" .. p.key:upper()] }
+            end
+            local picker
+            picker = Widgets.Picker(frame, 160, options, function() return selected end, function(i)
+                if not frame:IsVisible() or not Window.IsShown() then return end
+                selected = i
+                availability = DB.Load() and #DB.TrainerEntries("trainer_profession_" .. ns.Trainers.professions[i].key) > 0
+                Status(options[i].text .. " - " .. (availability and L.TRAINER_AVAILABLE or L.TRAINER_UNAVAILABLE), availability)
+            end)
+            local action = Widgets.Button(picker, L.TRAINER_ACTION, 140, 22)
+            local actionFont = action.GetFontString and action:GetFontString()
+            local actionWidth = actionFont and ns.Num(actionFont:GetStringWidth()) or 120
+            action:SetWidth(math.max(140, (actionWidth or 120) + 20))
+            action:SetPoint("TOPLEFT", picker, "BOTTOMLEFT", 0, -2)
+            action:SetScript("OnClick", ns.Safe(function()
+                if not frame:IsVisible() or not Window.IsShown() then return end
+                Find.GoToNearest("profession", ns.Trainers.professions[selected].key)
+            end))
+            picker.action = action
+            function picker:Refresh()
+                -- Hidden/unrelated refreshes do no work. Query on interaction.
+                if not frame:IsVisible() or not Window.IsShown() then return end
+                local label = options[selected].text
+                if availability ~= nil then
+                    label = label .. " (" .. (availability and L.TRAINER_AVAILABLE or L.TRAINER_UNAVAILABLE_SHORT) .. ")"
+                end
+                if self.text:GetText() == label then return end
+                self.text:SetText(label)
+                action:SetEnabled(availability ~= false)
+                if frame:IsVisible() and Window.IsShown() then LayoutNearest() end
+            end
+            picker:Refresh()
+            b = picker
+        else
+            b = Widgets.Button(frame, L[s.label], 80, 22)
+            b:SetScript("OnClick", ns.Safe(function(self)
+                if s.key == "profession" then Find.ShowProfessionMenu(self)
+                else Find.GoToNearest(s.key) end
+            end))
+        end
         if GameFontNormalSmall and b.SetNormalFontObject then
             b:SetNormalFontObject(GameFontNormalSmall)
             b:SetHighlightFontObject(GameFontHighlightSmall)
         end
-        b.service = s.key
-        b:SetScript("OnClick", ns.Safe(function() Find.GoToNearest(s.key) end))
-        Widgets.Tooltip(b, L[s.label], L.NEAREST_DESC)
+        b.service, b.serviceLabel = s.key, s.label
+        local help = s.key == "profession" and L.TRAINER_KNOWN_DESC or L.NEAREST_DESC
+        if s.key == "class" then
+            -- Resolve at hover time too; API failures/secrets never reach format.
+            b:HookScript("OnEnter", ns.Safe(function(self)
+                if not GameTooltip then return end
+                local _, name = ns.Trainers.PlayerClass()
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:AddLine(L.SERVICE_CLASS_TRAINER, 1, 1, 1)
+                GameTooltip:AddLine(name and L.TRAINER_CLASS_DESC:format(name) or L.TRAINER_CLASS_UNKNOWN, 1, 0.82, 0, true)
+                GameTooltip:Show()
+            end))
+            b:HookScript("OnLeave", function() if GameTooltip then GameTooltip:Hide() end end)
+        else
+            Widgets.Tooltip(b, L[s.label], help)
+        end
         nearest[#nearest + 1] = b
         nearest[s.key] = b
     end
     LayoutNearest()
-    if frame.HookScript then frame:HookScript("OnSizeChanged", ns.Safe(LayoutNearest)) end
+    frame.LayoutNearest = LayoutNearest
+    if frame.HookScript then frame:HookScript("OnSizeChanged", ns.Safe(function()
+        if frame:IsVisible() and Window.IsShown() then LayoutNearest() end
+    end)) end
 
     local faction = Widgets.Check(frame, L.MY_FACTION_ONLY, "findFaction", L.MY_FACTION_ONLY_DESC, 180)
     faction:SetPoint("TOPLEFT", 2, -34)
@@ -562,7 +683,7 @@ local function Build(content)
     Widgets.Tooltip(discoveries, L.DISCOVERIES_MENU, L.SHARE_DISCOVERIES_DESC)
 
     local listBg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    listBg:SetPoint("TOPLEFT", 4, -118)
+    listBg:SetPoint("TOPLEFT", grid, "BOTTOMLEFT", -2, -8)
     listBg:SetPoint("BOTTOMLEFT", 4, 34)
     listBg:SetWidth(LIST_W)
     listBg:SetBackdrop(Widgets.BACKDROP_BOX)
@@ -662,13 +783,14 @@ local function Build(content)
         wasScanning = running
     end
     Find.widgets = { search = searchBox.edit, rows = rows, detail = detail, kind = kind,
-        nearest = nearest, faction = faction, zoneOnly = zoneOnly, discoveries = discoveries,
+        nearest = nearest, nearestGrid = grid, listBg = listBg, faction = faction, zoneOnly = zoneOnly, discoveries = discoveries,
         empty = emptyText, note = note, count = countText, list = list }
 end
 
 Window.RegisterTab{
     key = "find", order = 2, title = L.FIND_TITLE, build = Build,
     onShow = function()
+        frame.LayoutNearest()
         RefreshTabs()
         discoveries:Refresh()
         Status("")
@@ -913,9 +1035,7 @@ function Find.Way(text)
         if #exact == 1 then
             local wp = WaypointFor(exact[1])
             if wp then
-                if not ns.Get("chatMessages") then
-                    ns.Print(L.ADDED:format(WP.Describe(wp)), true)
-                end
+                ns.Print(L.ADDED:format(WP.Describe(wp)), true)
                 return wp
             end
         end

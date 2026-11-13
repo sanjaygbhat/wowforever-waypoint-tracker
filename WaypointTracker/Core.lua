@@ -287,17 +287,43 @@ end
 
 -- Text from outside the addon (imports, other addons) made safe to show:
 -- no colour codes, links, textures or control characters, and not too long.
+local function UTF8(s)
+    if not s:find("[\128-\255]") then return s end
+    local out, i = {}, 1
+    while i <= #s do
+        local a, b = s:byte(i, i + 1)
+        local n = a < 128 and 1 or (a >= 194 and a <= 223 and 2 or
+            (a >= 224 and a <= 239 and 3 or (a >= 240 and a <= 244 and 4 or nil)))
+        local valid = n ~= nil
+        for j = 1, (n or 1) - 1 do
+            local v = s:byte(i + j)
+            if not v or v < 128 or v > 191 then valid = false end
+        end
+        if n == 3 and b and ((a == 224 and b < 160) or (a == 237 and b >= 160)) then valid = false end
+        if n == 4 and b and ((a == 240 and b < 144) or (a == 244 and b >= 144)) then valid = false end
+        out[#out + 1] = valid and s:sub(i, i + n - 1) or "?"
+        i = i + (valid and n or 1)
+    end
+    return table.concat(out)
+end
+
 function ns.CleanText(s, maxLen)
     if type(s) ~= "string" then
         return nil
     end
-    s = s:gsub("[%c]", " ")
+    s = UTF8(s):gsub("[%c]", " ")
     s = s:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|H.-|h(.-)|h", "%1"):gsub("|[TA].-|[ta]", "")
     s = s:gsub("|", "")
     maxLen = maxLen or 200
     if #s > maxLen then
         -- cut, and drop a character the cut may have split in half
-        s = s:sub(1, maxLen):gsub("[\192-\255][\128-\191]*$", "")
+        local cut = maxLen
+        while cut > 0 do
+            local byte = s:byte(cut + 1)
+            if not byte or byte < 128 or byte > 191 then break end
+            cut = cut - 1
+        end
+        s = s:sub(1, cut)
     end
     s = ns.Trim(s)
     return s ~= "" and s or nil

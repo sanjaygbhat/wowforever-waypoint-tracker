@@ -2,6 +2,18 @@
 --     lua5.1 tests/run_tab_find.lua [--bare]
 package.path = "./tests/?.lua;" .. package.path
 local M = require("wowmock")
+local createForAnchors = CreateFrame
+local anchors = {}
+CreateFrame = function(...)
+    local f = createForAnchors(...)
+    local set = f.SetPoint
+    f.SetPoint = function(self, ...)
+        anchors[self] = anchors[self] or {}
+        anchors[self][#anchors[self] + 1] = { ... }
+        return set(self, ...)
+    end
+    return f
+end
 local bare = arg[1] == "--bare"
 if bare then
     MenuUtil, ShowUIPanel, HideUIPanel, RegisterUIPanel = nil, nil, nil, nil
@@ -130,6 +142,13 @@ local function choose(key, label)
     local item = pick(fw.kind, L[label], "radio")
     check(ns.Get("findTab") == key and item.isSelected(), "Kind chooses " .. key)
     check((bare and fw.kind.text:GetText() or fw.kind:GetText()) == L[label], "Kind label follows " .. key)
+end
+local top, bottom = anchors[fw.listBg][1], anchors[fw.listBg][2]
+check(top[1] == "TOPLEFT" and top[2] == fw.nearestGrid and top[3] == "BOTTOMLEFT" and top[5] == -8,
+    "results top follows the full Nearest grid with an eight-pixel gap")
+check(bottom[1] == "BOTTOMLEFT" and bottom[3] == 34, "results bottom preserves footer clearance")
+for _, key in ipairs({ "class", "profession", "trainer_weapon", "trainer_riding" }) do
+    check(fw.nearest[key] and fw.nearest[key]:IsVisible(), "trainer control visible: " .. key)
 end
 local SERVICE_KEY = { SERVICE_MAILBOX = "mailbox", SERVICE_INNKEEPER = "innkeeper", SERVICE_FLIGHT = "flight",
     SERVICE_REPAIR = "repair", SERVICE_BANKER = "banker", SERVICE_AUCTIONEER = "auctioneer" }

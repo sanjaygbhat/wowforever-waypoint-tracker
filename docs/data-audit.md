@@ -301,3 +301,197 @@ fixtures stay at the earlier extraction; only the timing below is imported.
   entrance nodes (would add an area and touch the Thrall/Undercity hard gate),
   six TAXI_3276 flight rows (the client's own flights already decide these) and
   non-travel points of interest. Not imported.
+
+## Initial trainer identity review (2026-11-13)
+
+This section records the pre-expansion baseline; the following section describes
+the current roster.
+
+`tools/fixtures/trainers/trainers.tsv` pins per-NPC source URLs and evidence from
+MIT All The Things commit `ec1aa307198d92d18c601ae2c9338a67b71e7d6b`
+(`db/Camelot` and explicit editable NPC titles) and our packaged `Forever.lua`
+observations at `b3f68f8da465dbd27b13e0b46a46f9a405a2f762`. The existing ATT
+MIT notice applies; no additional third-party source was imported. The fixture
+checksum is in `tools/fixtures/manifest.json`; `tools/build_trainers.py` produces
+`WaypointTracker_Data/Trainers.lua` deterministically without network access.
+`tests/check_trainers.py` gates evidence, vocabulary, class conflicts and stale
+output, and runs both through the CI check glob and `tools/validate_data.py`.
+
+Accept explicit trainer titles/headers or observed profession titles paired
+with trainer service. Profession recipe groups qualify only when they explicitly
+teach a profession rank; 18 recipe-only teachers were dropped. All 74 observed
+rows were rechecked against Forever.lua, and all 196 ATT URL assertions against
+the pinned raw files (including rank/header blocks): no source mismatches.
+Identities assert no new positions. Unknown faction stays in the fixture and
+is excluded from Nearest. Pet/demon/portal rows are retained but not exposed.
+
+| Kind | Alliance | Horde | Both | Unknown | Total |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| class | 67 | 74 | 0 | 7 | 148 |
+| profession | 25 | 38 | 0 | 3 | 66 |
+| weapon | 4 | 4 | 0 | 0 | 8 |
+| riding | 4 | 4 | 0 | 0 | 8 |
+| pet | 0 | 1 | 0 | 0 | 1 |
+| demon | 6 | 7 | 0 | 0 | 13 |
+| portal | 0 | 1 | 0 | 0 | 1 |
+
+Profession trainers are incomplete: category presence does not establish world
+or capital coverage. Nearest says "nearest known", explains the partial list,
+and remembers identifiable profession trainers visited by the player. Missing
+capital/profession combinations are gaps, not proof that no trainer exists.
+Trainer learning compares exact game-localized skill-line names, only while a
+tradeskill trainer is open. General trainer type cannot distinguish class,
+weapon, riding or portal trainers, so new class assignments remain generic
+without further trustworthy API evidence; explicit typed discoveries still
+round-trip through WTL1. The runtime performs no extra background scans.
+
+## Expanded observed trainer roster (2026-11-13)
+
+Additional source: **EG Link output: World of Warcraft: Forever**, compiled by
+**Efficient Games** (https://efficient.games),
+https://github.com/JIVESCORP/eg-link-output-wowf/tree/164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1,
+pin `164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1`.
+Data from Efficient Games, licensed under **CC BY 4.0**
+(https://creativecommons.org/licenses/by/4.0/). Attribution and the modification
+notice are in `WaypointTracker_Data/THIRD-PARTY-LICENSES.txt`; the full upstream
+licence and pin accompany `tools/fixtures/trainers/observed-164bd1e2/records.json`.
+The reduced extract retains only fields used for classification, access and
+fallback coordinates, with original file hashes and build metadata. It contains
+444 NPC records, 26 corroborated ranked-title patterns and references 46 files;
+the evidence folder is 195,378 bytes including the 18,659-byte upstream licence.
+
+Independently read all 17 enUS creature-title snapshots, 25 trainer-window
+snapshots and 25 NPC snapshots already provided. Also fetched all 25
+`creatures.json` reaction snapshots at the same pin; all 96 inspected upstream
+blobs (92 datasets plus documentation/licence/index) match their pinned Git blob
+hashes. Newest numeric build per NPC/record wins, preferring live `wowf` over
+`wow_classic_beta` for a build tie. A missing side field does not erase an older
+explicit side. No older title is unioned over a newer changed/missing title.
+
+“Observed in WoW Forever build X” means cache/server text or player-addon
+observations collected on that build, **not** a complete roster, historical
+Classic Era/1.12 verification, or assurance that a beta observation remains
+unchanged on the live client. Retained evidence spans builds 1.60.1.70009 through
+1.60.1.70888; beta-only observations remain identified by product/build. Positions
+are where a player stood when an NPC window opened, not a certified NPC spawn.
+The README reserves Blizzard's rights in game content.
+
+Inclusion rules:
+
+- Class: exact `<Class> Trainer`; weapon: `Weapon Master`; riding: explicit
+  riding trainer/instructor title. Personal names, vendors and supplies titles
+  never establish a classification. Pet/demon/portal identities remain
+  fixture-only and are not offered by Nearest.
+- Profession: explicit profession trainer title, or an exact ranked occupational
+  title (Apprentice/Journeyman/Expert/Artisan/Master, including a specialization)
+  corroborated by a trainer-window witness for that exact title pattern or an
+  independently reviewed row in the original fixture. Unranked occupations need
+  that NPC's trainer window or tradeskill interaction. Superior occupational
+  titles and uncorroborated specialist titles are excluded. Title text remains
+  literal evidence; `rank` continues to mean the prior explicitly taught rank,
+  not the new source's title tier.
+- Faction/access: explicit `npcs.side` Alliance/Horde first; otherwise positive
+  creature reactions for each side (all recorded values for that side >=5,
+  Friendly through Exalted), then packaged units. Neutral alone and mixed
+  hostile/friendly readings do not establish access. Friendly evidence on both
+  sides yields AH; none of the accepted records currently has AH. Unknown
+  remains blank in the fixture and is excluded from generated Nearest lists
+  and from typed learned candidates at runtime. No faction is inferred from
+  class, race, city, personal name or the observer's faction.
+- Compare every compatible identity against the previous fixture and retain
+  both source/evidence chains. Kind/subkind disagreement quarantines both
+  assertions; **zero conflicts** occurred. All 245 prior rows remain.
+
+Independent extraction: **444** source rows, **207** supporting existing rows
+and **237** new, for **482** total. Compared with the earlier 390-row research
+TSV, 375 identities remain with identical roles, 15 fail the stricter inclusion
+rules, and 69 Forever-only IDs are newly admitted (no Classic-ID allowlist).
+197 shared rows have updated faction evidence and 119 differ in rank-column
+semantics; original literal title tiers remain in the title evidence. The prior
+research TSV is not an authority for the generated fixture.
+
+| Kind | Alliance | Horde | Both | Unknown | Total |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| class | 94 | 115 | 0 | 10 | 219 |
+| profession | 79 | 121 | 0 | 12 | 212 |
+| weapon | 4 | 4 | 0 | 0 | 8 |
+| riding | 4 | 4 | 0 | 0 | 8 |
+| pet | 11 | 7 | 0 | 0 | 18 |
+| demon | 6 | 7 | 0 | 0 | 13 |
+| portal | 1 | 3 | 0 | 0 | 4 |
+
+The four exposed kinds contain **447** identities; 22 have unknown faction and
+3 more have no available position (251978 enchanting, 267332 herbalism, 252388
+mining), leaving **422** located known-faction candidates. Full class totals by
+side are recorded in the per-subkind fixture; notably paladins are **8 Alliance,
+5 Horde** and shamans **0 Alliance, 15 Horde, 3 unknown**. Alliance shaman access
+is not established by these files; 257446, 258113 and 262558 stay unknown. Tests
+use synthetic Alliance-shaman/AH records to prove access support without adding
+unsupported production assertions.
+
+Position extension: `positions` stores semicolon-separated `uiMap:x,y` triples
+with 0–1 x right/y down; `name_enUS` is only a missing-name fallback. `has_position`
+retains its old meaning: position present in raw Data.lua units. Existing raw,
+Curated and Forever positions are resolved before adding fallbacks. **29**
+fixture IDs receive observed positions; one is a fixture-only pet and one has
+unknown faction, so **27** appear in runtime fallback text. Five shared NPCs
+377/1383/3155/3345/4591 agree with existing runtime-resolved coordinates within
+3.659/2.223/2.229/2.621/1.804 yards respectively, using the pinned client map
+bounds (including classic-to-Forever transforms). Existing coordinates were
+not replaced or rounded. Tests gate coordinates against pinned evidence and
+reject any positioned ID that already has a packaged position.
+
+The runtime resolves fallbacks only on a trainer request, after current learned
+positions; later local observations and localized names always win. English
+names are used only on enUS when no database name exists. Other locales use the
+localized service label alone until a database/local observation provides a
+name. Fallbacks do not modify DB.units or contaminate discovery exports.
+Generation is deterministic/offline and fixtures/licences are checksummed.
+Measured with actual Lua 5.1: expanded data chunk median 0.030 ms, p95 0.031 ms,
+4.929 KiB retained; increase from the original roster is 0.009 ms/2.662 KiB.
+No eager roster parsing, scans, timers or background work was added.
+
+Capital counts below count known-faction roster NPCs whose existing resolved
+positions (or eligible fallback) explicitly include that capital's uiMap. They
+are category coverage, not completeness claims or new position certifications.
+
+Class coverage:
+
+| Capital | warrior | paladin | hunter | rogue | priest | shaman | mage | warlock | druid | Total |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Stormwind | 3 | 3 | 3 | 2 | 4 | 0 | 2 | 3 | 1 | 21 |
+| Ironforge | 3 | 1 | 3 | 3 | 4 | 0 | 2 | 1 | 0 | 17 |
+| Darnassus | 3 | 0 | 3 | 1 | 4 | 0 | 0 | 0 | 2 | 13 |
+| Orgrimmar | 3 | 0 | 3 | 3 | 2 | 4 | 4 | 3 | 0 | 22 |
+| Thunder Bluff | 3 | 1 | 3 | 0 | 3 | 3 | 3 | 0 | 3 | 19 |
+| Undercity | 3 | 1 | 0 | 3 | 3 | 0 | 3 | 3 | 0 | 16 |
+
+- Stormwind: shaman.
+- Ironforge: shaman, druid.
+- Darnassus: paladin, shaman, mage, warlock.
+- Orgrimmar: paladin, druid.
+- Thunder Bluff: rogue, warlock.
+- Undercity: hunter, shaman, druid.
+
+Profession coverage:
+
+| Capital | alchemy | blacksmithing | enchanting | engineering | herbalism | leatherworking | mining | skinning | tailoring | cooking | firstaid | fishing | Total |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Stormwind | 2 | 2 | 2 | 2 | 1 | 2 | 1 | 1 | 3 | 1 | 1 | 1 | 19 |
+| Ironforge | 2 | 3 | 2 | 3 | 1 | 2 | 1 | 1 | 2 | 1 | 1 | 1 | 20 |
+| Darnassus | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| Orgrimmar | 2 | 3 | 2 | 3 | 1 | 2 | 1 | 1 | 2 | 1 | 1 | 1 | 20 |
+| Thunder Bluff | 2 | 2 | 2 | 0 | 1 | 3 | 1 | 1 | 2 | 1 | 1 | 1 | 17 |
+| Undercity | 3 | 2 | 2 | 2 | 1 | 2 | 1 | 1 | 3 | 1 | 1 | 1 | 20 |
+
+- Stormwind: no category zeros.
+- Ironforge: no category zeros.
+- Darnassus: blacksmithing, enchanting, engineering, herbalism, leatherworking, mining, skinning, tailoring, cooking, fishing.
+- Orgrimmar: no category zeros.
+- Thunder Bluff: engineering.
+- Undercity: no category zeros.
+
+Darnassus profession coverage remains particularly sparse: this pin supplies
+neither a qualifying title nor interaction for most city profession NPCs. No
+rows were inferred from familiar names to fill that gap. Both class and
+profession data remain partial; no clean total-world denominator is known.

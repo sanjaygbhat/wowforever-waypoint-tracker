@@ -29,6 +29,9 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 BLOCK = re.compile(r"WaypointTrackerData\.forever\s*=\s*\[==\[(.*?)\]==\]", re.S)
 SERVICES = set("vendor repair flight trainer banker innkeeper auctioneer stablemaster spirithealer".split())
+SERVICES.update("trainer_class_" + key for key in "warrior paladin hunter rogue priest shaman mage warlock druid".split())
+SERVICES.update("trainer_profession_" + key for key in "alchemy blacksmithing enchanting engineering herbalism leatherworking mining skinning tailoring cooking firstaid fishing".split())
+SERVICES.update(("trainer_weapon", "trainer_riding"))
 WIDTHS = {"N": (7, 9), "O": (4, 4), "Q": (3, 11), "I": (4, 5), "M": (2, 2), "C": (5, 5)}
 LIMITS = {"N": 20000, "O": 20000, "Q": 20000, "I": 40000}
 
@@ -47,7 +50,7 @@ def clean(value, limit=200):
     raw = value.encode("utf-8")
     if len(raw) > limit:
         # Match CleanText's byte truncation, including its last-character trim.
-        raw = re.sub(rb"[\xc0-\xff][\x80-\xbf]*$", b"", raw[:limit])
+        raw = raw[:limit].decode("utf-8", errors="ignore").encode("utf-8")
     return raw.decode("utf-8").strip(" \t\r\n\v\f")
 
 
@@ -102,10 +105,10 @@ def validate(fields, maps):
         f[1] = integer(f[1])
         f[2] = clean(f[2])
     if kind == "N":
-        if f[3] not in ("", "0", "1") or f[7] not in ("", "H", "A"):
+        if f[3] not in ("", "0", "1") or f[7] not in ("", "H", "A", "AH"):
             raise ValueError("invalid hostility/faction flag")
         f[4] = integer(f[4]) if f[4] else ""
-        f[5] = ",".join(sorted(set(re.findall(r"[A-Za-z_]+", f[5])) & SERVICES))
+        f[5] = ",".join(sorted(set(f[5].split(",")) & SERVICES))
         spots(f[6], maps)
         f[8] = clean(f[8], 60)
     elif kind == "O":
@@ -229,6 +232,8 @@ def merge(source, incoming, maps):
                 old[ix] = merge_spots(old[ix], f[ix], maps, stats, kind, existing)
             if kind == "N":
                 old[5] = union(old[5], f[5])
+                if any(token == "trainer" or token.startswith("trainer_") for token in old[5].split(",")):
+                    old[7] = "".join(letter for letter in "AH" if letter in old[7] + f[7])
             elif kind == "Q":
                 if not old[6] and f[6]:
                     old[6] = f[6]

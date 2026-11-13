@@ -27,6 +27,7 @@ local SERVICES = {
     vendor = true, repair = true, flight = true, trainer = true, banker = true, innkeeper = true,
     auctioneer = true, stablemaster = true, spirithealer = true,
 }
+for service in pairs(ns.Trainers.services) do SERVICES[service] = true end
 local MAX_SELLERS = 20 -- vendors kept per item
 local MAX_STOCK = 300 -- items read from one vendor
 local Int, CleanText = ns.Int, ns.CleanText
@@ -110,7 +111,7 @@ local FIELD_TYPES = {
 function Learn.Repair(e)
     for k, v in pairs(e) do
         local want = FIELD_TYPES[k]
-        if (want and type(v) ~= want) or (k == "fac" and v ~= "A" and v ~= "H") then
+        if (want and type(v) ~= want) or (k == "fac" and v ~= "A" and v ~= "H" and v ~= "AH") then
             e[k] = nil
         end
     end
@@ -375,7 +376,8 @@ local function Describe(e, unit, id)
     if hostile ~= nil then
         e.hostile = hostile
     end
-    e.fac = fac or e.fac
+    local trainer = e.services and e.services.trainer
+    e.fac = trainer and ns.Trainers.MergeAccess(e.fac, fac) or (fac or e.fac)
     local level = Int(Plain(UnitLevel(unit)))
     e.level = level or e.level
     if not titleChecked[id] then
@@ -682,6 +684,26 @@ end
 -- ---------------------------------------------------------------------------
 -- NPC services
 -- ---------------------------------------------------------------------------
+-- TRAINER_SHOW/UPDATE occur after trainer data becomes available; the
+-- interaction-manager event can arrive before that data exists.
+function Learn.Trainer()
+    if not Enabled() or not UnitExists("npc") then return end
+    Learn.Unit("npc", "trainer")
+    local profession = ns.Trainers.OpenProfession()
+    if profession then
+        local kind, id = Learn.Unit("npc", "trainer_profession_" .. profession)
+        local e = kind == "npc" and Learn.Store().npcs[id]
+        -- An open, identified trainer establishes access for this character's
+        -- faction even when UnitFactionGroup("npc") has no faction token.
+        local faction = ns.Str(UnitFactionGroup and UnitFactionGroup("player"))
+        if e and (faction == "Alliance" or faction == "Horde") then
+            e.fac = ns.Trainers.MergeAccess(e.fac, faction == "Alliance" and "A" or "H")
+            Changed()
+        end
+        ns.Fire("LEARNED") -- invalidate now; merging still waits for a user query
+    end
+end
+
 local SERVICE_FOR = {}
 local function MapInteractions()
     local T = Enum and Enum.PlayerInteractionType
@@ -1154,9 +1176,17 @@ function Learn.Import(text, st, quiet)
                 e.hostile = f[4] == "1"
             end
             e.level = e.level or Int(f[5])
-            e.fac = e.fac or ((f[8] == "A" or f[8] == "H") and f[8] or nil)
+            local fac = (f[8] == "A" or f[8] == "H" or f[8] == "AH") and f[8] or nil
+            local trainer = e.services and e.services.trainer
+            for token in pairs(e.services or {}) do
+                if ns.Trainers.services[token] then trainer = true end
+            end
+            for token in (f[6] or ""):gmatch("[^,]+") do
+                if token == "trainer" or ns.Trainers.services[token] then trainer = true end
+            end
+            e.fac = trainer and ns.Trainers.MergeAccess(e.fac, fac) or (e.fac or fac)
             e.title = e.title or CleanText(f[9], 60)
-            for s in (f[6] or ""):gmatch("[%a_]+") do
+            for s in (f[6] or ""):gmatch("[^,]+") do
                 if SERVICES[s] then
                     e.services = e.services or {}
                     e.services[s] = true
@@ -1250,6 +1280,8 @@ ns.RegisterEvent("QUEST_ACCEPTED", function(a, b)
 end)
 ns.RegisterEvent("LOOT_OPENED", Learn.Looted)
 ns.RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", Learn.Interaction)
+ns.RegisterEvent("TRAINER_SHOW", Learn.Trainer)
+ns.RegisterEvent("TRAINER_UPDATE", Learn.Trainer)
 ns.RegisterEvent("PLAYER_TARGET_CHANGED", function()
     if Enabled() and UnitExists("target") then
         Remember("target")

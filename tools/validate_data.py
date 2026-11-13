@@ -28,6 +28,7 @@ def main():
             print("FAIL audit fixture missing or changed: " + name, flush=True)
             failed.append("fixture " + name)
     commands = [
+        [sys.executable, "tests/check_trainers.py"],
         [sys.executable, "tools/validate_taxi_transport.py"],
         [sys.executable, "tools/validate_terrain_geometry.py", "--lua", args.lua],
         [sys.executable, "tests/check_sanctum_area.py"],

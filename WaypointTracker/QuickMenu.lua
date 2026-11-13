@@ -37,7 +37,27 @@ function QuickMenu.Build(root)
         end))
         if near and type(near.CreateButton) == "function" then
             for _, s in ipairs(Find.SERVICES) do
-                near:CreateButton(L[s.label], ns.Safe(function() Find.GoToNearest(s.key) end))
+                if s.key == "profession" then
+                    local prof = near:CreateButton(L[s.label], ns.Safe(function() Find.Show() end))
+                    if prof and prof.SetTooltip then
+                        prof:SetTooltip(function(tooltip) tooltip:AddLine(L.TRAINER_KNOWN_DESC, 1, 0.82, 0, true) end)
+                    end
+                    -- A context-menu build must not load the world database.
+                    -- Forever calls this hook before opening the submenu; add
+                    -- its choices only when the player actually enters it.
+                    if prof and prof.SetOnEnter and type(prof.CreateButton) == "function" and prof.CreateTitle then
+                        prof:CreateTitle(L.SERVICE_PROFESSION_TRAINER)
+                        local populated = false
+                        prof:SetOnEnter(ns.Safe(function()
+                            if not populated then
+                                populated = true
+                                Find.ProfessionMenu(prof, true)
+                            end
+                        end))
+                    end
+                else
+                    near:CreateButton(L[s.label], ns.Safe(function() Find.GoToNearest(s.key) end))
+                end
             end
         end
     end
