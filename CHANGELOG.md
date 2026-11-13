@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.4.0
+
+- **Nearest now finds trainers:** click **Class Trainer** for your own class, choose from 12 professions with **Profession Trainer**, or click **Weapon Master** or **Riding Trainer**. Find them in the **Find** tab or the minimap button's right-click menu under **Nearest...**. Profession Trainer finds the nearest one it knows, and trainers you talk to are remembered. The arrow takes you there by the fastest route.
+
+**Treasure hunt (beta): how to turn it on**
+
+It stays off by default. Choose any of these three ways:
+
+1. Type `/wp`, open the **Treasure (beta)** tab and click **Enable treasure hunt (beta)**.
+2. Type `/wp treasure` to toggle it on or off.
+3. Open **Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta)** and enable **Treasure hunt (beta)**.
+
+- The new **Treasure (beta)** tab puts the options, **Nearby now**, **In this zone** and **Recent finds** together. `/wp treasure show` opens it without toggling the feature; `/wp treasure status` still reports what it sees.
+- **Nearby now** shows live finds with distance: double-click to point the arrow, or right-click to ignore one. **In this zone** lists known rare spawns and chest spots nearest first, with when you last saw a rare if it is in your saved log. **Recent finds** keeps the last 50 finds per character between sessions, with looted, killed or gone when the outcome is known.
+- Rares seen on a nameplate or target now get a waypoint even if their spawn is unknown, marking where you saw them. Alerts include level and rare, rare elite or boss classification when available.
+- **Lead me to known chest spots** now covers the whole zone instead of only 300 yards. The new **Lead me to known rare spawns** option visits known rare spots too. Known-spot guidance also works when you stand in a sub-zone map of the zone. Your own waypoint keeps the arrow unless **Point the arrow at it right away** is on; switching it on points to the nearest live find once.
+- **Fully restart the game after updating to 1.4.0.** This release adds addon files; `/reload` is not enough.
+- New regression tests cover trainer choices and learning, the Treasure (beta) tab, rare waypoints, the saved find log, zone exploration and background work.
+
 ## 1.3.2
 
 - **Fixes the stutter while moving with Real routes on** (since 1.3.0). The route was worked out again in one go, as often as twice a second while you moved, and the game froze for a moment each time: longer the farther away the destination was. The route, and the path along ground you have walked before, is now worked out a little at a time in the background, a few thousandths of a second per frame at most, and the arrow keeps following the route it already has in the meantime. The routes chosen are the same as before. For a new waypoint on a long trip the arrow points straight at it for up to about a second while the first route is worked out.

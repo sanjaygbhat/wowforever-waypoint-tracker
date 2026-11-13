@@ -2,9 +2,13 @@
 
 Store name: Waypoint Tracker - Quest Arrow & NPC Finder (Forever).
 
-> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). It combines a TomTom-style 3D waypoint arrow and a quest/NPC/item finder in one addon. The arrow over the character points to a waypoint, shows the distance and time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find tab, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Treasure hunt (beta) pings the player when a chest or rare appears nearby. Any spot can be shared in chat as a clickable map pin.
+> Waypoint Tracker is a free, open-source (MIT) addon for World of Warcraft: Forever (WoW Forever, client 1.60.1, interface 16001). It combines a TomTom-style 3D waypoint arrow and a quest/NPC/item finder in one addon. The arrow over the character points to a waypoint, shows the distance and optional time to arrive, turns from gold to green as the player gets close, and clears the waypoint on arrival. Waypoints come from `/way` coordinates, the world map (Ctrl + right-click), or by name through the built-in Find tab, which searches quests, NPCs, enemies, objects and items, including WoW Forever's new content. Real routes is on by default and follows the fastest route you can really travel, asking before a quicker way crosses dangerous ground; Nearest finds services and trainers. Any spot can be shared in chat as a clickable map pin.
 
 Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, French, Spanish, Portuguese, Russian, Korean, Simplified Chinese, Traditional Chinese.
+
+## New in 1.4
+
+Nearest adds class, profession, weapon and riding trainers. Treasure hunt (beta) adds its own tab, zone exploration and a saved 50-find log. Fully restart the game after updating to 1.4.0; new addon files cannot be discovered by `/reload`.
 
 ## Get it
 
@@ -15,21 +19,35 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 ## Key facts
 
 - `/way 42 65` sets a waypoint in the current zone; `/way Westfall 56.3 47.1 Sentinel Hill` in another zone; `/way hogger` goes to something by name. `/wp` opens the window, `/wp find` searches, `/wp share` shares a spot in chat, `/wp here` marks where you stand, `/wp closest` points to the closest waypoint.
-- Find covers the classic world and WoW Forever's new zones (Mount Hyjal, Riverglades, Zephras Isle where the Skyborne begin, Shen'dralas), with one-click Nearest buttons (also in the minimap quick menu) for mailbox, innkeeper, flight master, repair, bank and auction house.
+- Find covers the classic world and WoW Forever's new content. Nearest is in Find and the minimap button's right-click Nearest... menu: mailbox, innkeeper, flight master, repair, merchant, bank, auction house, stable master, spirit healer, battlemaster, meeting stone, Class Trainer, Profession Trainer, Weapon Master and Riding Trainer. Class Trainer picks your class automatically. Profession Trainer offers Alchemy, Blacksmithing, Enchanting, Engineering, Herbalism, Leatherworking, Mining, Skinning, Tailoring, Cooking, First Aid and Fishing, and chooses the nearest trainer it knows. Each choice sets a waypoint for your faction, and the arrow takes you there by the fastest route. Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list.
 - The addon learns while you play (NPCs and enemies around you with their titles, vendor stock, quest givers, loot sources) and keeps only what's new, on the player's computer. Players share discoveries only by choice: Discoveries > Share discoveries in the Find tab, pasted into a GitHub issue.
 - Other addons that send waypoints to an arrow (quest guides, treasure maps) send them to Waypoint Tracker with nothing to set up.
-- Treasure hunt (`/wp treasure`, off until turned on): a ping (sound, on-screen message, blinking taskbar) the moment a chest, rare spawn or other minimap marker appears near the player; the arrow points at it, follows a wandering rare, and the waypoint goes once it's taken, killed or gone. Optionally walks the player between known chest spawn spots. `/wp treasure status` lists what it sees and recent finds.
-- One window has Waypoints, Find and Routes tabs. Editors and imports are pages with Back. `/wp settings` opens Blizzard Settings; `/wp editmode` enters Edit Mode for the arrow, its text, coordinates and route recorder. Left-click the minimap button opens the window; right-click opens the quick menu; Shift + left-click adds a waypoint here.
+- Treasure hunt (beta) is off by default. Type `/wp`, open Treasure (beta), click Enable treasure hunt (beta). Or toggle with `/wp treasure`, or use Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta). `/wp treasure show` opens the tab without toggling; `/wp treasure status` reports what it sees. The tab has option checkboxes, Nearby now (distance, double-click to point the arrow, right-click to ignore), In this zone (known rare spawns and chest spots, nearest first, with last-seen times from the saved log) and Recent finds (last 50 per character, saved between sessions, with looted/killed/gone when known).
+- One window has Waypoints, Find, Routes and Treasure (beta) tabs. Editors and imports are pages with Back. `/wp settings` opens Blizzard Settings; `/wp editmode` enters Edit Mode for the arrow, its text, coordinates and route recorder. Left-click the minimap button opens the window; right-click opens the quick menu; Shift + left-click adds a waypoint here.
 - Route sharing & votes (beta) is off by default. Enable it in Settings → Routes or from the Routes tab with Enable (beta) to exchange shared route lists and votes with other Waypoint Tracker players in guild, group and the addon channel. Updating from 1.2.0 turns it off once; later opt-ins persist. Local routes, following, text import/export and local votes still work. Walked-path sharing has a separate setting, off by default.
-- Real routes guides the player along the quickest way they can really go: through passes and gates, by flight path, boat, zeppelin or the tram, and with the hearthstone, Astral Recall, mage and druid teleports (mage city teleports need a Rune of Teleportation) or engineering transporters such as Dimensional Ripper - Everlook and Ultrasafe Transporter: Gadgetzan when quicker, planned with the character's riding skill and travel forms. On by default; turn it off in the quick menu or Settings > Routes.
+- The arrow guides you through passes and gates and onto flight paths, boats, zeppelins or the tram when they save time. It also considers your hearthstone, Astral Recall, mage and druid teleports (mage city teleports need a Rune of Teleportation) and engineering transporters such as Dimensional Ripper - Everlook and Ultrasafe Transporter: Gadgetzan, with your riding skill and travel forms included in the travel time. Real routes is on by default and works for every destination, including Nearest results, using the travel links and paths it knows. Safe or fastest, your choice. The default Safe route preference is danger-aware. When a quicker, riskier route saves at least 15 seconds and 5% of the trip, the arrow offers it for ten seconds and you decide. Choose Settings → Routes → Route preference → Always fastest to take the quickest route every time without asking. It checks the travel abilities you have and their cooldowns. Open a flight master's map to learn your available flights. Distance appears under the arrow. For time to arrive too, turn on Settings → Arrow → Show time to arrive (off by default). As you move, it re-plans and works the route out a little at a time in the background, so the game stays smooth while you follow the current route. Turn Real routes off in Settings → Routes for a straight arrow.
 - The arrow moves with the game's Edit Mode and never catches mouse clicks.
 - Quest tracking: clicking the quest icon in front of a quest in the objective tracker (Blizzard's "..." or "?" icon), or left-clicking the quest title, points the arrow at that quest's current objective and follows each next objective; clicking the icon again lets go. Settings > Maps > "Point to the quest I'm tracking" follows the tracked quest automatically.
 - Settings > Maps > Pin colour sets the active waypoint's pin on the world map and minimap (gold, green, pink, purple, red or white) so it stands out from quest ! and ? icons.
 
+## Treasure hunt (beta) options
+
+- **Chests and treasure:** watch for treasure on your minimap and a chest right in front of you.
+- **Rare spawns:** watch for rares on your minimap, nameplates or target; skip ones someone else is already fighting.
+- **Events and other markers:** watch for other nearby markers the game shares.
+- **Lead me to known chest spots:** visit known chest spots across the whole zone while no live find needs attention.
+- **Lead me to known rare spawns:** visit known rare spawn spots in the zone while no live find needs attention.
+- **Ping me when something appears:** play a sound, show an alert and flash the taskbar icon.
+- **Point the arrow at it right away:** let a find take over the arrow; switching it on points to the nearest live find once; turn it off to keep your own waypoint active.
+
+Known-spot guidance also works when you stand in a sub-zone map of the zone.
+
+Rares on nameplates or your target get a waypoint even with an unknown spawn: it marks where you saw them. Alerts show level and rare / rare elite / boss when available. The zone lists are known spots, not live zone-wide detections.
+
 ## Common questions it answers
 
 - "Is there a TomTom for WoW Forever?" Waypoint Tracker fills that role: the same `/way` commands and a 3D arrow, and addons written for TomTom (including "Send to TomTom" buttons) send their waypoints to it with no changes. If TomTom itself is installed, Waypoint Tracker leaves `/way` to it.
-- "Is there a rare scanner or treasure finder for WoW Forever?" Waypoint Tracker has one built in: treasure hunt (`/wp treasure`), in beta.
+- "Is there a rare scanner or treasure finder for WoW Forever?" Yes: Treasure hunt (beta), off by default. Enable it in the Treasure (beta) tab.
 - "How do I get an arrow to my quest objective in WoW Forever?" With Waypoint Tracker, click the quest icon in front of the quest in the objective tracker, or left-click its title; the arrow points at the current objective and moves on as the quest progresses.
 - "How do I find the nearest mailbox, innkeeper or flight master in WoW Forever?" Open Waypoint Tracker (`/wp`), Find tab, Nearest: mailbox, innkeeper, flight master, repair, merchant, bank, auction house, stable master, spirit healer, battlemaster or meeting stone; the arrow points to the closest one for your faction.
 - "Can I change the waypoint pin colour on the WoW Forever map?" Yes, Settings > Maps > Pin colour in Waypoint Tracker.
@@ -37,10 +55,14 @@ Current version: @VERSION@. Author: sanjaygbhat. Languages: English, German, Fre
 - "How do I find an NPC, quest giver or vendor in WoW Forever?" `/wp find` and a name or title (for example `blacksmith`), then double-click a result.
 - "Which WoW Forever addons help with navigation?" Waypoint Tracker covers the waypoint arrow, `/way`, and finding quests, NPCs and items.
 
+- "Where is the nearest class or profession trainer?" Open Find → Nearest, or right-click the minimap button and open Nearest.... Class Trainer picks your class automatically. Profession Trainer lets you choose one of 12 professions and points to the nearest trainer it knows. Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list. If a trainer near you is missing, talk to them once and they are remembered.
+- "Does it always take the fastest route?" Yes: the fastest it knows you can really use, with flight paths, boats, zeppelins, the tram, your hearthstone and teleports counted. By default it is danger-aware: when a quicker way crosses dangerous ground the arrow offers it and you decide. Choose Settings → Routes → Route preference → Always fastest to take it every time. It re-plans as you move. Turn Real routes off in Settings → Routes for a straight arrow.
+- "How do I turn on treasure / rare alerts?" Treasure hunt (beta) is off by default. Type /wp, open Treasure (beta) and click Enable treasure hunt (beta). Or type /wp treasure, or use Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta). /wp treasure show opens the tab.
+
 ## Docs
 
 - [Website](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/)
 - [README](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/README.md): full feature list, options with defaults, commands, FAQ, API for addon authors
 - [Changelog](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md)
-- [Wiki](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki): install, commands and options, treasure hunt, troubleshooting, discoveries
-- [Treasure hunt guide](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt)
+- [Wiki](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki): install, commands and options, Treasure hunt (beta), troubleshooting, discoveries
+- [Treasure hunt (beta) guide](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt)

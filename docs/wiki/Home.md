@@ -2,7 +2,7 @@
 
 **Set a waypoint. Follow the arrow. That's it.**
 
-Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever: a TomTom-style arrow with `/way` coordinates, a quest, NPC and item finder, clickable map-pin sharing, and treasure hunt (beta) that pings you when a chest or rare appears nearby. This guide covers the **1.2.1 release**, client **1.60.1**, interface **16001**.
+Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever. Find quests, NPCs and items by name, follow the fastest route, or use Nearest for services and trainers. It accepts `/way` coordinates and TomTom-compatible waypoints and shares spots as clickable map pins. This guide covers **1.4.0**, client **1.60.1**, interface **16001**.
 
 [![A green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 
@@ -14,19 +14,33 @@ Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft
 |---|---|
 | Install the addon and set your first waypoint | [Installation & Quick Start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) |
 | Look up a command or adjust the arrow | [Commands & Options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) |
-| Get pinged when a rare or chest spawns (beta) | [Treasure Hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) |
+| Get pinged when a rare or chest spawns (beta) | [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) |
 | Check your install, the arrow and Find | [Troubleshooting & Compatibility](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) |
 | Share discoveries or understand what stays local | [Discoveries, Privacy & Contributing](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing) |
 
 ## The first minute
 
-1. Type `/wp` to open one window with **Waypoints**, **Find** and **Routes** tabs.
+1. Type `/wp` to open one window with **Waypoints**, **Find**, **Routes** and **Treasure (beta)** tabs.
 2. Type `/way 42 65` to set a waypoint in your current zone, or hold **Ctrl** and **right-click** the world map.
 3. Follow the arrow. It changes from gold to green as you approach.
 4. Open **Find** to search a quest, NPC, enemy, object or item; double-click a result and the arrow points to its closest spot.
-5. Turn on **Treasure hunt (beta)** in the quick menu (or type `/wp treasure`) to get a ping and the arrow the moment a chest or rare spawns near you.
+5. Use **Nearest** in Find, or **Nearest...** in the minimap button's right-click menu, for services and trainers. **Class Trainer** picks your class automatically; **Profession Trainer** offers 12 professions and finds the nearest trainer it knows. Weapon Master and Riding Trainer have their own buttons. Each choice sets a waypoint for your faction, and the arrow takes you there by the fastest route.
 
-Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placement. **Real routes** is on by default: the arrow follows passes, gates, transport, your hearthstone and class teleports; turn it off from the quick menu or Settings → Routes.
+Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placement. **Real routes** is on by default: the arrow follows passes, gates, transport, your hearthstone and class teleports. Turn it off in **Settings → Routes** for a straight arrow.
+
+**Safe or fastest, your choice.** The default **Safe route** preference is danger-aware. When a quicker, riskier route saves at least 15 seconds and 5% of the trip, the arrow offers it for ten seconds and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take the quickest route every time without asking.
+
+## Treasure hunt (beta)
+
+**Off by default. How to turn it on:**
+
+1. Type `/wp`.
+2. Open the **Treasure (beta)** tab.
+3. Click **Enable treasure hunt (beta)**.
+
+You can also type `/wp treasure` to toggle it, or enable **Treasure hunt (beta)** under **Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta)**. `/wp treasure show` opens the tab without changing whether it is on.
+
+The tab brings together nearby finds, known rare spawns and chest spots in your zone, and the last 50 finds per character, saved between sessions.
 
 ## Downloads and help
 
@@ -36,4 +50,4 @@ Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placeme
 - [Questions, ideas and translations](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues)
 - [Source and MIT licence](https://github.com/sanjaygbhat/wowforever-waypoint-tracker)
 
-[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
+[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)

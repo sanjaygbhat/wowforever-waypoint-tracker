@@ -1,4 +1,4 @@
-[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
+[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
 
 # Installation & Quick Start
 
@@ -15,9 +15,9 @@ Interface/AddOns/WaypointTracker_Data/WaypointTracker_Data.toc
 ```
 
 3. Start or restart the game. In the character-selection **AddOns** list, enable **Waypoint Tracker** and **Waypoint Tracker (database)**.
-4. Type `/wp` in game. After updating an existing installation, `/reload` reloads it.
+4. Type `/wp` in game. **Updating to 1.4.0 requires a full game restart because it adds addon files; `/reload` is not enough.**
 
-The data folder supplies Find's database. It loads when you first open Find. Keep both folders from the same release. Your personal settings and discoveries live separately in SavedVariables; keep those when updating.
+The data folder supplies the database. It loads when needed by Find, routes or Treasure hunt (beta). Keep both folders from the same release. Your personal settings and discoveries live separately in SavedVariables; keep those when updating.
 
 ## Install through WowUp
 
@@ -36,7 +36,7 @@ The [official WowUp guide](https://wowup.io/guide/get-addons/overview) documents
 - **Map:** hold **Ctrl** and **right-click** the world map.
 - **Where you stand:** `/wp here`.
 
-The arrow shows your destination and distance. On arrival it can play a sound, remove the waypoint and select the next closest one; adjust these in **Settings → Arrow → When You Arrive**.
+The arrow shows your destination and distance. For time to arrive too, turn on **Settings → Arrow → Show time to arrive** (off by default). On arrival it can play a sound, remove the waypoint and select the next closest one; adjust these in **Settings → Arrow → When You Arrive**.
 
 [![A green waypoint arrow over a flying character near Grol'dom Farm, showing Trade Rep, 932 yds and About 0:30](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 
@@ -52,7 +52,21 @@ Open the world map, select your zone, then hold **Ctrl** and **right-click** the
 
 ## Find a destination
 
-Open the **Find** tab or use `/wp find`; choose a kind from the dropdown. Search, select a result and double-click it or press **Take Me There**. Use the faction and zone filters to narrow results. The **Nearest** menu finds services such as a mailbox, innkeeper or repair vendor.
+Open the **Find** tab or use `/wp find`; choose a kind from the dropdown. Search, select a result and double-click it or press **Take Me There**. Use the faction and zone filters to narrow results. The **Nearest** buttons find services and trainers. The same choices are in the minimap button's right-click **Nearest...** menu. **Class Trainer** picks your class automatically. **Profession Trainer** offers 12 professions and finds the nearest trainer it knows; trainers you talk to are remembered. **Weapon Master** and **Riding Trainer** each take one click. Each choice sets a waypoint for your faction, and the arrow takes you there by the fastest route.
+
+Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list.
+
+## Treasure hunt (beta)
+
+**Off by default. How to turn it on:**
+
+1. Type `/wp`.
+2. Open the **Treasure (beta)** tab.
+3. Click **Enable treasure hunt (beta)**.
+
+You can also type `/wp treasure` to toggle it, or enable **Treasure hunt (beta)** under **Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta)**. `/wp treasure show` opens the tab without changing whether it is on.
+
+See the [guide](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) for nearby finds, known zone spots and the saved log.
 
 ## Share a spot
 

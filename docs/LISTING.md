@@ -15,10 +15,10 @@ The in-game addon list, folders and API identifiers stay `Waypoint Tracker` / `W
 ## Summary (CurseForge and Wago)
 
 ```text
-Find any quest, NPC, enemy or item and a 3D arrow takes you there by the fastest route. /way coordinates, map pins and TomTom-compatible waypoints for WoW Forever.
+Follow the 3D arrow by the fastest route. Find quests, NPCs and items, or use Nearest for services and trainers. /way and TomTom-compatible waypoints for WoW Forever.
 ```
 
-Lead with Find and the arrow: one promise, in the words players search for (quest, NPC, item, arrow, /way, TomTom). Routes, Real routes, Treasure hunt (beta) and sharing stay in the description's "Also included" section.
+Lead with the 3D arrow and fastest routes (on by default), then Find and Nearest services and trainers. Keep the summary under 250 characters. Refresh the descriptions and their "New in" block with every feature release; keep Treasure hunt (beta) below the main features.
 
 ## Categories
 
@@ -30,7 +30,7 @@ Wago: Map & Minimap, Quests & Leveling.
 1. `docs/screenshots/01-arrow.jpg`: the arrow in the Barrens (keep first: the arrow in the game world)
 2. `docs/screenshots/02-map.jpg`: pins on the Silverpine Forest map
 3. `docs/images/feature-grid.png`: features at a glance
-4. `docs/images/treasure-hunt.png`: treasure hunt, beta (illustration)
+4. `docs/images/treasure-hunt.png`: Treasure hunt (beta), illustration
 5. `docs/images/colours.png`: the arrow's colours
 6. `docs/images/banner.png`: banner
 
@@ -51,7 +51,7 @@ A real gameplay clip should replace the illustrated `arrow-demo.gif` at the top 
 About:
 
 ```text
-WoW Forever addon: 3D waypoint arrow, /way coordinates, quest, NPC and item finder, shareable map pins and treasure alerts. TomTom-compatible.
+WoW Forever addon: find quests, NPCs and items, follow the 3D arrow by the fastest route, and find the nearest services and trainers. /way and TomTom-compatible waypoints.
 ```
 
 Topics (GitHub allows 20): `world-of-warcraft`, `world-of-warcraft-addon`, `wow`, `wow-addon`, `wowaddon`, `warcraft-addon`, `wow-forever`, `wow-forever-addon`, `classic-plus`, `wow-classic`, `addon`, `waypoint`, `waypoints`, `waypoint-arrow`, `tomtom`, `coordinates`, `navigation`, `quest-helper`, `lua`, `curseforge`.
