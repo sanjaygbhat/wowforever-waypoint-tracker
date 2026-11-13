@@ -1,0 +1,308 @@
+{
+  "date": "2026-11-13",
+  "att_commit": "1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+  "playable_classes": {
+    "A": [
+      "warrior",
+      "paladin",
+      "hunter",
+      "rogue",
+      "priest",
+      "shaman",
+      "mage",
+      "warlock",
+      "druid"
+    ],
+    "H": [
+      "warrior",
+      "paladin",
+      "hunter",
+      "rogue",
+      "priest",
+      "shaman",
+      "mage",
+      "warlock",
+      "druid"
+    ]
+  },
+  "playable_class_reference": "https://worldofwarcraft.blizzard.com/en-us/news/24304075/",
+  "source_pins": {
+    "vmangos": "1fb4909858f3ac558e06613e223f6d7116a9a8fa",
+    "cmangos": "c33f90b8eeb3f8bacb53d5cbfee45075c80b416c",
+    "questie": "454b9d072965ee8f1a881429260fcf1fac8d60f7"
+  },
+  "reviews": [
+    {
+      "capital": "Stormwind",
+      "faction": "A",
+      "kind": "class",
+      "subkind": "shaman",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active shaman class trainer in Stormwind in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - stormwind city.lua",
+        "sha256": "d61aa14f7e2a676a69e5a6983748320ee9b93c313cf51ab43ba4446e6fd8eebf"
+      }
+    },
+    {
+      "capital": "Ironforge",
+      "faction": "A",
+      "kind": "class",
+      "subkind": "druid",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active druid class trainer in Ironforge in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - ironforge.lua",
+        "sha256": "d8654a8eae1953c101bdfa280cd83558fb6edf7d03d2dc87a5020102900a3cc1"
+      }
+    },
+    {
+      "capital": "Darnassus",
+      "faction": "A",
+      "kind": "class",
+      "subkind": "paladin",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active paladin class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+        "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2"
+      }
+    },
+    {
+      "capital": "Darnassus",
+      "faction": "A",
+      "kind": "class",
+      "subkind": "shaman",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active shaman class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+        "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2"
+      }
+    },
+    {
+      "capital": "Darnassus",
+      "faction": "A",
+      "kind": "class",
+      "subkind": "mage",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active mage class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+        "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2"
+      }
+    },
+    {
+      "capital": "Darnassus",
+      "faction": "A",
+      "kind": "class",
+      "subkind": "warlock",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active warlock class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+        "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2"
+      }
+    },
+    {
+      "capital": "Darnassus",
+      "faction": "A",
+      "kind": "profession",
+      "subkind": "blacksmithing",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active blacksmithing profession trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+        "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2"
+      }
+    },
+    {
+      "capital": "Darnassus",
+      "faction": "A",
+      "kind": "profession",
+      "subkind": "engineering",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active engineering profession trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+        "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2"
+      }
+    },
+    {
+      "capital": "Darnassus",
+      "faction": "A",
+      "kind": "profession",
+      "subkind": "mining",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active mining profession trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+        "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2"
+      }
+    },
+    {
+      "capital": "Orgrimmar",
+      "faction": "H",
+      "kind": "class",
+      "subkind": "paladin",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active paladin class trainer in Orgrimmar in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - orgrimmar.lua",
+        "sha256": "ffbdbc9cd738b1de79f69466956271cbf3d5026db9de3781d55c728366e460c6"
+      }
+    },
+    {
+      "capital": "Orgrimmar",
+      "faction": "H",
+      "kind": "class",
+      "subkind": "druid",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active druid class trainer in Orgrimmar in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - orgrimmar.lua",
+        "sha256": "ffbdbc9cd738b1de79f69466956271cbf3d5026db9de3781d55c728366e460c6"
+      }
+    },
+    {
+      "capital": "Undercity",
+      "faction": "H",
+      "kind": "class",
+      "subkind": "hunter",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active hunter class trainer in Undercity in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - undercity.lua",
+        "sha256": "9dfa491a70ac6a068e2c39576cabaa8f21c2a16c8ab3bc3d97129a721c3f80f5"
+      }
+    },
+    {
+      "capital": "Undercity",
+      "faction": "H",
+      "kind": "class",
+      "subkind": "shaman",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active shaman class trainer in Undercity in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - undercity.lua",
+        "sha256": "9dfa491a70ac6a068e2c39576cabaa8f21c2a16c8ab3bc3d97129a721c3f80f5"
+      }
+    },
+    {
+      "capital": "Undercity",
+      "faction": "H",
+      "kind": "class",
+      "subkind": "druid",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active druid class trainer in Undercity in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - undercity.lua",
+        "sha256": "9dfa491a70ac6a068e2c39576cabaa8f21c2a16c8ab3bc3d97129a721c3f80f5"
+      }
+    },
+    {
+      "capital": "Thunder Bluff",
+      "faction": "H",
+      "kind": "class",
+      "subkind": "rogue",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active rogue class trainer in Thunder Bluff in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - thunder bluff.lua",
+        "sha256": "f3f0cd929f6c80e192141b3551aaf3ad8003bc82864186b39be62791a6f9ad3b"
+      }
+    },
+    {
+      "capital": "Thunder Bluff",
+      "faction": "H",
+      "kind": "class",
+      "subkind": "warlock",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active warlock class trainer in Thunder Bluff in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - thunder bluff.lua",
+        "sha256": "f3f0cd929f6c80e192141b3551aaf3ad8003bc82864186b39be62791a6f9ad3b"
+      }
+    },
+    {
+      "capital": "Thunder Bluff",
+      "faction": "H",
+      "kind": "profession",
+      "subkind": "engineering",
+      "source_counts": {
+        "vmangos": 0,
+        "cmangos": 0,
+        "questie": 0
+      },
+      "reason": "Reviewed city-specific absence: no active engineering profession trainer in Thunder Bluff in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.",
+      "att_city_review": {
+        "path": ".contrib/.db/forever/zones/kalimdor/1 - thunder bluff.lua",
+        "sha256": "f3f0cd929f6c80e192141b3551aaf3ad8003bc82864186b39be62791a6f9ad3b"
+      }
+    }
+  ]
+}

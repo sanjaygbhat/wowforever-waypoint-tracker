@@ -1,0 +1,308 @@
+{
+  "build": "1.60.1.70862",
+  "url": "https://wago.tools/db2/AreaTable/csv?build=1.60.1.70862&locale=enUS",
+  "licence": "Blizzard client game data; reduced factual fields",
+  "source_sha256": "42280ffb99cedb21ad7420744df20a0678914d6d8f448dca0b41ca3d05e02c51",
+  "records": {
+    "1": {
+      "ID": "1",
+      "AreaName_lang": "Dun Morogh",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "3": {
+      "ID": "3",
+      "AreaName_lang": "Badlands",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "4": {
+      "ID": "4",
+      "AreaName_lang": "Blasted Lands",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "8": {
+      "ID": "8",
+      "AreaName_lang": "Swamp of Sorrows",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "10": {
+      "ID": "10",
+      "AreaName_lang": "Duskwood",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "11": {
+      "ID": "11",
+      "AreaName_lang": "Wetlands",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "12": {
+      "ID": "12",
+      "AreaName_lang": "Elwynn Forest",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "14": {
+      "ID": "14",
+      "AreaName_lang": "Durotar",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "15": {
+      "ID": "15",
+      "AreaName_lang": "Dustwallow Marsh",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "16": {
+      "ID": "16",
+      "AreaName_lang": "Azshara",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "17": {
+      "ID": "17",
+      "AreaName_lang": "The Barrens",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "28": {
+      "ID": "28",
+      "AreaName_lang": "Western Plaguelands",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "33": {
+      "ID": "33",
+      "AreaName_lang": "Stranglethorn Vale",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "36": {
+      "ID": "36",
+      "AreaName_lang": "Alterac Mountains",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "38": {
+      "ID": "38",
+      "AreaName_lang": "Loch Modan",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "40": {
+      "ID": "40",
+      "AreaName_lang": "Westfall",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "41": {
+      "ID": "41",
+      "AreaName_lang": "Deadwind Pass",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "42": {
+      "ID": "42",
+      "AreaName_lang": "Darkshire",
+      "ContinentID": "0",
+      "ParentAreaID": "10"
+    },
+    "44": {
+      "ID": "44",
+      "AreaName_lang": "Redridge Mountains",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "45": {
+      "ID": "45",
+      "AreaName_lang": "Arathi Highlands",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "46": {
+      "ID": "46",
+      "AreaName_lang": "Burning Steppes",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "47": {
+      "ID": "47",
+      "AreaName_lang": "The Hinterlands",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "51": {
+      "ID": "51",
+      "AreaName_lang": "Searing Gorge",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "85": {
+      "ID": "85",
+      "AreaName_lang": "Tirisfal Glades",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "130": {
+      "ID": "130",
+      "AreaName_lang": "Silverpine Forest",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "139": {
+      "ID": "139",
+      "AreaName_lang": "Eastern Plaguelands",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "141": {
+      "ID": "141",
+      "AreaName_lang": "Teldrassil",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "148": {
+      "ID": "148",
+      "AreaName_lang": "Darkshore",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "215": {
+      "ID": "215",
+      "AreaName_lang": "Mulgore",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "267": {
+      "ID": "267",
+      "AreaName_lang": "Hillsbrad Foothills",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "331": {
+      "ID": "331",
+      "AreaName_lang": "Ashenvale",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "357": {
+      "ID": "357",
+      "AreaName_lang": "Feralas",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "361": {
+      "ID": "361",
+      "AreaName_lang": "Felwood",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "400": {
+      "ID": "400",
+      "AreaName_lang": "Thousand Needles",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "405": {
+      "ID": "405",
+      "AreaName_lang": "Desolace",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "406": {
+      "ID": "406",
+      "AreaName_lang": "Stonetalon Mountains",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "440": {
+      "ID": "440",
+      "AreaName_lang": "Tanaris",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "490": {
+      "ID": "490",
+      "AreaName_lang": "Un'Goro Crater",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "493": {
+      "ID": "493",
+      "AreaName_lang": "Moonglade",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "618": {
+      "ID": "618",
+      "AreaName_lang": "Winterspring",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "1377": {
+      "ID": "1377",
+      "AreaName_lang": "Silithus",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "1497": {
+      "ID": "1497",
+      "AreaName_lang": "Undercity",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "1519": {
+      "ID": "1519",
+      "AreaName_lang": "Stormwind City",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "1537": {
+      "ID": "1537",
+      "AreaName_lang": "Ironforge",
+      "ContinentID": "0",
+      "ParentAreaID": "0"
+    },
+    "1637": {
+      "ID": "1637",
+      "AreaName_lang": "Orgrimmar",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "1638": {
+      "ID": "1638",
+      "AreaName_lang": "Thunder Bluff",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "1657": {
+      "ID": "1657",
+      "AreaName_lang": "Darnassus",
+      "ContinentID": "1",
+      "ParentAreaID": "0"
+    },
+    "2597": {
+      "ID": "2597",
+      "AreaName_lang": "Alterac Valley",
+      "ContinentID": "30",
+      "ParentAreaID": "0"
+    },
+    "3277": {
+      "ID": "3277",
+      "AreaName_lang": "Warsong Gulch",
+      "ContinentID": "489",
+      "ParentAreaID": "0"
+    },
+    "3358": {
+      "ID": "3358",
+      "AreaName_lang": "Arathi Basin",
+      "ContinentID": "529",
+      "ParentAreaID": "0"
+    }
+  }
+}

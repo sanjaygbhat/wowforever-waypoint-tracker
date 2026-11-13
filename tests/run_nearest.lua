@@ -151,6 +151,11 @@ RunAll('Alliance')
 faction = 'Horde'
 M.player.wx, M.player.wy, M.player.inst = 1630, -4373, 1 -- Orgrimmar
 local function HordeAllowed(key, e)
+    -- Precise mined candidates have their own explicit, evidence-gated access;
+    -- they need not have a corresponding Classic roster entry.
+    if e.minedService then
+        return e.learned == 'community' and (e.fac == 'H' or e.fac == 'AH')
+    end
     for _, row in ipairs(DB.services[key] or {}) do
         local same = row.entry == e
         if not same and type(row.id) == 'number' then
@@ -336,12 +341,17 @@ check(observedWaypoint and observedWaypoint.title == (GetLocale() == 'enUS'
     and L.SERVICE_CLASS_TRAINER .. ' - Hilda the Breaker' or L.SERVICE_CLASS_TRAINER), 'waypoint title uses the English fallback only on enUS')
 M.player.wx, M.player.wy, M.player.inst, UnitClass = px, py, pi, savedClass
 local stored = DB.units[246389]
-DB.units[246389] = { kind = 'npc', id = 246389, fac = 'H', name = 'Local observation', points = { { m = 37, x = 0.4, y = 0.5 } } }
+local learnedStore = ns.Learn.Store()
+local savedObservation = learnedStore.npcs[246389]
+learnedStore.npcs[246389] = { name = 'Local observation', fac = 'H', spots = { [37] = { 0.4, 0.5 } } }
+DB.MergeLearned()
 check(candidate('trainer_class_paladin', 246389) == DB.units[246389], 'later learned position and localized name take precedence over fallback')
+learnedStore.npcs[246389] = savedObservation
 DB.units[246389] = stored
+DB.MergeLearned()
 
--- The pinned roster does not establish Alliance shaman access or any AH row.
--- Synthetic identities exercise these supported access cases without inventing
+-- The expanded roster includes Alliance shamans and neutral trainers.
+-- Synthetic identities exercise additional access cases without inventing
 -- production data or relying on geography/class guesses.
 local savedRoster = WaypointTrackerData.trainers
 for id = 990020, 990023 do

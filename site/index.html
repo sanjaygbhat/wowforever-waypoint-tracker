@@ -252,6 +252,22 @@
             "@type": "Answer",
             "text": "Treasure hunt (beta) is off by default. Type /wp, open Treasure (beta) and click Enable treasure hunt (beta). Or type /wp treasure, or use Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta). /wp treasure show opens the tab."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Waypoint Tracker compare to Questie or pfQuest?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Waypoint Tracker combines a 3D arrow, Find, nearest known services and Real routes for Forever 1.60.1. Questie documents quest-map markers and a tracker and lists Forever releases. Upstream pfQuest documents Vanilla/TBC clients; Forever support was not verified. See the dated addon comparison for official sources."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use Waypoint Tracker or a leveling guide?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use a leveling guide when you want a sequence of quests to accept, complete and turn in. Use Waypoint Tracker for searching destinations, nearest known services and travel to a selected destination. The comparison covers Zygor, RestedXP and free guide alternatives with their official support and coverage notes."
+          }
         }
       ]
     }
@@ -647,6 +663,7 @@ footer p { margin: 0 0 6px; }
       <a href="#install">Install</a>
       <a href="#commands">Commands</a>
       <a href="#faq">FAQ</a>
+      <a href="compare.html">Compare addons</a>
     </nav>
   </div>
 </header>
@@ -991,6 +1008,8 @@ footer p { margin: 0 0 6px; }
 <details><summary>Where is the nearest class or profession trainer?</summary><p>Open <strong>Find → Nearest</strong>, or right-click the minimap button and open <strong>Nearest...</strong>. <strong>Class Trainer</strong> picks your class automatically. <strong>Profession Trainer</strong> lets you choose one of 12 professions and points to the nearest trainer it knows. Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list. If a trainer near you is missing, talk to them once and they are remembered.</p></details>
 <details><summary>Does it always take the fastest route?</summary><p>Yes: the fastest it knows you can really use, with flight paths, boats, zeppelins, the tram, your hearthstone and teleports counted. By default it is danger-aware: when a quicker way crosses dangerous ground the arrow offers it and you decide. Choose <strong>Settings → Routes → Route preference → Always fastest</strong> to take it every time. It re-plans as you move. Turn Real routes off in <strong>Settings → Routes</strong> for a straight arrow.</p></details>
 <details><summary>How do I turn on treasure / rare alerts?</summary><p>Treasure hunt (beta) is off by default. Type <code>/wp</code>, open <strong>Treasure (beta)</strong> and click <strong>Enable treasure hunt (beta)</strong>. Or type <code>/wp treasure</code>, or use <strong>Esc → Options → AddOns → Waypoint Tracker → Treasure Hunt (beta)</strong>. <code>/wp treasure show</code> opens the tab.</p></details>
+<details><summary>How does Waypoint Tracker compare to Questie or pfQuest?</summary><p>Waypoint Tracker combines a 3D arrow, Find, nearest known services and Real routes for Forever 1.60.1. Questie documents quest-map markers and a tracker and lists Forever releases. Upstream pfQuest documents Vanilla/TBC clients; Forever support was not verified. See the dated addon comparison for official sources. <a href="compare.html">Compare addons and sources</a>.</p></details>
+<details><summary>Should I use Waypoint Tracker or a leveling guide?</summary><p>Use a leveling guide when you want a sequence of quests to accept, complete and turn in. Use Waypoint Tracker for searching destinations, nearest known services and travel to a selected destination. The comparison covers Zygor, RestedXP and free guide alternatives with their official support and coverage notes. <a href="compare.html">Compare addons and sources</a>.</p></details>
       <details open><summary>How do I set a waypoint in WoW Forever?</summary><p>Install Waypoint Tracker, then type <code>/way 42 65</code> in chat for your current zone, or <code>/way Westfall 56.3 47.1 Sentinel Hill</code> for another zone. You can also type <code>/wp</code> to open the window, hold Ctrl and right-click the world map, or search a quest, NPC or object by name with <code>/wp find</code>. A 3D arrow then points the way.</p></details>
       <details><summary>How do I find an NPC, quest giver or vendor in WoW Forever?</summary><p>Type <code>/wp find</code> and a name (or the title of an NPC you have seen, like <strong>blacksmith</strong>), or choose <strong>NPCs</strong> in the Find tab's kind dropdown. Double-click a result and the arrow points to the closest spot. Find covers the classic world and WoW Forever's new zones, quests and items, and adds the NPCs you see while you play.</p></details>
       <details><summary>How do I install addons for WoW Forever?</summary><p>Use the CurseForge app (World of Warcraft, Forever) or Wago, or download the zip from GitHub and unzip it into <code>Interface\AddOns</code> in your WoW Forever folder. On Windows, use <code>World of Warcraft\_forever_\Interface\AddOns\</code>; on macOS, use <code>World of Warcraft/_forever_/Interface/AddOns/</code>. Waypoint Tracker gives you two folders: <code>WaypointTracker</code> and <code>WaypointTracker_Data</code>.</p></details>
@@ -1012,6 +1031,7 @@ footer p { margin: 0 0 6px; }
 <footer>
   <div class="wrap">
     <p>Waypoint Tracker @VERSION@ by <a href="https://github.com/sanjaygbhat">sanjaygbhat</a> · <a href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker">Source on GitHub</a> · MIT licence · <a href="https://github.com/sanjaygbhat/wowforever-waypoint-tracker/issues">Questions and ideas</a></p>
+    <p><a href="compare.html">Compare WoW Forever addons</a></p>
     <p>World of Warcraft is a trademark of Blizzard Entertainment. This project isn't affiliated with Blizzard.</p>
   </div>
 </footer>

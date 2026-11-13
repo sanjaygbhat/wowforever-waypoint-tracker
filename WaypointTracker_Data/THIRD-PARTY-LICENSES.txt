@@ -70,3 +70,119 @@ The licence covers Efficient Games' selection, structure, compilation and
 player-contributed observations; it grants no rights in Blizzard's content.
 The full upstream CC BY 4.0 licence accompanies the pinned evidence in
  tools/fixtures/trainers/observed-164bd1e2/LICENSE.
+
+========================================================================
+Trainer evidence refresh — 2026-11-13
+========================================================================
+All The Things: https://github.com/ATTWoWAddon/AllTheThings
+Pinned commit: 1c4d146b518a3c2cda6d2488a27be6e2638d5360 (MIT; notice above).
+Modified: selected literal trainer title comments and profession-rank evidence.
+Full MIT licence: tools/fixtures/trainers/att-1c4d146b/LICENSE.
+
+EG Link output: World of Warcraft: Forever — Efficient Games
+Data from Efficient Games (https://efficient.games), licensed under CC BY 4.0.
+Licence: https://creativecommons.org/licenses/by/4.0/
+Source: https://github.com/JIVESCORP/eg-link-output-wowf
+Pinned commit: e0f8585914c134d9cb5d76756bd065b1e3e92ece.
+Modified: selected trainer titles, window/interaction and access records;
+retained full-precision newest positioned observations and their history.
+Full upstream licence: tools/fixtures/trainers/observed-e0f85859/LICENSE.
+World of Warcraft game content remains Blizzard Entertainment's property;
+the compilation licence grants no additional rights in Blizzard's content.
+
+Trainer role fact cross-check (2026-11-13)
+---------------------------------------
+NPC role facts cross-checked against VMaNGOS, CMaNGOS Classic-DB and Questie.
+Only NPC identifiers, role/skill/rank/access facts and necessary numeric spawn
+coordinates are used. No emulator/Questie implementation, SQL, Lua, names or
+prose is copied into generated addon data from these sources. The addon uses
+its existing names and separately attributed Forever observations.
+
+VMaNGOS core: https://github.com/vmangos/core
+Database snapshot db-1fb4909.zip, commit
+1fb4909858f3ac558e06613e223f6d7116a9a8fa (2026-11-11), GPL-2.0.
+https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip
+Checked against core df69450dd7f953cd8e0bfa4d1e5dc4848362f9e8; no database
+migration changed between the snapshot and that core revision.
+
+CMaNGOS Classic-DB: https://github.com/cmangos/classic-db
+Commit c33f90b8eeb3f8bacb53d5cbfee45075c80b416c, GPL-3.0 (the repository's
+actual licence, despite the task's GPL-2 shorthand), Full_DB snapshot and
+reviewed updates. https://github.com/cmangos/classic-db/tree/c33f90b8eeb3f8bacb53d5cbfee45075c80b416c
+
+Questie: https://github.com/Questie/Questie
+Database/Classic/classicNpcDB.lua at
+454b9d072965ee8f1a881429260fcf1fac8d60f7 (2026-09-15), the final migration
+reference before the raw databases moved to QuestieDB. The later root licence
+discussion at 043e7268b36aa7b0a605290c109cdab46771500b describes GPL-3.0
+contributor consent and mixed historical licensing; the historical NPC pin has
+no root licence file. No blanket GPL licence is asserted for historical data.
+Only the requested factual cross-check is used. Reduced extracts retain
+upstream pins, file paths, licences and checksums under tools/fixtures/trainers/.
+
+Original player-observation facts from salty-max/wow-data (MIT)
+------------------------------------------------------------
+https://github.com/salty-max/wow-data/tree/24c719a76202d2b047392972b5d6770e1fc98a11
+Only selected data/players/forever/enUS.json NPC coordinate/name facts and one
+quest-turn-in relationship are used. Frozen website-derived data in that
+repository is not used. The reduced fixture retains build numbers, literal
+facts, upstream observation hashes and file checksum. Eighteen newest player
+coordinate records fill or supersede older trainer positions; newer/equally
+built, more precise EG Link positions retain priority.
+
+Copyright (c) 2026 salty-max
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Client geography check: AreaTable build 1.60.1.70862, enUS, Blizzard game data.
+https://wago.tools/db2/AreaTable/csv?build=1.60.1.70862&locale=enUS
+Only the fifty referenced area IDs/names and parent/continent numbers are
+retained for offline map resolution; no client code is copied.
+
+Base Nearest services (precise community observations and client-map audit)
+------------------------------------------------------------------------
+EG Link output: World of Warcraft: Forever, compiled by Efficient Games
+(https://efficient.games), commit e0f8585914c134d9cb5d76756bd065b1e3e92ece:
+https://github.com/JIVESCORP/eg-link-output-wowf/tree/e0f8585914c134d9cb5d76756bd065b1e3e92ece
+Data from Efficient Games, licensed under CC BY 4.0:
+https://creativecommons.org/licenses/by/4.0/
+Changes: reduced source fields/records; classified explicit base services,
+selected newest observations and retained precise coordinates; generated a
+compact supplement in Forever.lua. Observations describe player interaction
+locations, not certified spawn points. Full licence: tools/fixtures/services/EG-LICENSE.
+Original game content remains subject to Blizzard Entertainment's rights.
+
+All The Things (MIT), commit 1c4d146b518a3c2cda6d2488a27be6e2638d5360:
+https://github.com/ATTWoWAddon/AllTheThings/tree/1c4d146b518a3c2cda6d2488a27be6e2638d5360/db/Camelot
+Changes: selected explicit NPC coordinate literals for independently evidenced
+services lacking interaction positions. Full MIT notice is preserved in
+tools/fixtures/services/ATT-LICENSE.
+
+pfQuest (MIT), commit 104f35678ca39ab1fb78b655f815cc7016f5e0c8:
+https://github.com/shagu/pfQuest/blob/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db/meta.lua
+The complete service metadata roster is pinned for comparison against the
+existing Classic spawn fixtures. The existing pfQuest MIT notice applies.
+
+Blizzard game client tables, build 1.60.1.70862, via wago.tools:
+https://wago.tools/db2/AreaTable/csv?build=1.60.1.70862
+AreaTable supplies literal area names and faction masks for the real-map audit
+and mailbox access. UiMap, UiMapAssignment, TaxiNodes and AreaPOI reuse the
+existing pinned client fixtures. Checksums and source URLs are recorded in
+tools/fixtures/manifest.json. No claim of a permissive licence over Blizzard
+content is made.

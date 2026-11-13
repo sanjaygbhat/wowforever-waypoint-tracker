@@ -512,9 +512,9 @@ local function MergeStore(st, source)
                         e.svcAccess[service] = ns.Trainers.MergeAccess(e.svcAccess[service], l.fac)
                     end
                 end
-                if e.kind == "npc" then
+                if e.kind == "npc" or e.kind == "object" then
                     DB.services[service] = DB.services[service] or {}
-                    table.insert(DB.services[service], { id = e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or letter)) })
+                    table.insert(DB.services[service], { id = e.kind == "object" and -e.id or e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or (e.kind == "object" and "" or letter))) })
                 end
             end
         end
@@ -1490,23 +1490,41 @@ function DB.ItemSources(item)
 end
 
 -- Closest spawn of any of the given NPCs/objects: returns entry, point, dist.
+local nearestWorld = setmetatable({}, { __mode = "k" })
 function DB.NearestOf(entries, opts)
     local bestE, bestP, bestD, fallbackE, fallbackP
+    local players = {}
     for _, e in ipairs(entries) do
         if not (opts and opts.faction) or DB.ForMyFaction(e) then
             local pts = DB.Points(e)
-            if #pts > 0 then
-                local p, d = DB.Nearest(pts)
-                if d and (not bestD or d < bestD) then
-                    bestE, bestP, bestD = e, p, d
-                elseif not fallbackE then
-                    fallbackE, fallbackP = e, p
+            for _, p in ipairs(pts) do
+                -- Fixed targets convert once; player position is sampled once
+                -- per continent for this click (including phased fallback).
+                local w = nearestWorld[p]
+                if not w or w[1] ~= p.m or w[2] ~= p.x or w[3] ~= p.y then
+                    local c, x, y = Geo.MapToWorld(p.m, p.x, p.y)
+                    w = c and { p.m, p.x, p.y, c, x, y } or nil
+                    nearestWorld[p] = w
                 end
+                if w then
+                    local player = players[w[4]]
+                    if player == nil then
+                        local c, x, y = Geo.GetPlayerWorld(w[4])
+                        player = c == w[4] and { x, y } or false
+                        players[w[4]] = player
+                    end
+                    if player then
+                        local dx, dy = w[5] - player[1], w[6] - player[2]
+                        local d = dx * dx + dy * dy
+                        if not bestD or d < bestD then bestE, bestP, bestD = e, p, d end
+                    end
+                end
+                if not fallbackE then fallbackE, fallbackP = e, p end
             end
         end
     end
     if bestE then
-        return bestE, bestP, bestD
+        return bestE, bestP, math.sqrt(bestD)
     end
     return fallbackE, fallbackP
 end
@@ -1545,14 +1563,80 @@ end
 -- ---------------------------------------------------------------------------
 -- Services: nearest mailbox, innkeeper, flight master, ...
 -- ---------------------------------------------------------------------------
+-- Precise community service observations live in the existing data file.
+-- Parse once on a service request, never during login or a hidden UI scan.
+-- Keep this index separate from trainer identities and personal discoveries.
+local serviceSupplement
+local function ServiceSupplement()
+    if serviceSupplement then return serviceSupplement end
+    if not WaypointTrackerData then return {} end
+    serviceSupplement = {}
+    local text = WaypointTrackerData and WaypointTrackerData.serviceSupplement
+    for line in (text or ""):gmatch("[^\n]+") do
+        local f = Split(line)
+        local id = tonumber(f[2])
+        if id then
+            local row = { id = id, kind = f[1] == "SO" and "object" or "npc", fac = f[3],
+                name = f[4], mode = f[6], spots = {} }
+            for m, x, y, c in (f[7] or ""):gmatch("(%d+):([%d.]+),([%d.]+),(%d+)") do
+                row.spots[#row.spots + 1] = { m = tonumber(m), x = tonumber(x), y = tonumber(y), c = tonumber(c) }
+            end
+            for key in (f[5] or ""):gmatch("[^,]+") do
+                local list = serviceSupplement[key] or {}
+                serviceSupplement[key] = list
+                list[#list + 1] = row
+            end
+        end
+    end
+    if WaypointTrackerData then WaypointTrackerData.serviceSupplement = nil end
+    return serviceSupplement
+end
+
+local function ServiceCandidate(row)
+    if row.generation == DB.generation then return row.entry end
+    local base = (row.kind == "npc" and DB.units or DB.objects)[row.id]
+    local store = ns.Learn and ns.Learn.Store()
+    local own = store and (row.kind == "npc" and store.npcs or store.objects)
+    own = own and own[row.id]
+    -- Personal observations retain the normal discovery/correction precedence.
+    if base and own and not own.shared and next(own.spots or {}) then
+        row.entry = base
+    else
+        local e = { kind = row.kind, id = row.id, fac = row.fac,
+            name = base and base.name ~= "" and base.name or row.name,
+            learned = "community", minedService = true, extra = {}, fixes = base and base.fixes }
+        e.key = Geo.Squash(e.name)
+        for _, p in ipairs(row.spots) do
+            -- Keep unsupported/phased metadata from placing an observation on
+            -- a different continent; existing resolved positions can fall back.
+            local c = Geo.MapToWorld(p.m, p.x, p.y)
+            if c == p.c then e.extra[#e.extra + 1] = p end
+        end
+        if (row.mode == "M" or #e.extra == 0) and base then
+            for _, p in ipairs(DB.Points(base)) do e.extra[#e.extra + 1] = p end
+        end
+        row.entry = e
+    end
+    row.generation = DB.generation
+    return row.entry
+end
+
 function DB.ServiceEntries(service)
     local letter = MyFaction()
-    local out = {}
+    local out, replaced, seen = {}, {}, {}
+    for _, row in ipairs(ServiceSupplement()[service] or {}) do
+        local id = row.kind == "object" and -row.id or row.id
+        replaced[id] = true
+        if not letter or row.fac:find(letter, 1, true) then
+            local e = ServiceCandidate(row)
+            if e and not seen[e] then out[#out + 1], seen[e] = e, true end
+        end
+    end
     for _, s in ipairs(DB.services[service] or {}) do
-        if s.fac == "" or not letter or s.fac:find(letter, 1, true) then
+        if not replaced[s.id] and (s.fac == "" or not letter or s.fac:find(letter, 1, true)) then
             local e = s.entry or (s.id < 0 and DB.objects[-s.id]) or DB.units[s.id]
-            if e then
-                out[#out + 1] = e
+            if e and not seen[e] then
+                out[#out + 1], seen[e] = e, true
             end
         end
     end
@@ -1564,38 +1648,40 @@ end
 -- trainer factions fail closed, regardless of Find's general faction toggle.
 function DB.TrainerEntries(service)
     local out, seen = {}, {}
-    if not ns.Trainers.services[service] then return out end
+    if not (ns.Trainers.services[service] or ns.Trainers.additionalServices[service]) then return out end
     local letter = MyFaction()
     if not letter then return out end
+    local index = ns.Trainers.Index(DB.generation)
+    local learned = WaypointTrackerDB and WaypointTrackerDB.learned
+    learned = learned and learned.npcs
     local function Add(id, fac, e)
         if fac and fac ~= "" and fac:find(letter, 1, true) and not seen[id] then
             e = e or DB.units[id]
             -- Trainer availability is stricter than general Find (which also
             -- searches enemies). Resolved observations override roster access.
             if e and e.hostile then return end
-            -- Resolve after every discovery merge. Observed fallback positions
-            -- never replace a database position, including a personal sighting.
-            if not e or #DB.Points(e) == 0 then
-                local text = WaypointTrackerData and WaypointTrackerData.trainerLocations
-                for line in (text or ""):gmatch("[^\n]+") do
-                    local rid, name, spots = line:match("^(%d+)\t([^\t]*)\t(.+)$")
-                    if tonumber(rid) == id then
+            local location = index.positions[id]
+            local personal = learned and learned[id]
+            -- Newest pinned observations replace older shipped coordinates.
+            -- Personal/imported positions retain the existing merge semantics.
+            local observed = location and location.observed and not (personal and personal.spots and next(personal.spots))
+            if observed or not e or #DB.Points(e) == 0 then
+                if location then
+                    local cached = index.entries[id]
+                    if not cached or cached.fac ~= fac then
+                        -- Existing/localized names and corrections still win.
+                        local name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and location.name or "")
                         local points = {}
-                        for token in spots:gmatch("[^;]+") do
-                            local m, x, y = token:match("^(%d+):([%d%.]+),([%d%.]+)$")
-                            m, x, y = ns.Int(m), tonumber(x), tonumber(y)
-                            if m and x and y and x >= 0 and x <= 1 and y >= 0 and y <= 1
-                                and Geo.IsValidMap(m) then
-                                points[#points + 1] = { m = m, x = x, y = y }
-                            end
+                        for _, p in ipairs(location.points) do points[#points + 1] = p end
+                        -- A correction's replacement is already a resolved point.
+                        for _, p in ipairs(e and e.extra or {}) do
+                            if p.fixed then points[#points + 1] = p end
                         end
-                        -- Existing/localized names win. New English names are
-                        -- used only in English; other locales use the service
-                        -- label until a localized observation supplies a name.
-                        name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and (ns.CleanText(name) or "") or "")
-                        e = { kind = "npc", id = id, fac = fac, name = name, extra = points, fixes = e and e.fixes }
-                        break
+                        cached = { kind = "npc", id = id, fac = fac, name = name,
+                            extra = points, fixes = e and e.fixes }
+                        index.entries[id] = cached
                     end
+                    e = cached
                 end
             end
             if e and #DB.Points(e) > 0 then
@@ -1603,13 +1689,8 @@ function DB.TrainerEntries(service)
             end
         end
     end
-    local text = WaypointTrackerData and WaypointTrackerData.trainers
-    for line in (text or ""):gmatch("[^\n]+") do
-        local key, values = line:match("^([^\t]+)\t(.+)$")
-        if key == service then
-            for id, fac in values:gmatch("(%d+):(%a*)") do Add(tonumber(id), fac) end
-            break
-        end
+    for _, row in ipairs(index.services[service] or {}) do
+        Add(row.id, row.fac)
     end
     for _, row in ipairs(DB.services[service] or {}) do
         Add(row.id, row.fac, row.entry)

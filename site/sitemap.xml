@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/</loc>
-    <lastmod>@DATE@</lastmod>
-  </url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/compare.html</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-tomtom.html</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-questie.html</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-pfquest.html</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-handynotes.html</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-carbonite.html</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-zygor.html</loc><lastmod>@DATE@</lastmod></url>
+  <url><loc>https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-restedxp.html</loc><lastmod>@DATE@</lastmod></url>
 </urlset>

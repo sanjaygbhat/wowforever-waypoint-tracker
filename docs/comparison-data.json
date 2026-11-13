@@ -1,0 +1,2935 @@
+{
+  "checked": "2026-11-13",
+  "baseline": "Waypoint Tracker 1.4.0",
+  "scope": "Official product and release pages, including Forever-labelled results on CurseForge and Wago. Filtered catalog enumeration was unavailable, so completeness across all published projects is not certified.",
+  "addons": [
+    {
+      "slug": "tomtom",
+      "name": "TomTom",
+      "category": "navigation",
+      "summary": "TomTom supplies coordinate waypoints, map clicks, a floating arrow and corpse guidance.",
+      "choice": "Choose TomTom for its waypoint workflow and arrow themes; choose Waypoint Tracker for a 3D arrow with built-in Find, Nearest and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/tomtom"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Commands and map clicks",
+      "quest_map": "Uses quest POIs; database not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Native API",
+      "languages": "Not stated",
+      "both": "Yes. When TomTom is installed, Waypoint Tracker leaves /way and the waypoint API to TomTom. Use /wp for Waypoint Tracker; third-party TomTom waypoints then belong to TomTom.",
+      "pair": true,
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "questie",
+      "name": "Questie",
+      "category": "quests",
+      "summary": "Questie shows quest starts, objectives and turn-ins on the map, with a quest tracker and searchable database.",
+      "choice": "Choose Questie for a quest-map overview and journey history; choose Waypoint Tracker for named destinations and a 3D arrow with travel planning.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/questie",
+        "https://addons.wago.io/addons/questie/versions?stability=stable"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Through TomTom",
+      "waypoints": "Objective arrow through TomTom",
+      "quest_map": "Starts, objectives, turn-ins",
+      "search": "Database search",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "English, German, French, Spanish, Portuguese, Russian, Chinese, Taiwanese, Korean; Ukrainian via companion",
+      "both": "Questie documents TomTom objective arrows, and Waypoint Tracker documents a compatible waypoint API. Using supported TomTom calls with TomTom absent is an expected pairing, not a live-client result from this comparison. If TomTom is installed, it owns that API.",
+      "pair": true,
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "pfquest",
+      "name": "pfQuest",
+      "category": "quests",
+      "summary": "pfQuest combines a quest arrow, objective map nodes and a database browser for NPCs, items, objects and quests on its documented Vanilla/TBC clients.",
+      "choice": "For a documented Forever 1.60.1 build, choose Waypoint Tracker; pfQuest is a relevant database and quest-helper comparison for its own supported clients.",
+      "sources": [
+        "https://github.com/shagu/pfQuest/blob/master/README.md",
+        "https://github.com/shagu/pfQuest"
+      ],
+      "support": "Forever not stated; Vanilla/TBC, WotLK beta documented",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Yes",
+      "waypoints": "Database/map targets",
+      "quest_map": "Quest objectives",
+      "search": "NPCs, items, objects, quests",
+      "nearest": "Service tracking lists; nearest not stated",
+      "routing": "Not stated",
+      "alerts": "Rare/chest locations; alerts not stated",
+      "tomtom": "Not stated",
+      "languages": "English, Korean, French, German, Chinese, Spanish, Russian",
+      "both": "A supported Forever build of upstream pfQuest was not verified. Do not assume a Vanilla or TBC addon loads on Forever. Use Waypoint Tracker on Forever; direct integration with pfQuest is not stated.",
+      "pair": true,
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes",
+      "name": "HandyNotes",
+      "category": "maps",
+      "summary": "HandyNotes is a map-note framework with personal notes and separate plugins for location data.",
+      "choice": "Choose HandyNotes and a suitable plugin for browsable map markers; choose Waypoint Tracker for Find and arrow guidance to a selected destination.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Personal map notes",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "both": "A Forever-compatible HandyNotes build and a compatible plugin can supply map notes alongside Waypoint Tracker. Plugins that send supported TomTom waypoint calls can target its arrow when TomTom is absent; the core alone does not establish that integration.",
+      "pair": true,
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-wow-forever",
+      "name": "HandyNotes: WoW Forever",
+      "category": "maps",
+      "summary": "This HandyNotes plugin places Forever treasure and rare locations on the map and offers waypoint actions.",
+      "choice": "Choose it for a Forever rare and treasure map; Waypoint Tracker adds destination search and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-wow-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Pin menu waypoint",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Known rare/treasure pins; alerts not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-rares-and-treasures-forever",
+      "name": "HandyNotes: Rares and Treasures Forever",
+      "category": "maps",
+      "summary": "This HandyNotes plugin records rare and treasure finds, adds loot tooltips and distinguishes unconfirmed locations.",
+      "choice": "Choose it for recorded rare and treasure map pins; Waypoint Tracker adds Find and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-rares-and-treasures-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Click pin",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Rare/treasure pins; alerts not stated",
+      "tomtom": "Documented integration",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-npcs-forever",
+      "name": "HandyNotes_NPCs-forever",
+      "category": "services",
+      "summary": "This HandyNotes plugin maps vendors, service NPCs and class, profession, weapon and mount trainers with category filters.",
+      "choice": "Choose it for visible service markers; Waypoint Tracker adds one-click Nearest and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-npcs-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Click icon",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Service/trainer pins; nearest not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "English, French, German, Spanish (Spain/Latin America), Italian, Brazilian Portuguese, Russian, Korean, Simplified/Traditional Chinese; NPC names English, localized option experimental",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-forever-books",
+      "name": "HandyNotes - Forever Books",
+      "category": "maps",
+      "summary": "This HandyNotes plugin marks scattered books and scrolls on the world map and minimap.",
+      "choice": "Choose it for book-location exploration; Waypoint Tracker adds a general-purpose arrow and Find.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-forever-books"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-classic-and-cataclysm",
+      "name": "HandyNotes: Classic and Cataclysm",
+      "category": "maps",
+      "summary": "This HandyNotes plugin marks Classic and Cataclysm rares and treasure locations and offers waypoint actions.",
+      "choice": "Choose the plugin for those map locations; choose a Forever-specific dataset when that is the content you need.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-classic-and-cataclysm"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Pin menu waypoint",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Rare/treasure pins; alerts not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-directions",
+      "name": "HandyNotes: Directions",
+      "category": "services",
+      "summary": "HandyNotes: Directions remembers places that guards point out by adding map pins.",
+      "choice": "Choose it to retain guard directions; Waypoint Tracker adds Find and nearest known services.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-directions"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "BSD (as listed)",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Guard directions; nearest not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "carbonite",
+      "name": "Carbonite All in One",
+      "category": "maps",
+      "summary": "Carbonite All in One combines a zoomable map replacement, quest system, a service guide and gathering-node tracking.",
+      "choice": "Choose Carbonite for its integrated map workspace; choose Waypoint Tracker for a 3D arrow, Find and Nearest in its own window.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/carbonite"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Quest system; objective-map detail not stated",
+      "search": "Not stated",
+      "nearest": "Nearest bank/mailbox guide",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "both": "The products have overlapping map and navigation controls. No direct Waypoint Tracker integration was verified; choose the map and arrow controls you want, and use /wp when another addon owns /way.",
+      "pair": true,
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "carbonite-quests-classic",
+      "name": "Carbonite Quests Classic",
+      "category": "quests",
+      "summary": "Carbonite Quests Classic updates the Carbonite quest module, including quest-item buttons and database corrections.",
+      "choice": "Its checked listing targets Classic 1.13.4; do not treat it as the Forever-tagged Carbonite All in One package.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/carbonite-quests-classic"
+      ],
+      "support": "Forever not stated; Classic 1.13.4 listed",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "zygor",
+      "name": "Zygor Guides",
+      "category": "guides",
+      "summary": "Zygor offers Forever leveling guides through an Elite subscription and describes the Forever guides as a work in progress.",
+      "choice": "Choose Zygor when you want authored leveling steps; choose Waypoint Tracker for on-demand Find, Nearest and a 3D arrow without a subscription.",
+      "sources": [
+        "https://zygorguides.com/forever",
+        "https://zygorguides.com/support/manual/travel"
+      ],
+      "support": "Official Forever guide page; interface not stated",
+      "price": "Elite subscription; free trial offered",
+      "licence": "Proprietary; open-source licence not stated",
+      "arrow": "Yes (general product manual)",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Flights, portals, hearthstone, teleports (general manual)",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "both": "Use Zygor for its guide steps and Waypoint Tracker for independent Find or Nearest trips. Direct waypoint forwarding from Zygor to Waypoint Tracker was not verified; do not assume the guide uses TomTom.",
+      "pair": true,
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "restedxp-guide",
+      "name": "RestedXP",
+      "category": "guides",
+      "summary": "RestedXP supplies leveling routes, quest automation and an objective arrow; its official community site publishes Forever guide updates.",
+      "choice": "Choose RestedXP for step-by-step leveling; choose Waypoint Tracker for searching destinations and planning travel to them.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/restedxp-guide",
+        "https://community.restedxp.com/forever-guides-update-major-update/"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Starter routes included; Forever guide sold separately",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Leveling quest order; transport update includes mage teleports",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "both": "Use RestedXP for its leveling sequence and Waypoint Tracker for independent destinations. Direct integration with its own arrow was not verified; keep the guide arrow and Waypoint Tracker arrow focused on the trip you intend.",
+      "pair": true,
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "guidelime",
+      "name": "Guidelime",
+      "category": "guides",
+      "summary": "Guidelime displays guides as steps with automatic progress, map/minimap locations, an arrow and an editor.",
+      "choice": "Choose it to follow or author a guide; check that the guide module covers Forever content, as the page says Forever guides are being worked on.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/guidelime"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Guide locations",
+      "quest_map": "Guide locations",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Ordered guide steps; transport not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "wow-pro",
+      "name": "WoW-Pro Guides",
+      "category": "guides",
+      "summary": "WoW-Pro provides community guides with automatic completion tracking and coordinate mapping through TomTom or Carbonite.",
+      "choice": "Choose it for community-written guide steps; Waypoint Tracker provides independent Find and navigation.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/wow-pro"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "CC BY-NC 3.0 (listing)",
+      "arrow": "Through TomTom/Carbonite",
+      "waypoints": "Through TomTom/Carbonite",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Guide steps; transport detection",
+      "alerts": "Not stated",
+      "tomtom": "Documented; dependency required",
+      "languages": "Options localized; guide-language list not stated",
+      "both": "Its official page requires TomTom or Carbonite. Waypoint Tracker can accept supported TomTom calls, but replacing an addon dependency is not verified; keep the required provider unless the guide author confirms otherwise.",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "azeroth-pilot-reloaded",
+      "name": "Azeroth Pilot Reloaded",
+      "category": "guides",
+      "summary": "Azeroth Pilot Reloaded is a free, open-source addon for step-by-step quest and leveling guides.",
+      "choice": "Choose it for a leveling guide; select its Forever release and verify that the route covers the zone you plan to play.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/azeroth-pilot-reloaded"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Free",
+      "licence": "GPL-3.0",
+      "arrow": "Yes",
+      "waypoints": "Guide targets",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Guide order, zone travel, route flights (general page)",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "azerothautopilot",
+      "name": "AzerothAutoPilot (Forever listing)",
+      "category": "guides",
+      "summary": "This separately listed Forever project plans around the active quest log and provides an arrow, map pickups and travel suggestions.",
+      "choice": "Choose it for quest-log prioritization; choose Waypoint Tracker for selecting named destinations, services and trainers.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/azerothautopilot"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Quest-route destinations",
+      "quest_map": "Available quest pickups",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Learned flights, boats, zeppelins, tram, supported portals",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "azeroth-auto-pilot",
+      "name": "Azeroth Auto Pilot (legacy listing)",
+      "category": "guides",
+      "summary": "The checked Azeroth Auto Pilot listing is a separate Retail project.",
+      "choice": "Do not infer Forever support from the similar project names; inspect Azeroth Pilot Reloaded or the explicitly tagged Forever listing instead.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/azeroth-auto-pilot"
+      ],
+      "support": "Forever not stated; Retail listed",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "leatrix-maps",
+      "name": "Leatrix Maps",
+      "category": "maps",
+      "summary": "Leatrix Maps offers map reveal, coordinates, transport and dungeon points, and map scale and positioning options.",
+      "choice": "Choose it for map presentation and points of interest; Waypoint Tracker adds Find and an arrow to a selected destination.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/leatrix-maps"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Transport POIs; trip planning not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "English, German, Spanish, French, Italian, Korean, Portuguese, Russian, Simplified/Traditional Chinese",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "leatrix-plus",
+      "name": "Leatrix Plus",
+      "category": "utilities",
+      "summary": "Leatrix Plus provides optional quality-of-life modules such as quest automation, repairs, junk selling and minimap changes.",
+      "choice": "Choose it for everyday interface conveniences; Waypoint Tracker supplies Find, Nearest and arrow navigation.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/leatrix-plus"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "mapster",
+      "name": "Mapster",
+      "category": "maps",
+      "summary": "Mapster adjusts world-map scale and transparency, shows coordinates and removes fog of war.",
+      "choice": "Choose it for simple map changes; its own page recommends TomTom separately for waypoints.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/mapster"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "farmhud",
+      "name": "FarmHud",
+      "category": "gathering",
+      "summary": "FarmHud turns the minimap into a gathering HUD and supports GatherMate2, Routes and TomTom displays.",
+      "choice": "Choose it for a centered farming HUD; Waypoint Tracker adds destination search and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/farmhud"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "TrailPath display; trip planning not stated",
+      "alerts": "Not stated",
+      "tomtom": "Display support via library",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gathermate2",
+      "name": "GatherMate2",
+      "category": "gathering",
+      "summary": "GatherMate2 records resource and treasure locations and displays them on the map and minimap.",
+      "choice": "Choose it for a gathering-location database; Waypoint Tracker adds general Find, Nearest and destination navigation.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gathermate2"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gathermate2-classic",
+      "name": "GatherMate2 Classic",
+      "category": "gathering",
+      "summary": "GatherMate2 Classic is the separate Classic listing for recording gathering locations.",
+      "choice": "Check the chosen package: Forever appears on the main GatherMate2 listing, while this Classic listing does not state Forever support.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gathermate2-classic"
+      ],
+      "support": "Forever not stated; Classic flavours listed",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gatherer",
+      "name": "Gatherer (original)",
+      "category": "gathering",
+      "summary": "The original Gatherer listing describes tracking nearby plants, deposits and treasure locations.",
+      "choice": "The checked listing targets older Retail versions; do not substitute it for a Forever-specific gathering project.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gatherer"
+      ],
+      "support": "Forever not stated; Retail 7.3.0 listed",
+      "price": "Not stated",
+      "licence": "GPL-2.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "routes",
+      "name": "Routes",
+      "category": "gathering",
+      "summary": "Routes draws routes on maps for visiting locations.",
+      "choice": "Choose it for map route lines; Waypoint Tracker adds search and travel to your selected destination.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/routes"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Map route lines",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "all-the-things",
+      "name": "ALL THE THINGS (ATT)",
+      "category": "collection",
+      "summary": "ALL THE THINGS tracks collection completion and information about quests, vendors, rares, dungeons and raids.",
+      "choice": "Choose ATT to work through a collection checklist; Waypoint Tracker adds on-demand destination search and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/all-the-things"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Collection/source information; general search not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "along-the-way-adventurers-journal",
+      "name": "Along the Way: Adventurer’s Journal",
+      "category": "guides",
+      "summary": "Along the Way combines a quest planner, terrain-following navigation in beta, quest steps, nearby services and a dungeon journal.",
+      "choice": "Choose it for an integrated quest and dungeon journal; Waypoint Tracker offers a 3D arrow, Find and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/along-the-way-adventurers-journal"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Services, class/profession trainers",
+      "routing": "Terrain navigation (beta)",
+      "alerts": "Rare locations; alerts not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forever-gps",
+      "name": "Forever GPS",
+      "category": "navigation",
+      "summary": "Forever GPS draws estimated journeys on the map using learned flights and cross-continent transport; its release is marked beta.",
+      "choice": "Choose it for a map itinerary and onward preview; Waypoint Tracker adds a 3D arrow, Find and Nearest.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forever-gps"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Native pin / quest destination",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Learned flights, boats, zeppelins, skycutters, tram, supported portals",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "shortest-path-forever",
+      "name": "Shortest Path Forever",
+      "category": "navigation",
+      "summary": "Shortest Path Forever plans journeys with directions on maps and the objective tracker, and offers nearby-service search using installed QuestieDB.",
+      "choice": "Choose it for its journey interface and guide integrations; Waypoint Tracker offers its own Find database and 3D arrow.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/shortest-path-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Yes",
+      "waypoints": "Map / quest-log targets",
+      "quest_map": "Not stated",
+      "search": "Items, instances (QuestieDB)",
+      "nearest": "Services/trainers (QuestieDB)",
+      "routing": "Walking, flights, boats, zeppelins, lifts, tram, portals, teleports",
+      "alerts": "Not stated",
+      "tomtom": "Other guide waypoints without TomTom, as documented",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "trainer-finder",
+      "name": "Trainer Finder",
+      "category": "services",
+      "summary": "Trainer Finder searches trainers and services, sets an arrow to the nearest result, learns NPC visits and remembers walked city corridors.",
+      "choice": "Choose it for trainer-focused lookup and city guidance; Waypoint Tracker adds quest/item Find and cross-zone travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/trainer-finder"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Yes",
+      "waypoints": "Search results",
+      "quest_map": "Not stated",
+      "search": "NPC names and service roles",
+      "nearest": "Services and trainers",
+      "routing": "Learned city corridors",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "finddon",
+      "name": "Finddon: Find NPCs, Vendors & Goods",
+      "category": "services",
+      "summary": "Finddon searches NPC roles and names nearest-first, with an arrow and pins supplied by DonMap.",
+      "choice": "Choose it for an NPC-focused browser; Waypoint Tracker adds quest/item Find and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/finddon"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Via DonMap",
+      "waypoints": "Via DonMap",
+      "quest_map": "Not stated",
+      "search": "NPC roles, names; vendor goods",
+      "nearest": "Services/trainers",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "UI/roles: English, German, French, Spanish (Spain/Latin America), Brazilian Portuguese, Russian, Korean, Traditional Chinese; NPC names English",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "donmap",
+      "name": "DonMap",
+      "category": "navigation",
+      "summary": "DonMap is the arrow, map-pin and compass layer required by the Don addons.",
+      "choice": "Keep it for addons that require it; Waypoint Tracker is a separate navigation and Find addon.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/donmap"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Yes",
+      "waypoints": "Map/minimap points",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "nestie",
+      "name": "Nestie",
+      "category": "utilities",
+      "summary": "Nestie combines nearby trainer/vendor tools, a seamless map, quest help, auction tools and dungeon guides.",
+      "choice": "Choose it for an all-in-one toolkit; Waypoint Tracker focuses on its 3D arrow, Find and travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/nestie"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Trainer, repair, vendor",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "terminal",
+      "name": "Terminal",
+      "category": "services",
+      "summary": "Terminal provides plain-language search and nearest-place queries, with more NPC, quest and item answers when supported data addons are installed.",
+      "choice": "Choose it for broad command-style search; Waypoint Tracker provides its own Find database and a persistent navigation arrow.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/terminal"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Game search; NPC/item/quest data via integrations",
+      "nearest": "Nearest-place queries; coverage depends on data",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "English, German, French, Spanish, Russian, Simplified Chinese",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "oneforall-forever",
+      "name": "OneForAll - Forever",
+      "category": "collection",
+      "summary": "OneForAll is a modular Forever companion covering professions, recipes, hunter pets, dungeon quests and library books.",
+      "choice": "Choose it for those reference tools; Waypoint Tracker adds Find and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/oneforall-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "questgps",
+      "name": "QuestGPS",
+      "category": "navigation",
+      "summary": "QuestGPS follows the tracked quest with an arrow, distance and ETA, can select the next closest quest and accepts manual coordinates.",
+      "choice": "Choose it for its documented arrow workflow; Waypoint Tracker adds Find, nearest known services and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/questgps"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Yes",
+      "waypoints": "/gps way coordinates",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "questward",
+      "name": "Questward",
+      "category": "navigation",
+      "summary": "Questward supplies a movable 3D quest arrow and coordinate waypoints, using /qway when TomTom is installed.",
+      "choice": "Choose it for its documented arrow workflow; Waypoint Tracker adds Find, nearest known services and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/questward"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Public Domain",
+      "arrow": "Yes",
+      "waypoints": "/way; /qway with TomTom",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forever-quest-arrow",
+      "name": "FOREVER QUEST ARROW",
+      "category": "navigation",
+      "summary": "FOREVER QUEST ARROW follows focused quest objectives and turn-ins and can choose the nearest eligible quest destination.",
+      "choice": "Choose it for its documented arrow workflow; Waypoint Tracker adds Find, nearest known services and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forever-quest-arrow"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "zoros-wayarrow",
+      "name": "ZoRos-WayArrow",
+      "category": "navigation",
+      "summary": "ZoRos-WayArrow follows the native super-tracked quest, map pin or user waypoint; its page limits operation to outside instances.",
+      "choice": "Choose it for its documented arrow workflow; Waypoint Tracker adds Find, nearest known services and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/zoros-wayarrow"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Native super-tracked target",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "thearrowforever",
+      "name": "TheArrowForever",
+      "category": "navigation",
+      "summary": "TheArrowForever shares group quest targets and XP progress and guides members along walkable routes.",
+      "choice": "Choose it for its documented arrow workflow; Waypoint Tracker adds Find, nearest known services and Real routes.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/thearrowforever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Yes",
+      "waypoints": "Shared group points",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Walkable terrain routes",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "waypoint-ui",
+      "name": "Waypoint UI",
+      "category": "navigation",
+      "summary": "Waypoint UI displays in-world waypoints, detailed pinpoints and directional guidance for tracked targets.",
+      "choice": "Choose it for its documented arrow workflow; Waypoint Tracker adds Find, nearest known services and Real routes.",
+      "sources": [
+        "https://addons.wago.io/addons/waypoint-ui"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Navigator guidance",
+      "waypoints": "Tracked POIs, quests, map pins",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "questdon",
+      "name": "Questdon: Quest & Dungeon Helper",
+      "category": "quests",
+      "summary": "Questdon provides a quest tracker, map and minimap objectives, guiding arrow and /way waypoints on Forever and Classic Era.",
+      "choice": "Choose it for its quest-book and tracker workflow; Waypoint Tracker adds its own Find and Nearest.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/questdon"
+      ],
+      "support": "Forever 1.60.1 / 16001 explicitly documented",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Via DonMap",
+      "waypoints": "/way",
+      "quest_map": "Starts, objectives, turn-ins",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forever-quest-log",
+      "name": "Forever Quest Log",
+      "category": "quests",
+      "summary": "Forever Quest Log replaces the quest tracker, adds a focused-quest frame and lets players restyle and move the world map.",
+      "choice": "Choose it for tracker presentation; Waypoint Tracker adds destination search and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forever-quest-log"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "English, German, Spanish, French",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forever-quest-tracker",
+      "name": "Forever Quest Tracker",
+      "category": "quests",
+      "summary": "Forever Quest Tracker offers a quest drawer, guide arrow, map route and party quest sharing.",
+      "choice": "Choose it for its drawer and group quest workflow; Waypoint Tracker adds Find and Nearest.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forever-quest-tracker"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Yes",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Map route; transport not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "queston-forever",
+      "name": "Queston Forever",
+      "category": "quests",
+      "summary": "Queston Forever combines a zone-grouped tracker, quest markers, waypoint navigation and guide integrations.",
+      "choice": "Choose it for its tracker and guide-card workflow; Waypoint Tracker offers independent Find and Nearest.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/queston-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved (direct listing); indexed GPL label also observed",
+      "arrow": "Waypoint navigation",
+      "waypoints": "Yes",
+      "quest_map": "Starts, objectives, turn-ins",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "quester-forever",
+      "name": "Quester Forever",
+      "category": "quests",
+      "summary": "Quester is a quest helper with Forever TOCs; its documented TomTom arrow integration is currently loaded only by its Retail TOC.",
+      "choice": "Choose it for its documented quest helpers; do not assume the Retail TomTom integration is available on Forever.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/quester-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Forever integration not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Documented Retail-only implementation",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "foreverroute",
+      "name": "ForeverRoute",
+      "category": "guides",
+      "summary": "ForeverRoute is a public-beta quest and leveling guide with step previews, waypoints and adaptive planning under review.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/foreverroute"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Yes",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Quest order (beta)",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "questtrail",
+      "name": "QuestTrail",
+      "category": "guides",
+      "summary": "QuestTrail learns and shares quest information while planning a quest route for Forever.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/questtrail"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Quest-route planning",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "English, French",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "journey-planner",
+      "name": "Journey Planner",
+      "category": "guides",
+      "summary": "Journey Planner offers goal lists, a dynamic quest guide and session tracking for Forever.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/journey-planner"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Adaptive quest guide",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forever-planner",
+      "name": "Forever Planner",
+      "category": "guides",
+      "summary": "Forever Planner offers build-based leveling routes, quest pins and an arrow; most guide data needs its separate Windows app and Discord login.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forever-planner"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Free addon and app",
+      "licence": "All Rights Reserved",
+      "arrow": "App-fed guide arrow",
+      "waypoints": "Not stated",
+      "quest_map": "App-fed quest pins",
+      "search": "Not stated",
+      "nearest": "Vendor/flight master navigator",
+      "routing": "App-fed leveling route",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "wayfinder-forever",
+      "name": "Wayfinder Forever",
+      "category": "guides",
+      "summary": "Wayfinder Forever is a free beta leveling-guide tool with an editor, sharing, a route recorder and an optional TomTom arrow.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/wayfinder-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Free; no premium tier",
+      "licence": "MIT",
+      "arrow": "Optional TomTom",
+      "waypoints": "Guide steps",
+      "quest_map": "Focused quest area",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Authored guide steps",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forever-guides",
+      "name": "Forever Guides",
+      "category": "guides",
+      "summary": "Forever Guides brings class-trainer information, talent builds, dungeon guides, search and travel tools into the game.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forever-guides"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Free addon",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "/fg way; /way",
+      "quest_map": "Not stated",
+      "search": "Guide/data search",
+      "nearest": "Trainer lists; nearest not stated",
+      "routing": "Travel routes; modes not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "German, English",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "field-guide",
+      "name": "Field Guide",
+      "category": "guides",
+      "summary": "Field Guide chooses leveling steps from XP and travel requirements, adds prerequisites and hands navigation to a separate Waypoint addon.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/field-guide"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Separate Waypoint dependency",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Leveling guide steps",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "polestar",
+      "name": "Polestar Guides",
+      "category": "guides",
+      "summary": "Polestar provides free, open-source Forever leveling guides with automatically completed steps and an arrow following real paths.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/polestar"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Free",
+      "licence": "GPL-3.0",
+      "arrow": "Yes",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Guide order and path navigation",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "boostedxp",
+      "name": "BoostedXP",
+      "category": "guides",
+      "summary": "BoostedXP offers free Forever leveling steps, an arrow and quest automation; the checked Wago description says its validated coverage reaches the beta level range.",
+      "choice": "Choose it when you want a suggested quest sequence; Waypoint Tracker provides on-demand destinations, Find and travel guidance.",
+      "sources": [
+        "https://addons.wago.io/addons/boostedxp"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Free",
+      "licence": "Not stated",
+      "arrow": "Yes",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Leveling guide steps",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-yet-another-guide-addon",
+      "name": "YAGA - Yet Another Guide Addon",
+      "category": "guides",
+      "summary": "YAGA combines step-by-step leveling routes, a waypoint arrow, travel planning, quest maps and item/NPC/quest lookup.",
+      "choice": "Choose YAGA for an integrated guide window; Waypoint Tracker offers its own 3D arrow, Find and one-click Nearest.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-yet-another-guide-addon"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Yes",
+      "waypoints": "/yaga way",
+      "quest_map": "Quest markers",
+      "search": "Items, quests, NPCs, zones",
+      "nearest": "Not stated",
+      "routing": "Flights, boats, zeppelins, hearthstone",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-rares",
+      "name": "YAGA_Rares",
+      "category": "collection",
+      "summary": "YAGA_Rares adds zone catalogs, known-location pins and nearby rare/treasure alerts to the required YAGA addon.",
+      "choice": "Choose the matching YAGA companion for its specialist checklist; Waypoint Tracker offers independent destination search and travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-rares"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "To YAGA arrow",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Nearby rare/treasure alerts",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-exploration",
+      "name": "YAGA_Exploration",
+      "category": "collection",
+      "summary": "YAGA_Exploration supplies landmark, library-book and Legacy challenge routes for YAGA.",
+      "choice": "Choose the matching YAGA companion for its specialist checklist; Waypoint Tracker offers independent destination search and travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-exploration"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Exploration guide routes",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-collectibles",
+      "name": "YAGA_Collectibles",
+      "category": "collection",
+      "summary": "YAGA_Collectibles supplies mount and companion-pet acquisition guides for YAGA.",
+      "choice": "Choose the matching YAGA companion for its specialist checklist; Waypoint Tracker offers independent destination search and travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-collectibles"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-reputation",
+      "name": "YAGA_Reputation",
+      "category": "collection",
+      "summary": "YAGA_Reputation supplies faction quest chains, repeatable turn-ins and standing-aware objectives for YAGA.",
+      "choice": "Choose the matching YAGA companion for its specialist checklist; Waypoint Tracker offers independent destination search and travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-reputation"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forevergather",
+      "name": "ForeverGather",
+      "category": "gathering",
+      "summary": "ForeverGather learns resource locations, displays live minimap icons and points an arrow at the nearest detected gathering resource.",
+      "choice": "Choose it for a gathering-focused workflow; Waypoint Tracker adds general Find, Nearest and destination travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forevergather"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Nearest detected resource",
+      "waypoints": "Resource guidance",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "German, English, Spanish, French, Korean",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gatherer-forever",
+      "name": "Gatherer Forever",
+      "category": "gathering",
+      "summary": "Gatherer Forever journals gathering sessions, estimates value from auction data and builds gathering routes with directional guidance.",
+      "choice": "Choose it for a gathering-focused workflow; Waypoint Tracker adds general Find, Nearest and destination travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gatherer-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Directional guidance",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Gathering routes",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gatherer-reforged",
+      "name": "Gatherer Reforged",
+      "category": "gathering",
+      "summary": "Gatherer Reforged tracks resources with a 3D HUD, imports other gathering databases and offers TomTom or native node waypoints.",
+      "choice": "Choose it for a gathering-focused workflow; Waypoint Tracker adds general Find, Nearest and destination travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gatherer-reforged"
+      ],
+      "support": "Forever / 16001 explicitly documented",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Node waypoints",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gathercraft",
+      "name": "Gathercraft",
+      "category": "gathering",
+      "summary": "Gathercraft records resource locations, builds farm routes and provides gathering-value and crafting-profit tools.",
+      "choice": "Choose it for a gathering-focused workflow; Waypoint Tracker adds general Find, Nearest and destination travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gathercraft"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Free",
+      "licence": "GPL-3.0",
+      "arrow": "Gathering guidance; optional nearest-node arrow",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Gathering routes",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "English, German, French, Spanish, Portuguese, Italian, Russian, Korean, Simplified/Traditional Chinese",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gatherlite",
+      "name": "GatherLite",
+      "category": "gathering",
+      "summary": "GatherLite remembers where gathering resources were found.",
+      "choice": "Choose it for a gathering-focused workflow; Waypoint Tracker adds general Find, Nearest and destination travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gatherlite"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forevermapnotes-bysiberiano12",
+      "name": "ForeverMapNotes-BySiberiano12",
+      "category": "maps",
+      "summary": "ForeverMapNotes maps herbs, ore, flight points, chests and rares and records new resource and rare locations.",
+      "choice": "Choose it for resource and discovery map filters; Waypoint Tracker adds general Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forevermapnotes-bysiberiano12"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Rare/chest map locations; alerts not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "rarescanner",
+      "name": "RareScanner",
+      "category": "alerts",
+      "summary": "RareScanner is a dedicated rare, event and treasure alert addon with an explicitly listed Forever build.",
+      "choice": "Choose it for a dedicated alert workflow; Waypoint Tracker adds Find and travel guidance, with optional Treasure hunt (beta).",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/rarescanner"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Rare, event, treasure alerts",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "silver-dragon",
+      "name": "SilverDragon",
+      "category": "alerts",
+      "summary": "SilverDragon is a dedicated rare-scanning addon with a Forever-tagged release.",
+      "choice": "Choose it for rare-scanning tools; Waypoint Tracker adds Find, Nearest and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/silver-dragon"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Rare detection",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "voidsweep",
+      "name": "VoidSweep",
+      "category": "alerts",
+      "summary": "VoidSweep offers shared rare sightings and map directions; on Forever it detects rares from nameplates, target and mouseover.",
+      "choice": "Choose it for shared rare-sighting information; Waypoint Tracker adds Find and destination travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/voidsweep"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Native map target",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Forever rare sightings; treasure/boss features labelled Midnight",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "openmap",
+      "name": "OpenMap",
+      "category": "maps",
+      "summary": "OpenMap provides seamless world-map zoom and pan, location search, flights and transport links, with service markers using Questie.",
+      "choice": "Choose it for a continuous map; Waypoint Tracker adds Find and a 3D arrow for selected destinations.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/openmap"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT",
+      "arrow": "Not stated",
+      "waypoints": "Native map pin; optional TomTom",
+      "quest_map": "Not stated",
+      "search": "Zones, cities, dungeons, flight masters",
+      "nearest": "Service markers via Questie; nearest not stated",
+      "routing": "Flight preview and transport links",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "endless-map",
+      "name": "Endless Map",
+      "category": "maps",
+      "summary": "Endless Map provides seamless zoom with city and dungeon maps, entrances and bosses; its Forever folder retains the AzerothUnrolled name.",
+      "choice": "Choose it for map browsing and dungeon context; Waypoint Tracker adds independent Find and arrow navigation.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/endless-map"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "explorersmap-wow-forever",
+      "name": "ExplorersMap",
+      "category": "maps",
+      "summary": "ExplorersMap pins undiscovered areas and tracks exploration progress with level-suitable zones.",
+      "choice": "Choose it for exploration completion; Waypoint Tracker adds selected-destination search and travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/explorersmap-wow-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "English, Spanish",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "npc-icons",
+      "name": "Npc Icons",
+      "category": "services",
+      "summary": "Npc Icons places role icons above friendly and neutral NPC nameplates, including useful trainers and vendors.",
+      "choice": "Choose it to identify services already in sight; Waypoint Tracker searches known services and guides you to them.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/npc-icons"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "GPL-3.0",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Visible service icons; nearest not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "English, French, German, Spanish",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forgecampguide",
+      "name": "ForgeCampGuide",
+      "category": "services",
+      "summary": "ForgeCampGuide provides profession guidance and NPC-coordinate waypoints with documented TomTom support.",
+      "choice": "Choose it for profession instructions; Waypoint Tracker adds broad Find and travel guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forgecampguide"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "NPC-coordinate links",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "forever-curios",
+      "name": "Forever Curios",
+      "category": "collection",
+      "summary": "Forever Curios catalogs fun items, gadgets, pets and mounts, with acquisition information and NPC locations.",
+      "choice": "Choose it for collection and item-source browsing; Waypoint Tracker adds independent search and travel.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/forever-curios"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Collectible sources and NPC locations",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "gearquest-forever",
+      "name": "GearQuest Forever",
+      "category": "collection",
+      "summary": "GearQuest Forever shows gear-upgrade sources and lets players track a selected item hunt.",
+      "choice": "Choose it for gear-upgrade hunting; Waypoint Tracker adds general item/NPC Find and navigation.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/gearquest-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Gear upgrade sources",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "foreverplusplus",
+      "name": "ForeverPlusPlus",
+      "category": "utilities",
+      "summary": "ForeverPlusPlus is a modular interface toolkit; its Wago description includes a waypoint arrow that follows map pins.",
+      "choice": "Choose it for modular UI conveniences; Waypoint Tracker adds Find, Nearest and Real routes.",
+      "sources": [
+        "https://addons.wago.io/addons/foreverplusplus",
+        "https://www.curseforge.com/wow/addons/foreverplusplus"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "MIT (CurseForge listing)",
+      "arrow": "Map-pin arrow",
+      "waypoints": "Map pins",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "foreverui",
+      "name": "ForeverUI",
+      "category": "utilities",
+      "summary": "ForeverUI is a full interface suite whose Wago description includes a quest list and waypoint-arrow workflow.",
+      "choice": "Choose it for a complete UI; Waypoint Tracker offers a separate Find and travel window.",
+      "sources": [
+        "https://addons.wago.io/addons/foreverui",
+        "https://addons.wago.io/addons/foreverui/versions?stability=stable"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved (Wago versions)",
+      "arrow": "Quest workflow arrow",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-journal",
+      "name": "YAGA_Journal",
+      "category": "collection",
+      "summary": "YAGA_Journal adds dungeon and raid browsing, boss-loot search and routes to dungeon quest givers; it requires YAGA.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-journal"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Boss loot",
+      "nearest": "Not stated",
+      "routing": "To quest givers",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-professions",
+      "name": "YAGA_Professions",
+      "category": "collection",
+      "summary": "YAGA_Professions adds crafting and gathering guides with materials and collection steps; it requires YAGA.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-professions"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Profession guide steps",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-talents",
+      "name": "YAGA_Talents",
+      "category": "collection",
+      "summary": "YAGA_Talents adds talent plans and a trainer-cost planner; it requires YAGA.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-talents"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Training costs; nearest not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-gear",
+      "name": "YAGA_Gear",
+      "category": "collection",
+      "summary": "YAGA_Gear compares gear using stat weights and marks quest-reward upgrades; it requires YAGA.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-gear"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "yaga-recorder",
+      "name": "YAGA_Recorder",
+      "category": "collection",
+      "summary": "YAGA_Recorder records step timings, positions, flights and route events for guide authors; it requires YAGA.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/yaga-recorder"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "Custom License",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Route recording",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "Not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-mapnotes-forever",
+      "name": "HandyNotes: MapNotes Forever",
+      "category": "maps",
+      "summary": "MapNotes Forever is a HandyNotes plugin with instance-entrance, portal and ship markers.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-mapnotes-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Not stated",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Transport pins; trip planning not stated",
+      "alerts": "Not stated",
+      "tomtom": "Not stated",
+      "languages": "enUS, deDE, esMX, ptBR, itIT, zhCN, zhTW, ruRU, koKR, frFR, esES",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-traveler",
+      "name": "HandyNotes_Traveler",
+      "category": "maps",
+      "summary": "HandyNotes_Traveler maps boats, zeppelins, skycutters, tram and portal destinations, with optional TomTom waypoints.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-traveler"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "TomTom or native map pin",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Transport destinations; trip planning not stated",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "Place/zone names from client; UI list not stated",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    },
+    {
+      "slug": "handynotes-world-lore-forever",
+      "name": "HandyNotes: World Lore Forever",
+      "category": "maps",
+      "summary": "World Lore Forever marks readable books, plaques and inscriptions, hides read locations and offers optional TomTom waypoints.",
+      "choice": "Choose it for its specialist content; Waypoint Tracker adds independent Find, Nearest and arrow guidance.",
+      "sources": [
+        "https://www.curseforge.com/wow/addons/handynotes-world-lore-forever"
+      ],
+      "support": "Forever listed; interface not stated",
+      "price": "Not stated",
+      "licence": "All Rights Reserved",
+      "arrow": "Not stated",
+      "waypoints": "Click pin",
+      "quest_map": "Not stated",
+      "search": "Not stated",
+      "nearest": "Not stated",
+      "routing": "Not stated",
+      "alerts": "Not stated",
+      "tomtom": "Documented integration",
+      "languages": "German; English fallback; zone names from client",
+      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.curseforge.com/wow/addons/tomtom",
+      "checked": "2026-11-13",
+      "quote": "TomTom is your personal navigation assistant in World of Warcraft.",
+      "evidence_files": [
+        "tmp/core.txt",
+        "tmp/core_details.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/questie",
+      "checked": "2026-11-13",
+      "quote": "Show notes for quest start points, turn in points, and objectives.",
+      "evidence_files": [
+        "tmp/discovery.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://addons.wago.io/addons/questie/versions?stability=stable",
+      "checked": "2026-11-13",
+      "quote": "Supported Forever patch 1.60.1",
+      "evidence_files": [],
+      "access": "Official public page; Wago rendered descriptions may be search-index excerpts"
+    },
+    {
+      "url": "https://github.com/shagu/pfQuest/blob/master/README.md",
+      "checked": "2026-11-13",
+      "quote": "/db item <item>         Search for units and objects dropping an item",
+      "evidence_files": [
+        "tmp/confirm.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes",
+      "checked": "2026-11-13",
+      "quote": "Handy Notes for your maps. This addon is intended to be a small and simple framework for showing notes on your map.",
+      "evidence_files": [
+        "tmp/core.txt",
+        "tmp/last_search.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-wow-forever",
+      "checked": "2026-11-13",
+      "quote": "A HandyNotes plugin to show the Warcraft Forever treasure items and rares on your map.",
+      "evidence_files": [
+        "tmp/last_search.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-rares-and-treasures-forever",
+      "checked": "2026-11-13",
+      "quote": "Shows WoW Forever rares and treasures on your map, and records new ones as you play.",
+      "evidence_files": [
+        "tmp/forever3.txt",
+        "tmp/search_more.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-npcs-forever",
+      "checked": "2026-11-13",
+      "quote": "A HandyNotes Plugin for WoW Forever that shows vendors and service NPCs on the",
+      "evidence_files": [
+        "tmp/plugins.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-forever-books",
+      "checked": "2026-11-13",
+      "quote": "Find Azeroth’s scattered books and scrolls with HandyNotes - Forever Books, a lightweight HandyNotes plugin for WoW Forever. Explore 40 book titles using world",
+      "evidence_files": [
+        "tmp/plugins.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-classic-and-cataclysm",
+      "checked": "2026-11-13",
+      "quote": "A HandyNotes plugin to show the Classic and Cataclysm treasure items and rares on your map. (That means it requires HandyNotes, so go install",
+      "evidence_files": [
+        "tmp/plugins.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-directions",
+      "checked": "2026-11-13",
+      "quote": "Remember locations that city guards direct you to for HandyNotes",
+      "evidence_files": [
+        "tmp/finalsources.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/carbonite",
+      "checked": "2026-11-13",
+      "quote": "Want to know where the nearest bank is? locate a mailbox?",
+      "evidence_files": [
+        "tmp/discovery3.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/carbonite-quests-classic",
+      "checked": "2026-11-13",
+      "quote": "Update of the Carbonite Quests module for Classic WoW",
+      "evidence_files": [
+        "tmp/discovery3.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://zygorguides.com/forever",
+      "checked": "2026-11-13",
+      "quote": "All you need to access our WoW: Forever guides and all future updates is a Zygor Elite subscription.",
+      "evidence_files": [
+        "tmp/discovery4.txt",
+        "tmp/listing_attempt.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/restedxp-guide",
+      "checked": "2026-11-13",
+      "quote": "Fully customizable arrow pointing toward objectives",
+      "evidence_files": [
+        "tmp/confirm.txt",
+        "tmp/discovery4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://community.restedxp.com/forever-guides-update-major-update/",
+      "checked": "2026-11-13",
+      "quote": "If you’d still like to purchase the guide, head directly to shop.restedxp.com/forever.",
+      "evidence_files": [
+        "tmp/finalsources.txt",
+        "tmp/last_search.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/guidelime",
+      "checked": "2026-11-13",
+      "quote": "A WoW Classic addon for leveling guides with automatic progress updates",
+      "evidence_files": [
+        "tmp/core.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/wow-pro",
+      "checked": "2026-11-13",
+      "quote": "WoW-Pro Guides is a set of addons which bring guides written by the WoW-Pro community since Cataclysm into both the Retail and Classic releases.",
+      "evidence_files": [
+        "tmp/core_details.txt",
+        "tmp/feature_followup.txt",
+        "tmp/guides_gather.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/azeroth-pilot-reloaded",
+      "checked": "2026-11-13",
+      "quote": "APR is 100% free, open-source leveling & questing Guide for World of Warcraft with automatic features.",
+      "evidence_files": [
+        "tmp/feature_followup.txt",
+        "tmp/guides_gather.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/azerothautopilot",
+      "checked": "2026-11-13",
+      "quote": "Quest routing and navigation for World of Warcraft: Forever",
+      "evidence_files": [
+        "tmp/forever1.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/azeroth-auto-pilot",
+      "checked": "2026-11-13",
+      "quote": "Addon is no longer updated and that the addon has been continued into Dragonflight through APR",
+      "evidence_files": [
+        "tmp/core_details.txt",
+        "tmp/more4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/leatrix-maps",
+      "checked": "2026-11-13",
+      "quote": "Enhancements for your maps. Supports all WoW games including Midnight and Burning Crusade Classic Anniversary (as well as all the others).",
+      "evidence_files": [
+        "tmp/feature_followup.txt",
+        "tmp/maps.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/leatrix-plus",
+      "checked": "2026-11-13",
+      "quote": "Powerful and modular quality of life addon with a small resource footprint. Supports all WoW games including Midnight and Burning Crusade Classic Anniversary (as",
+      "evidence_files": [
+        "tmp/feature_followup.txt",
+        "tmp/maps.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/mapster",
+      "checked": "2026-11-13",
+      "quote": "Mapster is a very simple world map enhacement addon, which was designed to work in conjunction with all other map addons out there. The",
+      "evidence_files": [
+        "tmp/maps.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/farmhud",
+      "checked": "2026-11-13",
+      "quote": "Turn your minimap into a hud for farming ore / herb.",
+      "evidence_files": [
+        "tmp/core_details.txt",
+        "tmp/feature_followup.txt",
+        "tmp/guides_gather.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gathermate2",
+      "checked": "2026-11-13",
+      "quote": "Collects Herbs, Mines, Gas Clouds, Archaeology, Treasure and Fishing locations and adds them to the worldmap and minimap",
+      "evidence_files": [
+        "tmp/guides_gather.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gathermate2-classic",
+      "checked": "2026-11-13",
+      "quote": "Collects Herbs, Mines, Gas Clouds, Archaeology, Treasure and Fishing locations and adds them to the worldmap and minimap",
+      "evidence_files": [
+        "tmp/more4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gatherer",
+      "checked": "2026-11-13",
+      "quote": "Helps track the closest plants, deposits and treasure locations on your minimap.",
+      "evidence_files": [
+        "tmp/guides_gather.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/routes",
+      "checked": "2026-11-13",
+      "quote": "Routes on your maps!",
+      "evidence_files": [
+        "tmp/more4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/all-the-things",
+      "checked": "2026-11-13",
+      "quote": "Addon for Tracking Collections & Account Completion",
+      "evidence_files": [
+        "tmp/core_details.txt",
+        "tmp/feature_followup.txt",
+        "tmp/maps.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/along-the-way-adventurers-journal",
+      "checked": "2026-11-13",
+      "quote": "Your adventurer's journal for WoW Forever. Plan your quest route, follow an arrow that walks around mountains and walls, open a dungeon journal with",
+      "evidence_files": [
+        "tmp/forever1.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forever-gps",
+      "checked": "2026-11-13",
+      "quote": "Get the quickest route across Azeroth. Pick a quest or drop a pin in any WoW Forever zone. Forever GPS plots the trip from",
+      "evidence_files": [
+        "tmp/forever1.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/shortest-path-forever",
+      "checked": "2026-11-13",
+      "quote": "Plan journeys from the map or quest log, with directions in the objective tracker, world map and minimap.",
+      "evidence_files": [
+        "tmp/more1.txt",
+        "tmp/plugins.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/trainer-finder",
+      "checked": "2026-11-13",
+      "quote": "*One click to the nearest trainer or service.**",
+      "evidence_files": [
+        "tmp/forever2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/finddon",
+      "checked": "2026-11-13",
+      "quote": "NPC finder for WoW Forever: the nearest trainer, vendor, repair, flight master, innkeeper, bank, auction house, mailbox, cooking fire, anvil, forge or rare, or",
+      "evidence_files": [
+        "tmp/discovery4.txt",
+        "tmp/extra4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/donmap",
+      "checked": "2026-11-13",
+      "quote": "Map layer of the Don addons for WoW Forever and Classic Era: map pins, minimap points, direction arrow and compass. Library, required by Questdon,",
+      "evidence_files": [
+        "tmp/discovery4.txt",
+        "tmp/extra8.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/nestie",
+      "checked": "2026-11-13",
+      "quote": "Your nest of handy tools for World of Warcraft: Forever. One addon instead of ten: the nearest trainer, repair or vendor on your minimap,",
+      "evidence_files": [
+        "tmp/forever2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/terminal",
+      "checked": "2026-11-13",
+      "quote": "Press `, type what you want in plain words, press Enter. Terminal finds it, opens the right window and points straight at it.",
+      "evidence_files": [
+        "tmp/discovery3.txt",
+        "tmp/forever2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/oneforall-forever",
+      "checked": "2026-11-13",
+      "quote": "A modular All-in-one companion for WoW Forever: Quality of life, professions & recipes, hunter pets, dungeons & quests, library books, talent calculator and many",
+      "evidence_files": [
+        "tmp/discovery3.txt",
+        "tmp/forever2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/questgps",
+      "checked": "2026-11-13",
+      "quote": "QuestGPS is a GPS-style arrow for WoW Forever that points to the quest you are tracking. It is a replacement for the TomTom arrow,",
+      "evidence_files": [
+        "tmp/forever4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/questward",
+      "checked": "2026-11-13",
+      "quote": "A lightweight 3D arrow that takes you straight to your quest.",
+      "evidence_files": [
+        "tmp/forever4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forever-quest-arrow",
+      "checked": "2026-11-13",
+      "quote": "It provides a movable directional arrow that guides you toward your focused quest objective or completed quest's turn-in location.",
+      "evidence_files": [
+        "tmp/forever4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/zoros-wayarrow",
+      "checked": "2026-11-13",
+      "quote": "I was missing a waypointer in WoW-Forever,so I decided to try and make my own.",
+      "evidence_files": [
+        "tmp/forever4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/thearrowforever",
+      "checked": "2026-11-13",
+      "quote": "Keeps a levelling group together on World of Warcraft Forever. Everyone's XP in one small frame, one shared quest and map point, and an",
+      "evidence_files": [
+        "tmp/extra12.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://addons.wago.io/addons/waypoint-ui",
+      "checked": "2026-11-13",
+      "quote": "An in-world waypoint and pinpoint to show relevant information directly in world-space.",
+      "evidence_files": [
+        "tmp/discovery2.txt",
+        "tmp/more0.txt"
+      ],
+      "access": "Official public page; Wago rendered descriptions may be search-index excerpts"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/questdon",
+      "checked": "2026-11-13",
+      "quote": "Questdon is a quest helper and quest tracker written for World of Warcraft: Forever (client 1.60.1, Interface 16001) and for WoW Classic Era and",
+      "evidence_files": [
+        "tmp/extra8.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forever-quest-log",
+      "checked": "2026-11-13",
+      "quote": "A new quest tracker for the right side of your screen, made for WoW: Forever, plus a frame for the quest you are working",
+      "evidence_files": [
+        "tmp/extra8.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forever-quest-tracker",
+      "checked": "2026-11-13",
+      "quote": "A quest tracker for WoW Forever that shows you where to go next.",
+      "evidence_files": [
+        "tmp/extra12.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/queston-forever",
+      "checked": "2026-11-13",
+      "quote": "Blizzard-styled objective tracker for WoW: Forever. Groups quests by zone, adds filters and search, and shows quest givers, turn-ins and objectives on the map",
+      "evidence_files": [
+        "tmp/extra12.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/quester-forever",
+      "checked": "2026-11-13",
+      "quote": "Lightweight quest helper, originally developed for WoW Forever client 1.60.1.",
+      "evidence_files": [
+        "tmp/extra12.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/foreverroute",
+      "checked": "2026-11-13",
+      "quote": "Smart leveling routes, quest navigation and Forever-specific waypoint guidance for World of Warcraft: Forever.",
+      "evidence_files": [
+        "tmp/discovery2.txt",
+        "tmp/extra0.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/questtrail",
+      "checked": "2026-11-13",
+      "quote": "The community-built quest route planner for WoW Forever.",
+      "evidence_files": [
+        "tmp/discovery2.txt",
+        "tmp/extra0.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/journey-planner",
+      "checked": "2026-11-13",
+      "quote": "Plan what you're after on WoW Forever, or just track it as you play.",
+      "evidence_files": [
+        "tmp/extra0.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forever-planner",
+      "checked": "2026-11-13",
+      "quote": "A leveling route planned for your class and build, an arrow at your feet that walks you through it, and 14 tools in one",
+      "evidence_files": [
+        "tmp/discovery2.txt",
+        "tmp/extra0.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/wayfinder-forever",
+      "checked": "2026-11-13",
+      "quote": "A free levelling guide tool for WoW Forever: follow the built-in guides for every race, or write your own and share them. No paid",
+      "evidence_files": [
+        "tmp/extra4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forever-guides",
+      "checked": "2026-11-13",
+      "quote": "In-game companion for forever-guides.com: class trainers, talent builds, travel routes, dungeon guides, macros and a character overview.",
+      "evidence_files": [
+        "tmp/extra4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/field-guide",
+      "checked": "2026-11-13",
+      "quote": "Leveling guides for WoW Forever, planned by XP against travel. Picks the next best route from your level and finished quests, adds any prerequisite",
+      "evidence_files": [
+        "tmp/extra4.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/polestar",
+      "checked": "2026-11-13",
+      "quote": "Polestar is a free, open-source guide addon for World of Warcraft: Forever. Routes planned from the game's own data, a guide window that ticks",
+      "evidence_files": [
+        "tmp/more1.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://addons.wago.io/addons/boostedxp",
+      "checked": "2026-11-13",
+      "quote": "Free leveling guide for WoW Forever: step-by-step routes with a waypoint arrow and quest automation",
+      "evidence_files": [
+        "tmp/discovery2.txt",
+        "tmp/discovery3.txt",
+        "tmp/more0.txt"
+      ],
+      "access": "Official public page; Wago rendered descriptions may be search-index excerpts"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-yet-another-guide-addon",
+      "checked": "2026-11-13",
+      "quote": "YAGA is a WoW Forever leveling guide addon that puts step-by-step quest routes, class quest chains, a waypoint arrow and travel planning in one",
+      "evidence_files": [
+        "tmp/discovery4.txt",
+        "tmp/more3.txt",
+        "tmp/plugins.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-rares",
+      "checked": "2026-11-13",
+      "quote": "Browse WoW Forever rare creatures and treasures by zone in YAGA, with known-location map pins, nearby alerts and waypoint controls.",
+      "evidence_files": [
+        "tmp/more3.txt",
+        "tmp/search_more.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-exploration",
+      "checked": "2026-11-13",
+      "quote": "WoW Forever exploration guides for YAGA: zone landmark routes, library-book routes, Legacy challenge guides and progress tracking.",
+      "evidence_files": [
+        "tmp/more5.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-collectibles",
+      "checked": "2026-11-13",
+      "quote": "WoW Forever mount and companion pet collection guides for YAGA, with known vendor, drop, quest and Merchant's Favor sources.",
+      "evidence_files": [
+        "tmp/more5.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-reputation",
+      "checked": "2026-11-13",
+      "quote": "WoW Forever reputation guides for YAGA, with faction quest chains, repeatable turn-ins, donations and objectives that follow your standing.",
+      "evidence_files": [
+        "tmp/more5.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forevergather",
+      "checked": "2026-11-13",
+      "quote": "ForeverGather is a standalone gathering companion designed for World of Warcraft Forever. It helps you discover, track, and remember herb, ore, and fishing resources",
+      "evidence_files": [
+        "tmp/extra16.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gatherer-forever",
+      "checked": "2026-11-13",
+      "quote": "Gatherer is a mining and herbalism journal for World of Warcraft. It remembers nodes you gather, marks them on your world map and minimap,",
+      "evidence_files": [
+        "tmp/extra16.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gatherer-reforged",
+      "checked": "2026-11-13",
+      "quote": "Norganna's legendary 2005 Gatherer addon—reforged after nearly a decade! Tracks herbs, ores, treasures, fishing & archaeology with a 3D HUD, GPH tracker, AH prices,",
+      "evidence_files": [
+        "tmp/extra16.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gathercraft",
+      "checked": "2026-11-13",
+      "quote": "Gathercraft puts known herb and ore spawn points on your map, guides you along a route that updates as you ride, and tells you",
+      "evidence_files": [
+        "tmp/extra16.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gatherlite",
+      "checked": "2026-11-13",
+      "quote": "World of Warcraft Gathering helper keeping track on where you have found stuff",
+      "evidence_files": [
+        "tmp/more3.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forevermapnotes-bysiberiano12",
+      "checked": "2026-11-13",
+      "quote": "Map notes for World of Warcraft: Forever. Shows ore veins, herbs, undiscovered flight paths, treasure chests and rare mobs on the world map and",
+      "evidence_files": [
+        "tmp/forever3.txt",
+        "tmp/search_more.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/rarescanner",
+      "checked": "2026-11-13",
+      "quote": "RareScanner, a World of Warcraft addon to alert you when a rare, event or treasure appear in your minimap.",
+      "evidence_files": [
+        "tmp/feature_followup.txt",
+        "tmp/forever3.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/silver-dragon",
+      "checked": "2026-11-13",
+      "quote": "Scan for rare mobs so you can find them and their loot",
+      "evidence_files": [
+        "tmp/feature_followup.txt",
+        "tmp/forever3.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/voidsweep",
+      "checked": "2026-11-13",
+      "quote": "On WoW Forever it spots rares from nameplates, your target and your mouseover",
+      "evidence_files": [
+        "tmp/more3.txt",
+        "tmp/search_more.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/openmap",
+      "checked": "2026-11-13",
+      "quote": "OpenMap is an open-source, seamless world map addon for WoW Forever that keeps the original Vanilla art style. Zoom and pan across the whole",
+      "evidence_files": [
+        "tmp/more1.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/endless-map",
+      "checked": "2026-11-13",
+      "quote": "Your whole world on one seamless map. Glide from the whole world down to a single dungeon door in one smooth zoom. Drag straight",
+      "evidence_files": [
+        "tmp/more2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/explorersmap-wow-forever",
+      "checked": "2026-11-13",
+      "quote": "ExplorersMap puts a pin on every area you still have to discover, zone by zone",
+      "evidence_files": [
+        "tmp/more5.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/npc-icons",
+      "checked": "2026-11-13",
+      "quote": "An icon above every useful NPC, so you find your trainer, the innkeeper or the right vendor at a glance. For World of Warcraft",
+      "evidence_files": [
+        "tmp/discovery3.txt",
+        "tmp/more2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forgecampguide",
+      "checked": "2026-11-13",
+      "quote": "An addon that collect the information gather from internet to optimize the different WoW proffession",
+      "evidence_files": [
+        "tmp/more2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/forever-curios",
+      "checked": "2026-11-13",
+      "quote": "Every fun thing worth having in WoW Forever, and where to get it. Forever Curios is a collector's guide in one window: toys, novelty",
+      "evidence_files": [
+        "tmp/more2.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/gearquest-forever",
+      "checked": "2026-11-13",
+      "quote": "Find the right gear at any point with this leveling companion.",
+      "evidence_files": [
+        "tmp/finalsources.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://addons.wago.io/addons/foreverplusplus",
+      "checked": "2026-11-13",
+      "quote": "Waypoint Arrow (on by default) adds an arrow on screen that turns toward the pin",
+      "evidence_files": [
+        "tmp/discovery2.txt",
+        "tmp/more0.txt"
+      ],
+      "access": "Official public page; Wago rendered descriptions may be search-index excerpts"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/foreverplusplus",
+      "checked": "2026-11-13",
+      "quote": "A World of Warcraft addon for WoW: Forever that adds to and changes the default UI in small, separate modules.",
+      "evidence_files": [
+        "tmp/discovery3.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://addons.wago.io/addons/foreverui",
+      "checked": "2026-11-13",
+      "quote": "ForeverUI's own quest list: tabs, level badges and distances",
+      "evidence_files": [
+        "tmp/discovery2.txt",
+        "tmp/more0.txt"
+      ],
+      "access": "Official public page; Wago rendered descriptions may be search-index excerpts"
+    },
+    {
+      "url": "https://zygorguides.com/support/manual/travel",
+      "checked": "2026-11-13",
+      "quote": "This includes mounts, flight paths, portals, your hearthstone, teleporting spells, and more.",
+      "evidence_files": [
+        "tmp/plugin_extra.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-journal",
+      "checked": "2026-11-13",
+      "quote": "A WoW Forever dungeon and raid journal for YAGA: browse instances, search boss loot, read dungeon quest details and route to quest givers.",
+      "evidence_files": [
+        "tmp/additional.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-professions",
+      "checked": "2026-11-13",
+      "quote": "WoW Forever profession guides from 1 to 300 for YAGA, covering crafting, gathering, Cooking, First Aid and Fishing for both factions.",
+      "evidence_files": [
+        "tmp/additional.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-talents",
+      "checked": "2026-11-13",
+      "quote": "WoW Forever talent plans for YAGA, with next-point hints, a talent window overlay, unspent-point reminders and a training-cost planner.",
+      "evidence_files": [
+        "tmp/additional.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-gear",
+      "checked": "2026-11-13",
+      "quote": "WoW Forever gear upgrade hints for YAGA: class, spec and level stat weights, tooltip upgrade lines and quest reward comparisons.",
+      "evidence_files": [
+        "tmp/additional.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/yaga-recorder",
+      "checked": "2026-11-13",
+      "quote": "A WoW Forever guide development tool for YAGA that records step timings, positions, flights and route events to local SavedVariables.",
+      "evidence_files": [
+        "tmp/additional.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-mapnotes-forever",
+      "checked": "2026-11-13",
+      "quote": "General Map Icons:",
+      "evidence_files": [
+        "tmp/plugin_extra.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-traveler",
+      "checked": "2026-11-13",
+      "quote": "Shows every boat, zeppelin, skycutter, tram and portal in WoW Forever on your world map and minimap.",
+      "evidence_files": [
+        "tmp/plugin_extra.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://www.curseforge.com/wow/addons/handynotes-world-lore-forever",
+      "checked": "2026-11-13",
+      "quote": "The interface follows your client: German on deDE, English otherwise. Zone names always come from the game.",
+      "evidence_files": [
+        "tmp/plugin_extra.txt"
+      ],
+      "access": "Official public page"
+    },
+    {
+      "url": "https://github.com/shagu/pfQuest",
+      "checked": "2026-11-13",
+      "quote": "MIT license",
+      "evidence_files": [
+        "tmp/pfquest_licence.txt"
+      ],
+      "access": "Official repository page read in research; README and licence indicator"
+    },
+    {
+      "url": "https://addons.wago.io/addons/foreverui/versions?stability=stable",
+      "checked": "2026-11-13",
+      "quote": "License: All rights reserved",
+      "evidence_files": [
+        "tmp/discovery2.txt"
+      ],
+      "access": "Indexed official versions page"
+    }
+  ]
+}

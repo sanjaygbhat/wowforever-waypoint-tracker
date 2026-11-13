@@ -14,12 +14,74 @@ Trainers.professions = {
     { key = "firstaid", id = 129 }, { key = "fishing", id = 356 },
 }
 Trainers.services = { trainer_weapon = true, trainer_riding = true }
+-- Pet trainers are available to database consumers without changing the menus.
+Trainers.additionalServices = { trainer_pet_hunter = true }
 for key in pairs(Trainers.classes) do Trainers.services["trainer_class_" .. key] = true end
 for _, p in ipairs(Trainers.professions) do Trainers.services["trainer_profession_" .. p.key] = true end
 
+-- Created only by a trainer request. Keep text parsing out of login and out
+-- of the candidate loop; merges invalidate resolved entries and corrections.
+local index
+function Trainers.Index(generation)
+    local data = WaypointTrackerData
+    local roster, locations = data and data.trainers or "", data and data.trainerLocations or ""
+    if index and index.generation == generation and index.roster == roster and index.locations == locations then
+        -- A map API may recover after the first request. Retain unresolved
+        -- numeric points without rescanning either source string.
+        for m, pending in pairs(index.pending) do
+            if ns.Geo.IsValidMap(m) then
+                for i = 1, #pending, 2 do
+                    local id, point = pending[i], pending[i + 1]
+                    local points = index.positions[id].points
+                    points[#points + 1] = point
+                    index.entries[id] = nil
+                end
+                index.pending[m] = nil
+            end
+        end
+        return index
+    end
+    index = { generation = generation, roster = roster, locations = locations,
+        services = {}, positions = {}, entries = {}, pending = {} }
+    for line in roster:gmatch("[^\n]+") do
+        local service, values = line:match("^([^\t]+)\t(.+)$")
+        if Trainers.services[service] or Trainers.additionalServices[service] then
+            local list = {}
+            for id, fac in values:gmatch("(%d+):(%a*)") do
+                list[#list + 1] = { id = tonumber(id), fac = fac }
+            end
+            index.services[service] = list
+        end
+    end
+    for line in locations:gmatch("[^\n]+") do
+        local id, name, spots, mode = line:match("^(%d+)\t([^\t]*)\t([^\t]+)\t?(.*)$")
+        if id then
+            id = tonumber(id)
+            local points = {}
+            for token in spots:gmatch("[^;]+") do
+                local m, x, y = token:match("^(%d+):([%d%.]+),([%d%.]+)$")
+                m, x, y = ns.Int(m), tonumber(x), tonumber(y)
+                if m and x and y and x >= 0 and x <= 1 and y >= 0 and y <= 1 then
+                    local point = { m = m, x = x, y = y }
+                    if ns.Geo.IsValidMap(m) then
+                        points[#points + 1] = point
+                    else
+                        local pending = index.pending[m] or {}
+                        index.pending[m] = pending
+                        pending[#pending + 1], pending[#pending + 2] = id, point
+                    end
+                end
+            end
+            index.positions[id] = { name = ns.CleanText(name) or "", points = points,
+                observed = mode == "observed" or mode == "player" }
+        end
+    end
+    return index
+end
+
 -- Generic and typed trainer observations share the same access semantics.
 function Trainers.IsService(service)
-    return service == "trainer" or Trainers.services[service] == true
+    return service == "trainer" or Trainers.services[service] == true or Trainers.additionalServices[service] == true
 end
 
 function Trainers.HasService(services)

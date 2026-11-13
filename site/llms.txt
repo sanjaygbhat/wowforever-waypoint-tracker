@@ -66,3 +66,16 @@ Rares on nameplates or your target get a waypoint even with an unknown spawn: it
 - [Changelog](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md)
 - [Wiki](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki): install, commands and options, Treasure hunt (beta), troubleshooting, discoveries
 - [Treasure hunt (beta) guide](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt)
+
+## Comparisons
+
+Official sources last checked 2026-11-13; publisher feature claims, not live-client tests. Classic Era support alone does not establish Forever compatibility.
+
+- [Addon comparison hub](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/compare.html): features, client support and which role each addon serves.
+- [Waypoint Tracker vs TomTom](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-tomtom.html): Choose TomTom for its waypoint workflow and arrow themes; choose Waypoint Tracker for a 3D arrow with built-in Find, Nearest and Real routes.
+- [Waypoint Tracker vs Questie](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-questie.html): Choose Questie for a quest-map overview and journey history; choose Waypoint Tracker for named destinations and a 3D arrow with travel planning.
+- [Waypoint Tracker vs pfQuest](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-pfquest.html): For a documented Forever 1.60.1 build, choose Waypoint Tracker; pfQuest is a relevant database and quest-helper comparison for its own supported clients.
+- [Waypoint Tracker vs HandyNotes](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-handynotes.html): Choose HandyNotes and a suitable plugin for browsable map markers; choose Waypoint Tracker for Find and arrow guidance to a selected destination.
+- [Waypoint Tracker vs Carbonite All in One](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-carbonite.html): Choose Carbonite for its integrated map workspace; choose Waypoint Tracker for a 3D arrow, Find and Nearest in its own window.
+- [Waypoint Tracker vs Zygor Guides](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-zygor.html): Choose Zygor when you want authored leveling steps; choose Waypoint Tracker for on-demand Find, Nearest and a 3D arrow without a subscription.
+- [Waypoint Tracker vs RestedXP](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/waypoint-tracker-vs-restedxp.html): Choose RestedXP for step-by-step leveling; choose Waypoint Tracker for searching destinations and planning travel to them.

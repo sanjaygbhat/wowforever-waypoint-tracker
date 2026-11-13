@@ -1,0 +1,138 @@
+{
+  "commit": "1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+  "npcs": {
+    "5504": {
+      "path": ".contrib/.db/forever/zones/kalimdor/moonglade.lua",
+      "line": 283,
+      "literal": "\t\t\t\tqg = 5504,\t-- Sheldras Moontree <Druid Trainer>",
+      "title": "Druid Trainer",
+      "role": [
+        "class",
+        "druid"
+      ],
+      "sha256": "08d47d3503e70ee66c00e91f95e328e48554edbe70e53e076108cd7c588757f3"
+    },
+    "258098": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - ironforge.lua",
+      "line": 349,
+      "literal": "\t\t\t\tqg = 258098,\t-- Eldrun Stormbreaker <Shaman Trainer>",
+      "title": "Shaman Trainer",
+      "role": [
+        "class",
+        "shaman"
+      ],
+      "sha256": "d8654a8eae1953c101bdfa280cd83558fb6edf7d03d2dc87a5020102900a3cc1"
+    },
+    "4212": {
+      "path": ".contrib/.db/forever/zones/kalimdor/1 - darnassus.lua",
+      "line": 26,
+      "literal": "\t\t\t\tn(4212, {\t-- Telonis <Artisan Leatherworker>",
+      "title": "Artisan Leatherworker",
+      "role": [
+        "profession",
+        "leatherworking"
+      ],
+      "sha256": "8a279c57406c9448ff7161931415327c916ce1c60bd2786955724b529a2315d2",
+      "rank_recipe": {
+        "spell": 3811,
+        "rank": 3,
+        "profession": 165
+      },
+      "rank_node": {
+        "path": "db/Camelot/Categories/Zones.lua",
+        "line": 37,
+        "literal": "n(4212,{coords={\n[1457]={{64.6,21.6}}},r=2,g={\nr(3811,{learnedAt=125,lvl=20,rank=3,requireSkill=165}),\nh(-88,{\nr(6661,{learnedAt=165,requireSkill=165,skillID=2945}),\nr(7151,{learnedAt=150,requireSkill=165,skillID=2945}),\nr(9206,{learnedAt=170,requireSkill=165,skillID=2945}),\nr(9201,{learnedAt=160,requireSkill=165,skillID=2945}),\nr(9196,{learnedAt=150,requireSkill=165,skillID=2945}),\nr(9198,{learnedAt=155,requireSkill=165,skillID=2945}),\nr(3774,{learnedAt=135,requireSkill=165,skillID=2945}),\nr(3776,{learnedAt=155,requireSkill=165,skillID=2945}),\nr(7156,{learnedAt=165,requireSkill=165,skillID=2945}),\nr(7147,{learnedAt=135,requireSkill=165,skillID=2945}),\nr(10507,{learnedAt=180,requireSkill=165,skillID=2945}),\nr(10499,{learnedAt=180,requireSkill=165,skillID=2945}),\nr(10518,{learnedAt=185,requireSkill=165,skillID=2945}),\nr(10511,{learnedAt=185,requireSkill=165,skillID=2945})}),\nh(-243,{\nr(10487,{learnedAt=175,requireSkill=165,skillID=2945})}),\nflt(113,{\nr(14932,{learnedAt=200,requireSkill=165,skillID=2945}),\nr(14930,{learnedAt=200,requireSkill=165,skillID=2945})}),\nflt(56,{\nr(10482,{learnedAt=175,requireSkill=165,skillID=2945}),\nr(20650,{learnedAt=175,requireSkill=165,skillID=2945})})}})",
+        "sha256": "de3950032968768e9fd52fcb411c9ebc9cdd70cb9cb588a94c0c30c545e2672b"
+      }
+    },
+    "257446": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua",
+      "line": 109,
+      "literal": "\t\t\t\t\t\tqg = 257446,\t-- Teo Hammerstorm <Shaman Trainer>",
+      "title": "Shaman Trainer",
+      "role": [
+        "class",
+        "shaman"
+      ],
+      "sha256": "e8e497e3f32e1623a75f1bd1908ba59de850b39a9035f8e9ac4333ce0cecb42c"
+    },
+    "258113": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua",
+      "line": 621,
+      "literal": "\t\t\t\t\t258113,\t-- Ingrid Dunwald <Shaman Trainer>",
+      "title": "Shaman Trainer",
+      "role": [
+        "class",
+        "shaman"
+      ],
+      "sha256": "e8e497e3f32e1623a75f1bd1908ba59de850b39a9035f8e9ac4333ce0cecb42c"
+    },
+    "258785": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - ironforge.lua",
+      "line": 392,
+      "literal": "\t\t\t\tqg = 258785,\t-- High Priestess Mims <Priest Trainer>",
+      "title": "Priest Trainer",
+      "role": [
+        "class",
+        "priest"
+      ],
+      "sha256": "d8654a8eae1953c101bdfa280cd83558fb6edf7d03d2dc87a5020102900a3cc1"
+    },
+    "270459": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/alterac mountains.lua",
+      "line": 182,
+      "literal": "\t\t\t\tqg = 270459,\t-- Alfina Nightgaze <Druid Trainer>",
+      "title": "Druid Trainer",
+      "role": [
+        "class",
+        "druid"
+      ],
+      "sha256": "0d0e520cd4a8fd8942b1d3c86793496f0e2e6db1c0b7bcb53e518facae9d8d55"
+    }
+  },
+  "access": {
+    "257446": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua",
+      "line": 104,
+      "literal": "q(94373, {\t-- Call of Earth (1/3)\n\t\t\t\t\t\tsourceQuests = {\n\t\t\t\t\t\t\t98581,\t-- Archaic Rune\n\t\t\t\t\t\t\t96243,\t-- Call of Earth (Breadcrumb)\n\t\t\t\t\t\t},\n\t\t\t\t\t\tqg = 257446,\t-- Teo Hammerstorm <Shaman Trainer>\n\t\t\t\t\t\tcoord = { 28.8, 66.2, MAP.DUN_MOROGH },\n\t\t\t\t\t\tmaps = { 428 },\t-- Frostmane Hovel (Coldridge Valley)\n\t\t\t\t\t\ttimeline = { TIMELINE.ADDED_1_60_1 },\n\t\t\t\t\t\traces = ALLIANCE_SHAMANS,\n\t\t\t\t\t\tclasses = { SHAMAN },\n\t\t\t\t\t\tlvl = 4,\n\t\t\t\t\t\tgroups = {\n\t\t\t\t\t\t\tobjective(1, {\t-- 0/2 Frostmane Bear Pendant\n\t\t\t\t\t\t\t\tprovider = { \"i\", 264356 },\t-- Iceclaw Bear Pendant\n\t\t\t\t\t\t\t\tcrs = {\n\t\t\t\t\t\t\t\t\t706,\t-- Frostmane Troll Whelp\n\t\t\t\t\t\t\t\t\t946,\t-- Frostmane Novice\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t}),\n\t\t\t\t\t\t},\n\t\t\t\t\t})",
+      "sha256": "e8e497e3f32e1623a75f1bd1908ba59de850b39a9035f8e9ac4333ce0cecb42c",
+      "name": "Teo Hammerstorm"
+    },
+    "258098": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - ironforge.lua",
+      "line": 348,
+      "literal": "q(94789, {\t-- Call of Air\n\t\t\t\tqg = 258098,\t-- Eldrun Stormbreaker <Shaman Trainer>\n\t\t\t\tcoord = { 47.2, 12.2, MAP.IRONFORGE },\n\t\t\t\tmaps = { MAP.ARATHI_HIGHLANDS },\n\t\t\t\ttimeline = { TIMELINE.ADDED_1_60_1 },\n\t\t\t\traces = ALLIANCE_SHAMANS,\n\t\t\t\tclasses = { SHAMAN },\n\t\t\t\tlvl = 30,\n\t\t\t\tgroups = {\n\t\t\t\t\ti(5178),\t-- Air Totem\n\t\t\t\t},\n\t\t\t})",
+      "sha256": "d8654a8eae1953c101bdfa280cd83558fb6edf7d03d2dc87a5020102900a3cc1",
+      "name": "Eldrun Stormbreaker"
+    },
+    "258113": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/dun morogh.lua",
+      "line": 618,
+      "literal": "q(94449, {\t-- Call of Fire\n\t\t\t\tqgs = {\n\t\t\t\t\t258098,\t-- Eldrun Stormbreaker <Shaman Trainer>\n\t\t\t\t\t258113,\t-- Ingrid Dunwald <Shaman Trainer>\n\t\t\t\t},\n\t\t\t\tcoords = {\n\t\t\t\t\t{ 47.14, 13.52, MAP.IRONFORGE },\n\t\t\t\t\t{ 47.58, 51.95, MAP.DUN_MOROGH },\n\t\t\t\t},\n\t\t\t\traces = ALLIANCE_SHAMANS,\n\t\t\t\tclasses = { SHAMAN },\n\t\t\t\tlvl = 10,\n\t\t\t\ttimeline = { TIMELINE.ADDED_1_60_1 },\n\t\t\t})",
+      "sha256": "e8e497e3f32e1623a75f1bd1908ba59de850b39a9035f8e9ac4333ce0cecb42c",
+      "name": "Ingrid Dunwald"
+    },
+    "258785": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/1 - ironforge.lua",
+      "line": 384,
+      "literal": "q(94817, {\t-- Confounding Flash\n\t\t\t\taltQuests = {\n\t\t\t\t\t94821,\t-- Confounding Flash\n\t\t\t\t\t94822,\t-- Confounding Flash\n\t\t\t\t\t94823,\t-- Confounding Flash\n\t\t\t\t\t94825,\t-- Confounding Flash\n\t\t\t\t\t94826,\t-- Confounding Flash\n\t\t\t\t},\n\t\t\t\tqg = 258785,\t-- High Priestess Mims <Priest Trainer>\n\t\t\t\tcoord = { 24.8, 9.4, MAP.IRONFORGE },\n\t\t\t\ttimeline = { TIMELINE.ADDED_1_60_1 },\n\t\t\t\traces = { GNOME },\n\t\t\t\tclasses = { PRIEST },\n\t\t\t\tlvl = 10,\n\t\t\t\tgroups = {\n\t\t\t\t\trecipe(1277455),\t-- Confounding Flash\n\t\t\t\t},\n\t\t\t})",
+      "sha256": "d8654a8eae1953c101bdfa280cd83558fb6edf7d03d2dc87a5020102900a3cc1",
+      "name": "High Priestess Mims"
+    },
+    "270459": {
+      "path": ".contrib/.db/forever/zones/eastern kingdoms/alterac mountains.lua",
+      "line": 181,
+      "literal": "q(94912, {\t-- Child of Nature\n\t\t\t\tqg = 270459,\t-- Alfina Nightgaze <Druid Trainer>\n\t\t\t\tcoord = { 11.8, 56.6, MAP.ALTERAC_MOUNTAINS },\n\t\t\t\traces = { SKYBORNE_ALLIANCE },\n\t\t\t\tclasses = { DRUID },\n\t\t\t\tlvl = 10,\n\t\t\t\ttimeline = { TIMELINE.ADDED_1_60_1 },\n\t\t\t})",
+      "sha256": "0d0e520cd4a8fd8942b1d3c86793496f0e2e6db1c0b7bcb53e518facae9d8d55",
+      "name": "Alfina Nightgaze"
+    }
+  },
+  "player_access": {
+    "251379": {
+      "path": ".contrib/.db/forever/zones/zephras isle.lua",
+      "line": 137,
+      "literal": "q(92481, {\t-- A Student of the Arcane\n\t\t\t\tqg = 251361,\t-- Rorian the Dayseeker\n\t\t\t\tcoord = { 42.1, 23.5, MAP.ZEPHRAS_ISLE },\n\t\t\t\tsourceQuest = 92461,\t-- Harmony in Balance\n\t\t\t\tclasses = { MAGE },\n\t\t\t\traces = ALLIANCE_ONLY,\n\t\t\t\tlvl = 2,\n\t\t\t\tgroups = { i(282416), },\t-- Glowing Recall Crystal\n\t\t\t}),",
+      "sha256": "55e0c565b64041893e7a37833cca318ac45bdcd412cea08d6f12c41d8c1e7f08"
+    }
+  }
+}

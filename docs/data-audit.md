@@ -684,3 +684,258 @@ positioned observation when present, not an inferred date for the undated data.
 | 257020 Nasalanna Windsinger | 2521 | 979.078 | Curated `2521:608,442` | wow_classic_beta/1.60.1.70245 2026-10-07 2521:0.4321,0.4325 |
 
 Unlocated IDs: 246797, 251379, 251972, 251977, 251978, 252084, 252388, 256658, 258113, 258785, 258930, 267332. No replacement was inferred for them.
+
+
+## Complete Classic trainer fact census and Forever precedence (2026-11-13)
+
+NPC role facts cross-checked against VMaNGOS core, CMaNGOS Classic-DB and
+Questie. Only role/access/rank/spawn facts were extracted under the owner's
+explicit sources override; no GPL implementation, SQL, Lua, names or prose is
+copied into generated addon data. CMaNGOS's actual licence is GPL-3.0. Questie's
+historical pin has no root licence; the retained later licence discussion
+includes GPL-3 consent and the historical mixed/ARR caveat. Source-specific
+extracts, pins, paths and checksums are under `tools/fixtures/trainers/`.
+
+VMaNGOS uses the complete 2026-11-11 database snapshot at
+`1fb4909858f3ac558e06613e223f6d7116a9a8fa`, final vanilla patch 10/build 5875,
+selecting the newest template revision <=10, active spawn patch intervals, and
+trainer spell build intervals. Core head `df69450dd7f953cd8e0bfa4d1e5dc4848362f9e8`
+adds no database migration after the snapshot. Independent cross-checks are
+CMaNGOS `c33f90b8eeb3f8bacb53d5cbfee45075c80b416c` full 1.12.1 snapshot with
+reviewed updates and Questie `454b9d072965ee8f1a881429260fcf1fac8d60f7`
+`Database/Classic/classicNpcDB.lua`, the last documented migration reference
+before that database moved into QuestieDB. Newest ATT and EG Link repository
+heads remain `1c4d146b518a3c2cda6d2488a27be6e2638d5360` and
+`e0f8585914c134d9cb5d76756bd065b1e3e92ece`; both were rechecked during this run.
+
+The numeric trainer flag alone is insufficient. Class trainer fields, taught
+profession skill lines and explicit role titles establish roles; conflicting
+emulator assertions require two-source agreement. Specialization/recipe teachers
+are included only when actual trainer flags and skill spell facts establish the
+profession. Trainer rank means the highest explicitly taught skill tier, derived
+from numeric learn/skill effects, not the NPC's occupational title. Unspawned
+world/test trainers are excluded. Forever role/access/position contradictions
+win; neutral-only observations may be supplemented by explicit Classic access
+facts, while hostile reactions still exclude that side. Unknown access remains
+excluded. Personal positions, hostility and correction replacement/removal keep
+their runtime precedence.
+
+All nine classes are playable on both factions in Forever, including Dwarf
+shamans and Undead paladins; see [Blizzard's race/class tables](https://worldofwarcraft.blizzard.com/en-us/news/24304075/).
+ATT's literal Alliance-shaman quest-giver records establish Alliance access for
+Teo Hammerstorm (257446), Eldrun Stormbreaker (258098), and Ingrid Dunwald
+(258113). Eldrun has a single-NPC literal Ironforge coordinate (47.2%,12.2%);
+Teo already has a shipped Dun Morogh point. Ingrid's two-NPC/two-coordinate
+quest records do not bind each coordinate unambiguously to one NPC, so no
+coordinate was invented for her. Alliance shaman access is no longer treated
+as absent. Higher-priority unknown/hostile Forever-only NPCs stay fail closed.
+
+The roster now contains 578 identities (482 at 1.4.0). Pet trainers are shipped
+as the typed `trainer_pet_hunter` database roster; the existing Nearest menus
+retain their requested class/profession/weapon/riding actions. No TOC file or
+version change is needed. Exact per-source counts, every role/flag/rank/access/
+spatial disagreement, per-town coverage and measured performance are recorded
+in the accompanying mining report. Annora (11073) has a valid Uldaman instance
+spawn, but the pinned Forever client has no corresponding uiMap; no surface
+entrance is substituted for an NPC position. Three pre-existing Forever-only
+profession trainers and Ingrid also lack an unambiguous positioned observation.
+
+The capital gate prints all nine classes and twelve professions for each city.
+Its explicit exceptions below are city-specific reviews, not claims that a
+faction cannot play a class. Each is backed by zero active trainers in all three
+independent pinned Classic role/spawn censuses, a hash-pinned review of that
+city's current ATT definitions, and no positioned Forever contradiction.
+Deleting a supported service still fails; an unknown-access positioned trainer
+prevents an absence claim. These reviews should be revisited when new Forever
+observations arrive. Literal review markers consumed by the gate:
+
+```text
+TRAINER_ABSENCE|Stormwind|A|class|shaman|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active shaman class trainer in Stormwind in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Ironforge|A|class|druid|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active druid class trainer in Ironforge in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Darnassus|A|class|paladin|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active paladin class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Darnassus|A|class|shaman|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active shaman class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Darnassus|A|class|mage|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active mage class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Darnassus|A|class|warlock|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active warlock class trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Darnassus|A|profession|blacksmithing|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active blacksmithing profession trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Darnassus|A|profession|engineering|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active engineering profession trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Darnassus|A|profession|mining|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active mining profession trainer in Darnassus in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Orgrimmar|H|class|paladin|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active paladin class trainer in Orgrimmar in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Orgrimmar|H|class|druid|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active druid class trainer in Orgrimmar in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Undercity|H|class|hunter|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active hunter class trainer in Undercity in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Undercity|H|class|shaman|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active shaman class trainer in Undercity in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Undercity|H|class|druid|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active druid class trainer in Undercity in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Thunder Bluff|H|class|rogue|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active rogue class trainer in Thunder Bluff in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Thunder Bluff|H|class|warlock|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active warlock class trainer in Thunder Bluff in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+TRAINER_ABSENCE|Thunder Bluff|H|profession|engineering|https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip|69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39|Reviewed city-specific absence: no active engineering profession trainer in Thunder Bluff in any of the three pinned Classic role/spawn censuses; current ATT Camelot city definitions and all positioned Forever trainer observations supply no contrary identity. Both factions can play all nine classes in Forever; this review does not claim a faction-wide class absence.
+```
+
+Additional literal ATT access review: High Priestess Mims (258785) gives
+Gnome-only priest quests with a single Ironforge coordinate (24.8%,9.4%);
+Alfina Nightgaze (270459) gives a Skyborne Alliance-only druid quest. Their
+Alliance access is now established, and Mims's missing position is filled.
+Ten Forever-only identities still have unknown access. Six known-access rows
+remain unlocated: Ingrid 258113 (ambiguous joint quest coordinates), pet trainer
+Isaac Chan 258930 (title/access without a position), Annora 11073 (Uldaman has
+no pinned Forever uiMap), and Vanessa Sellers 251978, Garan Sunstrider 267332,
+and Halavuul Cragwind 252388 (no positioned observation). These are unresolved
+data gaps, not reviewed absences. No coordinates or faction letters were guessed.
+
+A further MIT player-observation extract from `salty-max/wow-data` at
+`24c719a76202d2b047392972b5d6770e1fc98a11` resolves two of the preceding gaps.
+Only original `data/players/forever/enUS.json` observation facts were used;
+frozen website-derived tables in that repository were excluded. Eighteen
+selected NPC coordinate/name records fill or supersede older coordinates,
+keeping their full literal precision and build numbers; equally/newer built EG
+positions retain priority. Ingrid now has a literal beta-build 70374 position
+in Dun Morogh (47.2%,51.9%). Dorii Brightwhisper (251379) has a build 70790
+position on Zephras Isle (41.7%,23.6%); the recorded ender of quest 92481, combined
+with ATT's Alliance-only mage quest restriction, establishes Alliance access.
+Reaction values without the observer's faction were not used for access.
+Current remaining gaps: **nine unknown-access identities and five known-access
+identities without a usable position** (258930, 11073, 251978, 267332, 252388).
+
+The expanded roster supplies **528 positioned candidates to the existing
+Nearest trainer actions** (422 in 1.4.0), plus 17 positioned pet trainers through
+the typed database roster. The independent real-client resolver agrees with
+Lua on all 578 raw identities and 561 faction-specific typed candidate records.
+AreaTable's fifty referenced names were downloaded for build 1.60.1.70862 and
+pinned as a reduced extract; all fifty match the shipped names. Client town
+coverage uses the same AreaPOI icon family as Client.lua and a labelled 600-yard
+nearest-marker index, independently of the limited wowmock catalogue.
+
+The complete factual disagreement inventory is pinned in
+`tools/fixtures/trainers/crosscheck.json`: 67 differences in supported role/
+trainer-flag assertions (including unspawned test rows and unclassified titles),
+nine differences in explicit numeric rank evidence, and all numeric flag,
+faction-ID and spatial/quantization differences. No named positive class or
+profession assignment conflicts between the two emulator sources. Bowen
+Brisboise (3530) is omitted because only CMaNGOS asserts the trainer role;
+VMaNGOS and Questie disagree. Doctor Gregory Victor/Doctor Gustaf VanHowzen
+(12920/12939) retain their Forever first-aid evidence despite VMaNGOS's flags.
+An empty supported-role set in Questie can also mean an unclassified occupation,
+not a denial. Katoom (14740) has contradictory explicit fishing tiers, so no
+highest tier is claimed; his trainer identity and position remain present.
+Existing independently evidenced ATT ranks are retained. Spatial differences
+between sources are below 150 yards; Peria Lamenur's shared multiple-spawn
+ambiguity remains as documented above, without inventing a resolution.
+
+Final source census counts (negative witnesses are retained separately):
+
+| Source | Trainer-flag templates | Active trainer-flag rows | Active supported role identities |
+| --- | ---: | ---: | ---: |
+| VMaNGOS | 547 | 485 | 484 |
+| CMaNGOS | 539 | 493 | 487 |
+| Questie | 499 | 493 | 475 |
+
+All 484 active supported VMaNGOS identities are represented. All eligible
+CMaNGOS/Questie roles are represented; 3530 is the explicitly disputed exclusion.
+No supported role is inferred from a trainer flag alone. The individual
+negative/unclassified/unspawned assertions and rank differences are all retained
+in the pinned cross-check ledger.
+
+Final validation: all **133 workflow invocations passed**, including ten locale
+play-throughs, all Lua scenarios/variants, all Lua/Python gates, full data and
+runtime audits with empty reviews; final syntax check covers **182 Lua files**.
+The trainer gate has **33 tests** and prints capital and town matrices. The
+initial full run overlapped a rank-fixture update and failed one locale's nested
+gate; the second complete run passed all invocations. The two full runs total
+**41.0 minutes**. Post-review index/nearest/loader/precedence checks and final
+syntax/data/runtime checks passed again. The cache also recovers temporarily
+unavailable map information without reparsing text or requiring a data merge.
+
+Real Lua 5.1 performance: both 68-case before/after matrices cover every Nearest
+action and both factions; the second uses real pinned maps with Real routes on.
+Final measured warm maximum is **1.957 ms**; isolated first trainer parse/index
+maximum is **1.467 ms** (100 samples, 1,367 table allocations in the limited-map
+mock). Ten thousand cached index requests allocate **zero tables**. Full cold
+clicks include the existing common lazy database load; exact per-action cold/
+warm milliseconds, allocation counts and KiB are retained in the mining report.
+No TOC addition, login parse, background scan or runtime-review exemption.
+
+## Base Nearest service coverage (2026-11-13)
+
+The 11 base services use shipped data as well as discoveries. The old mock map
+catalogue could not measure their world coverage. `tools/audit_services.py`
+runs the actual Database/Geo resolver against build **1.60.1.70862** UiMap,
+UiMapAssignment and AreaTable fixtures, including Classic bounds conversion,
+curated/community precedence, factions and world distances. The mock's synthetic
+maps are replaced only inside this offline probe. No client gameplay is claimed.
+
+Additional evidence is pinned under `tools/fixtures/services/`:
+
+- Efficient Games' [EG Link output](https://github.com/JIVESCORP/eg-link-output-wowf/tree/e0f8585914c134d9cb5d76756bd065b1e3e92ece),
+  commit `e0f8585914c134d9cb5d76756bd065b1e3e92ece`, CC BY 4.0. The reduced
+  evidence keeps literal records, build/product metadata and full-file hashes.
+  Interaction positions describe where players stood; they are not a census of
+  certified NPC spawn points. Newest numeric build wins, live product breaks a
+  build tie. Exact duplicate coordinates collapse; nearby literals keep their
+  complete precision. Older titles do not override newer title records.
+- [ATT Camelot](https://github.com/ATTWoWAddon/AllTheThings/tree/1c4d146b518a3c2cda6d2488a27be6e2638d5360/db/Camelot),
+  commit `1c4d146b518a3c2cda6d2488a27be6e2638d5360`, MIT. Explicit NPC coordinate
+  literals supplement independently evidenced services without EG positions.
+  Quest-giver, item, recipe and containing-zone coordinates do not qualify.
+- The complete [pfQuest service metadata](https://github.com/shagu/pfQuest/blob/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db/meta.lua),
+  MIT, at the existing pin. The full source roster comparison confirms every
+  mailbox/meeting-stone spawn is already retained by the coordinate fixtures:
+  **60 mailbox and 22 meeting-stone spawns**. Five mailbox and three stone IDs
+  have no coordinates in that source.
+- The client's [AreaTable](https://wago.tools/db2/AreaTable/csv?build=1.60.1.70862)
+  provides area names and faction masks. Client taxi service bits exclude
+  transport/quest helper endpoints from Nearest flight master; flight positions
+  now preserve the literal full precision of TaxiNodes.
+
+Only explicit service titles, interaction types or repair-window flags classify
+new services. Explicit NPC side, existing pfQuest access or friendly reactions
+establish faction access. Neutral reactions alone do not establish access.
+Mailbox access uses existing metadata or the client's explicit area mask;
+contested/unrestricted areas retain both factions. Unknown access remains in the
+rejection inventory. No title alone implies repair or a trainer role.
+
+`tools/build_services.py` deterministically writes a marked precise supplement
+inside the existing `Forever.lua`. Its `SN`/`SO` records are separate from WTL1,
+which encodes integer thousandths and would lose source precision. The WTL1
+community block and discovery merger remain unchanged. Supplemental candidates
+are labelled community, keep personal observation/correction precedence, and
+are indexed on the first service request. No TOC addition or login scan occurs.
+A normal reload can discover existing-file changes; no new file enumeration is
+required. Trainer generators, rosters and runtime parsing are unchanged.
+
+`tests/check_services.py`, also a required `validate_data.py` gate, verifies
+literal evidence, pins, regeneration, coordinate/world agreement, client taxi
+precision and minimum coverage using real client geometry. Six capital centres
+and twenty literal AreaPOI town positions exercise **286** Nearest selections;
+all have measured distances. Every capital has the eight required local services,
+with Darnassus's flight service correctly outside the city at Rut'theran. The
+probe also checks personal precedence, object-service indexing and warm clicks.
+The general location audit validates the precise block byte-for-byte against
+its generator rather than misreading it as WTL1 or skipping unknown data.
+
+Reproduce offline from the repository root:
+
+```sh
+python3 -B tools/build_services.py --check
+python3 -B tests/check_services.py
+python3 -B tools/audit_services.py --output /tmp/waypoint-services.json
+```
+
+No source provides a complete world denominator. Requests for WorldSafeLocs,
+WorldSafeLoc and graveyard tables at this build returned HTTP 400/403, including
+“Table not found”; no graveyard coordinates or healer services were inferred.
+Spirit-healer coverage remains the existing roster plus literal observations.
+
+The audit starts a fresh Lua state for each faction: legacy discoveries without
+explicit access use the viewer's faction while merging, so switching faction
+after loading is insufficient. Coverage applies both service access and the
+general entry-faction filter; the original Alliance lists included two Horde-only
+NPCs (3683/3684) that Find correctly filtered out. The updated lists have no such
+mismatch. Native continent-map observations remain literal; their mailbox access
+uses the client mask of the smallest containing zone. No coordinate is rounded
+or replaced to derive that access.
+
+The final host sweep measured every base action from both faction load contexts
+and the 26 survey origins: maximum warm click **2.510 ms**. The entire cold
+service-query stage peaked at **20.437 ms** and the entire supplemented data-file
+compile/execute at **2.089 ms**; even this conservative **22.526 ms** total is
+below the 30 ms added-work allowance. Complete cold clicks retain the existing
+roughly half-second database load. Timings are Lua 5.1 mock measurements, not
+in-game frame-time or availability claims.

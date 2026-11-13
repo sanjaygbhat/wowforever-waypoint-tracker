@@ -401,6 +401,8 @@ TomTom:WaypointExists(uiMapID, x, y, title)
 
 ## ❓ FAQ
 
+[Compare Waypoint Tracker with TomTom, Questie, pfQuest and other addons](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/compare.html) — features, Forever support, sources and when to use both.
+
 **Where is the nearest class or profession trainer?** Open **Find → Nearest**, or right-click the minimap button and open **Nearest...**. **Class Trainer** picks your class automatically. **Profession Trainer** lets you choose one of 12 professions and points to the nearest trainer it knows. Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list. If a trainer near you is missing, talk to them once and they are remembered.
 
 **Does it always take the fastest route?** Yes: the fastest it knows you can really use, with flight paths, boats, zeppelins, the tram, your hearthstone and teleports counted. By default it is danger-aware: when a quicker way crosses dangerous ground the arrow offers it and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take it every time. It re-plans as you move. Turn Real routes off in **Settings → Routes** for a straight arrow.

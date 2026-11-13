@@ -14,6 +14,7 @@ Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft
 |---|---|
 | Install the addon and set your first waypoint | [Installation & Quick Start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) |
 | Look up a command or adjust the arrow | [Commands & Options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) |
+| Choose an arrow, quest helper, leveling guide or map addon | [Comparison with Other Addons](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Comparison-with-Other-Addons) |
 | Get pinged when a rare or chest spawns (beta) | [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) |
 | Check your install, the arrow and Find | [Troubleshooting & Compatibility](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) |
 | Share discoveries or understand what stays local | [Discoveries, Privacy & Contributing](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing) |

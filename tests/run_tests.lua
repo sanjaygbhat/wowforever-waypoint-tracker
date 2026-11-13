@@ -818,8 +818,13 @@ ns.Set("findTab", "object")
 fw.search:Type("skyflower")
 M.Tick(0.3)
 check(fw.rows[1].entry and fw.rows[1].entry.id == 95001, "Objects tab finds the learned object")
+-- Return to the learned interaction: a growing shipped catalogue can have
+-- another repair vendor closer to the quest objective we visited afterwards.
+Here(45, 55)
+M.now = M.now + 1
 fw.nearest.repair:Click()
 check(WP.GetActive().title == "Breezy Trader", "Nearest repair uses a learned vendor (got " .. tostring(WP.GetActive().title) .. ")")
+check(select(1, Geo.GetVector(WP.GetActive())) < 0.001, "learned repair interaction is at the player's position")
 fw.nearest.mailbox:Click()
 check(WP.GetActive().m == 2521, "Nearest mailbox uses a learned mailbox")
 

@@ -17,6 +17,8 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+import build_services
 LONG = re.compile(r"(\w+(?:\.\w+)*)\s*=\s*\[(=*)\[(.*?)\]\2\]", re.S)
 KIND = {"N": "units", "O": "objects", "Q": "quests", "I": "items"}
 REF = {"U": "units", "O": "objects", "I": "items"}
@@ -129,7 +131,19 @@ def main():
     ids = {k: {f[0] for _, f in raw[k]} for k in KIND.values()}
     # All definitions, including later discovery layers and named source items.
     for stem in ("Curated", "Forever", "ReferenceData"):
-        for _, rows in blocks[stem]:
+        for label, rows in blocks[stem]:
+            if label == "WaypointTrackerData.serviceSupplement":
+                # A separate precise format in the existing file. Validate
+                # every byte against evidence, rather than interpreting it as
+                # thousandth-precision WTL1 or silently skipping an unknown row.
+                expected, _ = build_services.derive()
+                actual = "\n".join("\t".join(f) for _, f in rows)
+                wanted = build_services.block(expected).split("[==[\n", 1)[1].split("\n]==]", 1)[0]
+                if actual != wanted:
+                    a.fail("service-evidence", stem + ".lua", rows[0][0] if rows else 1,
+                           label, "changed supplement", "must regenerate exactly from pinned service evidence")
+                a.stats["service_identity_access_groups"] += len(rows)
+                continue
             for line, f in rows:
                 if f[0] in KIND:
                     ids[KIND[f[0]]].add(f[1])
@@ -236,7 +250,9 @@ def main():
     for stem in ("Curated", "Forever", "ReferenceData"):
         file = stem + ".lua"
         seen = {}
-        for _, rows in blocks[stem]:
+        for label, rows in blocks[stem]:
+            if label == "WaypointTrackerData.serviceSupplement":
+                continue  # exact source/evidence validation above
             for line, f in rows:
                 kind = f[0]
                 if kind == "WTL1":
@@ -395,7 +411,8 @@ def verify_client_source(a, blocks, cache, all_blocks):
         source = {r["ID"]: r for r in table(table_name)}
         for line, f in rows:
             r = source.get(f[0])
-            if not r or any(f[ix] != value for ix,value in ((1, r["ContinentID"] if r else ""), (3, "%.1f" % float(r["Pos_0"]) if r else ""), (4, "%.1f" % float(r["Pos_1"]) if r else ""))):
+            precise = label == "flights"
+            if not r or any(f[ix] != value for ix,value in ((1, r["ContinentID"] if r else ""), (3, r["Pos_0"] if r and precise else "%.1f" % float(r["Pos_0"]) if r else ""), (4, r["Pos_1"] if r and precise else "%.1f" % float(r["Pos_1"]) if r else ""))):
                 a.fail("DB2-world-provenance", "Client.lua", line, label + " " + f[0], f, "world position differs from " + table_name + " " + build)
             if r and label == "flights":
                 zone = r["Name_lang"].rsplit(", ", 1)[-1] if ", " in r["Name_lang"] else ""
@@ -405,6 +422,9 @@ def verify_client_source(a, blocks, cache, all_blocks):
                     a.fail("DB2-taxi-map-ownership", "Client.lua", line, "taxi " + f[0], f[2],
                            "TaxiNodes name '%s' requires UiMap %s (%s); keep world coordinates unchanged" % (r["Name_lang"], canonical, zone))
                 flags = int(r["Flags"] or 0)
+                if not flags & 3:
+                    a.fail("DB2-taxi-service", "Client.lua", line, label + " " + f[0], flags,
+                           "transport/quest helper lacks client faction service bits")
                 fac = ("A" if flags & 1 else "") + ("H" if flags & 2 else "")
                 if f[5] != fac:
                     a.fail("DB2-faction", "Client.lua", line, label + " " + f[0], f[5], "TaxiNodes faction flags require " + fac)
