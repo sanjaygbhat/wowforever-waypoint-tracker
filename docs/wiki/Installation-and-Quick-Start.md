@@ -15,7 +15,7 @@ Interface/AddOns/WaypointTracker_Data/WaypointTracker_Data.toc
 ```
 
 3. Start or restart the game. In the character-selection **AddOns** list, enable **Waypoint Tracker** and **Waypoint Tracker (database)**.
-4. Type `/wp` in game. **Updating to 1.4.0 requires a full game restart because it adds addon files; `/reload` is not enough.**
+4. Type `/wp` in game. **Updating from 1.4.0 to 1.4.1 needs only `/reload`; from an older version, fully restart the game.**
 
 The data folder supplies the database. It loads when needed by Find, routes or Treasure hunt (beta). Keep both folders from the same release. Your personal settings and discoveries live separately in SavedVariables; keep those when updating.
 
@@ -52,9 +52,11 @@ Open the world map, select your zone, then hold **Ctrl** and **right-click** the
 
 ## Find a destination
 
-Open the **Find** tab or use `/wp find`; choose a kind from the dropdown. Search, select a result and double-click it or press **Take Me There**. Use the faction and zone filters to narrow results. The **Nearest** buttons find services and trainers. The same choices are in the minimap button's right-click **Nearest...** menu. **Class Trainer** picks your class automatically. **Profession Trainer** offers 12 professions and finds the nearest trainer it knows; trainers you talk to are remembered. **Weapon Master** and **Riding Trainer** each take one click. Each choice sets a waypoint for your faction, and the arrow takes you there by the fastest route.
+Open the **Find** tab or use `/wp find`; choose a kind from the dropdown. Search, select a result and double-click it or press **Take Me There**. Use the faction and zone filters to narrow results. The **Nearest** buttons find services and trainers. The same choices are in the minimap button's right-click **Nearest...** menu. **Class Trainer** picks your class automatically. **Profession Trainer** offers 12 professions and finds the closest trainer in the database for your faction. **Weapon Master** and **Riding Trainer** each take one click. Each choice sets a waypoint for your faction, and the arrow takes you there by the fastest route.
 
-Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list.
+Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
+
+Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
 
 ## Treasure hunt (beta)
 

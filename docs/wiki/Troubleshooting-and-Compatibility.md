@@ -1,4 +1,4 @@
-[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
+[Home](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki) · [Install & quick start](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Installation-and-Quick-Start) · [Commands & options](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Commands-and-Options) · [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt) · [Troubleshooting](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Troubleshooting-and-Compatibility) · [Discoveries & privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing)
 
 # Troubleshooting & Compatibility
 
@@ -23,6 +23,10 @@ Check that **WaypointTracker_Data** is installed and enabled. The database loads
 
 Find combines shipped data with your local observations and shared discoveries. To correct a spot, select the result and use **Wrong Spot? Correct It**. Details are in [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing).
 
+## Nearest only finds places I have been / says no location
+
+Make sure both folders, **WaypointTracker** and **WaypointTracker_Data**, are installed directly inside `Interface/AddOns`, and that **Waypoint Tracker (database)** is enabled in the character-selection **AddOns** list. Nearest uses the shipped database before you visit a place; your discoveries add to it. If the data addon cannot load, only your discoveries may be available. Install both folders from the same release and restart after first installing them. Updating from 1.4.0 to 1.4.1 needs only `/reload`; from an older version, fully restart the game.
+
 ## `/way` and other addons
 
 If another addon already uses `/way`, Waypoint Tracker leaves it to that addon and tells you once. `/wp` does the same things: `/wp find`, `/wp here`, `/wp share` and the rest.
@@ -37,9 +41,9 @@ The arrow can follow the game's own map pin and pin links clicked in chat. Check
 
 Update both addon folders from the same release. Keep your `WTF` folder and SavedVariables. Before a manual backup, close the game and copy `WTF/Account/<account>/SavedVariables/WaypointTracker.lua`. That file also contains settings, so review it before attaching it publicly.
 
-## Treasure hunt doesn't ping
+## Treasure hunt (beta) doesn't ping
 
-Check that **Treasure hunt** is ticked, and that **Ping me when something appears** and the kinds you want are on under **Settings → Treasure Hunt (beta)**. Type `/wp treasure status` to see what it sees: some places share no minimap markers, and rares there are found on nameplates and your target. More in [Treasure Hunt](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt).
+Check that **Treasure hunt (beta)** is ticked, and that **Ping me when something appears** and the kinds you want are on under **Settings → Treasure Hunt (beta)**. Type `/wp treasure status` to see what it sees: some places share no minimap markers, and rares there are found on nameplates and your target. More in [Treasure hunt (beta)](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Treasure-Hunt).
 
 ## Get help
 

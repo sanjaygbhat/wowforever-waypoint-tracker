@@ -29,6 +29,9 @@ class Page(HTMLParser):
         self.canonical = []
         self.title = ''
         self.faq_questions = []
+        self.faq_answers = {}
+        self.answer = None
+        self.answer_question = None
         self.jsonld = []
         self.question = None
         self.script = None
@@ -64,8 +67,13 @@ class Page(HTMLParser):
             self.jsonld.append(json.loads(self.script))
             self.script = None
         if tag == 'summary' and self.question is not None:
-            self.faq_questions.append(normalized(self.question))
+            self.answer_question = normalized(self.question)
+            self.faq_questions.append(self.answer_question)
             self.question = None
+            self.answer = ''
+        if tag == 'details' and self.answer is not None:
+            self.faq_answers[self.answer_question] = normalized(self.answer)
+            self.answer = None
 
     def handle_data(self, text):
         if self.stack and self.stack[-1][0] == 'title':
@@ -74,6 +82,8 @@ class Page(HTMLParser):
             self.script += text
         elif self.question is not None:
             self.question += text
+        elif self.answer is not None:
+            self.answer += text
 
 
 def nodes(value):
@@ -112,6 +122,8 @@ def check():
                     'FAQ JSON-LD differs from visible questions', set(questions) ^ set(page.faq_questions))
                 for q in faqs[0]['mainEntity']:
                     assert q['acceptedAnswer']['text'].strip(), 'empty FAQ answer'
+                    assert normalized(q['acceptedAnswer']['text']) == page.faq_answers[normalized(q['name'])], (
+                        'FAQ JSON-LD differs from visible answer', q['name'])
                 app = [n for n in all_nodes if n.get('@type') == 'SoftwareApplication']
                 assert len(app) == 1 and app[0]['@id'] == BASE + '#app', 'app identity mismatch'
                 assert app[0]['offers']['price'] == '0', 'app price mismatch'
@@ -146,9 +158,10 @@ def check():
         for lastmod in sitemap.findall('s:url/s:lastmod', namespace):
             assert re.fullmatch(r'\d{4}-\d{2}-\d{2}', lastmod.text or ''), 'bad sitemap date'
         # Do not repeat restricted branding in a checker that guards public copy.
-        forbidden = ('map' + 'zeroth', 'eg link', 'efficient games')
+        forbidden = ('map' + 'zeroth', 'eg link', 'efficient games', 'vmangos', 'cmangos')
         targets = list(out.rglob('*')) + list((ROOT / 'docs/wiki').glob('*.md'))
-        targets += [ROOT / 'README.md', ROOT / 'docs/comparison-data.json']
+        targets += [ROOT / p for p in ('README.md', 'docs/comparison-data.json',
+                                      'docs/CURSEFORGE.md', 'docs/WAGO.md')]
         for path in targets:
             if not path.is_file():
                 continue
@@ -158,6 +171,10 @@ def check():
                 continue
             assert '@VERSION@' not in text and '@DATE@' not in text, ('unexpanded placeholder', path)
             assert not any(name in text.lower() for name in forbidden), ('restricted branding', path)
+            assert not re.search(r'\bA' + r'TT\b', text), ('restricted provider branding', path)
+            assert not any(phrase in text for phrase in (
+                'what players have seen', 'talk to is added', 'seen in WoW Forever')), (
+                    'outdated Nearest description', path)
         print('Site checks passed:', len(pages), 'HTML pages; JSON-LD, FAQs, links, sitemap, branding and HTML structure.')
 
 

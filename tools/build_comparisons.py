@@ -17,7 +17,7 @@ DATA = json.loads((ROOT / 'docs/comparison-data.json').read_text())
 DATE = DATA['checked']
 ROWS = DATA['addons']
 SOURCES = {s['url']: s for s in DATA['sources']}
-OWN_SOURCES = [REPO + 'blob/v1.4.0/' + p for p in
+OWN_SOURCES = [REPO + 'blob/main/' + p for p in
                ('README.md', 'docs/CURSEFORGE.md', 'CHANGELOG.md')]
 FIELDS = [('support', 'Official client support'), ('price', 'Price'),
           ('licence', 'Licence'), ('arrow', 'Arrow'), ('waypoints', 'Waypoints'),
@@ -25,12 +25,12 @@ FIELDS = [('support', 'Official client support'), ('price', 'Price'),
           ('nearest', 'Nearest services / trainers'), ('routing', 'Routing'),
           ('alerts', 'Rare / treasure alerts'), ('tomtom', 'TomTom API'),
           ('languages', 'Languages')]
-OWN = dict(slug='waypoint-tracker', name='Waypoint Tracker 1.4.0',
+OWN = dict(slug='waypoint-tracker', name=DATA['baseline'],
            support='Forever 1.60.1 / interface 16001', price='Free', licence='MIT',
            arrow='3D arrow', waypoints='/way, map clicks, Find',
            quest_map='Follows native quest POIs; quest Find',
            search='Quests, NPCs, enemies, objects, items',
-           nearest='Services; class, profession, weapon, riding trainers',
+           nearest='Shipped services; complete trainer database, all 9 classes and 12 professions; weapon and riding trainers',
            routing='Real routes: flights, boats, zeppelins, tram, hearthstone, teleports',
            alerts='Treasure hunt (beta), opt-in',
            tomtom='Compatible waypoint API; yields to TomTom',
@@ -40,25 +40,12 @@ INTRO = ('Waypoint Tracker combines a 3D waypoint arrow with Find for quests, NP
          'on by default: it plans the fastest known usable journey, including flight paths, '
          'boats, zeppelins, the tram, hearthstone and usable teleports. The default Safe route '
          'preference asks before a quicker route crosses dangerous ground; Always fastest is optional.')
-NEAREST = ('Nearest finds known services and class, profession, weapon and riding trainers '
-           'for your faction. Class Trainer selects your class; Profession Trainer lets you '
-           'choose a profession. Use /wp, open Find and choose Nearest, or use the minimap '
-           'button’s right-click Nearest menu.')
+NEAREST = DATA['nearest']
 BRIDGE = ('Waypoint Tracker accepts supported TomTom waypoint calls when TomTom is absent. '
           'When TomTom is installed, Waypoint Tracker leaves /way and the waypoint API to it; '
-          '/wp remains available. A TomTom-compatible destination handoff does not establish '
-          'that every guide, dependency check or API extension is interchangeable.')
-METHOD = ('Written by the Waypoint Tracker project. Competitor facts come from the linked '
-          'official product, release or documentation pages; Waypoint Tracker facts are pinned '
-          'to release 1.4.0. “Not stated” means the checked source did not establish the feature, '
-          'not that it is absent. General product features can vary by game flavour. A Forever '
-          'listing is publisher metadata, not an independent client test. Classic Era, original '
-          'Vanilla and Forever are distinct clients; check the download’s Forever 1.60.1 label.')
-SCOPE = ('The catalog sweep found the projects below through CurseForge and Wago official '
-         'pages and indexed Forever listings. Filtered catalog enumeration was unavailable '
-         'and Wago’s catalog required JavaScript; this is a dated research snapshot, not a '
-         'certified inventory of every published addon. No live-client compatibility or '
-         'performance benchmarks were performed. Recommendations compare documented roles.')
+          '/wp remains available.')
+METHOD = DATA['method']
+LEGEND = DATA['matrix_legend']
 DECISIONS = [
     ('A 3D arrow, NPC/item/quest lookup and nearest trainers',
      'Use Waypoint Tracker for Find, Nearest and Real routes to a destination you choose.'),
@@ -73,7 +60,7 @@ DECISIONS = [
     ('A replacement map workspace',
      'Consider Carbonite All in One, OpenMap or Endless Map; Mapster and Leatrix Maps offer map adjustments.'),
     ('Gathering, collections or dedicated alerts',
-     'Choose the specialist workflow: GatherMate2 or a Forever gathering tool, ATT for collection tracking, or RareScanner/SilverDragon for rare detection. These roles can complement destination navigation.'),
+     'Choose the specialist workflow: GatherMate2 or a Forever gathering tool, or RareScanner/SilverDragon for rare detection. These roles can complement destination navigation.'),
 ]
 HUB_FAQ = [
     ('Which WoW Forever addon combines a waypoint arrow with NPC and item search?',
@@ -83,7 +70,7 @@ HUB_FAQ = [
     ('Can TomTom-compatible addons send waypoints to Waypoint Tracker?', BRIDGE),
     ('How do I find the nearest class or profession trainer in WoW Forever?', NEAREST),
     ('Should I use a leveling guide or Waypoint Tracker?',
-     'Use a leveling guide when you want instructions about which quests to accept, complete and turn in. Use Waypoint Tracker for Find, nearest known services and travel to your chosen destination; direct guide integrations must be checked individually.'),
+     'Use a leveling guide when you want instructions about which quests to accept, complete and turn in. Use Waypoint Tracker for Find, the shipped Nearest database and travel to your chosen destination.'),
 ]
 
 
@@ -106,11 +93,13 @@ def markdown_sources(urls):
 
 
 def both(row):
-    return row.get('both', 'The documented roles can complement each other, provided you '
-                   'install compatible Forever builds. Direct integration and live-client '
-                   'coexistence with ' + row['name'] + ' were not verified. Choose one '
-                   'automatic arrow target at a time; use /wp for Waypoint Tracker when '
-                   'another addon owns /way.')
+    return row.get('both', 'Use ' + row['name'] + ' for its specialist workflow and '
+                   'Waypoint Tracker for Find and travel to your chosen destination. '
+                   'Use /wp when another addon owns /way.')
+
+
+def cell(value):
+    return '—' if value == 'Not stated' else value
 
 
 def matrix(rows):
@@ -121,13 +110,13 @@ def matrix(rows):
     for row in rows:
         target = '#waypoint-tracker' if row is OWN else '#' + row['slug']
         content += '<tr><th scope="row"><a href="' + target + '">' + esc(row['name']) + '</a></th>'
-        content += ''.join('<td>' + esc(row[key]) + '</td>' for key, _ in FIELDS) + '</tr>'
-    return content + '</tbody></table></div>\n'
+        content += ''.join('<td>' + esc(cell(row[key])) + '</td>' for key, _ in FIELDS) + '</tr>'
+    return content + '</tbody></table></div>\n' + para(LEGEND)
 
 
 def markdown_matrix(rows):
     def clean(s):
-        return str(s).replace('|', '\\|').replace('\n', ' ')
+        return str(cell(s)).replace('|', '\\|').replace('\n', ' ')
     lines = ['| Addon | ' + ' | '.join(label for _, label in FIELDS) + ' |',
              '|' + '---|' * (len(FIELDS) + 1)]
     for row in rows:
@@ -194,9 +183,14 @@ def shell(filename, title, description, body, faq, items):
 <main class="wrap" id="content">
 <p class="kicker">WoW Forever · addon comparison</p>
 <h1>{esc(title)}</h1>
-<p class="checked">Last checked: <time datetime="{DATE}">{DATE}</time> · Waypoint Tracker baseline: 1.4.0</p>
 {body}
 {faq_html(faq)}
+<section id="method"><h2>How we compared</h2>
+<p class="checked">Last checked: <time datetime="{DATE}">{DATE}</time> · {esc(DATA['baseline'])}</p>
+{para(METHOD)}
+<h3>Waypoint Tracker 1.4.1 sources</h3>{source_links(OWN_SOURCES)}
+<h3>Competitor sources</h3>{source_links(list(dict.fromkeys(s for row in items for s in row['sources'])))}
+</section>
 </main>
 <footer class="wrap"><p><a href="compare.html">All addon comparisons</a> · <a href="./">Waypoint Tracker home</a> · <a href="{REPO}wiki/Comparison-with-Other-Addons">Wiki comparison</a></p>
 <p>Waypoint Tracker @VERSION@ · <a href="{REPO}">Source</a> · MIT licence. World of Warcraft is a trademark of Blizzard Entertainment. Independent addon project.</p></footer>
@@ -209,17 +203,14 @@ def own_html():
     return ('<section id="waypoint-tracker"><h2>Waypoint Tracker: 3D arrow + Find</h2>'
             + para(INTRO) + para(NEAREST) + para(BRIDGE)
             + para('Treasure hunt (beta) and Route sharing & votes (beta) are opt-in and off by default. '
-                   'Known locations do not establish that a rare or chest is currently present. '
-                   'The addon supplies local routes and travel guidance; this comparison does not establish '
-                   'a complete authored leveling curriculum.')
-            + '<h3>Release 1.4.0 sources</h3>' + source_links(OWN_SOURCES) + '</section>')
+                   'Known spots are places to check for rares and chests.')
+            + '</section>')
 
 
 def section(row, pair=False):
     result = '<section id="' + row['slug'] + '"><h2>' + esc(row['name']) + ' vs Waypoint Tracker</h2>'
     result += para(row['summary'] + ' ' + row['choice'])
     result += '<h3>Can I use both?</h3>' + para(both(row))
-    result += '<h3>Official sources</h3>' + source_links(row['sources'])
     if row.get('pair') and not pair:
         result += para_link('Full ' + row['name'] + ' comparison', pair_filename(row))
     return result + '</section>\n'
@@ -237,17 +228,13 @@ def main():
     site = ROOT / 'site'
     hub_title = 'WoW Forever addon comparison: Waypoint Tracker vs TomTom, Questie, pfQuest and more'
     description = 'Compare WoW Forever arrows, quest helpers, leveling guides, NPC finders and map addons. Official sources, client support, features and when to use both.'
-    body = para(INTRO) + para_link('Install Waypoint Tracker', './#install')
+    body = para(DATA['hub_answer']) + para_link('Install Waypoint Tracker', './#install')
     body += '<section id="choose"><h2>Which should I use?</h2><dl>'
     body += ''.join('<dt>' + esc(q) + '</dt><dd>' + esc(a) + '</dd>' for q, a in DECISIONS) + '</dl></section>'
-    body += '<section id="method"><h2>How to read this comparison</h2>' + para(METHOD) + para(SCOPE) + '</section>'
     body += '<nav class="contents" aria-label="Addons compared"><h2>Jump to an addon</h2><ul>'
     body += ''.join('<li><a href="#' + r['slug'] + '">' + esc(r['name']) + '</a></li>' for r in ROWS) + '</ul></nav>'
     body += '<section id="matrix"><h2>Feature matrix</h2>'
-    body += para('Scroll the table horizontally for all features. Each addon name leads to its answer and dated official sources. '
-                 '“Quest objectives on map” distinguishes a quest database from following the game’s existing POIs. '
-                 'Routing cells distinguish quest order, gathering loops, transport pins and planned journeys. '
-                 'Prices exclude optional donations; “Not stated” is not a price claim. Licence labels follow the checked listing.')
+    body += para('Scroll horizontally for all features. Each addon name leads to its comparison; dated official sources are at the bottom.')
     body += matrix([OWN] + ROWS) + '</section>' + own_html()
     body += ''.join(section(row) for row in ROWS)
     body += '<section><h2>Corrections and updates</h2>' + para_link(
@@ -268,7 +255,7 @@ def main():
             ('How do I find the nearest trainer with Waypoint Tracker?', NEAREST),
         ]
         content = para(row['summary'] + ' ' + row['choice']) + para_link('Compare all navigation and quest addons', 'compare.html')
-        content += '<section><h2>Features and client support</h2>' + para(METHOD) + matrix([OWN, row]) + '</section>'
+        content += '<section><h2>Features and client support</h2>' + matrix([OWN, row]) + '</section>'
         content += section(row, pair=True) + own_html()
         if row['slug'] == 'handynotes':
             content += '<section><h2>Choose a Forever plugin</h2>'
@@ -281,28 +268,28 @@ def main():
         if row['slug'] in ('zygor', 'restedxp-guide'):
             content += '<section><h2>Guide steps and travel solve different questions</h2>'
             content += para('A leveling guide chooses a sequence of quests and explains what to do next. '
-                            'Real routes plans travel to the destination you selected. '
-                            'Neither task alone establishes complete, tested coverage of every Forever quest.')
+                            'Real routes plans travel to the destination you selected.')
             content += para_link('Compare free guide alternatives and guide maturity', 'compare.html#guidelime') + '</section>'
         content += '<section><h2>More comparisons</h2><ul>' + ''.join(
             '<li><a href="' + pair_filename(r) + '">' + esc(r['name']) + ' vs Waypoint Tracker</a></li>'
             for r in ROWS if r.get('pair') and r is not row) + '</ul></section>'
         (site / filename).write_text(shell(filename, title, description, content, faq, [row]))
-    wiki = '# Comparison with Other Addons\n\nLast checked: **' + DATE + '**. Waypoint Tracker baseline: **1.4.0**.\n\n'
+    wiki = '# Comparison with Other Addons\n\n' + DATA['hub_answer'] + '\n\n'
     wiki += '[Comparison hub](' + BASE + 'compare.html) · [Waypoint Tracker home](' + BASE + ')\n\n'
     wiki += INTRO + '\n\n' + NEAREST + '\n\n' + BRIDGE + '\n\n'
     wiki += 'Treasure hunt (beta) and Route sharing & votes (beta) are off by default.\n\n'
     wiki += '## Which should I use?\n\n' + '\n'.join('- **' + q + ':** ' + a for q, a in DECISIONS) + '\n\n'
-    wiki += '## Method and limits\n\n' + METHOD + '\n\n' + SCOPE + '\n\n'
-    wiki += '## Feature matrix\n\nNot stated means unverified in the checked source, not absent. '
-    wiki += 'Routing includes different tasks; transport markers do not by themselves establish trip planning.\n\n'
-    wiki += markdown_matrix([OWN] + ROWS) + '\n\n## Waypoint Tracker 1.4.0 sources\n\n' + markdown_sources(OWN_SOURCES) + '\n\n'
+    wiki += '## Feature matrix\n\n' + LEGEND + '\n\n'
+    wiki += markdown_matrix([OWN] + ROWS) + '\n\n'
     for row in ROWS:
         wiki += '## ' + row['name'] + ' vs Waypoint Tracker\n\n' + row['summary'] + ' ' + row['choice'] + '\n\n'
-        wiki += '**Can I use both?** ' + both(row) + '\n\n' + markdown_sources(row['sources']) + '\n\n'
+        wiki += '**Can I use both?** ' + both(row) + '\n\n'
         if row.get('pair'):
             wiki += '[Full pair comparison](' + BASE + pair_filename(row) + ')\n\n'
     wiki += '## Questions and answers\n\n' + '\n\n'.join('**' + q + '**\n\n' + a for q, a in HUB_FAQ) + '\n'
+    wiki += '\n## How we compared\n\nLast checked: **' + DATE + '**. Baseline: **' + DATA['baseline'] + '**.\n\n' + METHOD
+    wiki += '\n\n### Waypoint Tracker sources\n\n' + markdown_sources(OWN_SOURCES)
+    wiki += '\n\n### Competitor sources\n\n' + markdown_sources(list(dict.fromkeys(s for row in ROWS for s in row['sources']))) + '\n'
     (ROOT / 'docs/wiki/Comparison-with-Other-Addons.md').write_text(wiki)
     pages = [''] + ['compare.html'] + [filename for _, filename in pairs]
     (site / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n'

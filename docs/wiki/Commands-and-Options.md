@@ -100,11 +100,13 @@ Open the **Find** tab and click a **Nearest** button. Or right-click the minimap
 | Battlemaster | A battlemaster |
 | Meeting Stone | A dungeon meeting stone |
 | Class Trainer | The nearest trainer for **your class**, picked automatically |
-| Profession Trainer | A menu of **Alchemy, Blacksmithing, Enchanting, Engineering, Herbalism, Leatherworking, Mining, Skinning, Tailoring, Cooking, First Aid and Fishing**; pick one to find the nearest trainer it knows |
-| Weapon Master | The nearest known weapon master |
-| Riding Trainer | The nearest known riding trainer |
+| Profession Trainer | A menu of **Alchemy, Blacksmithing, Enchanting, Engineering, Herbalism, Leatherworking, Mining, Skinning, Tailoring, Cooking, First Aid and Fishing**; pick one to find the closest trainer in the database for your faction |
+| Weapon Master | The nearest weapon master |
+| Riding Trainer | The nearest riding trainer |
 
-Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list.
+Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
+
+Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
 
 ## Treasure hunt (beta)
 

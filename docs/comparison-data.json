@@ -1,6 +1,6 @@
 {
   "checked": "2026-11-13",
-  "baseline": "Waypoint Tracker 1.4.0",
+  "baseline": "Waypoint Tracker 1.4.1",
   "scope": "Official product and release pages, including Forever-labelled results on CurseForge and Wago. Filtered catalog enumeration was unavailable, so completeness across all published projects is not certified.",
   "addons": [
     {
@@ -50,7 +50,7 @@
       "alerts": "Not stated",
       "tomtom": "Documented integration",
       "languages": "English, German, French, Spanish, Portuguese, Russian, Chinese, Taiwanese, Korean; Ukrainian via companion",
-      "both": "Questie documents TomTom objective arrows, and Waypoint Tracker documents a compatible waypoint API. Using supported TomTom calls with TomTom absent is an expected pairing, not a live-client result from this comparison. If TomTom is installed, it owns that API.",
+      "both": "Questie documents TomTom objective arrows. Supported TomTom waypoint calls can target Waypoint Tracker when TomTom is absent; with TomTom installed, they target TomTom.",
       "pair": true,
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
@@ -76,7 +76,7 @@
       "alerts": "Rare/chest locations; alerts not stated",
       "tomtom": "Not stated",
       "languages": "English, Korean, French, German, Chinese, Spanish, Russian",
-      "both": "A supported Forever build of upstream pfQuest was not verified. Do not assume a Vanilla or TBC addon loads on Forever. Use Waypoint Tracker on Forever; direct integration with pfQuest is not stated.",
+      "both": "The checked pfQuest sources document Vanilla/TBC rather than a Forever build. Check for a compatible Forever release before pairing it with Waypoint Tracker.",
       "pair": true,
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
@@ -101,7 +101,7 @@
       "alerts": "Not stated",
       "tomtom": "Not stated",
       "languages": "Not stated",
-      "both": "A Forever-compatible HandyNotes build and a compatible plugin can supply map notes alongside Waypoint Tracker. Plugins that send supported TomTom waypoint calls can target its arrow when TomTom is absent; the core alone does not establish that integration.",
+      "both": "Use a Forever-compatible HandyNotes build and plugin for map markers alongside Waypoint Tracker. Plugins with supported TomTom waypoint calls can target its arrow when TomTom is absent.",
       "pair": true,
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
@@ -264,7 +264,7 @@
       "alerts": "Not stated",
       "tomtom": "Not stated",
       "languages": "Not stated",
-      "both": "The products have overlapping map and navigation controls. No direct Waypoint Tracker integration was verified; choose the map and arrow controls you want, and use /wp when another addon owns /way.",
+      "both": "Choose the map and arrow controls you prefer in each addon. Use /wp for Waypoint Tracker when another addon owns /way.",
       "pair": true,
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
@@ -313,7 +313,7 @@
       "alerts": "Not stated",
       "tomtom": "Not stated",
       "languages": "Not stated",
-      "both": "Use Zygor for its guide steps and Waypoint Tracker for independent Find or Nearest trips. Direct waypoint forwarding from Zygor to Waypoint Tracker was not verified; do not assume the guide uses TomTom.",
+      "both": "Use Zygor for guide steps and Waypoint Tracker for independent Find or Nearest trips. Keep the guide’s own waypoint controls.",
       "pair": true,
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
@@ -339,7 +339,7 @@
       "alerts": "Not stated",
       "tomtom": "Not stated",
       "languages": "Not stated",
-      "both": "Use RestedXP for its leveling sequence and Waypoint Tracker for independent destinations. Direct integration with its own arrow was not verified; keep the guide arrow and Waypoint Tracker arrow focused on the trip you intend.",
+      "both": "Use RestedXP for its leveling sequence and Waypoint Tracker for independent destinations. Keep each arrow focused on the trip you intend.",
       "pair": true,
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
@@ -387,7 +387,7 @@
       "alerts": "Not stated",
       "tomtom": "Documented; dependency required",
       "languages": "Options localized; guide-language list not stated",
-      "both": "Its official page requires TomTom or Carbonite. Waypoint Tracker can accept supported TomTom calls, but replacing an addon dependency is not verified; keep the required provider unless the guide author confirms otherwise.",
+      "both": "Its official page requires TomTom or Carbonite. Keep that required provider; use Waypoint Tracker for independent Find and Nearest trips.",
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
     {
@@ -638,29 +638,6 @@
       "search": "Not stated",
       "nearest": "Not stated",
       "routing": "Map route lines",
-      "alerts": "Not stated",
-      "tomtom": "Not stated",
-      "languages": "Not stated",
-      "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
-    },
-    {
-      "slug": "all-the-things",
-      "name": "ALL THE THINGS (ATT)",
-      "category": "collection",
-      "summary": "ALL THE THINGS tracks collection completion and information about quests, vendors, rares, dungeons and raids.",
-      "choice": "Choose ATT to work through a collection checklist; Waypoint Tracker adds on-demand destination search and travel guidance.",
-      "sources": [
-        "https://www.curseforge.com/wow/addons/all-the-things"
-      ],
-      "support": "Forever listed; interface not stated",
-      "price": "Not stated",
-      "licence": "All Rights Reserved",
-      "arrow": "Not stated",
-      "waypoints": "Not stated",
-      "quest_map": "Not stated",
-      "search": "Collection/source information; general search not stated",
-      "nearest": "Not stated",
-      "routing": "Not stated",
       "alerts": "Not stated",
       "tomtom": "Not stated",
       "languages": "Not stated",
@@ -2324,17 +2301,6 @@
       "access": "Official public page"
     },
     {
-      "url": "https://www.curseforge.com/wow/addons/all-the-things",
-      "checked": "2026-11-13",
-      "quote": "Addon for Tracking Collections & Account Completion",
-      "evidence_files": [
-        "tmp/core_details.txt",
-        "tmp/feature_followup.txt",
-        "tmp/maps.txt"
-      ],
-      "access": "Official public page"
-    },
-    {
       "url": "https://www.curseforge.com/wow/addons/along-the-way-adventurers-journal",
       "checked": "2026-11-13",
       "quote": "Your adventurer's journal for WoW Forever. Plan your quest route, follow an arrow that walks around mountains and walls, open a dungeon journal with",
@@ -2931,5 +2897,9 @@
       ],
       "access": "Indexed official versions page"
     }
-  ]
+  ],
+  "nearest": "Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them. Nearest chooses the closest location for your faction; the 3D arrow takes you there by the fastest route. Use /wp, open Find and choose Nearest, or use the minimap button’s right-click Nearest menu.",
+  "hub_answer": "Choose Waypoint Tracker for a 3D waypoint arrow, Find by name and a complete trainer database on WoW Forever. Choose Questie for a quest-map overview, a leveling guide for a suggested quest sequence, or TomTom for its coordinate-waypoint workflow and arrow themes. TomTom-compatible addons can send supported waypoints to Waypoint Tracker when TomTom is absent.",
+  "method": "Compared by the Waypoint Tracker project using the official sources below, last checked 2026-11-13; our baseline is 1.4.1. This is a selected catalog snapshot, with no live-client or performance tests. Features vary by client: check for a Forever release. Integration is described only where documented; keep required dependencies.",
+  "matrix_legend": "— means the checked source does not establish the feature, not that it is absent. Routing may mean quest order, gathering loops, transport markers or a planned journey."
 }
