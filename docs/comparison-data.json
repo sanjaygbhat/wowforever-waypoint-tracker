@@ -709,7 +709,7 @@
       "routing": "Walking, flights, boats, zeppelins, lifts, tram, portals, teleports",
       "alerts": "Not stated",
       "tomtom": "Other guide waypoints without TomTom, as documented",
-      "languages": "Not stated",
+      "languages": "Project page lists German, French, Spanish, Brazilian Portuguese, Russian, Korean and Chinese machine translations; translation quality not independently verified.",
       "recommendation_basis": "Editorial comparison of the documented roles; not a benchmark or client interoperability test."
     },
     {
@@ -1580,7 +1580,7 @@
       "quest_map": "Not stated",
       "search": "Not stated",
       "nearest": "Not stated",
-      "routing": "Not stated",
+      "routing": "General project page documents routes visiting rares on the current map, drawn on world map and minimap; Forever-specific routing behavior not independently verified.",
       "alerts": "Rare, event, treasure alerts",
       "tomtom": "Not stated",
       "languages": "Not stated",

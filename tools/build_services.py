@@ -22,6 +22,15 @@ START='-- BEGIN GENERATED BASE SERVICES (tools/build_services.py)\n'
 END='-- END GENERATED BASE SERVICES\n'
 SERVICES=set('mailbox innkeeper flight repair vendor banker auctioneer stablemaster spirithealer battlemaster meetingstone'.split())
 
+LAUNCH_BUILD = (1, 60, 1, 70755)
+# Reviewed against pinned EG e0f85859: all records are 1.60.1.70532;
+# the explicit title identifies a beta helper, not an ordinary early sighting.
+HELPER_EXCLUSIONS = {278680: "Gabbi Goodwhistle: Specialty Beta Goods & Training; beta-only service"}
+TEST_ROLE = re.compile(r"\b(beta|test(?:ing)?|debug|GM|game master)\b", re.I)
+
+def prelaunch_helper(title, builds):
+    return bool(TEST_ROLE.search(title) and builds and max(builds) < LAUNCH_BUILD)
+
 def pf_services():
     text=(ROOT/'tools/fixtures/services/pfquest-meta.lua').read_text()
     out=defaultdict(dict)
@@ -32,7 +41,7 @@ def pf_services():
 
 def derive(evidence=None):
     j=evidence or json.loads(FIXTURE.read_text());assert j['eg']['commit']==EG_PIN and j['att']['commit']==ATT_PIN
-    maps,_=tables(); latest={}; snapshots=defaultdict(list); reaction={}; object_snaps=defaultdict(list)
+    maps,_=tables(); builds=defaultdict(set); test_titles=defaultdict(set); latest={}; snapshots=defaultdict(list); reaction={}; object_snaps=defaultdict(list)
     files=sorted(j['eg']['files'].items(),key=lambda kv:(tuple(map(int,kv[1]['meta']['clientBuild'].split('.'))),kv[1]['meta']['product']=='wowf',kv[0]))
     for path,f in files:
         assert re.fullmatch(r'[0-9a-f]{64}',f['sha256'])
@@ -40,6 +49,9 @@ def derive(evidence=None):
         for coll,records in f['collections'].items():
             for i,r in records.items():
                 ref={'path':path,'collection':coll,'id':i}
+                if coll in ('creatures','npcs','vendors'):
+                    builds[i].add(tuple(map(int, f['meta']['clientBuild'].split('.'))))
+                    if TEST_ROLE.search(r.get('title', '')): test_titles[i].add(r['title'])
                 latest[(Path(path).name,coll,i)]=(r,ref)
                 if coll=='creatures' and Path(path).name=='creatures.json':
                     for side,values in r.get('reactions',{}).items():reaction[(i,side)]=(values,ref)
@@ -74,6 +86,10 @@ def derive(evidence=None):
         if vref:svc.add('vendor');proof['vendor']=vref
         if vendor.get('repairs') is True:svc.add('repair');proof['repair']=vref
         if not svc:continue
+        reason = HELPER_EXCLUSIONS.get(int(i))
+        if reason or any(prelaunch_helper(t, builds[i]) for t in test_titles[i]):
+            rejected.append({'kind':'N','id':int(i),'name':name,'reason':reason or 'pre-launch-only evidence for beta/test role','title':title.get('title',''),'builds':sorted(builds[i])})
+            continue
         side=npc.get('side');fac={'Alliance':'A','Horde':'H'}.get(side,'');fref=nref if fac else None
         if not fac and int(i) in basefac:fac=basefac[int(i)];fref={'pfquest':int(i)}
         if not fac:

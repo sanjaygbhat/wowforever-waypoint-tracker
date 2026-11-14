@@ -918,12 +918,16 @@ function Learn.Compact(all)
     if not (st and DB and DB.ready and DB.hasShipped and DB.AddsSomething) then
         return 0
     end
-    local removed = 0
+    local removed, checked = 0, 0
     for key, kind in pairs({ npcs = "npc", objects = "object" }) do
         local t = st[key]
         for id in pairs(all and t or touched[key]) do
+            -- Ticker work is bounded; full merge/export compaction is explicit.
+            if not all and checked >= 20 then return removed end
+            checked = checked + 1
+            touched[key][id] = nil
             local e = t[id]
-            if e and not DB.AddsSomething(kind, id, e) then
+            if e and not DB.AddsSomething(kind, id, e, not all) then
                 t[id] = nil
                 removed = removed + 1
                 if key == "npcs" and npcCount then
@@ -934,6 +938,9 @@ function Learn.Compact(all)
         wipe(touched[key])
     end
     for id in pairs(all and st.items or touched.items) do
+        if not all and checked >= 20 then return removed end
+        checked = checked + 1
+        touched.items[id] = nil
         local it = st.items[id]
         if it then
             for _, field in ipairs({ "from", "sold" }) do
@@ -1514,9 +1521,11 @@ ticker:SetScript("OnUpdate", function(_, elapsed)
         return
     end
     acc = 0
+    if next(touched.npcs) or next(touched.objects) or next(touched.items) then
+        ns.Call(Learn.Compact)
+    end
     if changed then
         changed = false
-        ns.Call(Learn.Compact)
         ns.Fire("LEARNED")
     end
 end)

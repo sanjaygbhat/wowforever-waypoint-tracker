@@ -63,7 +63,11 @@ if mode=='all' or mode=='compact' then
   C_Map.GetBestMapForUnit=function()return r[3]end
   Learn.Unit('npc','vendor');C_Map.GetBestMapForUnit=bestMap
   DB.MergeLearned();Learn.Compact(true)
-  check(not st.npcs[r[1]],'3 compact shipped '..r[1],Learn.Export():match('N\t'..r[1]..'[^\n]*'))
+  local retained=r[1]~=3605 -- 3658 needs friendliness/access; 4167 changes Find's points.
+  check((st.npcs[r[1]]~=nil)==retained,'3 compact only redundant shipped '..r[1],Learn.Export():match('N\t'..r[1]..'[^\n]*'))
+  if retained then
+   check(not DB.IsEnemy(DB.units[r[1]]) and has(DB.units[r[1]],r[3],st.npcs[r[1]].spots[r[3]][1],st.npcs[r[1]].spots[r[3]][2]),'3 Find facts retained '..r[1])
+  end
  end
 end
 if mode=='all' or mode=='retry' then

@@ -103,7 +103,7 @@ local st=Learn.Store();DB.services.vendor={};WaypointTrackerData.serviceSuppleme
 st.npcs[id]={name='Later shipped',fac='A',hostile=false,services={vendor=true},spots={[37]={.5,.5}}}
 DB.MergeLearned();check(st.npcs[id]~=nil,'discovery retained before shipped data arrives')
 WaypointTrackerData.serviceSupplement=table.concat({'SN',id,'A','Later shipped','vendor','R','37:0.5,0.5,'..cont},'\t')
-DB.MergeLearned();check(st.npcs[id]==nil,'existing snapshot gains later shipped facts without absorbing discovery')
+DB.MergeLearned();check(st.npcs[id]~=nil and not DB.IsEnemy(DB.units[id]),'later service facts cannot replace an unshipped Find identity')
 -- English supplement names are not evidence of a localized/renamed sighting.
 for _,name in ipairs({'Shipped name','Nom observe'})do
  id=id+1;DB.curated,DB.community=empty(),empty();WaypointTrackerDB.learned=empty()
@@ -111,7 +111,7 @@ for _,name in ipairs({'Shipped name','Nom observe'})do
  WaypointTrackerData.serviceSupplement=table.concat({'SN',id,'AH','Shipped name','vendor','R','37:0.5,0.5,'..cont},'\t')
  st.npcs[id]={name=name,fac='AH',hostile=false,services={vendor=true},spots={[37]={.5,.5}}}
  DB.MergeLearned()
- check((st.npcs[id]~=nil)==(name~='Shipped name'),'only unshipped/localized names retained')
+ check(st.npcs[id]~=nil,'supplement-only identity retains its Find name and friendliness')
  local e=find('vendor',id,'npc')
  check(e and e.name==name,'localized name survives compaction')
 end

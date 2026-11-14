@@ -25,7 +25,7 @@ local MAPTYPE_ZONE = (Enum and Enum.UIMapType and Enum.UIMapType.Zone) or 3
 -- Cache only plain, resolved metadata. Misses get a short retry deadline,
 -- never a permanent negative entry. Consumers can safely read these copies.
 local mapInfoCache, mapInfoRetry = {}, {}
-local zoneList, zoneScanned
+local zoneList, zoneScanned, treeZoneList
 local issecretvalue = issecretvalue
 local function MapInfo(raw)
     raw = Plain(raw)
@@ -52,7 +52,7 @@ function Geo.GetMapInfo(mapID)
         -- Only a recovered/new map changes the derived catalogue. Never scan
         -- all possible IDs again on a timer in Follow/arrow callers.
         if zoneScanned and not next(mapInfoCache) then zoneScanned = nil end
-        zoneList = nil
+        zoneList, treeZoneList = nil, nil
         mapInfoCache[mapID], mapInfoRetry[mapID] = info, nil
         return info
     end
@@ -619,11 +619,13 @@ end
 -- All maps a player can put a waypoint on, straight from the game's own map
 -- data (so it is right for WoW Forever and already in the client's
 -- language). We look at every map ID the client knows instead of only
--- following the map tree, so nothing is missed.
-function Geo.GetZoneList()
+-- following the map tree, so nothing is missed. A name lookup can try the
+-- tree first; the complete picker and unresolved names still scan every ID.
+function Geo.GetZoneList(treeOnly)
     if zoneScanned and zoneList and #zoneList > 0 then
         return zoneList
     end
+    if treeOnly and treeZoneList and #treeZoneList > 0 then return treeZoneList end
     local candidates = {}
     local function consider(info)
         info = MapInfo(info)
@@ -634,17 +636,16 @@ function Geo.GetZoneList()
         candidates[info.mapID] = ok and info or false
     end
 
-    if not zoneScanned then
+    -- Known high/orphaned maps survive when the full picker follows a lookup.
+    for _, info in pairs(mapInfoCache) do consider(info) end
+    if not zoneScanned and not treeOnly then
         for id = 1, MAX_MAP_ID do
             local info = Geo.GetMapInfo(id)
             if info then consider(info) end
         end
         zoneScanned = true
-    else
-        -- A map-info retry succeeded. Rebuild only from resolved records;
-        -- blind rescans of thousands of unknown IDs would add periodic stalls.
-        for _, info in pairs(mapInfoCache) do consider(info) end
     end
+    -- Recovered metadata rebuilds from the cache/tree without a blind rescan.
     -- anything the scan couldn't reach (very high IDs) through the map tree
     local ok, fallback = pcall(C_Map.GetFallbackWorldMapID)
     fallback = ok and Num(fallback)
@@ -660,8 +661,9 @@ function Geo.GetZoneList()
                     break
                 end
             end
-            if top then
-                local okc, children = pcall(C_Map.GetMapChildrenInfo, top.mapID, nil, true)
+            local rootID = top and top.mapID or root
+            if rootID then
+                local okc, children = pcall(C_Map.GetMapChildrenInfo, rootID, nil, true)
                 children = Plain(children)
                 if okc and type(children) == "table" then
                     for _, info in ipairs(children) do
@@ -713,7 +715,7 @@ function Geo.GetZoneList()
         end
         return a.name < b.name
     end)
-    zoneList = list
+    if treeOnly and not zoneScanned then treeZoneList = list else zoneList = list end
     return list
 end
 

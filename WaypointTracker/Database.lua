@@ -522,7 +522,6 @@ local function SupplementFacts(ship, kind, id)
         -- A newly created entry's name came from the discovery, not shipping.
         if ship.fresh or ship.name == "" then ship.name = row.name end
         ship.fresh = false
-        if kind == "npc" and row.fac ~= "" and ship.hostile == nil then ship.enemy = false end
         for service in row.services:gmatch("[^,]+") do
             ship.services[service] = true
             ship.access[service] = ns.Trainers.MergeAccess(ship.access[service], row.fac)
@@ -548,7 +547,7 @@ function DB.Snapshot(e, created)
     local services, access = {}, {}
     for service in pairs(e.svc or {}) do services[service] = true end
     for service, fac in pairs(e.svcAccess or {}) do access[service] = fac end
-    return SupplementFacts({ fresh = created, name = e.name, title = e.title, spots = #(e.extra or {}),
+    return SupplementFacts({ fresh = created, findFresh = created or e.name == "", name = e.name, title = e.title, spots = #(e.extra or {}),
         enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }, e.kind, e.id)
 end
 
@@ -585,7 +584,7 @@ local function MergeStore(st, source)
                 end
                 if e.kind == "npc" or e.kind == "object" then
                     DB.services[service] = DB.services[service] or {}
-                    table.insert(DB.services[service], { id = e.kind == "object" and -e.id or e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or (e.kind == "object" and "" or letter))) })
+                    table.insert(DB.services[service], { observedAccess = l.fac or (mine and (e.kind == "object" and "AH" or letter)) or "", id = e.kind == "object" and -e.id or e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or (e.kind == "object" and "" or letter))) })
                 end
             end
         end
@@ -863,20 +862,24 @@ function DB.MapForArea(area)
     if DB.zoneNames and DB.zoneNames[area] then
         names[#names + 1] = DB.zoneNames[area]
     end
-    local found = false
-    local zones = Geo.GetZoneList()
-    for _, name in ipairs(names) do
-        local key = Geo.Squash(name)
+    local function Match(zones, key)
         local best
         for _, z in ipairs(zones) do
-            if z.key == key and (not best or (z.mapType == 3 and best.mapType ~= 3)) then
-                best = z
-            end
+            if z.key == key and (not best or (z.mapType == 3 and best.mapType ~= 3)) then best = z end
         end
-        if best then
-            found = best.id
-            break
+        return best and best.id
+    end
+    -- Service spawns usually resolve in the native tree. Keep the exhaustive
+    -- catalogue fallback for orphaned/phased maps absent from that tree.
+    local zones, found = Geo.GetZoneList(true), false
+    for _, name in ipairs(names) do
+        local key = Geo.Squash(name)
+        found = Match(zones, key)
+        if not found then
+            zones = Geo.GetZoneList()
+            found = Match(zones, key)
         end
+        if found then break end
     end
     areaMap[area] = found
     return found or nil
@@ -992,7 +995,7 @@ end
 -- Does something you discovered add to what the database knows? Sharing
 -- leaves out what it already has. kind "npc"/"object" (value: your entry),
 -- "drop"/"sold" (id: the item, value: "U123"/"O45").
-function DB.AddsSomething(kind, id, value)
+function DB.AddsSomething(kind, id, value, cachedOnly)
     if kind == "drop" or kind == "sold" then
         local e = DB.items[id]
         if not e then
@@ -1005,13 +1008,17 @@ function DB.AddsSomething(kind, id, value)
     end
     local e = (kind == "npc" and DB.units or DB.objects)[id]
     if type(value) ~= "table" then return true end
-    if not e then
-        if #ServiceRows(nil, kind, id) == 0 then return true end
-        e = { kind = kind, id = id, name = "" }
+    -- Service text alone cannot reconstruct a Find identity on next login.
+    if not e then return true end
+    -- Tickers keep observations until an explicit query has resolved the map.
+    if cachedOnly then
+        for area in (e.coords or ""):gmatch("(%d+):") do
+            if areaMap[tonumber(area)] == nil then return true end
+        end
     end
     e.ship = e.ship or DB.Snapshot(e, false)
     local ship = SupplementFacts(e.ship, kind, id)
-    if ship.fresh then
+    if ship.fresh or ship.findFresh then
         return true
     end
     if (value.name and (ship.name == "" or (#ship.supplement > 0 and value.name ~= ship.name)))
@@ -1029,6 +1036,11 @@ function DB.AddsSomething(kind, id, value)
     if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and (value.hostile ~= ship.enemy or serviceHostility) then
         return true
     end
+    if kind == "npc" and value.fac then
+        for letter in value.fac:gmatch("[AH]") do
+            if not (ship.fac or ""):find(letter, 1, true) then return true end
+        end
+    end
     for service in pairs(type(value.services) == "table" and value.services or {}) do
         if not ship.services[service] then return true end
         if (ns.Trainers.IsService(service) or ship.access[service]) and value.fac then
@@ -1042,18 +1054,36 @@ function DB.AddsSomething(kind, id, value)
     if not next(spots) then
         return false
     end
-    local known = ClassicPoints(e)
-    for i = 1, ship.spots do
-        local p = e.extra and e.extra[i]
-        if p then
-            known[p.m] = known[p.m] or {}
-            table.insert(known[p.m], p)
+    -- Judge Find against the shipped overlay, before personal spots suppress
+    -- Classic spawns; judge each service against its R/M effective locations.
+    local shipped = { coords = e.coords, world = e.world, extra = {}, fixes = e.fixes }
+    for i = 1, ship.spots do shipped.extra[i] = e.extra and e.extra[i] end
+    local known = {}
+    for _, p in ipairs(DB.Points(shipped)) do
+        known[p.m] = known[p.m] or {}
+        known[p.m][#known[p.m] + 1] = p
+    end
+    local function Has(points, m, x, y)
+        for _, p in ipairs(points) do
+            if p.m == m and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then return true end
         end
+        return false
     end
     for _, row in ipairs(ship.supplement) do
-        for _, p in ipairs(row.spots) do
-            known[p.m] = known[p.m] or {}
-            known[p.m][#known[p.m] + 1] = p
+        if #row.spots > 0 then
+            local effective = {}
+            for _, p in ipairs(row.spots) do effective[#effective + 1] = p end
+            for _, p in ipairs(DB.Points(shipped)) do
+                if row.mode == "M" or p.fixed then effective[#effective + 1] = p end
+            end
+            -- An observation selects the normal Find points instead of the
+            -- supplement wrapper. Retain it if either result would change.
+            for _, p in ipairs(DB.Points(e)) do
+                if not Has(effective, p.m, p.x, p.y) then return true end
+            end
+            for _, p in ipairs(effective) do
+                if not Has(DB.Points(e), p.m, p.x, p.y) then return true end
+            end
         end
     end
     for m, list in pairs(spots) do
@@ -1724,7 +1754,7 @@ function DB.ServiceEntries(service)
         local access = {}
         for _, s in ipairs(DB.services[service] or {}) do
             if s.id and s.learned then
-                local fac = s.fac == "" and s.id < 0 and "AH" or s.fac
+                local fac = s.observedAccess or s.fac
                 access[s.id] = ns.Trainers.MergeAccess(access[s.id], fac)
             end
         end

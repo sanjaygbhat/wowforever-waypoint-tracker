@@ -175,7 +175,26 @@ def check():
             assert not any(phrase in text for phrase in (
                 'what players have seen', 'talk to is added', 'seen in WoW Forever')), (
                     'outdated Nearest description', path)
+        check_comparison_facts()
+        check_beta_labels()
         print('Site checks passed:', len(pages), 'HTML pages; JSON-LD, FAQs, links, sitemap, branding and HTML structure.')
+
+
+def check_comparison_facts():
+    comparison=json.loads((ROOT/'docs/comparison-data.json').read_text())
+    addons={a['slug']:a for a in comparison['addons']}
+    assert 'machine translations' in addons['shortest-path-forever']['languages']
+    assert 'Forever-specific' in addons['rarescanner']['routing'] and 'routes visiting rares' in addons['rarescanner']['routing']
+
+
+def check_beta_labels():
+    for base in (ROOT/'docs',ROOT/'site'):
+        for path in base.rglob('*'):
+            if path.suffix not in ('.md','.html','.json','.txt'): continue
+            visible=re.sub(r'<[^>]+>','',path.read_text())
+            assert not re.search(r'\(beta\)\s*\(beta\)',visible), ('duplicate beta label',path)
+            for match in re.finditer(r'treasure hunt\b',visible,re.I):
+                assert re.match(r'\s*\(beta\)',visible[match.end():]), ('missing Treasure hunt beta label',path)
 
 
 if __name__ == '__main__':

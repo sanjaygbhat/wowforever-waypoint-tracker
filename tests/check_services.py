@@ -39,6 +39,44 @@ def check_flight_inventory(test, text):
         test.assertEqual(set(ids),expected,loc+' complete flight names')
         test.assertEqual(len(ids),len(expected),loc+' unique flight names')
 
+# No reviewed mailbox/stone spawn removals. Any future exception must name
+# the literal source spawn and document the replacement/evidence here.
+OBJECT_SPAWN_REMOVALS = {}
+
+def check_object_spawn_inventory(test, data):
+    maps, areas = service_maps.tables()
+    source=json.loads((ROOT/'tools/fixtures/services/pfquest-roster.json').read_text())['roster']
+    # Independent rectangle arithmetic, never Database.Points or its ROSTER
+    # serialization: the expected side comes from pinned source facts alone.
+    classic_bounds={1412:(-3697.9165,-3089.5833,-272.9167,2047.9166),
+                    1423:(1218.75,-6056.25,3799.9998,-2185.4165),
+                    1433:(-10022.916,-3741.6665,-8575,-1570.8332),
+                    1453:(-9175.205,36.7006,-8278.8506,1380.9714)}
+    expected=set()
+    for service in ('mailbox','meetingstone'):
+        for rid,row in source[service].items():
+            for p in row['coords'].values():
+                area=int(p['3']);name=areas[area]
+                choices=[m for m in maps.values() if m['name']==name]
+                test.assertTrue(choices,(service,rid,area,'unresolved source map needs review'))
+                m=min(choices,key=lambda m:(m['mapType']!=3,m['mapID']))
+                x,y=float(p['1'])/100,float(p['2'])/100
+                if m['mapID'] in classic_bounds:
+                    bottom,right,top,left=classic_bounds[m['mapID']]
+                    x=(m['left']-(left-x*(left-right)))/m['w']
+                    y=(m['top']-(top-y*(top-bottom)))/m['h']
+                for side in ('Alliance','Horde'):
+                    if side[0] not in row['fac']:continue
+                    key=(service,int(rid),area,float(p['1']),float(p['2']),side)
+                    expected.add(key)
+                    if key in OBJECT_SPAWN_REMOVALS:
+                        test.assertTrue(OBJECT_SPAWN_REMOVALS[key]);continue
+                    actual=[q for e in data['entries'] if e['faction']==side and e['service']==service
+                            and e['kind']=='object' and e['id']==abs(int(rid)) for q in e['points']]
+                    test.assertTrue(any(q['m']==m['mapID'] and abs(q['x']-x)<1e-9 and abs(q['y']-y)<1e-9 for q in actual),
+                                    (key,'missing production service spawn',m['mapID'],x,y))
+    test.assertLessEqual(set(OBJECT_SPAWN_REMOVALS),expected,'stale reviewed removal')
+
 class Services(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -52,8 +90,8 @@ class Services(unittest.TestCase):
         self.assertEqual(text.count(b.END),1)
         self.assertEqual(text,b.generate(text,self.rows))
         self.assertEqual(text.split(b.START)[0],b.generate(text,self.rows).split(b.START)[0])
-        self.assertEqual(len(self.rows),801)
-        self.assertGreaterEqual(sum(len(r['positions']) for r in self.rows),2245)
+        self.assertEqual(len(self.rows),800)
+        self.assertGreaterEqual(sum(len(r['positions']) for r in self.rows),2243)
 
     def test_pinned_inputs(self):
         manifest=json.loads((ROOT/'tools/fixtures/manifest.json').read_text())
@@ -101,6 +139,66 @@ class Services(unittest.TestCase):
         for r in self.rejected:
             if r['reason']=='unknown faction access':
                 self.assertFalse(any(v['kind']==r['kind'] and v['id']==r['id'] for v in self.rows))
+
+    def test_beta_helper_excluded_from_production(self):
+        self.assertFalse(any(r['id'] == 278680 for r in self.rows))
+        self.assertNotRegex(b.OUTPUT.read_text(), r'(?m)^SN\t278680\t')
+        self.assertFalse(any(r['id'] == 278680 for r in self.data['entries']))
+        self.assertTrue(any(r['id'] == 278680 and 'beta' in r['reason'].lower() for r in self.rejected))
+
+    def test_reviewed_helper_scan(self):
+        evidence=json.loads(b.FIXTURE.read_text())
+        emitted={r['id'] for r in self.rows if r['kind']=='N'}
+        flagged=set()
+        pattern=re.compile(r'\b(beta|test(?:ing)?|debug|GM|game master|event|darkmoon|faire|festival|winter|midsummer|brewfest|hallow|lunar)\b',re.I)
+        for f in evidence['eg']['files'].values():
+            for records in f['collections'].values():
+                for rid,r in records.items():
+                    if int(rid) in emitted and pattern.search(r.get('name','')+' '+r.get('title','')): flagged.add(int(rid))
+        self.assertEqual(flagged,{14828,14844,14845},'review seasonal helpers explicitly in tools/services-review.md')
+        trainers=(ROOT/'WaypointTracker_Data/Trainers.lua').read_text()
+        for rid in (278680,2833,7314):self.assertNotRegex(trainers,r'(?<!\d)'+str(rid)+r':')
+        with (ROOT/'tools/fixtures/trainers/trainers.tsv').open() as f:
+            for r in csv.DictReader(f,delimiter='\t'):
+                self.assertIsNone(pattern.search(r['name_enUS']),r['npc_id'])
+
+    def test_prelaunch_test_roles_only(self):
+        for title in ('Specialty Beta Goods & Training', 'Test Vendor', 'Testing Goods', 'GM Supplies', 'Game Master'):
+            self.assertTrue(b.prelaunch_helper(title, {(1,60,1,70532)}), title)
+            self.assertFalse(b.prelaunch_helper(title, {(1,60,1,70532), b.LAUNCH_BUILD}), title)
+        self.assertFalse(b.prelaunch_helper('General Goods', {(1,60,1,70532)}))
+        evidence=json.loads(b.FIXTURE.read_text())
+        # A distinct identity exercises the generator rule, not the reviewed ID.
+        for f in evidence['eg']['files'].values():
+            for records in f['collections'].values():
+                if '278680' in records: records['999998']=copy.deepcopy(records['278680'])
+        rows,rejected=b.derive(evidence)
+        self.assertFalse(any(r['id']==999998 for r in rows))
+        self.assertTrue(any(r['id']==999998 and 'pre-launch' in r['reason'] for r in rejected))
+        # A newer name-only pre-launch record must not erase a beta-role title.
+        maskpath='data/wowf/1.60.1.70600/creature_details.enUS.json'
+        template=next(f for path,f in evidence['eg']['files'].items() if path.endswith('/creature_details.enUS.json'))
+        masked=copy.deepcopy(template);masked['meta']['clientBuild']='1.60.1.70600';masked['meta']['product']='wowf'
+        masked['collections']={'creatures':{'999998':{'name':'Synthetic'}}}
+        evidence['eg']['files'][maskpath]=masked
+        rows,_=b.derive(evidence)
+        self.assertFalse(any(r['id']==999998 for r in rows),'name-only records cannot erase a beta/test role')
+        # GameObject IDs are a separate namespace and cannot vouch for an NPC.
+        objectpath='data/wowf/1.60.1.70888/object_details.enUS.json'
+        objects=copy.deepcopy(template);objects['meta']['clientBuild']='1.60.1.70888';objects['meta']['product']='wowf'
+        objects['collections']={'objects':{'999998':{'name':'Unrelated object'}}}
+        evidence['eg']['files'][objectpath]=objects
+        rows,_=b.derive(evidence)
+        self.assertFalse(any(r['id']==999998 for r in rows),'post-launch objects do not establish live NPC evidence')
+        for f in evidence['eg']['files'].values():
+            r=f['collections'].get('creatures',{}).get('999998')
+            if r and 'title' in r:r['title']='General Goods'
+        rows,_=b.derive(evidence)
+        self.assertTrue(any(r['id']==999998 for r in rows),'ordinary early observations remain usable')
+        path='data/wowf/1.60.1.70888/creature_details.enUS.json'
+        evidence['eg']['files'][path]['collections']['creatures']['999998']={'name':'Synthetic','title':'Specialty Beta Goods & Training'}
+        rows,_=b.derive(evidence)
+        self.assertTrue(any(r['id']==999998 for r in rows),'post-launch evidence is eligible for explicit review')
 
     def test_no_trainers_in_supplement(self):
         self.assertFalse(any('trainer' in s for r in self.rows for s in r['services']))
@@ -150,6 +248,12 @@ class Services(unittest.TestCase):
                  'auctioneer':(17,20),'stablemaster':(25,28),'spirithealer':(2,115),
                  'battlemaster':(12,90),'meetingstone':(20,35)}
         for key,s in self.data['summary'].items():
+            if key.startswith('auctioneer/'):
+                # Exact reviewed inventories replace a lower bound inflated by
+                # the factionless Quickcoin viewer fallback (rv4-3).
+                expected=(16,19) if key.endswith('/Alliance') else (20,22)
+                self.assertEqual((s['identities'],s['spawns']),expected,key)
+                continue
             ids,spawns=minimum[key.split('/')[0]]
             self.assertGreaterEqual(s['identities'],ids,key)
             self.assertGreaterEqual(s['spawns'],spawns,key)
@@ -181,6 +285,17 @@ class Services(unittest.TestCase):
         for r in self.rows:
             if r['kind']=='O':self.assertIn(r['services'],[['mailbox'],['meetingstone']])
 
+    def test_production_object_spawn_inventory(self):
+        check_object_spawn_inventory(self,self.data)
+
+    def test_kharanos_mailbox_deletion_rejected(self):
+        data=copy.deepcopy(self.data)
+        for e in data['entries']:
+            if e['kind']=='object' and e['id']==142102:
+                e['points']=[p for p in e['points'] if not (p['m']==1426 and abs(p['x']-.47)<1e-9 and abs(p['y']-.526)<1e-9)]
+        with self.assertRaisesRegex(AssertionError,'142102'):
+            check_object_spawn_inventory(self,data)
+
     def test_real_map_shapes_and_mock_crosscheck(self):
         self.assertEqual(self.maps[1455]['name'],'Ironforge')
         self.assertGreaterEqual(len(self.maps),50)
@@ -196,6 +311,11 @@ class Services(unittest.TestCase):
         self.assertEqual(set(b.pf_services()),b.SERVICES)
         for service,rows in expected.items():
             self.assertEqual(b.pf_services()[service],{int(rid):row['fac'] for rid,row in rows.items()},service)
+
+    def test_factionless_packaged_rows_do_not_widen_access(self):
+        for rid,service in ((258878,'auctioneer'),(265574,'vendor')):
+            self.assertFalse(any(e['id']==rid and e['service']==service and e['faction']=='Alliance' for e in self.data['entries']))
+            self.assertTrue(any(e['id']==rid and e['service']==service and e['faction']=='Horde' and e['access']=='H' for e in self.data['entries']))
 
     def test_neutral_witnessed_services(self):
         rows={r['id']:r for r in self.rows if r['kind']=='N'}
