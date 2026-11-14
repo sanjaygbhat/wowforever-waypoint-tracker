@@ -146,7 +146,7 @@ Use `/wp treasure status` to report what it sees. [Full guide](https://github.co
 2. Unzip it into your AddOns folder. You should get **two** folders: `...\Interface\AddOns\WaypointTracker\` and `...\Interface\AddOns\WaypointTracker_Data\` (the database for the Find tab).
    - Windows: `World of Warcraft\_forever_\Interface\AddOns\`
    - macOS: `World of Warcraft/_forever_/Interface/AddOns/`
-3. Fully restart the game. Version 1.4.0 adds addon files, so `/reload` is not enough.
+3. On first install, fully restart the game. Updating from 1.4.0 to 1.4.1 needs only `/reload`; from an older version, fully restart the game.
 
 > [!TIP]
 > Downloading this repository as a zip also works: copy the inner `WaypointTracker` and `WaypointTracker_Data` folders into AddOns.
@@ -203,11 +203,13 @@ Open the **Find** tab and click a **Nearest** button. Or right-click the minimap
 | Battlemaster | A battlemaster |
 | Meeting Stone | A dungeon meeting stone |
 | Class Trainer | The nearest trainer for **your class**, picked automatically |
-| Profession Trainer | A menu of **Alchemy, Blacksmithing, Enchanting, Engineering, Herbalism, Leatherworking, Mining, Skinning, Tailoring, Cooking, First Aid and Fishing**; pick one to find the nearest trainer it knows |
-| Weapon Master | The nearest known weapon master |
-| Riding Trainer | The nearest known riding trainer |
+| Profession Trainer | A menu of **Alchemy, Blacksmithing, Enchanting, Engineering, Herbalism, Leatherworking, Mining, Skinning, Tailoring, Cooking, First Aid and Fishing**; pick one to find the closest trainer in the database for your faction |
+| Weapon Master | The nearest weapon master |
+| Riding Trainer | The nearest riding trainer |
 
-Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list.
+Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
+
+Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
 
 ### 🧾 Where the data comes from: the game always wins
 
@@ -401,7 +403,9 @@ TomTom:WaypointExists(uiMapID, x, y, title)
 
 ## ❓ FAQ
 
-**Where is the nearest class or profession trainer?** Open **Find → Nearest**, or right-click the minimap button and open **Nearest...**. **Class Trainer** picks your class automatically. **Profession Trainer** lets you choose one of 12 professions and points to the nearest trainer it knows. Trainers come from what players have seen in WoW Forever, capital cities and towns alike, and every trainer you talk to is added to your own list. If a trainer near you is missing, talk to them once and they are remembered.
+[Compare Waypoint Tracker with TomTom, Questie, pfQuest and other addons](https://sanjaygbhat.github.io/wowforever-waypoint-tracker/compare.html) — features, Forever support, sources and when to use both.
+
+**Where is the nearest class or profession trainer?** Open **Find → Nearest**, or right-click the minimap button and open **Nearest...**. **Class Trainer** picks your class automatically. **Profession Trainer** lets you choose one of 12 professions and points to the closest trainer in the database for your faction. Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
 
 **Does it always take the fastest route?** Yes: the fastest it knows you can really use, with flight paths, boats, zeppelins, the tram, your hearthstone and teleports counted. By default it is danger-aware: when a quicker way crosses dangerous ground the arrow offers it and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take it every time. It re-plans as you move. Turn Real routes off in **Settings → Routes** for a straight arrow.
 
@@ -434,7 +438,7 @@ Yes. It's free and open source (MIT), with readable, unobfuscated code, no ads a
 <details>
 <summary><b>Does Waypoint Tracker work on WoW Forever?</b></summary>
 
-Yes, version 1.4.0 supports the live World of Warcraft: Forever client 1.60.1 (interface 16001).
+Yes, version 1.4.1 supports the live World of Warcraft: Forever client 1.60.1 (interface 16001).
 </details>
 
 <details>

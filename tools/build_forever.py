@@ -192,13 +192,17 @@ def main():
         if not name or name.startswith("Quest Path") or name.startswith("zz") or r["ContinentID"] not in ("0", "1"):
             continue
         flags = int(r["Flags"] or 0)
+        # Faction service bits distinguish real taxi stops from transport,
+        # quest, ferry and generic world-target helpers in the same table.
+        if not flags & 3:
+            continue
         fac = ("A" if flags & 1 else "") + ("H" if flags & 2 else "")
         x, y, cont = num(r["Pos_0"]), num(r["Pos_1"]), int(r["ContinentID"])
         ui = taxi_zone(r, zone_of(cont, x, y))
         if not ui:  # test and GM islands
             continue
         flight_ids.add(r["ID"])
-        flight_lines.append(f"{r['ID']}\t{cont}\t{ui}\t{x:.1f}\t{y:.1f}\t{fac}")
+        flight_lines.append(f"{r['ID']}\t{cont}\t{ui}\t{r['Pos_0']}\t{r['Pos_1']}\t{fac}")
 
     # towns on the world map
     town_lines, town_ids = [], set()

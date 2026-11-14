@@ -14,7 +14,7 @@ Companion file: `PARCELS.md` (work split for concurrent coding agents).
 3. **Settings live in Blizzard's Settings panel** (`Settings.RegisterVerticalLayoutCategory` + 5 subcategories). The in-window "More options" panel is gone. `/wp settings` and a bottom-bar **Settings** button open it.
 4. **Edit Mode owns every HUD element**: the arrow, its text, the coordinates box and the route-recorder strip each get a Blizzard selection box; clicking one opens one shared settings dialog built from Blizzard's own Edit Mode widget templates. Each Edit Mode layout keeps its own positions. The in-window "Move Arrow" mode is removed (kept in code only as a feature-detected fallback for a client without Edit Mode).
 5. **The arrow is never a click target** (unchanged); it ignores the mouse outside Edit Mode.
-6. **Entry points**: `/wp` toggles the window; minimap button left-click = window, right-click = quick menu (toggles for Show arrow / Treasure hunt / Real routes, Add waypoint here, Share my location, Edit Mode, Settings); the Addon Compartment does the same; key bindings for every frequent action; Settings panel; world map (pins, Ctrl+right-click, a small Waypoint Tracker overlay button next to Blizzard's map buttons).
+6. **Entry points**: `/wp` toggles the window; minimap button left-click = window, right-click = quick menu (toggles for Show arrow / Treasure hunt (beta) / Real routes, Add waypoint here, Share my location, Edit Mode, Settings); the Addon Compartment does the same; key bindings for every frequent action; Settings panel; world map (pins, Ctrl+right-click, a small Waypoint Tracker overlay button next to Blizzard's map buttons).
 7. **Chat is quiet.** Chat lines are only (a) direct replies to something the player typed, (b) ambient notices gated by *Show chat messages*, (c) treasure pings (their own switch). One-time "hello / new feature" lines become in-window notices or HelpTips.
 8. **Combat-safe**: showing/hiding a UI panel is protected in combat; in combat the window shows/hides directly at the left-panel position, no taint, no errors.
 
@@ -36,7 +36,7 @@ Companion file: `PARCELS.md` (work split for concurrent coding agents).
 - Inventory: **15 addon frames** can be on screen: main, more-options, Find, Find share box, fix box, Routes, editor, text box, ask, feedback, help, create, share, recorder, Edit Mode dialog; plus arrow, arrow text, coords box, minimap button.
 
 ### 1.3 Other problems
-- Settings are scattered and duplicated: *Treasure hunt* is in the main window (`UI.lua:1010`) **and** in More options (`UI.lua:1186`); *Share my routes* is in the Routes footer (`RoutesUI.lua:693-699`) **and** in General (`UI.lua:1201`); *This zone only* and *Show low-rated* in the Routes footer are also settings.
+- Settings are scattered and duplicated: *Treasure hunt (beta)* is in the main window (`UI.lua:1010`) **and** in More options (`UI.lua:1186`); *Share my routes* is in the Routes footer (`RoutesUI.lua:693-699`) **and** in General (`UI.lua:1201`); *This zone only* and *Show low-rated* in the Routes footer are also settings.
 - The Blizzard Settings entry is a canvas with one button that **closes Settings and opens our window** (`UI.lua:1330-1359`) — the opposite of native.
 - The arrow has two move systems: Edit Mode (`EditMode.lua`) and the in-window "Move Arrow / Done" mode (`UI.lua:989-1003`, `Arrow.lua:245-258`). The coordinates box drags on its own (`CoordsBox.lua:37-46`) and is not in Edit Mode; the recorder strip drags on its own (`RoutesUI.lua:1176-1177`).
 - Chat noise: welcome (`Slash.lua:275-278`), *Real routes* teaser 12 s after login (`Travel.lua:1119-1127`), `/way` taken notice (`Slash.lua:285-288`), "Now pointing to", "Waypoint added/removed", route started/stopped/lap, treasure found/gone, route received, "Fly to X" hint (`TravelMap.lua:163`).
@@ -315,7 +315,7 @@ Waypoint Tracker                         (root, vertical layout)
          ☑ Use your hearthstone and teleports, ☑ Show the route on the world map,
          ☑ Learn paths as you walk, ☑ Share paths with other players
   ▸ Treasure Hunt (beta)
-      ☐ Treasure hunt; then (children of it): ☑ Chests and treasure, ☑ Rare spawns, ☑ Events and other markers,
+      ☐ Treasure hunt (beta); then (children of it): ☑ Chests and treasure, ☑ Rare spawns, ☑ Events and other markers,
          ☐ Lead me to known chest spots, ☑ Ping me when something appears, ☑ Point the arrow at it right away
   ▸ Find & Sharing
       ── Find ──   ☑ Learn NPCs, quests and objects as I play, ☑ Only my faction, ☐ Only this zone
@@ -491,14 +491,14 @@ Pins (click = point arrow, alt-click = remove), Ctrl + right-click = add, overla
 | Show the arrow | `UI.lua:986` | Settings > General; quick menu; `/wp arrow`; keybinding |
 | Move Arrow / Done, Reset | `UI.lua:989-1004` | Edit Mode (dialog **Reset to default**); Settings > root **Edit Mode** button; fallback drag mode only without Edit Mode |
 | Arrow size / visibility sliders | `UI.lua:1005-1006` | Edit Mode dialog **and** Settings > Arrow |
-| Show more options / Treasure hunt check | `UI.lua:1009-1015` | gone / Settings > Treasure Hunt + quick menu |
+| Show more options / Treasure hunt (beta) check | `UI.lua:1009-1015` | gone / Settings > Treasure Hunt (beta) + quick menu |
 | Version text | `UI.lua:1017-1019` | Settings root description line "Version x.y.z" (`VERSION_FMT`) |
 | More options: Arrow Display (colour cycler + swatch, fade, hide in combat, hide on taxi) | `UI.lua:1121-1148` | Settings > Arrow (dropdown + Pick colour button) |
 | More options: Arrow Text (size, visibility, separate, name, distance, ETA) | `UI.lua:1150-1158` | Settings > Arrow; size/visibility/separate also in Edit Mode dialog |
 | More options: When You Arrive | `UI.lua:1160-1165` | Settings > Arrow |
 | More options: Real routes (7 options) | `UI.lua:1167-1174` | Settings > Routes > Real routes (beta); on/off also in quick menu, `/wp travel`, keybinding |
 | More options: Maps (7 options) | `UI.lua:1176-1183` | Settings > Maps; worldPins/worldCoords also in map overlay menu |
-| More options: Treasure Hunt (7 options) | `UI.lua:1185-1192` | Settings > Treasure Hunt; on/off also quick menu/slash/keybind |
+| More options: Treasure Hunt (beta) (7 options) | `UI.lua:1185-1192` | Settings > Treasure Hunt (beta); on/off also quick menu/slash/keybind |
 | More options: General (13 options) | `UI.lua:1194-1207` | Settings > General (followQuest → Maps; learn, sharePrefix → Find & Sharing; routeSharing, routeAsk → Routes) |
 | Reset All Settings | `UI.lua:1210-1230` | Settings > General button + same popup |
 | Options > AddOns canvas with "Open" button | `UI.lua:1330-1359` | Replaced by the vertical-layout category; the canvas remains only as the fallback |

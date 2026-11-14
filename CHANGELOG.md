@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1
+
+- **Nearest comes ready to use:** a complete trainer database with over 500 trainers across capitals, starting areas and towns of both factions. Covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Pick the closest one and follow the arrow by the fastest route; your discoveries add to the shipped database.
+- More mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever. Positions favour Forever observations, and the flight master list no longer includes internal client points that are not flight masters.
+- Faster repeat Nearest lookups with a one-time index.
+- **Updating from 1.4.0:** `/reload` is enough. From an older version, fully restart the game.
+
 ## 1.4.0
 
 - **Nearest now finds trainers:** click **Class Trainer** for your own class, choose from 12 professions with **Profession Trainer**, or click **Weapon Master** or **Riding Trainer**. Find them in the **Find** tab or the minimap button's right-click menu under **Nearest...**. Profession Trainer finds the nearest one it knows, and trainers you talk to are remembered. The arrow takes you there by the fastest route.

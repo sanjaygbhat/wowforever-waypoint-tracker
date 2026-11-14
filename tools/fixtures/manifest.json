@@ -839,8 +839,9 @@
     "selection": "Real routes travel spells and reviewed teleport items (tools/travel_items.tsv), reduced columns, via tools/pin_travel_client.py; rows identical in build 1.60.1.70888"
   },
   "trainers/trainers.tsv": {
-    "sha256": "e552e4ce088c0940b10fefe33dae05ce0e39f428f635d2b3cb53905d0aac0b15",
-    "source": "Reviewed pinned sources; per-row URLs, licences and evidence; see docs/data-audit.md"
+    "sha256": "8857143a81003a3049210e9204841173524e05c7f27920ffa849a2d2a598dbc6",
+    "source": "Reviewed pinned sources; per-row URLs, licences and evidence; see docs/data-audit.md",
+    "refresh": "ATT 1c4d146b518a3c2cda6d2488a27be6e2638d5360; EG Link e0f8585914c134d9cb5d76756bd065b1e3e92ece; see trainer evidence fixture directories; Classic fact census: VMaNGOS 1fb4909858f3ac558e06613e223f6d7116a9a8fa, CMaNGOS c33f90b8eeb3f8bacb53d5cbfee45075c80b416c, Questie 454b9d072965ee8f1a881429260fcf1fac8d60f7; player coordinates/quest relationship 24c719a76202d2b047392972b5d6770e1fc98a11"
   },
   "trainers/observed-164bd1e2/COMMIT": {
     "sha256": "37eac937151e2ae24d13563fb3f1e96868b6f778f3031d7639734b6058379595",
@@ -856,5 +857,169 @@
     "sha256": "2b1e3f57a5cd751e8cd83bc4b0f78e1dc08582e1723394831a2a526050e14c41",
     "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/164bd1e2d89579ada4ee5e2de7e5fd4db684a9f1",
     "selection": "Reduced trainer role/access/position records, including reviewed position corrections; original full-file hashes and build metadata in records.json."
+  },
+  "trainers/observed-e0f85859/COMMIT": {
+    "sha256": "1e948733be677c2d2635c87546938bfb8421f2bd6792fe63fe09d94a1d5769de",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/e0f8585914c134d9cb5d76756bd065b1e3e92ece",
+    "commit": "e0f8585914c134d9cb5d76756bd065b1e3e92ece",
+    "licence": "CC BY 4.0",
+    "selection": "Pinned trainer titles, role corroboration, access and full-precision observation evidence; see docs/data-audit.md"
+  },
+  "trainers/observed-e0f85859/LICENSE": {
+    "sha256": "5eebefd3682e32d661f307a28539b304e5e52fb1eb33ba214e61d7a57663e4f0",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/e0f8585914c134d9cb5d76756bd065b1e3e92ece",
+    "commit": "e0f8585914c134d9cb5d76756bd065b1e3e92ece",
+    "licence": "CC BY 4.0",
+    "selection": "Pinned trainer titles, role corroboration, access and full-precision observation evidence; see docs/data-audit.md"
+  },
+  "trainers/observed-e0f85859/records.json": {
+    "sha256": "93f01409a57d825419d1e8fd41a9e8dc3f7cbd66c7b8813050ad75a1a7a040b4",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/e0f8585914c134d9cb5d76756bd065b1e3e92ece",
+    "commit": "e0f8585914c134d9cb5d76756bd065b1e3e92ece",
+    "licence": "CC BY 4.0",
+    "selection": "Pinned trainer titles, role corroboration, access and full-precision observation evidence; see docs/data-audit.md"
+  },
+  "trainers/att-1c4d146b/COMMIT": {
+    "sha256": "0171015775cda701e79465654922e22061da44a06dd303cc77cdc1f253e7d57c",
+    "source": "https://github.com/ATTWoWAddon/AllTheThings/tree/1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+    "commit": "1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+    "licence": "MIT",
+    "selection": "Pinned trainer titles, role corroboration, access and full-precision observation evidence; see docs/data-audit.md"
+  },
+  "trainers/att-1c4d146b/LICENSE": {
+    "sha256": "955281b9174e0f66b08c8e83d31e0f38b2fcaa247ca3af92d1723d81a13cddfb",
+    "source": "https://github.com/ATTWoWAddon/AllTheThings/tree/1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+    "commit": "1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+    "licence": "MIT",
+    "selection": "Pinned trainer titles, role corroboration, access and full-precision observation evidence; see docs/data-audit.md"
+  },
+  "trainers/att-1c4d146b/records.json": {
+    "sha256": "04d7d173d7ec8afbd8cc2a48d01600f5c4d7fd6d426e553496cb5661109faf74",
+    "source": "https://github.com/ATTWoWAddon/AllTheThings/tree/1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+    "commit": "1c4d146b518a3c2cda6d2488a27be6e2638d5360",
+    "licence": "MIT",
+    "selection": "Pinned trainer titles, role corroboration, access and full-precision observation evidence; see docs/data-audit.md"
+  },
+  "trainers/cmangos-c33f90b8/COMMIT": {
+    "sha256": "6c12b5195357628e0db5066d2562705d4504e429199387046e1740cc3a56f92d",
+    "source": "https://github.com/cmangos/classic-db/tree/c33f90b8eeb3f8bacb53d5cbfee45075c80b416c",
+    "licence": "GPL-3.0",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/cmangos-c33f90b8/LICENSE": {
+    "sha256": "8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b",
+    "source": "https://github.com/cmangos/classic-db/tree/c33f90b8eeb3f8bacb53d5cbfee45075c80b416c",
+    "licence": "GPL-3.0",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/cmangos-c33f90b8/records.json": {
+    "sha256": "3fa8b57d1d38c1e2389d8e43e08256d391d1efd5535722c08e2b5a20458eaf2f",
+    "source": "https://github.com/cmangos/classic-db/tree/c33f90b8eeb3f8bacb53d5cbfee45075c80b416c",
+    "licence": "GPL-3.0",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/questie-454b9d07/COMMIT": {
+    "sha256": "05855b8e449975605450d89af6dd6bfecbfb51addff2a2c3cd42ec98fdcf6e09",
+    "source": "https://github.com/Questie/Questie/tree/454b9d072965ee8f1a881429260fcf1fac8d60f7",
+    "licence": "GPL-3.0 / historical mixed licensing",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/questie-454b9d07/LICENSE": {
+    "sha256": "5da67c21c33407cbe34ff36b359e64f13f4ca487b4ee7769c379212ab0d2f339",
+    "source": "https://github.com/Questie/Questie/blob/043e7268b36aa7b0a605290c109cdab46771500b/LICENSE.md",
+    "licence": "GPL-3.0 / historical mixed licensing",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/questie-454b9d07/records.json": {
+    "sha256": "f5fdfbc2d8ff715caa6ad0105f5479c40e7c671645b2f490a76a95129ed7b12c",
+    "source": "https://github.com/Questie/Questie/tree/454b9d072965ee8f1a881429260fcf1fac8d60f7",
+    "licence": "GPL-3.0 / historical mixed licensing",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/vmangos-1fb49098/COMMIT": {
+    "sha256": "26edb926af54a8c88505a2c12198ca93fe31363e3b825a2b106ab3fd8cddca16",
+    "source": "https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip",
+    "licence": "GPL-2.0",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/vmangos-1fb49098/LICENSE": {
+    "sha256": "b8632c574ee53ddf15ed7dd65b4a36611da50a77dffda62f978a30c076005456",
+    "source": "https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip",
+    "licence": "GPL-2.0",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/vmangos-1fb49098/records.json": {
+    "sha256": "6eaaef20595eec65d71377fef9d4cb12eb2bc3823bc6d5e4eea3c445decbed20",
+    "source": "https://github.com/vmangos/core/releases/download/db_latest/db-1fb4909.zip",
+    "licence": "GPL-2.0",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/capital-absences.json": {
+    "sha256": "69badaa90083eb6b29ca4a954619325ca6804b2c6b59dacc2d0a5dd95d6dbe39",
+    "source": "Trainer coverage review; see docs/data-audit.md",
+    "licence": "Fact review; see source-specific fixture directories",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/crosscheck.json": {
+    "sha256": "9fb12f8d28bc580f7f9e3ef494f1e68dd86f5fb7ae84a123171c847e55dda5ae",
+    "source": "Trainer coverage review; see docs/data-audit.md",
+    "licence": "Fact review; see source-specific fixture directories",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/client-areas-1.60.1.70862.json": {
+    "sha256": "24c600b3e3ff290a993daf15e522adfd7dbcd16a4e4150d04cca5c8dac49b434",
+    "source": "https://wago.tools/db2/AreaTable/csv?build=1.60.1.70862&locale=enUS",
+    "licence": "Blizzard client game data; reduced factual fields",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract.",
+    "build": "1.60.1.70862",
+    "source_sha256": "42280ffb99cedb21ad7420744df20a0678914d6d8f448dca0b41ca3d05e02c51"
+  },
+  "trainers/players-24c719a7/COMMIT": {
+    "sha256": "000f3e35c7cb88898a173d1820250985228c64c1468c9616d5be2b96db24fefd",
+    "source": "https://github.com/salty-max/wow-data/tree/24c719a76202d2b047392972b5d6770e1fc98a11",
+    "licence": "MIT",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/players-24c719a7/LICENSE": {
+    "sha256": "5fdd1c782581ad00c5da55d4124ebb91b57893708584ea033935187b05887b4e",
+    "source": "https://github.com/salty-max/wow-data/tree/24c719a76202d2b047392972b5d6770e1fc98a11",
+    "licence": "MIT",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "trainers/players-24c719a7/records.json": {
+    "sha256": "7aaa28227a59203d46d800ddd062f0b964c506ce0fa1483557492c5f370abf69",
+    "source": "https://github.com/salty-max/wow-data/tree/24c719a76202d2b047392972b5d6770e1fc98a11",
+    "licence": "MIT",
+    "selection": "Reduced NPC role/access/rank/spawn facts only; provenance and original file hashes accompany the extract."
+  },
+  "services/evidence.json": {
+    "sha256": "fdd2b37469bb4151bb440a3c135fc5b05c93aef0756c84667331c0a0509cba67",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/tree/e0f8585914c134d9cb5d76756bd065b1e3e92ece; https://github.com/ATTWoWAddon/AllTheThings/tree/1c4d146b518a3c2cda6d2488a27be6e2638d5360/db/Camelot",
+    "license": "CC BY 4.0; MIT"
+  },
+  "services/EG-LICENSE": {
+    "sha256": "5eebefd3682e32d661f307a28539b304e5e52fb1eb33ba214e61d7a57663e4f0",
+    "source": "https://github.com/JIVESCORP/eg-link-output-wowf/blob/e0f8585914c134d9cb5d76756bd065b1e3e92ece/LICENSE",
+    "license": "CC BY 4.0"
+  },
+  "services/ATT-LICENSE": {
+    "sha256": "955281b9174e0f66b08c8e83d31e0f38b2fcaa247ca3af92d1723d81a13cddfb",
+    "source": "https://github.com/ATTWoWAddon/AllTheThings/blob/1c4d146b518a3c2cda6d2488a27be6e2638d5360/LICENSE",
+    "license": "MIT"
+  },
+  "services/pfquest-meta.lua": {
+    "sha256": "0f6dfef398946112d8220688c29d33025aad02677b43e21e2387550d9f9e760e",
+    "source": "https://github.com/shagu/pfQuest/blob/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db/meta.lua",
+    "license": "MIT"
+  },
+  "client/AreaTable-1.60.1.70862-enUS.csv": {
+    "sha256": "42280ffb99cedb21ad7420744df20a0678914d6d8f448dca0b41ca3d05e02c51",
+    "source": "https://wago.tools/db2/AreaTable/csv?build=1.60.1.70862",
+    "license": "Blizzard game client tables"
+  },
+  "services/pfquest-roster.json": {
+    "sha256": "d366a2e0253304dcab15417e69345f5567db67af6b259890ef004c132fc9ea11",
+    "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db (meta, units, objects and enUS names; literal service roster/spawn audit)",
+    "license": "MIT"
   }
 }

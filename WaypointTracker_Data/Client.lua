@@ -61,94 +61,77 @@ D.client = {
 ]],
     -- flight paths: id, continent, zone, world x, world y, faction
     flights = [[
-1	0	1453	-8889.0	-0.5	
-2	0	1453	-8832.8	478.6	A
-4	0	1436	-10628.9	1036.7	A
-5	0	1433	-9429.1	-2231.4	A
-6	0	1455	-4821.8	-1155.4	A
-7	0	1437	-3792.3	-783.3	A
-8	0	1432	-5421.9	-2930.0	A
-9	0	1434	-14271.8	299.9	
-10	0	1421	478.9	1536.6	H
-11	0	1458	1568.6	268.0	H
-12	0	1431	-10515.5	-1261.7	A
-13	0	1424	-0.1	-859.9	H
-14	0	1424	-711.5	-515.5	A
-15	0	1423	2253.4	-5344.9	
-16	0	1417	-1240.5	-2515.1	A
-17	0	1417	-916.3	-3496.9	H
-18	0	1434	-14444.3	509.6	H
-19	0	1434	-14473.0	464.1	A
-20	0	1434	-12414.2	146.3	H
-21	0	1418	-6634.0	-2180.1	H
-22	1	1456	-1197.2	29.7	H
-23	1	1454	1677.6	-4315.7	H
-24	0	1427	-6666.0	-2222.3	
-25	1	1413	-441.8	-2596.1	H
-26	1	1439	6341.4	557.7	A
-27	1	1438	8643.6	841.0	A
-28	1	1440	2827.3	-289.2	A
-29	1	1442	966.6	1040.3	H
-30	1	1441	-5407.7	-2414.3	H
-31	1	1444	-4491.9	-775.9	A
-32	1	1445	-3825.4	-4516.6	A
-33	1	1442	2681.1	1461.7	A
-34	1	1413	-1965.2	-5824.3	
-35	1	1411	1320.1	-4649.2	
-36	0	1453	-8644.6	433.3	
-37	1	1443	139.2	1325.8	A
-38	1	1443	-1767.6	3263.9	H
-39	1	1446	-7224.0	-3734.6	A
-40	1	1446	-7048.9	-3780.4	H
-41	1	1444	-4373.8	3338.6	A
-42	1	1444	-4419.9	199.3	H
-43	0	1425	283.7	-2002.8	A
-44	1	1447	3661.5	-4390.4	H
-45	0	1419	-11112.2	-3435.7	A
-46	0	1424	-986.4	-547.9	
-47	0	1434	-12418.8	235.4	
-48	1	1448	5068.4	-337.2	H
-49	1	1450	7458.5	-2487.2	A
-50	0	1416	0.0	0.0	
-51	0	1416	0.0	0.0	
-52	1	1452	6799.2	-4742.4	A
-53	1	1452	6813.1	-4611.1	H
-54	1	1444	-4203.9	3284.0	
-55	1	1445	-3147.4	-2842.2	H
-56	0	1435	-10457.0	-3279.2	H
-57	1	1438	8701.5	991.4	
-58	1	1440	3374.7	997.0	H
-61	1	1440	2302.4	-2524.6	H
-62	1	1450	7793.6	-2403.5	A
-63	1	1450	7787.7	-2404.1	H
-64	1	1447	2722.0	-3880.6	A
-65	1	1448	6205.9	-1949.6	A
-66	0	1422	931.3	-1430.1	A
-67	0	1423	2271.1	-5340.8	A
-68	0	1423	2327.4	-5286.9	H
-69	1	1450	7470.4	-2123.4	H
-70	0	1428	-7504.0	-2187.5	H
-71	0	1428	-8364.6	-2738.4	A
-72	1	1451	-6811.4	836.7	H
-73	1	1451	-6761.8	772.0	A
-74	0	1427	-6552.6	-1168.3	A
-75	0	1427	-6554.9	-1100.1	H
-76	0	1425	-635.3	-4720.5	H
-77	1	1413	-2380.7	-1882.7	H
-78	0	1422	3133.3	-3399.9	
-79	1	1449	-6113.8	-1142.7	AH
-80	1	1413	-894.6	-3773.0	AH
-84	0	1423	2998.7	-3050.1	AH
-85	0	1423	3109.3	-4285.1	AH
-86	0	1423	2499.2	-4742.9	AH
-87	0	1423	1857.6	-3658.5	AH
-559	1	2482	5283.2	-3306.7	AH
-3203	0	2548	-7923.7	-4783.0	H
-3205	0	1426	-4375.7	864.8	
-3242	1	2482	4393.5	-2836.4	AH
-3274	0	2548	-8157.2	-5724.7	
-3275	0	2548	-8180.0	-5616.3	
-3276	0	2548	-9104.1	-4830.5	A
+2	0	1453	-8832.76953125	478.62298583984	A
+4	0	1436	-10628.889648438	1036.6800537109	A
+5	0	1433	-9429.099609375	-2231.3999023438	A
+6	0	1455	-4821.7797851562	-1155.4399414062	A
+7	0	1437	-3792.2600097656	-783.28997802734	A
+8	0	1432	-5421.91015625	-2930.0100097656	A
+10	0	1421	478.85998535156	1536.5899658203	H
+11	0	1458	1568.6199951172	267.9700012207	H
+12	0	1431	-10515.459960938	-1261.6500244141	A
+13	0	1424	-0.05999999866	-859.90997314453	H
+14	0	1424	-711.47998046875	-515.47998046875	A
+16	0	1417	-1240.5300292969	-2515.1101074219	A
+17	0	1417	-916.28997802734	-3496.8898925781	H
+18	0	1434	-14444.290039062	509.61999511719	H
+19	0	1434	-14473.049804688	464.14999389648	A
+20	0	1434	-12414.1796875	146.28999328613	H
+21	0	1418	-6633.990234375	-2180.0500488281	H
+22	1	1456	-1197.2099609375	29.70999908447	H
+23	1	1454	1677.5899658203	-4315.7099609375	H
+25	1	1413	-441.79998779297	-2596.080078125	H
+26	1	1439	6341.3798828125	557.67999267578	A
+27	1	1438	8643.58984375	841.04998779297	A
+28	1	1440	2827.3400878906	-289.23999023438	A
+29	1	1442	966.57000732422	1040.3199462891	H
+30	1	1441	-5407.7099609375	-2414.3000488281	H
+31	1	1444	-4491.8798828125	-775.89001464844	A
+32	1	1445	-3825.3701171875	-4516.580078125	A
+33	1	1442	2681.1298828125	1461.6800537109	A
+37	1	1443	139.24000549316	1325.8199462891	A
+38	1	1443	-1767.6400146484	3263.8898925781	H
+39	1	1446	-7223.9702148438	-3734.5900878906	A
+40	1	1446	-7048.8901367188	-3780.3601074219	H
+41	1	1444	-4373.7998046875	3338.6499023438	A
+42	1	1444	-4419.8598632812	199.30999755859	H
+43	0	1425	283.73999023438	-2002.7600097656	A
+44	1	1447	3661.5200195312	-4390.3798828125	H
+45	0	1419	-11112.25	-3435.7399902344	A
+48	1	1448	5068.3999023438	-337.2200012207	H
+49	1	1450	7458.4501953125	-2487.2099609375	A
+52	1	1452	6799.240234375	-4742.4399414062	A
+53	1	1452	6813.0600585938	-4611.1201171875	H
+55	1	1445	-3147.3898925781	-2842.1799316406	H
+56	0	1435	-10456.969726562	-3279.25	H
+58	1	1440	3374.7099609375	996.96997070313	H
+61	1	1440	2302.3898925781	-2524.5500488281	H
+62	1	1450	7793.6098632812	-2403.4699707031	A
+63	1	1450	7787.7202148438	-2404.1000976562	H
+64	1	1447	2721.9899902344	-3880.6398925781	A
+65	1	1448	6205.8798828125	-1949.6300048828	A
+66	0	1422	931.32000732422	-1430.1099853516	A
+67	0	1423	2271.0900878906	-5340.7998046875	A
+68	0	1423	2327.4099121094	-5286.8901367188	H
+69	1	1450	7470.3901367188	-2123.3798828125	H
+70	0	1428	-7504.0297851562	-2187.5400390625	H
+71	0	1428	-8364.6103515625	-2738.3500976562	A
+72	1	1451	-6811.3901367188	836.73999023438	H
+73	1	1451	-6761.830078125	772.03002929688	A
+74	0	1427	-6552.58984375	-1168.2700195312	A
+75	0	1427	-6554.9301757812	-1100.0500488281	H
+76	0	1425	-635.26000976563	-4720.5	H
+77	1	1413	-2380.669921875	-1882.6700439453	H
+79	1	1449	-6113.8198242188	-1142.6999511719	AH
+80	1	1413	-894.59002685547	-3773.0100097656	AH
+84	0	1423	2998.7099609375	-3050.1000976562	AH
+85	0	1423	3109.3100585938	-4285.1298828125	AH
+86	0	1423	2499.2299804688	-4742.8500976562	AH
+87	0	1423	1857.5600585938	-3658.4699707031	AH
+559	1	2482	5283.1899414062	-3306.6999511719	AH
+3203	0	2548	-7923.740234375	-4782.9599609375	H
+3242	1	2482	4393.5200195312	-2836.3500976562	AH
+3276	0	2548	-9104.099609375	-4830.4702148438	A
 ]],
     -- towns: id, continent, zone, world x, world y
     towns = [[
@@ -364,20 +347,17 @@ D.client = {
 local names = {
     enUS = {
         flights = [[
-1	Northshire Abbey
 2	Stormwind, Elwynn
 4	Sentinel Hill, Westfall
 5	Lakeshire, Redridge
 6	Ironforge, Dun Morogh
 7	Menethil Harbor, Wetlands
 8	Thelsamar, Loch Modan
-9	Booty Bay, Stranglethorn
 10	The Sepulcher, Silverpine Forest
 11	Undercity, Tirisfal
 12	Darkshire, Duskwood
 13	Tarren Mill, Hillsbrad
 14	Southshore, Hillsbrad
-15	Eastern Plaguelands
 16	Refuge Pointe, Arathi
 17	Hammerfall, Arathi
 18	Booty Bay, Stranglethorn
@@ -386,7 +366,6 @@ local names = {
 21	Kargath, Badlands
 22	Thunder Bluff, Mulgore
 23	Orgrimmar, Durotar
-24	Generic, World target for Zeppelin Paths
 25	Crossroads, The Barrens
 26	Auberdine, Darkshore
 27	Rut'theran Village, Teldrassil
@@ -396,9 +375,6 @@ local names = {
 31	Thalanaar, Feralas
 32	Theramore, Dustwallow Marsh
 33	Stonetalon Peak, Stonetalon Mountains
-34	Transport, Booty Bay - Ratchet
-35	Transport, Orgrimmar Zepplins
-36	Generic, World target
 37	Nijel's Point, Desolace
 38	Shadowprey Village, Desolace
 39	Gadgetzan, Tanaris
@@ -408,18 +384,12 @@ local names = {
 43	Aerie Peak, The Hinterlands
 44	Valormok, Azshara
 45	Nethergarde Keep, Blasted Lands
-46	Southshore Ferry, Hillsbrad
-47	Transport, Grom'gol - Orgrimmar
 48	Bloodvenom Post, Felwood
 49	Moonglade
-50	Transport, Menethil Ships
-51	Transport, Rut'theran - Auberdine
 52	Everlook, Winterspring
 53	Everlook, Winterspring
-54	Transport, Feathermoon - Feralas
 55	Brackenwall Village, Dustwallow Marsh
 56	Stonard, Swamp of Sorrows
-57	Fishing Village, Teldrassil
 58	Zoram'gar Outpost, Ashenvale
 61	Splintertree Post, Ashenvale
 62	Nighthaven, Moonglade
@@ -438,7 +408,6 @@ local names = {
 75	Thorium Point, Searing Gorge
 76	Revantusk Village, The Hinterlands
 77	Camp Taurajo, The Barrens
-78	Naxxramas
 79	Marshal's Refuge, Un'Goro Crater
 80	Ratchet, The Barrens
 84	Plaguewood Tower, Eastern Plaguelands
@@ -447,10 +416,7 @@ local names = {
 87	Crown Guard Tower, Eastern Plaguelands
 559	Summit of Eternity, Mount Hyjal
 3203	Rog'mar, Riverglades
-3205	Tidegear Coast, Dun Morogh
 3242	Tainted Foothills, Mount Hyjal
-3274	Powderfuse Port, Riverglades
-3275	Powderfuse Port, Riverglades
 3276	Farholde Keep, Riverglades
 ]],
         towns = [[
@@ -665,20 +631,17 @@ local names = {
     },
     deDE = {
         flights = [[
-1	Abtei von Nordhain
 2	Stormwind, Elwynn
 4	Späherkuppe, Westfall
 5	Seenhain, Rotkammgebirge
 6	Ironforge, Dun Morogh
 7	Hafen von Menethil, Sumpfland
 8	Thelsamar, Loch Modan
-9	Booty Bay, Schlingendorntal
 10	Das Grabmal, Silberwald
 11	Undercity, Tirisfal
 12	Dunkelhain, Dämmerwald
 13	Tarrens Mühle, Hillsbrad
 14	Southshore, Hillsbrad
-15	Die östlichen Pestländer
 16	Die Zuflucht, Arathi
 17	Hammerfall, Arathi
 18	Booty Bay, Schlingendorntal
@@ -687,7 +650,6 @@ local names = {
 21	Kargath, Ödland
 22	Thunder Bluff, Mulgore
 23	Orgrimmar, Durotar
-24	Allgemein, Weltziel für Zeppelinrouten
 25	Crossroads, Brachland
 26	Auberdine, Dunkelküste
 27	Rut'theran, Teldrassil
@@ -697,9 +659,6 @@ local names = {
 31	Thalanaar, Feralas
 32	Theramore, Marschen von Dustwallow
 33	Steinkrallengipfel, Steinkrallengebirge
-34	Transport, Booty Bay - Ratchet
-35	Transport, Zeppeline von Orgrimmar
-36	Generic, World target
 37	Die Nijelspitze, Desolace
 38	Shadowprey, Desolace
 39	Gadgetzan, Tanaris
@@ -709,18 +668,12 @@ local names = {
 43	Aerie Peak, Hinterland
 44	Valormok, Azshara
 45	Burg Nethergarde, Verwüstete Lande
-46	Fähre von Southshore, Hillsbrad
-47	Transport, Grom'gol - Orgrimmar
 48	Blutgiftposten, Teufelswald
 49	Moonglade
-50	Transport, Schiffe von Menethil
-51	Transport, Rut'theran - Auberdine
 52	Everlook, Winterspring
 53	Everlook, Winterspring
-54	Transport, Feathermoon - Feralas
 55	Brackenwall, Marschen von Dustwallow
 56	Stonard, Sümpfe des Elends
-57	Fischerdorf, Teldrassil
 58	Zoram'gar-Außenposten, Ashenvale
 61	Splintertreeposten, Ashenvale
 62	Nighthaven, Moonglade
@@ -739,7 +692,6 @@ local names = {
 75	Thoriumspitze, sengende Schlucht
 76	Revantusk, Hinterland
 77	Camp Taurajo, Brachland
-78	Naxxramas
 79	Marshals Zuflucht, Un'Goro-Krater
 80	Ratchet, Brachland
 84	Pestwaldturm, östliche Pestländer
@@ -748,10 +700,7 @@ local names = {
 87	Turm der Kronenwache, östliche Pestländer
 559	Gipfel der Ewigkeit, Hyjal
 3203	Rog'mar, Flusslande
-3205	Gezeitengangküste, Dun Morogh
 3242	Besudeltes Vorgebirge, Hyjal
-3274	Hafen von Powderfuse, Flusslande
-3275	Hafen von Powderfuse, Flusslande
 3276	Burg Farholde, Flusslande
 ]],
         towns = [[
@@ -966,20 +915,17 @@ local names = {
     },
     frFR = {
         flights = [[
-1	Abbaye de Comté-du-Nord
 2	Hurlevent, Elwynn
 4	Colline des sentinelles, marche de l'Ouest
 5	Comté-du-Lac, les Carmines
 6	Forgefer, Dun Morogh
 7	Port de Menethil, les Paluns
 8	Thelsamar, Loch Modan
-9	Baie-du-Butin, Strangleronce
 10	Le Sépulcre, forêt des Pins argentés
 11	Fossoyeuse, Tirisfal
 12	Darkshire, bois de la Pénombre
 13	Moulin-de-Tarren, Hillsbrad
 14	Austrivage, Hillsbrad
-15	Maleterres de l'est
 16	Refuge de l'Ornière, Arathi
 17	Trépas-d'Orgrim, Arathi
 18	Baie-du-Butin, Strangleronce
@@ -988,7 +934,6 @@ local names = {
 21	Kargath, Terres ingrates
 22	Thunder Bluff, Mulgore
 23	Orgrimmar, Durotar
-24	Générique, Cible monde pour les voies des zeppelins
 25	La Croisée, Tarides
 26	Auberdine, Sombrivage
 27	Rut'theran, Teldrassil
@@ -998,9 +943,6 @@ local names = {
 31	Thalanaar, Feralas
 32	Theramore, marécage d'Âprefange
 33	Pic des Serres-Rocheuses, Serres-Rocheuses
-34	Transport, Ratchet - Baie-du-Butin
-35	Transport, zeppelins d'Orgrimmar
-36	Générique, cible monde
 37	Combe de Nijel, Désolace
 38	Proie-de-l'Ombre, Désolace
 39	Gadgetzan, Tanaris
@@ -1010,18 +952,12 @@ local names = {
 43	Nid-de-l'Aigle, Les Hinterlands
 44	Valormok, Azshara
 45	Rempart-du-Néant, Terres foudroyées
-46	Bac d’Austrivage, Hillsbrad
-47	Transport, Grom'gol - Orgrimmar
 48	Poste de la Vénéneuse, Gangrebois
 49	Reflet-de-Lune
-50	Transport, vaisseaux de Menethil
-51	Transport, Rut'theran - Auberdine
 52	Long-guet, Berceau-de-l'Hiver
 53	Long-guet, Berceau-de-l'Hiver
-54	Transport, Feathermoon - Feralas
 55	Mur-de-Fougères, marécage d'Âprefange
 56	Pierrêche, marais des Chagrins
-57	Village de pêcheurs, Teldrassil
 58	Avant-poste de Zoram'gar, Ashenvale
 61	Poste de Bois-brisé, Ashenvale
 62	Havrenuit, Reflet-de-Lune
@@ -1040,7 +976,6 @@ local names = {
 75	Halte du Thorium, Gorge des Vents brûlants
 76	Village des Revantusk, les Hinterlands
 77	Camp Taurajo, les Tarides
-78	Naxxramas
 79	Refuge des Marshal, cratère d'Un'Goro
 80	Ratchet, les Tarides
 84	Tour de Pestebois, Maleterres de l'est
@@ -1049,10 +984,7 @@ local names = {
 87	Tour de garde de la couronne, Maleterres de l'est
 559	Sommet d’Éternité, mont Hyjal
 3203	Rog’mar, rives Claires
-3205	Côte de Vaguerouage, Dun Morogh
 3242	Contreforts Souillés, mont Hyjal
-3274	Port de Poudremèche, rives Claires
-3275	Port de Poudremèche, rives Claires
 3276	Donjon de Fort-Lointain, rives Claires
 ]],
         towns = [[
@@ -1267,20 +1199,17 @@ local names = {
     },
     esES = {
         flights = [[
-1	Abadía de Villanorte
 2	Ventormenta, Elwynn
 4	Colina del Centinela, Páramos de Poniente
 5	Villa del Lago, Crestagrana
 6	Forjaz, Dun Morogh
 7	Puerto de Menethil, Los Humedales
 8	Thelsamar, Loch Modan
-9	Bahía del Botín, Tuercespina
 10	El Sepulcro, Bosque de Argénteos
 11	Entrañas, Tirisfal
 12	Villa Oscura, Bosque del Ocaso
 13	Molino Tarren, Trabalomas
 14	Costasur, Trabalomas
-15	Tierras de la Peste del Este
 16	Refugio de la Zaga, Arathi
 17	Sentencia, Arathi
 18	Bahía del Botín, Tuercespina
@@ -1289,7 +1218,6 @@ local names = {
 21	Kargath, Tierras Inhóspitas
 22	Cima del Trueno, Mulgore
 23	Orgrimmar, Durotar
-24	Genérico, Objetivo mundial para rutas de zeppelines
 25	El Cruce, Los Baldíos
 26	Auberdine, Costa Oscura
 27	Aldea Rut'theran, Teldrassil
@@ -1299,9 +1227,6 @@ local names = {
 31	Thalanaar, Feralas
 32	Theramore, Marjal Revolcafango
 33	Cima del Espolón, Sierra Espolón
-34	Transporte, Bahía del Botín - Trinquete
-35	Transporte, Zeppelines de Orgrimmar
-36	Genérico, Objetivo mundial
 37	Punta de Nijel, Desolace
 38	Aldea Cazasombras, Desolace
 39	Gadgetzan, Tanaris
@@ -1311,18 +1236,12 @@ local names = {
 43	Pico Nidal, Tierras del Interior
 44	Valormok, Azshara
 45	Castillo de Nethergarde, Las Tierras Devastadas
-46	Embarcadero de Costasur, Trabalomas
-47	Transporte, Grom'gol - Orgrimmar
 48	Puesto del Veneno
 49	Claro de la Luna
-50	Transporte, Barcos de Menethil
-51	Transporte, Rut'theran - Auberdine
 52	Vista Eterna, Cuna del Invierno
 53	Vista Eterna, Cuna del Invierno
-54	Transporte, Plumaluna - Feralas
 55	Poblado Murohelecho, Marjal Revolcafango
 56	Rocal, Pantano de las Penas
-57	Aldea Pesquera, Teldrassil
 58	Avanzada de Zoram'gar, Vallefresno
 61	Puesto del Hachazo, Vallefresno
 62	Amparo de la Noche, Claro de la Luna
@@ -1341,7 +1260,6 @@ local names = {
 75	Puesto del Thorium, La Garganta de Fuego
 76	Poblado Sañadiente, Tierras del Interior
 77	Campamento Taurajo, Los Baldíos
-78	Naxxramas
 79	Refugio de Marshal, Cráter de Un'Goro
 80	Trinquete, Los Baldíos
 84	Torre del Bosque de la Peste, Tierras de la Peste de Este
@@ -1350,10 +1268,7 @@ local names = {
 87	Torre de la Corona, Tierras de la Peste del Este
 559	Cima de la Eternidad, Monte Hyjal
 3203	Rog'mar, Clarofluvial
-3205	Costa Mareanaje, Dun Morogh
 3242	Laderas Máculas, Monte Hyjal
-3274	Puerto Polvofusil, Clarofluvial
-3275	Puerto Polvofusil, Clarofluvial
 3276	Castillo de Farholde, Clarofluvial
 ]],
         towns = [[
@@ -1568,20 +1483,17 @@ local names = {
     },
     esMX = {
         flights = [[
-1	Abadía de Villanorte
 2	Ventormenta, Elwynn
 4	Colina del Centinela, Páramos de Poniente
 5	Villa del Lago, Crestagrana
 6	Forjaz, Dun Morogh
 7	Puerto de Menethil, Los Humedales
 8	Thelsamar, Loch Modan
-9	Bahía del Botín, Tuercespina
 10	El Sepulcro, Bosque de Argénteos
 11	Entrañas, Tirisfal
 12	Villa Oscura, Bosque del Ocaso
 13	Molino Tarren, Trabalomas
 14	Costasur, Trabalomas
-15	Tierras de la Peste del Este
 16	Refugio de la Zaga, Arathi
 17	Sentencia, Arathi
 18	Bahía del Botín, Tuercespina
@@ -1590,7 +1502,6 @@ local names = {
 21	Kargath, Tierras Inhóspitas
 22	Cima del Trueno, Mulgore
 23	Orgrimmar, Durotar
-24	Genérico, Objetivo mundial de rutas de zepelines
 25	El Cruce, Los Baldíos
 26	Auberdine, Costa Oscura
 27	Aldea Rut'theran, Teldrassil
@@ -1600,9 +1511,6 @@ local names = {
 31	Thalanaar, Feralas
 32	Theramore, Marjal Revolcafango
 33	Cima del Espolón, Sierra Espolón
-34	Transporte: Bahía del Botín a Trinquete
-35	Transporte, Zepelines de Orgrimmar
-36	Genérico, Objetivo mundial
 37	Punta de Nijel, Desolace
 38	Aldea Cazasombras, Desolace
 39	Gadgetzan, Tanaris
@@ -1612,18 +1520,12 @@ local names = {
 43	Pico Nidal, Tierras del Interior
 44	Valormok, Azshara
 45	Castillo de Nethergarde, Las Tierras Devastadas
-46	Transbordador de Costasur, Trabalomas
-47	Transporte: Grom'gol a Orgrimmar
 48	Puesto del Veneno, Frondavil
 49	Claro de la Luna
-50	Transporte, Naves de Menethil
-51	Transporte: Rut'theran a Auberdine
 52	Vista Eterna, Cuna del Invierno
 53	Vista Eterna, Cuna del Invierno
-54	Transporte: Plumaluna a Feralas
 55	Poblado Murohelecho, Marjal Revolcafango
 56	Rocal, Pantano de las Penas
-57	Aldea Pesquera, Teldrassil
 58	Avanzada de Zoram'gar, Vallefresno
 61	Puesto del Hachazo, Vallefresno
 62	Amparo de la Noche, Claro de la Luna
@@ -1642,7 +1544,6 @@ local names = {
 75	Puesto del Torio, La Garganta de Fuego
 76	Poblado Sañadiente, Tierras del Interior
 77	Campamento Taurajo, Los Baldíos
-78	Naxxramas
 79	Refugio de Marshal, Cráter de Un'Goro
 80	Trinquete, Los Baldíos
 84	Torre del Bosque de la Peste, Tierras de la Peste de Este
@@ -1651,10 +1552,7 @@ local names = {
 87	Torre de la Corona, Tierras de la Peste del Este
 559	Cima de la Eternidad, Monte Hyjal
 3203	Rog'mar, Claros del Río
-3205	Costa Acoplamarea, Dun Morogh
 3242	Laderas Maculadas, Monte Hyjal
-3274	Puerto Polvomecha, Claros del Río
-3275	Puerto Polvomecha, Claros del Río
 3276	Fortaleza de Farholde, Claros del Río
 ]],
         towns = [[
@@ -1869,20 +1767,17 @@ local names = {
     },
     ptBR = {
         flights = [[
-1	Abadia de Vila Norte
 2	Ventobravo, Elwynn
 4	Morro da Sentinela, Cerro Oeste
 5	Vila Plácida, Montanhas Cristarrubra
 6	Altaforja, Dun Morogh
 7	Porto de Menethil, Pantanal
 8	Thelsamar, Loch Modan
-9	Angra do Butim, Selva do Espinhaço
 10	O Sepulcro, Floresta de Pinhaprata
 11	Cidade Baixa, Tirisfal
 12	Vila Sombria, Floresta do Crepúsculo
 13	Serraria Tarren, Eira dos Montes
 14	Costa Sul, Eira dos Montes
-15	Terras Pestilentas Orientais
 16	Ponta do Refúgio, Arathi
 17	Ruína do Martelo, Arathi
 18	Angra do Butim, Selva do Espinhaço
@@ -1891,7 +1786,6 @@ local names = {
 21	Karrath, Ermos
 22	Penhasco do Trovão, Mulgore
 23	Orgrimmar, Durotar
-24	Genérico, Alvo mundial para Rotas de Zepelim
 25	Encruzilhada, Sertões
 26	Auberdine, Costa Negra
 27	Vila de Rut'theran, Teldrassil
@@ -1901,9 +1795,6 @@ local names = {
 31	Thalanaar, Feralas
 32	Theramore, Pântano Vadeoso
 33	Morro das Torres de Pedra, Cordilheira das Torres de Pedra
-34	Transporte, Angra do Butim - Vila Catraca
-35	Transporte, Zepelins de Orgrimmar
-36	Genérico, Alvo mundial
 37	Posto do Nijel, Desolação
 38	Aldeia Pescassombra, Desolação
 39	Geringontzan, Tanaris
@@ -1913,18 +1804,12 @@ local names = {
 43	Ninho da Águia, Terras Agrestes
 44	Valormok, Azshara
 45	Bastilha de Etergarde, Barreira do Inferno
-46	Balsa da Costa Sul, Eira dos Montes
-47	Transporte, Grom'gol - Orgrimmar
 48	Posto Peçonha, Selva Maleva
 49	Clareira da Lua
-50	Transporte, Navios de Menethil
-51	Transporte, Rut'theran - Auberdine
 52	Visteterna, Hibérnia
 53	Visteterna, Hibérnia
-54	Transporte, Plumaluna - Feralas
 55	Aldeia Muralha Verde, Pântano Vadeoso
 56	Pedregal, Pântano das Mágoas
-57	Colônia de Pescadores, Teldrassil
 58	Assentamento Zoram'gar, Vale Gris
 61	Posto Machadada, Vale Gris
 62	Refúgio Noturno, Clareira da Lua
@@ -1943,7 +1828,6 @@ local names = {
 75	Posto de Tório, Garganta Abrasadora
 76	Aldeia Revatusco, Terras Agrestes
 77	Acampamento Taurajo, Sertões
-78	Naxxramas
 79	Refúgio do Marshal, Cratera Un'Goro
 80	Vila Catraca, Sertões
 84	Torre do Bosque Pestilento, Terras Pestilentas Orientais
@@ -1952,10 +1836,7 @@ local names = {
 87	Torre da Coroa, Terras Pestilentas Orientais
 559	Pico da Eternidade, Monte Hyjal
 3203	Rog'mar, Sendas do Rio
-3205	Costa Marcha-maré, Dun Morogh
 3242	Contraforte Maculado, Monte Hyjal
-3274	Porto Detonapavio, Sendas do Rio
-3275	Porto Detonapavio, Sendas do Rio
 3276	Bastilha de Ermoforte, Sendas do Rio
 ]],
         towns = [[
@@ -2170,20 +2051,17 @@ local names = {
     },
     ruRU = {
         flights = [[
-1	Аббатство Североземья
 2	Штормград, Элвин
 4	Сторожевой холм, Западный Край
 5	Приозерье, Красногорье
 6	Стальгорн, Дун Морог
 7	Гавань Менетилов, Болотина
 8	Телcамар, озеро Лок Модан
-9	Пиратская бухта, Тернистая долина
 10	Гробница, Серебряный бор
 11	Подгород, Тирисфаль
 12	Темнолесье, Сумеречный лес
 13	Мельница Таррен, Хилсбрад
 14	Южнобережье, Хилсбрад
-15	Восточные Чумные земли
 16	Опорный пункт, Арати
 17	Павший Молот, Арати
 18	Пиратская бухта, Тернистая долина
@@ -2192,7 +2070,6 @@ local names = {
 21	Каргат, Бесплодные земли
 22	Громовой Утес, Мулгор
 23	Оргриммар, Дуротар
-24	Стандартный, мир, цель для маршрутов дирижаблей
 25	Перекресток, Степи
 26	Аубердин, Темный Берег
 27	Деревня Рут'теран, Тельдрассил
@@ -2202,9 +2079,6 @@ local names = {
 31	Таланаар, Фералас
 32	Терамор, Пылевые топи
 33	Пик Каменного Когтя, Когтистые горы
-34	Транспорт, Пиратская Бухта
-35	Транспорт, Оргриммар, дирижабли
-36	Стандартный, мир, цель
 37	Высота Найджела, Пустоши
 38	Деревня Ночных Охотников, Пустоши
 39	Прибамбасск, Танарис
@@ -2214,18 +2088,12 @@ local names = {
 43	Заоблачный пик, Внутренние земли
 44	Храбростан, Азшара
 45	Крепость Стражей Пустоты, Выжженные земли
-46	Паром, Южнобережье, Хилсбрад
-47	Транспорт, Гром'гол - Оргриммар
 48	Застава Отравленной Крови, Оскверненный лес
 49	Лунная поляна
-50	Транспорт, гавань Менетил, корабли
-51	Транспорт, Рут'теран - Аубердин
 52	Круговзор, Зимние Ключи
 53	Круговзор, Зимние Ключи
-54	Транспорт, крепость Оперенной Луны - Фералас
 55	Деревня Гиблотопь, Пылевые топи
 56	Каменор, Болото Печали
-57	Рыбацкий поселок, Тельдрассил
 58	Форт Зорам'гар, Ясеневый лес
 61	Застава Расщепленного Древа, Ясеневый лес
 62	Ночная Гавань, Лунная поляна
@@ -2244,7 +2112,6 @@ local names = {
 75	Лагерь Братства Тория, Тлеющее ущелье
 76	Деревня Сломанного Клыка, Внутренние земли
 77	Лагерь Таурахо, Степи
-78	Наксрамас
 79	Укрытие Маршалла, Кратер Ун'Горо
 80	Кабестан, Степи
 84	Башня Проклятого леса, Восточные Чумные земли
@@ -2253,10 +2120,7 @@ local names = {
 87	Башня королевской стражи, Восточные Чумные земли
 559	Вершина Вечности, гора Хиджал
 3203	Рог'мар, Лесоречье
-3205	Волнолязг, Дун Морог
 3242	Оскверненные предгорья, Гора Хиджал
-3274	Пороховой порт, Лесоречье
-3275	Пороховой порт, Лесоречье
 3276	Крепость Фархолд, Лесоречье
 ]],
         towns = [[
@@ -2471,20 +2335,17 @@ local names = {
     },
     zhCN = {
         flights = [[
-1	北郡修道院
 2	暴风城，艾尔文森林
 4	哨兵岭，西部荒野
 5	湖畔镇，赤脊山
 6	铁炉堡，丹莫罗
 7	米奈希尔港，湿地
 8	塞尔萨玛，洛克莫丹
-9	藏宝海湾，荆棘谷
 10	瑟伯切尔，银松森林
 11	幽暗城，提瑞斯法林地
 12	夜色镇，暮色森林
 13	塔伦米尔，希尔斯布莱德
 14	南海镇，希尔斯布莱德
-15	东瘟疫之地
 16	避难谷地，阿拉希高地
 17	落锤镇，阿拉希高地
 18	藏宝海湾，荆棘谷
@@ -2493,7 +2354,6 @@ local names = {
 21	卡加斯，荒芜之地
 22	雷霆崖，莫高雷
 23	奥格瑞玛，杜隆塔尔
-24	Generic, World target for Zeppelin Paths
 25	十字路口，贫瘠之地
 26	奥伯丁，黑海岸
 27	鲁瑟兰村，泰达希尔
@@ -2503,9 +2363,6 @@ local names = {
 31	萨兰纳尔，千针石林
 32	塞拉摩，尘泥沼泽
 33	石爪峰，石爪山
-34	棘齿城到藏宝海湾的船只
-35	奥格瑞玛的飞艇
-36	Generic, World target
 37	尼耶尔前哨站，凄凉之地
 38	葬影村，凄凉之地
 39	加基森，塔纳利斯
@@ -2515,18 +2372,12 @@ local names = {
 43	鹰巢山，辛特兰
 44	瓦罗莫克，艾萨拉
 45	守望堡，诅咒之地
-46	南海镇渡口，希尔斯布莱德
-47	格罗姆高到奥格瑞玛的飞艇
 48	血毒河，费伍德森林
 49	月光林地
-50	米奈希尔的船只
-51	鲁瑟兰到奥伯丁的船只
 52	永望镇，冬泉谷
 53	永望镇，冬泉谷
-54	羽月要塞 - 菲拉斯
 55	蕨墙村，尘泥沼泽
 56	斯通纳德，悲伤沼泽
-57	钓鱼村，泰达希尔
 58	佐拉姆加前哨站，灰谷
 61	碎木岗哨，灰谷
 62	永夜港，月光林地
@@ -2545,7 +2396,6 @@ local names = {
 75	瑟银哨塔，灼热峡谷
 76	恶齿村，辛特兰
 77	陶拉祖营地，贫瘠之地
-78	纳克萨玛斯
 79	马绍尔营地，安戈洛环形山
 80	棘齿城，贫瘠之地
 84	病木林哨塔，东瘟疫之地
@@ -2554,10 +2404,7 @@ local names = {
 87	皇冠哨塔，东瘟疫之地
 559	永恒之巅，海加尔山
 3203	洛格玛，河林
-3205	潮齿海岸，丹莫罗
 3242	污染山麓，海加尔山
-3274	爆破引线港，河林
-3275	爆破引线港，河林
 3276	法霍德要塞，河林
 ]],
         towns = [[
@@ -2772,20 +2619,17 @@ local names = {
     },
     zhTW = {
         flights = [[
-1	北郡修道院
 2	暴風城，艾爾文森林
 4	哨兵嶺，西部荒野
 5	湖畔鎮，赤脊山
 6	鐵爐堡，丹莫洛
 7	米奈希爾港，濕地
 8	塞爾薩瑪，洛克莫丹
-9	藏寶海灣，荊棘谷
 10	瑟伯切爾，銀松森林
 11	幽暗城，提里斯法林地
 12	夜色鎮，暮色森林
 13	塔倫米爾，希爾斯布萊德
 14	南海鎮，希爾斯布萊德
-15	東瘟疫之地
 16	避難谷地，阿拉希高地
 17	落錘鎮，阿拉希高地
 18	藏寶海灣，荊棘谷
@@ -2794,7 +2638,6 @@ local names = {
 21	卡加斯，荒蕪之地
 22	雷霆崖，莫高雷
 23	奧格瑪，杜洛塔
-24	Generic, World target for Zeppelin Paths
 25	十字路口，貧瘠之地
 26	奧伯丁，黑海岸
 27	魯瑟蘭村，泰達希爾
@@ -2804,9 +2647,6 @@ local names = {
 31	薩蘭納爾，千針石林
 32	塞拉摩，塵泥沼澤
 33	石爪峰，石爪山
-34	傳送，藏寶海灣 - 棘齒城
-35	傳送，奧格瑪飛艇
-36	Generic, World target
 37	尼耶爾前哨站，淒涼之地
 38	葬影村，淒涼之地
 39	加基森，塔納利斯
@@ -2816,18 +2656,12 @@ local names = {
 43	鷹巢山，辛特蘭
 44	瓦羅莫克，艾薩拉
 45	守望堡，詛咒之地
-46	南海鎮渡口，希爾斯布萊德
-47	傳送，格羅姆 - 奧格瑪
 48	血毒崗哨，費伍德森林
 49	月光林地
-50	傳送，米奈希爾船隻
-51	傳送，魯瑟蘭 - 奧伯丁
 52	永望鎮，冬泉谷
 53	永望鎮，冬泉谷
-54	傳送，羽月要塞 - 菲拉斯
 55	蕨牆村，塵泥沼澤
 56	斯通納德，悲傷沼澤
-57	釣魚村，泰達希爾
 58	左拉姆加前哨站，梣谷
 61	碎木崗哨，梣谷
 62	永夜港，月光林地
@@ -2846,7 +2680,6 @@ local names = {
 75	瑟銀哨塔，灼熱峽谷
 76	惡齒村，辛特蘭
 77	陶拉祖營地，貧瘠之地
-78	納克薩瑪斯
 79	馬紹爾營地，安戈洛環形山
 80	棘齒城，貧瘠之地
 84	病木林哨塔，東瘟疫之地
@@ -2855,10 +2688,7 @@ local names = {
 87	皇冠哨塔，東瘟疫之地
 559	永恆山峰，海加爾山
 3203	大河林地，羅格瑪
-3205	泰德基爾海岸，丹莫洛
 3242	污化丘陵，海加爾山
-3274	火線港，大河林地
-3275	火線港，大河林地
 3276	遠境堡要塞，大河林地
 ]],
         towns = [[
@@ -3073,20 +2903,17 @@ local names = {
     },
     koKR = {
         flights = [[
-1	노스샤이어 대성당
 2	스톰윈드 (엘윈 숲)
 4	감시의 언덕 (서부 몰락지대)
 5	레이크샤이어 (붉은마루 산맥)
 6	아이언포지 (던 모로)
 7	메네실 항구 (저습지)
 8	텔사마 (모단 호수)
-9	무법항 (가시덤불 골짜기)
 10	공동묘지 (은빛소나무 숲)
 11	언더시티 (티리스팔 숲)
 12	다크샤이어 (그늘숲)
 13	타렌 밀농장 (힐스브래드 구릉지)
 14	사우스쇼어 (힐스브래드 구릉지)
-15	동부 역병지대
 16	임시 주둔지 (아라시 고원)
 17	해머폴 (아라시 고원)
 18	무법항 (가시덤불 골짜기)
@@ -3095,7 +2922,6 @@ local names = {
 21	카르가스 (황야의 땅)
 22	썬더 블러프 (멀고어)
 23	오그리마 (듀로타)
-24	일반 (비행선 경로)
 25	크로스로드 (불모의 땅)
 26	아우버다인 (어둠의 해안)
 27	루테란 마을 (텔드랏실)
@@ -3105,9 +2931,6 @@ local names = {
 31	탈라나르 (페랄라스)
 32	테라모어 섬 (먼지진흙 습지대)
 33	돌발톱 봉우리 (돌발톱 산맥)
-34	운송 수단 (무법항 ~ 톱니항)
-35	운송 수단 (오그리마 비행선)
-36	일반 (세계 대상)
 37	나이젤의 야영지 (잊혀진 땅)
 38	그늘수렵 마을 (잊혀진 땅)
 39	가젯잔 (타나리스)
@@ -3117,18 +2940,12 @@ local names = {
 43	맹금의 봉우리 (동부 내륙지)
 44	발로르모크 (아즈샤라)
 45	네더가드 요새 (저주받은 땅)
-46	사우스쇼어 선착장 (힐스브래드 구릉지)
-47	운송 수단 (그롬골 ~ 오그리마)
 48	피멍울 초소 (악령의 숲)
 49	달의 숲
-50	운송 수단 (메네실 여객선)
-51	운송 수단 (루테란 ~ 아우버다인)
 52	눈망루 마을 (여명의 설원)
 53	눈망루 마을 (여명의 설원)
-54	운송 수단 (페더문 - 페랄라스)
 55	담쟁이 마을 (먼지진흙 습지대)
 56	스토나드 (슬픔의 늪)
-57	고기잡이 마을 (텔드랏실)
 58	조람가르 전초기지 (잿빛 골짜기)
 61	토막나무 주둔지 (잿빛 골짜기)
 62	나이트헤이븐 (달의 숲)
@@ -3147,7 +2964,6 @@ local names = {
 75	토륨 조합 거점 (이글거리는 협곡)
 76	레반터스크 마을 (동부 내륙지)
 77	타우라조 야영지 (불모의 땅)
-78	낙스라마스
 79	마샬의 야영지 (운고로 분화구)
 80	톱니항 (불모의 땅)
 84	역병의 숲 경비탑 (동부 역병지대)
@@ -3156,10 +2972,7 @@ local names = {
 87	산마루 경비탑 (동부 역병지대)
 559	영원의 정상 - 하이잘 산
 3203	강물터 로그마
-3205	타이드기어 해안 - 던 모로
 3242	오염된 기슭 - 하이잘 산
-3274	화약심지 항구 - 강물터
-3275	화약심지 항구 - 강물터
 3276	파홀드 성채 - 강물터
 ]],
         towns = [[

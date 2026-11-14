@@ -31,7 +31,16 @@ DB.loaded = false
 -- ---------------------------------------------------------------------------
 -- Loading
 -- ---------------------------------------------------------------------------
-local function Split(line)
+-- Shipped rows split in one native pattern; discoveries keep the general parser.
+local fieldPatterns = {}
+for _, count in ipairs({ 3, 4, 5, 12 }) do
+    fieldPatterns[count] = "^" .. string.rep("([^\t]*)\t", count - 1) .. "([^\t]*)$"
+end
+local function Split(line, columns)
+    if columns then
+        local fields = { line:match(fieldPatterns[columns]) }
+        if fields[1] then return fields end
+    end
     local out, pos = {}, 1
     while true do
         local tab = line:find("\t", pos, true)
@@ -48,6 +57,55 @@ local function Lines(s)
     return (s or ""):gmatch("[^\n]+")
 end
 
+-- Keep the supplement as text until a service or a discovery needs its facts.
+local EMPTY = {}
+local supplementSource, supplementCache, supplementLines
+local function ServiceRows(service, kind, id)
+    local text = WaypointTrackerData and WaypointTrackerData.serviceSupplement or ""
+    if text ~= supplementSource then
+        supplementSource, supplementCache, supplementLines = text, {}, nil
+    end
+    local key = service or kind .. id
+    if supplementCache[key] then return supplementCache[key] end
+    if not service and supplementLines and not supplementLines[key] then return EMPTY end
+    local rows = {}
+    local function Add(line)
+        if service then
+            local services = line:match("^S[NO]\t%d+\t[^\t]*\t[^\t]*\t([^\t]*)\t")
+            if not services or not ("," .. services .. ","):find("," .. service .. ",", 1, true) then return end
+        end
+        local f = Split(line)
+        local row = { id = tonumber(f[2]), kind = f[1] == "SO" and "object" or "npc", fac = f[3],
+            name = f[4], services = f[5], mode = f[6], spots = {} }
+        if not row.id then return end
+        for m, x, y, c in (f[7] or ""):gmatch("(%d+):([%d.]+),([%d.]+),(%d+)") do
+            row.spots[#row.spots + 1] = { m = tonumber(m), x = tonumber(x), y = tonumber(y), c = tonumber(c) }
+        end
+        rows[#rows + 1] = row
+    end
+    if service then
+        for line in text:gmatch("[^\n]+") do Add(line) end
+    else
+        -- Index text once, then parse only identities with discoveries.
+        if not supplementLines then
+            supplementLines = {}
+            for line in text:gmatch("[^\n]+") do
+                local tag, rid = line:match("^S([NO])\t(%d+)\t")
+                if rid then
+                    local identity = (tag == "N" and "npc" or "object") .. rid
+                    local list = supplementLines[identity] or {}
+                    supplementLines[identity] = list
+                    list[#list + 1] = line
+                end
+            end
+        end
+        for _, line in ipairs(supplementLines[key] or {}) do Add(line) end
+    end
+    if not service and #rows == 0 then rows = EMPTY end
+    supplementCache[key] = rows
+    return rows
+end
+
 local function NumList(s)
     local out = {}
     for n in (s or ""):gmatch("%-?%d+") do
@@ -57,16 +115,16 @@ local function NumList(s)
 end
 DB.NumList = NumList
 
-local function NameTable(block)
-    local t = {}
+local function NameTable(block, descriptions)
+    local names = {}
     for line in Lines(block) do
-        local f = Split(line)
-        local id = tonumber(f[1])
+        local id, name, more = line:match("^([^\t]+)\t([^\t]*)(.*)$")
+        id = tonumber(id)
         if id then
-            t[id] = f
+            names[id] = descriptions and { name, more:match("^\t([^\t]*)") } or name
         end
     end
-    return t
+    return names
 end
 
 local function Parse(data)
@@ -77,24 +135,29 @@ local function Parse(data)
     local en = data.names_enUS or {}
     local here = data["names_" .. loc] or {}
     local function names(kind)
-        local base, over = NameTable(en[kind]), NameTable(here[kind])
-        for id, f in pairs(over) do
-            base[id] = f
+        local localized = NameTable(here[kind], kind == "quests")
+        -- English is a fallback; avoid splitting/allocating a second complete
+        -- name table when the client locale already supplies the same IDs.
+        if here ~= en then
+            for line in Lines(en[kind]) do
+                local id = tonumber(line:match("^(%d+)\t"))
+                if id and not localized[id] then
+                    local _, name, more = line:match("^([^\t]+)\t([^\t]*)(.*)$")
+                    localized[id] = kind == "quests" and { name, more:match("^\t([^\t]*)") } or name
+                end
+            end
         end
-        return base
+        return localized
     end
     local unitNames, objectNames, questNames, itemNames, zoneNames = names("units"), names("objects"), names("quests"), names("items"), names("zones")
     -- the world's treasure chests, known by their English names in every language
-    local enObjects = NameTable(en.objects)
+    local enObjects = here == en and objectNames or NameTable(en.objects)
     local function IsChest(id)
         local f = enObjects[id]
-        return f and ns.Treasure and ns.Treasure.IsChestName(f[2]) or false
+        return f and ns.Treasure and ns.Treasure.IsChestName(f) or false
     end
 
-    DB.zoneNames = {}
-    for id, f in pairs(zoneNames) do
-        DB.zoneNames[id] = f[2]
-    end
+    DB.zoneNames = zoneNames
 
     local function entry(kind, id, name)
         -- .words is filled in later, only when a search needs it
@@ -103,36 +166,36 @@ local function Parse(data)
 
     local raw = data.raw or {}
     for line in Lines(raw.units) do
-        local f = Split(line)
+        local f = Split(line, 5)
         local id = tonumber(f[1])
         local n = id and unitNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("npc", id, n[2])
+        if n and n ~= "" then
+            local e = entry("npc", id, n)
             e.level, e.fac, e.rank, e.coords = f[2], f[3], f[4], f[5]
             DB.units[id] = e
         end
     end
     for line in Lines(raw.objects) do
-        local f = Split(line)
+        local f = Split(line, 3)
         local id = tonumber(f[1])
         local n = id and objectNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("object", id, n[2])
+        if n and n ~= "" then
+            local e = entry("object", id, n)
             e.fac, e.coords = f[2], f[3]
             e.chest = IsChest(id) or nil
             -- ore and herbs, for the suggested gathering routes
             local en = enObjects[id]
-            e.gather = en and ns.Routes and ns.Routes.GatherKind(en[2]) or nil
+            e.gather = en and ns.Routes and ns.Routes.GatherKind(en) or nil
             DB.objects[id] = e
         end
     end
     for line in Lines(raw.quests) do
-        local f = Split(line)
+        local f = Split(line, 12)
         local id = tonumber(f[1])
         local n = id and questNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("quest", id, n[2])
-            e.text = n[3]
+        if n and n[1] ~= "" then
+            local e = entry("quest", id, n[1])
+            e.text = n[2]
             e.level, e.min = tonumber(f[2]), tonumber(f[3])
             e.race, e.class = tonumber(f[4]), tonumber(f[5])
             e.startU, e.startO = NumList(f[6]), NumList(f[7])
@@ -142,11 +205,11 @@ local function Parse(data)
         end
     end
     for line in Lines(raw.items) do
-        local f = Split(line)
+        local f = Split(line, 4)
         local id = tonumber(f[1])
         local n = id and itemNames[id]
-        if n and n[2] and n[2] ~= "" then
-            local e = entry("item", id, n[2])
+        if n and n ~= "" then
+            local e = entry("item", id, n)
             e.dropU, e.dropO, e.soldBy = NumList(f[2]), NumList(f[3]), NumList(f[4])
             DB.items[id] = e
         end
@@ -175,7 +238,7 @@ function DB.Load()
         DB.MergeIfLearned()
         return true
     end
-    if not WaypointTrackerData then
+    if not (WaypointTrackerData and WaypointTrackerData.raw) then
         local load = (C_AddOns and C_AddOns.LoadAddOn) or LoadAddOn
         if load then
             pcall(load, DATA_ADDON)
@@ -231,7 +294,7 @@ function DB.Load()
         WaypointTrackerData.forever = nil
     end
     -- learned data lives in SavedVariables: if it's damaged, Find still works
-    ns.Call(DB.MergeLearned)
+    ns.Call(DB.MergeLearned, true)
     if not shipped then
         return true, "missing"
     end
@@ -251,11 +314,10 @@ end
 
 local function NameTable(text)
     local out = {}
-    Lines(text, function(f)
-        if f[2] and f[2] ~= "" then
-            out[tonumber(f[1])] = f[2]
-        end
-    end)
+    for line in (text or ""):gmatch("[^\n]+") do
+        local id, name = line:match("^(%-?%d+)\t([^\t]+)")
+        if id then out[tonumber(id)] = name end
+    end
     return out
 end
 
@@ -460,6 +522,24 @@ end
 -- What the database knows about an entry before your own discoveries are
 -- added to it (taken the first time they are, or when first asked), so
 -- only what's new is kept and shared.
+local function SupplementFacts(ship, kind, id)
+    local rows = ServiceRows(nil, kind, id)
+    if ship.supplement == rows then return ship end
+    ship.supplement = rows
+    for _, row in ipairs(rows) do
+        -- A newly created entry's name came from the discovery, not shipping.
+        if ship.fresh or ship.name == "" then ship.name = row.name end
+        ship.fresh = false
+        if ship.services == EMPTY then ship.services = {} end
+        if ship.access == EMPTY then ship.access = {} end
+        for service in row.services:gmatch("[^,]+") do
+            ship.services[service] = true
+            ship.access[service] = ns.Trainers.MergeAccess(ship.access[service], row.fac)
+        end
+    end
+    return ship
+end
+
 function DB.Snapshot(e, created)
     if e.kind == "item" then
         local ship = { drop = {}, sold = {} }
@@ -474,11 +554,13 @@ function DB.Snapshot(e, created)
         end
         return ship
     end
-    local services, access = {}, {}
-    for service in pairs(e.svc or {}) do services[service] = true end
-    for service, fac in pairs(e.svcAccess or {}) do access[service] = fac end
-    return { fresh = created, name = e.name, title = e.title, spots = #(e.extra or {}),
-        enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }
+    local services, access = e.svc and {} or EMPTY, e.svcAccess and {} or EMPTY
+    for service in pairs(e.svc or EMPTY) do services[service] = true end
+    for service, fac in pairs(e.svcAccess or EMPTY) do access[service] = fac end
+    local extra = e.extra and {} or EMPTY
+    for _, p in ipairs(e.extra or EMPTY) do extra[#extra + 1] = p end
+    return SupplementFacts({ extra = extra, fresh = created, findFresh = created or e.name == "", name = e.name, title = e.title, spots = #(e.extra or {}),
+        enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }, e.kind, e.id)
 end
 
 local function MergeStore(st, source)
@@ -512,9 +594,9 @@ local function MergeStore(st, source)
                         e.svcAccess[service] = ns.Trainers.MergeAccess(e.svcAccess[service], l.fac)
                     end
                 end
-                if e.kind == "npc" then
+                if e.kind == "npc" or e.kind == "object" then
                     DB.services[service] = DB.services[service] or {}
-                    table.insert(DB.services[service], { id = e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or letter)) })
+                    table.insert(DB.services[service], { observedAccess = l.fac or (mine and (e.kind == "object" and "AH" or letter)) or "", id = e.kind == "object" and -e.id or e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or (e.kind == "object" and "" or letter))) })
                 end
             end
         end
@@ -704,7 +786,7 @@ local function MergeStore(st, source)
 end
 
 -- (Re)adds discoveries. Safe to call again after learning more.
-function DB.MergeLearned()
+function DB.MergeLearned(deferCompaction)
     if not DB.ready then
         return
     end
@@ -731,7 +813,7 @@ function DB.MergeLearned()
         before[service] = #list
     end
     -- WoW Forever's new quests, with the names the game gave us
-    local titles = ns.Learn and ns.Learn.QuestTitles and ns.Learn.QuestTitles()
+    local titles = ns.Learn and ns.Learn.QuestTitles and ns.Learn.QuestTitles(true)
     for id, title in pairs(titles or {}) do
         local q = DB.quests[id]
         if not q then
@@ -744,9 +826,10 @@ function DB.MergeLearned()
     end
     MergeStore(DB.curated, "curated")
     MergeStore(DB.community, "community")
-    MergeStore(ns.Learn and ns.Learn.Store(), "you")
+    local learned = ns.Learn and ns.Learn.Store(true)
+    MergeStore(learned, "you")
     -- keep only what adds to the database in your saved discoveries
-    if ns.Learn and ns.Learn.Compact then
+    if learned and ns.Learn.Compact and not deferCompaction then
         ns.Learn.Compact(true)
     end
     -- mark what was added so the next merge can take it out again
@@ -767,7 +850,7 @@ end)
 function DB.MergeIfLearned()
     if learnedSinceMerge and DB.ready then
         learnedSinceMerge = false
-        ns.Call(DB.MergeLearned)
+        ns.Call(DB.MergeLearned, true)
     end
 end
 
@@ -776,10 +859,10 @@ end
 -- name (both in the client's language), so they match WoW Forever's maps.
 -- ---------------------------------------------------------------------------
 local areaMap = {}
-function DB.MapForArea(area)
+function DB.MapForArea(area, treeOnly)
     local cached = areaMap[area]
-    if cached ~= nil then
-        return cached or nil
+    if cached then
+        return cached
     end
     local names = {}
     if C_Map.GetAreaInfo then
@@ -791,22 +874,26 @@ function DB.MapForArea(area)
     if DB.zoneNames and DB.zoneNames[area] then
         names[#names + 1] = DB.zoneNames[area]
     end
-    local found = false
-    local zones = Geo.GetZoneList()
-    for _, name in ipairs(names) do
-        local key = Geo.Squash(name)
+    local function Match(zones, key)
         local best
         for _, z in ipairs(zones) do
-            if z.key == key and (not best or (z.mapType == 3 and best.mapType ~= 3)) then
-                best = z
-            end
+            if z.key == key and (not best or (z.mapType == 3 and best.mapType ~= 3)) then best = z end
         end
-        if best then
-            found = best.id
-            break
-        end
+        return best and best.id
     end
-    areaMap[area] = found
+    -- Service spawns usually resolve in the native tree. Keep the exhaustive
+    -- catalogue fallback for orphaned/phased maps absent from that tree.
+    local zones, found = Geo.GetZoneList(true), false
+    for _, name in ipairs(names) do
+        local key = Geo.Squash(name)
+        found = Match(zones, key)
+        if not found and not treeOnly then
+            zones = Geo.GetZoneList()
+            found = Match(zones, key)
+        end
+        if found then break end
+    end
+    if found or not treeOnly then areaMap[area] = found end
     return found or nil
 end
 
@@ -872,6 +959,7 @@ function DB.Points(e)
     if e.points then
         return e.points
     end
+    if e.classicCoords ~= e.coords then e.classic = nil end
     local pts, curated, seen = {}, {}, {}
     for _, w in ipairs(e.world or {}) do
         local x, y = Geo.WorldToMap(w[1], w[3], w[4], w[2] ~= 0 and w[2] or nil)
@@ -888,7 +976,7 @@ function DB.Points(e)
             seen[p.m] = true
         end
     end
-    for m, list in pairs(ClassicPoints(e)) do
+    for m, list in pairs(e.classic or ClassicPoints(e)) do
         if not curated[m] and not (seen[m] and #list <= MOVED_NPC_SPOTS) then
             for _, p in ipairs(list) do
                 pts[#pts + 1] = p
@@ -917,10 +1005,12 @@ function DB.Points(e)
     return pts
 end
 
+local FlightAliases
+
 -- Does something you discovered add to what the database knows? Sharing
 -- leaves out what it already has. kind "npc"/"object" (value: your entry),
 -- "drop"/"sold" (id: the item, value: "U123"/"O45").
-function DB.AddsSomething(kind, id, value)
+function DB.AddsSomething(kind, id, value, cachedOnly)
     if kind == "drop" or kind == "sold" then
         local e = DB.items[id]
         if not e then
@@ -932,32 +1022,41 @@ function DB.AddsSomething(kind, id, value)
         return not e.ship[kind][value]
     end
     local e = (kind == "npc" and DB.units or DB.objects)[id]
-    if not e or type(value) ~= "table" then
-        return true
+    if type(value) ~= "table" then return true end
+    -- Service text alone cannot reconstruct a Find identity on next login.
+    if not e then return true end
+    -- Tickers resolve through the native tree only; unavailable areas retry.
+    for area in (e.coords or ""):gmatch("(%d+):") do
+        if not DB.MapForArea(tonumber(area), cachedOnly) then return true, true end
     end
     e.ship = e.ship or DB.Snapshot(e, false)
-    local ship = e.ship
-    if ship.fresh then
+    local ship = SupplementFacts(e.ship, kind, id)
+    if ship.fresh or ship.findFresh then
         return true
     end
-    if (value.name and ship.name == "") or (value.title and not ship.title) then
+    if (value.name and (ship.name == "" or (#ship.supplement > 0 and value.name ~= ship.name)))
+        or (value.title and not ship.title) then
         return true
     end
-    -- General Find infers enemies from an empty faction. A trainer roster
-    -- supplies positive access, so retain an explicit hostile observation
-    -- even when that inference would otherwise make it look redundant.
-    local trainerHostility
+    -- Find infers enemies from an empty faction. Service/roster evidence can
+    -- still offer that NPC, so an explicit hostile sighting must survive.
+    local serviceHostility, trainers
     if kind == "npc" and value.hostile and ship.hostile == nil then
-        local roster = WaypointTrackerData and WaypointTrackerData.trainers or ""
-        trainerHostility = ns.Trainers.HasService(e.svc) or ns.Trainers.HasService(value.services)
-            or roster:find("\t" .. id .. ":", 1, true) or roster:find("," .. id .. ":", 1, true)
+        trainers = ns.Trainers.Index(DB.generation)
+        serviceHostility = next(ship.services) or (type(value.services) == "table" and next(value.services))
+            or trainers.members[id]
     end
-    if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and (value.hostile ~= ship.enemy or trainerHostility) then
+    if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and (value.hostile ~= ship.enemy or serviceHostility) then
         return true
+    end
+    if kind == "npc" and value.fac then
+        for letter in value.fac:gmatch("[AH]") do
+            if not (ship.fac or ""):find(letter, 1, true) then return true end
+        end
     end
     for service in pairs(type(value.services) == "table" and value.services or {}) do
         if not ship.services[service] then return true end
-        if ns.Trainers.IsService(service) and value.fac then
+        if (ns.Trainers.IsService(service) or ship.access[service]) and value.fac then
             local known = ship.access[service] or ""
             for letter in value.fac:gmatch("[AH]") do
                 if not known:find(letter, 1, true) then return true end
@@ -968,31 +1067,172 @@ function DB.AddsSomething(kind, id, value)
     if not next(spots) then
         return false
     end
-    local known = ClassicPoints(e)
-    for i = 1, ship.spots do
-        local p = e.extra and e.extra[i]
-        if p then
-            known[p.m] = known[p.m] or {}
-            table.insert(known[p.m], p)
+    -- Raw-only identities have no alternative consumer positions. Compare
+    -- the changed maps directly instead of allocating a second spawn list.
+    if kind == "npc" then trainers = trainers or ns.Trainers.Index(DB.generation) end
+    local location = trainers and trainers.positions[id]
+    if location then
+        for _, pending in pairs(trainers.pending) do
+            for i = 1, #pending, 2 do
+                if pending[i] == id then return true, true end
+            end
         end
     end
-    for m, list in pairs(spots) do
-        local here = known[tonumber(m)] or {}
-        for i = 1, #list - 1, 2 do
-            local x, y = ns.Num(list[i]), ns.Num(list[i + 1])
-            local found = false
-            for _, p in ipairs(here) do
-                if x and y and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then
-                    found = true
-                    break
+    if ship.spots == 0 and not e.world and not e.fixes and #ship.supplement == 0
+        and not (location and location.observed) then
+        local classic = e.classicCoords == e.coords and e.classic or ClassicPoints(e)
+        e.classic, e.classicCoords = classic, e.coords
+        for m, list in pairs(spots) do
+            local known = classic[m] or EMPTY
+            for i = 1, #list - 1, 2 do
+                local x, y, found = ns.Num(list[i]), ns.Num(list[i + 1]), false
+                for _, p in ipairs(known) do
+                    if x and y and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then found = true; break end
+                end
+                if not found then return true end
+            end
+            if #known <= MOVED_NPC_SPOTS then
+                for _, p in ipairs(known) do
+                    local found = false
+                    for i = 1, #list - 1, 2 do
+                        local x, y = ns.Num(list[i]), ns.Num(list[i + 1])
+                        if x and y and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then found = true; break end
+                    end
+                    if not found then return true end
                 end
             end
-            if not found then
-                return true
+        end
+        if not location or next(classic) then return false end
+    end
+    -- Judge Find against the shipped overlay, before personal spots suppress
+    -- Classic spawns; judge each service against its R/M effective locations.
+    local shipped = ship.comparison
+    if not shipped or shipped.fixes ~= e.fixes then
+        shipped = { coords = e.coords, world = e.world, extra = ship.extra, fixes = e.fixes }
+        if e.fixes then
+            shipped.extra = {}
+            for _, p in ipairs(ship.extra) do shipped.extra[#shipped.extra + 1] = p end
+            for i = ship.spots + 1, #(e.extra or EMPTY) do
+                local p = e.extra[i]
+                if p.fixed then shipped.extra[#shipped.extra + 1] = p end
+            end
+        end
+        shipped.classic = e.classicCoords == e.coords and e.classic or ClassicPoints(shipped)
+        shipped.classicCoords = shipped.coords
+        e.classic, e.classicCoords = shipped.classic, shipped.coords
+        ship.comparison = shipped
+    end
+    local data = WaypointTrackerData or {}
+    local memo = ship.observation
+    local same = memo and memo.shipped == shipped and memo.supplement == ship.supplement
+        and memo.trainers == data.trainers and memo.locations == data.trainerLocations
+    if same then
+        for m, list in pairs(spots) do
+            local old = memo.spots[m]
+            if not old or #old ~= #list then same = false; break end
+            for i, n in ipairs(list) do if old[i] ~= n then same = false; break end end
+            if not same then break end
+        end
+        for m in pairs(memo.spots) do if not spots[m] then same = false; break end end
+        if same then return memo.adds end
+    end
+    local function Result(adds)
+        if adds then
+            memo = { shipped = shipped, supplement = ship.supplement, trainers = data.trainers,
+                locations = data.trainerLocations, spots = {}, adds = true }
+            for m, list in pairs(spots) do
+                local copy = {}; memo.spots[m] = copy
+                for i, n in ipairs(list) do copy[i] = n end
+            end
+            ship.observation = memo
+        else
+            ship.observation = nil
+        end
+        return adds
+    end
+    local observed = { world = e.world, extra = {}, fixes = e.fixes }
+    for _, p in ipairs(shipped.extra) do observed.extra[#observed.extra + 1] = p end
+    Spots(spots, observed.extra)
+    local points = not e.world and not e.fixes and observed.extra or DB.Points(observed)
+    local function Has(list, point, tolerance)
+        for _, p in ipairs(list) do
+            if p.m == point.m and math.abs(p.x - point.x) <= tolerance and math.abs(p.y - point.y) <= tolerance then return true end
+        end
+        return false
+    end
+    local function Changes(other)
+        local tolerance = 0.000500001 -- half of Learn's 0.001 coordinate step
+        local observedSet, otherSet = {}, {}
+        for _, p in ipairs(points) do observedSet[p] = true end
+        for _, p in ipairs(other) do
+            if not observedSet[p] and not Has(points, p, tolerance) then return true end
+            otherSet[p] = true
+        end
+        for _, p in ipairs(points) do
+            -- Shared Classic/curated point objects cannot have changed.
+            if not otherSet[p] and not Has(other, p, tolerance) then return true end
+        end
+        return false
+    end
+    -- Unaffected Classic spawns share their point objects. Only additions
+    -- and the one/two static spawns suppressed on observed maps can differ.
+    local normal
+    if next(shipped.extra) or e.world or e.fixes then normal = DB.Points(shipped) end
+    local function Known(p, tolerance)
+        return Has(normal or shipped.classic[p.m] or EMPTY, p, tolerance)
+    end
+    for _, p in ipairs(points) do
+        if not Known(p, NEAR_KNOWN) then return Result(true) end
+    end
+    for m, list in pairs(shipped.classic) do
+        if spots[m] and #list <= MOVED_NPC_SPOTS then
+            for _, p in ipairs(list) do
+                if Known(p, 1e-9) and not Has(points, p, NEAR_KNOWN) then return Result(true) end
             end
         end
     end
-    return false
+    local function AllPoints()
+        if not observed.classic then
+            observed.classic, observed.points = shipped.classic, nil
+            points = DB.Points(observed)
+        end
+    end
+    for _, row in ipairs(ship.supplement) do
+        if kind == "npc" and not e.fixes and not e.hostile
+            and ("," .. row.services .. ","):find(",flight,", 1, true) then
+            -- Presence of a passive spot also suppresses nearby taxi labels.
+            if next(FlightAliases(row)) then return Result(true) end
+            if row.aliasGeneration ~= DB.generation then return true, true end
+        end
+        if #row.spots > 0 then
+            AllPoints()
+            local effective = {}
+            for _, p in ipairs(row.spots) do effective[#effective + 1] = p end
+            for _, p in ipairs(DB.Points(shipped)) do
+                if row.mode == "M" or p.fixed then effective[#effective + 1] = p end
+            end
+            -- An observation selects the normal Find points instead of the
+            -- supplement wrapper. Retain it if either result would change.
+            local candidate = { extra = effective, fixes = e.fixes }
+            -- Learn rounds coordinates to 0.001; a canonical service spot
+            -- within its half-step adds no measurable discovery precision.
+            if Changes(DB.Points(candidate)) then return Result(true) end
+        end
+    end
+    -- A passive spot also disables the trainer roster's observed-position
+    -- override, even when no trainer service was learned at the window.
+    if kind == "npc" then
+        if location and (location.observed or #DB.Points(shipped) == 0) then
+            AllPoints()
+            local fallback = { extra = {}, fixes = e.fixes }
+            for _, p in ipairs(location.points) do fallback.extra[#fallback.extra + 1] = p end
+            for _, p in ipairs(shipped.extra) do
+                if p.fixed then fallback.extra[#fallback.extra + 1] = p end
+            end
+            if Changes(DB.Points(fallback)) then return Result(true) end
+        end
+    end
+    return Result(false)
 end
 
 -- Names of the zones something can be found in.
@@ -1034,8 +1274,7 @@ end
 
 -- False for NPCs/objects only friendly to the other faction, and quests
 -- only the other faction can do.
-function DB.ForMyFaction(e)
-    local letter, races = MyFaction()
+local function ForFaction(e, letter, races)
     if not letter then
         return true
     end
@@ -1050,6 +1289,10 @@ function DB.ForMyFaction(e)
         return true -- monsters and neutral things
     end
     return fac:find(letter, 1, true) ~= nil
+end
+
+function DB.ForMyFaction(e)
+    return ForFaction(e, MyFaction())
 end
 
 -- Enemies: monsters, plus anything you've seen be hostile.
@@ -1490,23 +1733,42 @@ function DB.ItemSources(item)
 end
 
 -- Closest spawn of any of the given NPCs/objects: returns entry, point, dist.
+local nearestWorld = setmetatable({}, { __mode = "k" })
 function DB.NearestOf(entries, opts)
     local bestE, bestP, bestD, fallbackE, fallbackP
+    local players = {}
+    local letter, races = MyFaction()
     for _, e in ipairs(entries) do
-        if not (opts and opts.faction) or DB.ForMyFaction(e) then
+        if not (opts and opts.faction) or ForFaction(e, letter, races) then
             local pts = DB.Points(e)
-            if #pts > 0 then
-                local p, d = DB.Nearest(pts)
-                if d and (not bestD or d < bestD) then
-                    bestE, bestP, bestD = e, p, d
-                elseif not fallbackE then
-                    fallbackE, fallbackP = e, p
+            for _, p in ipairs(pts) do
+                -- Fixed targets convert once; player position is sampled once
+                -- per continent for this click (including phased fallback).
+                local w = nearestWorld[p]
+                if not w or w[1] ~= p.m or w[2] ~= p.x or w[3] ~= p.y then
+                    local c, x, y = Geo.MapToWorld(p.m, p.x, p.y)
+                    w = c and { p.m, p.x, p.y, c, x, y } or nil
+                    nearestWorld[p] = w
                 end
+                if w then
+                    local player = players[w[4]]
+                    if player == nil then
+                        local c, x, y = Geo.GetPlayerWorld(w[4])
+                        player = c == w[4] and { x, y } or false
+                        players[w[4]] = player
+                    end
+                    if player then
+                        local dx, dy = w[5] - player[1], w[6] - player[2]
+                        local d = dx * dx + dy * dy
+                        if not bestD or d < bestD then bestE, bestP, bestD = e, p, d end
+                    end
+                end
+                if not fallbackE then fallbackE, fallbackP = e, p end
             end
         end
     end
     if bestE then
-        return bestE, bestP, bestD
+        return bestE, bestP, math.sqrt(bestD)
     end
     return fallbackE, fallbackP
 end
@@ -1545,17 +1807,122 @@ end
 -- ---------------------------------------------------------------------------
 -- Services: nearest mailbox, innkeeper, flight master, ...
 -- ---------------------------------------------------------------------------
-function DB.ServiceEntries(service)
-    local letter = MyFaction()
-    local out = {}
-    for _, s in ipairs(DB.services[service] or {}) do
-        if s.fac == "" or not letter or s.fac:find(letter, 1, true) then
-            local e = s.entry or (s.id < 0 and DB.objects[-s.id]) or DB.units[s.id]
-            if e then
-                out[#out + 1] = e
+local function ServiceCandidate(row, access)
+    if row.generation == DB.generation and row.access == access then return row.entry end
+    local base = (row.kind == "npc" and DB.units or DB.objects)[row.id]
+    local store = WaypointTrackerDB and WaypointTrackerDB.learned
+    local own = type(store) == "table" and (row.kind == "npc" and store.npcs or store.objects)
+    own = type(own) == "table" and own[row.id]
+    own = type(own) == "table" and own
+    -- Personal and imported observations retain normal discovery precedence.
+    if base and own and next(own.spots or {}) then
+        row.entry = base
+        if base.fac ~= access then
+            local e = {}
+            for key, value in pairs(base) do e[key] = value end
+            e.fac = access
+            row.entry = e
+        end
+    else
+        local e = { kind = row.kind, id = row.id, fac = access,
+            name = base and base.name ~= "" and base.name or row.name,
+            learned = "community", minedService = true, extra = {}, fixes = base and base.fixes }
+        e.key = Geo.Squash(e.name)
+        local pending = false
+        for _, p in ipairs(row.spots) do
+            -- Keep unsupported/phased metadata from placing an observation on
+            -- a different continent; existing resolved positions can fall back.
+            local c, x, y = Geo.MapToWorld(p.m, p.x, p.y, p)
+            if c == p.c then
+                e.extra[#e.extra + 1] = p
+                nearestWorld[p] = { p.m, p.x, p.y, c, x, y }
+            elseif c == nil then
+                pending = true
+            end
+        end
+        if base then
+            local merge = row.mode == "M" or #e.extra == 0
+            for _, p in ipairs(DB.Points(base)) do
+                if merge or p.fixed then e.extra[#e.extra + 1] = p end
+            end
+        end
+        if not e.fixes then e.points = e.extra end
+        -- A transient map failure must retry without an unrelated merge.
+        if pending then return e end
+        row.entry = e
+    end
+    row.generation, row.access = DB.generation, access
+    return row.entry
+end
+
+-- Client taxi labels describe the same stop as a nearby observed flight NPC.
+-- Associate using the shipped point, before applying movement/removal fixes.
+FlightAliases = function(row)
+    if row.aliasGeneration == DB.generation then return row.aliases end
+    local aliases, pending = {}, false
+    for _, p in ipairs(row.spots) do
+        local c, x, y = Geo.MapToWorld(p.m, p.x, p.y)
+        if not c then pending = true end
+        if c == p.c then
+            for _, s in ipairs(DB.services.flight or {}) do
+                local e = s.entry
+                for _, w in ipairs(e and e.world or {}) do
+                    if w[1] == c and (w[3] - x)^2 + (w[4] - y)^2 <= 100^2 then aliases[e] = true end
+                end
             end
         end
     end
+    if not pending then row.aliases, row.aliasGeneration = aliases, DB.generation end
+    return aliases
+end
+
+function DB.ServiceEntries(service)
+    local letter = MyFaction()
+    local out, replaced, seen, aliases = {}, {}, {}, {}
+    local rows = ServiceRows(service)
+    if rows.generation ~= DB.generation then
+        local access = {}
+        for _, s in ipairs(DB.services[service] or {}) do
+            if s.id and s.learned then
+                local fac = s.observedAccess or s.fac
+                access[s.id] = ns.Trainers.MergeAccess(access[s.id], fac)
+            end
+        end
+        for _, row in ipairs(rows) do
+            local id = row.kind == "object" and -row.id or row.id
+            row.allowed = ns.Trainers.MergeAccess(row.fac, access[id]) or ""
+        end
+        rows.generation, rows.entries = DB.generation, {}
+    end
+    local cached = rows.entries[letter or ""]
+    if cached then return cached end
+    local pending = false
+    local learned = WaypointTrackerDB and WaypointTrackerDB.learned
+    for _, row in ipairs(rows) do
+        local id = row.kind == "object" and -row.id or row.id
+        replaced[id] = true
+        local base = (row.kind == "npc" and DB.units or DB.objects)[row.id]
+        local personal = service == "flight" and learned and learned.npcs and learned.npcs[row.id]
+        if service == "flight" and base and (base.fixes or base.hostile or (personal and next(personal.spots or {}))) then
+            for e in pairs(FlightAliases(row)) do aliases[e] = true end
+            if row.aliasGeneration ~= DB.generation then pending = true end
+        end
+        local fac = row.allowed
+        if (not base or not base.hostile) and (not letter or fac:find(letter, 1, true)) then
+            local e = ServiceCandidate(row, fac)
+            if row.generation ~= DB.generation then pending = true end
+            if e and not seen[e] then out[#out + 1], seen[e] = e, true end
+        end
+    end
+    for _, s in ipairs(DB.services[service] or {}) do
+        if not replaced[s.id] and (s.fac == "" or not letter or s.fac:find(letter, 1, true)) then
+            local e = s.entry or (s.id < 0 and DB.objects[-s.id]) or DB.units[s.id]
+            if e and not e.hostile and not aliases[e] and not seen[e] then
+                out[#out + 1], seen[e] = e, true
+            end
+        end
+    end
+    if not pending then rows.entries[letter or ""] = out end
     return out
 end
 
@@ -1564,38 +1931,40 @@ end
 -- trainer factions fail closed, regardless of Find's general faction toggle.
 function DB.TrainerEntries(service)
     local out, seen = {}, {}
-    if not ns.Trainers.services[service] then return out end
+    if not (ns.Trainers.services[service] or ns.Trainers.additionalServices[service]) then return out end
     local letter = MyFaction()
     if not letter then return out end
+    local index = ns.Trainers.Index(DB.generation)
+    local learned = WaypointTrackerDB and WaypointTrackerDB.learned
+    learned = learned and learned.npcs
     local function Add(id, fac, e)
         if fac and fac ~= "" and fac:find(letter, 1, true) and not seen[id] then
             e = e or DB.units[id]
             -- Trainer availability is stricter than general Find (which also
             -- searches enemies). Resolved observations override roster access.
             if e and e.hostile then return end
-            -- Resolve after every discovery merge. Observed fallback positions
-            -- never replace a database position, including a personal sighting.
-            if not e or #DB.Points(e) == 0 then
-                local text = WaypointTrackerData and WaypointTrackerData.trainerLocations
-                for line in (text or ""):gmatch("[^\n]+") do
-                    local rid, name, spots = line:match("^(%d+)\t([^\t]*)\t(.+)$")
-                    if tonumber(rid) == id then
+            local location = index.positions[id]
+            local personal = learned and learned[id]
+            -- Newest pinned observations replace older shipped coordinates.
+            -- Personal/imported positions retain the existing merge semantics.
+            local observed = location and location.observed and not (personal and personal.spots and next(personal.spots))
+            if observed or not e or #DB.Points(e) == 0 then
+                if location then
+                    local cached = index.entries[id]
+                    if not cached or cached.fac ~= fac then
+                        -- Existing/localized names and corrections still win.
+                        local name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and ns.CleanText(location.name) or "")
                         local points = {}
-                        for token in spots:gmatch("[^;]+") do
-                            local m, x, y = token:match("^(%d+):([%d%.]+),([%d%.]+)$")
-                            m, x, y = ns.Int(m), tonumber(x), tonumber(y)
-                            if m and x and y and x >= 0 and x <= 1 and y >= 0 and y <= 1
-                                and Geo.IsValidMap(m) then
-                                points[#points + 1] = { m = m, x = x, y = y }
-                            end
+                        for _, p in ipairs(location.points) do points[#points + 1] = p end
+                        -- A correction's replacement is already a resolved point.
+                        for _, p in ipairs(e and e.extra or {}) do
+                            if p.fixed then points[#points + 1] = p end
                         end
-                        -- Existing/localized names win. New English names are
-                        -- used only in English; other locales use the service
-                        -- label until a localized observation supplies a name.
-                        name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and (ns.CleanText(name) or "") or "")
-                        e = { kind = "npc", id = id, fac = fac, name = name, extra = points, fixes = e and e.fixes }
-                        break
+                        cached = { kind = "npc", id = id, fac = fac, name = name,
+                            extra = points, fixes = e and e.fixes }
+                        index.entries[id] = cached
                     end
+                    e = cached
                 end
             end
             if e and #DB.Points(e) > 0 then
@@ -1603,13 +1972,8 @@ function DB.TrainerEntries(service)
             end
         end
     end
-    local text = WaypointTrackerData and WaypointTrackerData.trainers
-    for line in (text or ""):gmatch("[^\n]+") do
-        local key, values = line:match("^([^\t]+)\t(.+)$")
-        if key == service then
-            for id, fac in values:gmatch("(%d+):(%a*)") do Add(tonumber(id), fac) end
-            break
-        end
+    for _, row in ipairs(index.services[service] or {}) do
+        Add(row.id, row.fac)
     end
     for _, row in ipairs(DB.services[service] or {}) do
         Add(row.id, row.fac, row.entry)

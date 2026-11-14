@@ -56,8 +56,12 @@ end
 
 -- what was written down since the last check against the database
 local touched = { npcs = {}, objects = {}, items = {} }
+local pending, pendingHead, pendingTail = {}, 1, 0
 local function Touch(key, id)
+    if touched[key][id] then return end
     touched[key][id] = true
+    pendingTail = pendingTail + 1
+    pending[pendingTail] = { key, id }
 end
 
 local function Enabled()
@@ -67,19 +71,22 @@ end
 local checkedStore -- the saved table already checked this session
 local npcCount -- NPCs in it, counted when first needed
 
-function Learn.Store()
+function Learn.Store(existingOnly)
     local db = WaypointTrackerDB
     if type(db) ~= "table" then
         return nil
     end
     local st = db.learned
     if type(st) ~= "table" then
+        if existingOnly then return nil end
         st = {}
         db.learned = st
     end
     -- a damaged SavedVariables file must not break learning: check it once
     -- per session, and drop anything that isn't the shape we write
     if checkedStore ~= st then
+        pending, pendingHead, pendingTail = {}, 1, 0
+        for _, set in pairs(touched) do wipe(set) end
         for _, key in ipairs({ "npcs", "objects", "quests", "items" }) do
             if type(st[key]) ~= "table" then
                 st[key] = {}
@@ -89,6 +96,7 @@ function Learn.Store()
                     st[key][id] = nil
                 else
                     Learn.Repair(e)
+                    if touched[key] then Touch(key, id) end
                 end
             end
         end
@@ -918,37 +926,59 @@ function Learn.Compact(all)
         return 0
     end
     local removed = 0
-    for key, kind in pairs({ npcs = "npc", objects = "object" }) do
-        local t = st[key]
-        for id in pairs(all and t or touched[key]) do
-            local e = t[id]
-            if e and not DB.AddsSomething(kind, id, e) then
-                t[id] = nil
-                removed = removed + 1
-                if key == "npcs" and npcCount then
-                    npcCount = npcCount - 1
-                end
-            end
-        end
-        wipe(touched[key])
-    end
-    for id in pairs(all and st.items or touched.items) do
-        local it = st.items[id]
-        if it then
+    local function Check(key, id)
+        local e = st[key][id]
+        touched[key][id] = nil
+        if not e then return end
+        if key == "items" then
             for _, field in ipairs({ "from", "sold" }) do
-                for ref in pairs(type(it[field]) == "table" and it[field] or {}) do
+                for ref in pairs(type(e[field]) == "table" and e[field] or {}) do
                     if not DB.AddsSomething(field == "from" and "drop" or "sold", id, ref) then
-                        it[field][ref] = nil
+                        e[field][ref] = nil
                     end
                 end
             end
-            if not next(it.from or {}) and not next(it.sold or {}) then
-                st.items[id] = nil
-                removed = removed + 1
+            if next(e.from or {}) or next(e.sold or {}) then return end
+        else
+            local adds, deferred = DB.AddsSomething(key == "npcs" and "npc" or "object", id, e, not all)
+            if deferred then Touch(key, id) end
+            if adds then return end
+        end
+        st[key][id] = nil
+        local base = (key == "npcs" and DB.units or key == "objects" and DB.objects or DB.items)[id]
+        if base and base.ship then
+            -- No remaining observation needs these position-comparison caches.
+            base.ship.comparison, base.ship.observation = nil, nil
+            base.classic, base.classicCoords = nil, nil
+            if not base.extra and not base.fixes then base.ship = nil end
+        end
+        removed = removed + 1
+        if key == "npcs" and npcCount then npcCount = npcCount - 1 end
+    end
+    if all then
+        pending, pendingHead, pendingTail = {}, 1, 0
+        for _, set in pairs(touched) do wipe(set) end
+        for _, key in ipairs({ "npcs", "objects", "items" }) do
+            for id in pairs(st[key]) do Check(key, id) end
+        end
+    else
+        -- Deferred records go to the tail so unavailable maps cannot starve
+        -- later observations. Never retry one record twice in the same tick.
+        local last = math.min(pendingTail, pendingHead + 14)
+        local clock = type(debugprofilestop) == "function" and debugprofilestop
+        local started = clock and ns.Num(clock())
+        while pendingHead <= last do
+            local row = pending[pendingHead]
+            pending[pendingHead] = nil
+            pendingHead = pendingHead + 1
+            if touched[row[1]][row[2]] then Check(row[1], row[2]) end
+            if started then
+                local now = ns.Num(clock())
+                if not now or now < started or now - started >= 2 then break end
             end
         end
+        if pendingHead > pendingTail then pending, pendingHead, pendingTail = {}, 1, 0 end
     end
-    wipe(touched.items)
     return removed
 end
 
@@ -956,7 +986,7 @@ end
 -- Counting, sharing, importing
 -- ---------------------------------------------------------------------------
 function Learn.Count()
-    local st = Learn.Store()
+    local st = Learn.Store(true)
     if not st then
         return 0
     end
@@ -1358,7 +1388,7 @@ end)
 -- ---------------------------------------------------------------------------
 local ASK_EVERY, ASK_PER_STEP = 0.5, 3
 
-function Learn.QuestTitles()
+function Learn.QuestTitles(existingOnly)
     local db = WaypointTrackerDB
     if type(db) ~= "table" then
         return nil
@@ -1366,6 +1396,7 @@ function Learn.QuestTitles()
     local locale = GetLocale and GetLocale() or "enUS"
     local t = db.questTitles
     if type(t) ~= "table" or t.locale ~= locale or type(t.names) ~= "table" then
+        if existingOnly then return nil end
         t = { locale = locale, names = {} }
         db.questTitles = t
     end
@@ -1437,7 +1468,7 @@ end
 function Learn.TitleProgress()
     ForeverSet()
     local n = 0
-    for _ in pairs(Learn.QuestTitles() or {}) do
+    for _ in pairs(Learn.QuestTitles(true) or {}) do
         n = n + 1
     end
     return n, #askList
@@ -1468,9 +1499,9 @@ function Learn.ScanProgress()
     if scanDone or not (C_QuestLog and C_QuestLog.GetTitleForQuestID) then
         return false, 100
     end
-    Learn.QuestTitles()
-    local t = type(WaypointTrackerDB) == "table" and WaypointTrackerDB.questTitles
-    if type(t) == "table" and t.complete then
+    local names = Learn.QuestTitles(true)
+    local t = names and WaypointTrackerDB.questTitles
+    if t and t.complete then
         return false, 100
     end
     ForeverSet()
@@ -1512,9 +1543,11 @@ ticker:SetScript("OnUpdate", function(_, elapsed)
         return
     end
     acc = 0
+    if next(touched.npcs) or next(touched.objects) or next(touched.items) then
+        ns.Call(Learn.Compact)
+    end
     if changed then
         changed = false
-        ns.Call(Learn.Compact)
         ns.Fire("LEARNED")
     end
 end)

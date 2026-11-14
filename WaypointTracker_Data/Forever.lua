@@ -1908,3 +1908,809 @@ Q	99052	Threat from Below	11	U3142	U3142	1411:592,175	Kill the sea giant along D
 Q	99123	Lost in the Shadows	8	U275811	U3304		Help Pal'juh escape Kolkar Crag and bring news of your success to Master Vornal in Sen'jin Village.
 Q	99142	Tomb Weed						item:Tomb Weed
 ]==]
+
+-- BEGIN GENERATED BASE SERVICES (tools/build_services.py)
+-- Community observations; precise coordinates, never personal discoveries.
+WaypointTrackerData.serviceSupplement = [==[
+SN	66	A	Tharynn Bouden	vendor	R	1429:0.419,0.6706,0
+SN	74	A	Kurran Steele	repair,vendor	R	1429:0.4139,0.6569,0
+SN	151	A	Brog Hamfist	vendor	R	1429:0.4392,0.66,0
+SN	152	A	Brother Danil	vendor	R	1429:0.4753,0.4167,0
+SN	167	A	Morhan Coppertongue	repair,vendor	R	1432:0.3398,0.4663,0
+SN	190	A	Dermot Johns	repair,vendor	R	1429:0.4759,0.4151,0
+SN	225	A	Gavin Gnarltree	repair,vendor	R	1431:0.7365,0.4881,0
+SN	227	A	Mabel Solaj	vendor	R
+SN	233	A	Farmer Saldean	vendor	R	1436:0.5599,0.3125,0;1436:0.5613,0.3137,0
+SN	277	A	Roberto Pupellyverbos	vendor	R	1453:0.6003,0.7712,0
+SN	295	A	Innkeeper Farley	innkeeper,vendor	R	1429:0.4379,0.659,0
+SN	347	H	Grizzle Halfmane	battlemaster	R
+SN	352	A	Dungar Longdrink	flight	R	1453:0.7118,0.7251,0
+SN	372	A	Karm Ironquill	vendor	R	1432:0.3704,0.4732,0
+SN	483	A	Elaine Trias	vendor	R	1453:0.6644,0.7355,0
+SN	491	A	Quartermaster Lewis	vendor	R	1436:0.5694,0.4723,0
+SN	523	A	Thor	flight	R	1436:0.5649,0.5266,0
+SN	777	A	Amy Davenport	vendor	R	1433:0.2379,0.4765,0
+SN	789	A	Kimberly Hiett	repair,vendor	R	1433:0.2183,0.4546,0;1433:0.2191,0.4586,0
+SN	790	A	Karen Taylor	vendor	R
+SN	791	A	Lindsay Ashlock	vendor	R	1433:0.2362,0.4757,0
+SN	829	A	Adlin Pridedrift	vendor	R
+SN	843	A	Gina MacGregor	vendor	R	1436:0.5757,0.5396,0
+SN	857	A	Donal Osgood	battlemaster	R
+SN	896	A	Veldan Lightfoot	vendor	R	1429:0.252,0.738,0
+SN	907	A	Keras Wolfheart	battlemaster	R
+SN	931	A	Ariena Stormfeather	flight	R	1433:0.2563,0.5941,0
+SN	956	A	Dorin Songblade	repair,vendor	R	1433:0.2565,0.4674,0;1433:0.2572,0.4632,0
+SN	980	H	Grimnal	vendor	R	1435:0.45,0.502,0;1435:0.45,0.506,0
+SN	981	H	Hartash	vendor	R
+SN	982	H	Thultash	vendor	R	1435:0.464,0.5423,0
+SN	983	H	Thultazor	vendor	R
+SN	984	H	Thralosh	vendor	R	1435:0.45,0.516,0
+SN	989	H	Banalash	vendor	R	1435:0.446,0.568,0
+SN	1146	H	Vharr	repair,vendor	R	1434:0.3233,0.2794,0
+SN	1147	H	Hragran	repair,vendor	R	1434:0.3154,0.2916,0
+SN	1148	H	Nerrist	vendor	R	1434:0.3266,0.2921,0
+SN	1149	H	Uthok	vendor	R	1434:0.3161,0.2798,0
+SN	1237	A	Kazan Mogosh	vendor	R	1426:0.6858,0.5476,0
+SN	1238	A	Gamili Frosthide	vendor	R	1426:0.452,0.519,0
+SN	1247	A	Innkeeper Belm	innkeeper,vendor	R	1426:0.4735,0.5245,0
+SN	1257	A	Keldric Boucher	vendor	R	1453:0.63,0.7493,0
+SN	1275	A	Kyra Boucher	vendor	R	1453:0.6306,0.7491,0
+SN	1285	A	Thurman Mullby	vendor	R	1453:0.6463,0.7202,0
+SN	1286	A	Edna Mullby	vendor	R	1453:0.6466,0.7151,0
+SN	1287	A	Marda Weller	repair,vendor	R	1453:0.6394,0.6868,0
+SN	1289	A	Gunther Weller	repair,vendor	R	1453:0.6414,0.6889,0
+SN	1291	A	Carla Granger	repair,vendor	R	1453:0.6218,0.6764,0
+SN	1294	A	Aldric Moore	repair,vendor	R	1453:0.621,0.6737,0
+SN	1295	A	Lara Moore	repair,vendor	R	1453:0.6215,0.6751,0
+SN	1297	A	Lina Stover	repair,vendor	R	1453:0.5867,0.6894,0
+SN	1298	A	Frederick Stover	repair,vendor	R	1453:0.5851,0.6904,0
+SN	1299	A	Lisbeth Schneider	repair,vendor	R	1453:0.5814,0.6686,0
+SN	1301	A	Julia Gallina	vendor	R	1453:0.598,0.7742,0
+SN	1302	A	Bernard Gump	vendor	R	1453:0.694,0.7149,0
+SN	1303	A	Felicia Gump	vendor	R	1453:0.6945,0.7147,0
+SN	1304	A	Darian Singh	vendor	R	1453:0.4272,0.7702,0
+SN	1305	A	Jarel Moor	vendor	R	1453:0.4185,0.8253,0
+SN	1307	A	Charys Yserian	vendor	R	1453:0.448,0.8636,0
+SN	1308	A	Owen Vaughn	vendor	R	1453:0.4761,0.8233,0
+SN	1309	A	Wynne Larson	vendor	R	1453:0.52,0.836,0
+SN	1312	A	Ardwyn Cailen	vendor	R	1453:0.528,0.752,0
+SN	1313	A	Maria Lumere	vendor	R	1453:0.556,0.856,0
+SN	1314	A	Duncan Cullen	repair,vendor	R	1453:0.534,0.8186,0
+SN	1315	A	Allan Hafgan	vendor	R	1453:0.529,0.752,0
+SN	1316	A	Adair Gilroy	vendor	R	1453:0.5181,0.7481,0
+SN	1318	A	Jessara Cordell	vendor	R	1453:0.5305,0.7412,0
+SN	1319	A	Bryan Cross	vendor	R	1453:0.696,0.578,0
+SN	1320	A	Seoman Griffith	repair,vendor	R	1453:0.7196,0.6221,0
+SN	1321	A	Alyssa Griffith	vendor	R	1453:0.7189,0.6243,0
+SN	1323	A	Osric Strang	repair,vendor	R	1453:0.7705,0.6117,0
+SN	1324	A	Heinrich Stone	vendor	R	1453:0.77,0.5760000000000001,0
+SN	1333	A	Gerik Koen	vendor	R	1453:0.732,0.5720000000000001,0
+SN	1341	A	Wilhelm Strang	vendor	R	1453:0.772,0.616,0
+SN	1347	A	Alexandra Bolero	vendor	R	1453:0.5328,0.8172,0
+SN	1348	A	Gregory Ardus	vendor	R	1453:0.48200000000000004,0.5479999999999999,0
+SN	1349	A	Agustus Moulaine	vendor	R	1453:0.536,0.578,0
+SN	1350	A	Theresa Moulaine	vendor	R	1453:0.534,0.58,0
+SN	1351	A	Brother Cassius	vendor	R	1453:0.5325,0.4539,0
+SN	1387	H	Thysta	flight	R	1434:0.3251,0.293,0
+SN	1407	H	Sranda	vendor	R	1418:0.03,0.474,0;1418:0.03,0.47600000000000003,0
+SN	1448	A	Neal Allen	vendor	R	1437:0.10800000000000001,0.568,0
+SN	1452	A	Gruham Rumdnul	vendor	R
+SN	1453	A	Dewin Shimmerdawn	vendor	R
+SN	1454	A	Jennabink Powerseam	vendor	R	1437:0.081,0.5579999999999999,0
+SN	1463	A	Falkan Armonis	vendor	R
+SN	1464	A	Innkeeper Helbrek	innkeeper	R
+SN	1465	A	Drac Roughcut	vendor	R	1432:0.3557,0.4888,0
+SN	1571	A	Shellei Brondir	flight	R	1437:0.095,0.5963,0
+SN	1572	A	Thorgrum Borrelson	flight	R	1432:0.3384,0.5098,0
+SN	1573	A	Gryth Thurden	flight	R	1455:0.5588,0.4746,0
+SN	1668	A	William MacGregor	repair,vendor	R	1436:0.5766,0.5396,0
+SN	1669	AH	Defias Profiteer	repair,vendor	R	1436:0.4347,0.6689,0
+SN	1670	A	Mike Miller	vendor	R	1436:0.5766,0.5377,0
+SN	1672	A	Lohgan Eva	vendor	R	1431:0.757,0.447,0
+SN	1673	A	Alyssa Eva	vendor	R
+SN	1682	A	Yanni Stoutheart	vendor	R	1432:0.3489,0.4863,0
+SN	1690	A	Thrawn Boltar	vendor	R
+SN	1691	A	Kreg Bilmn	vendor	R
+SN	1694	A	Loslor Rudge	vendor	R
+SN	1695	A	Rendow	vendor	R	1444:0.894,0.45799999999999996,1
+SN	1697	A	Keeg Gibn	vendor	R	1426:0.3044,0.4592,0
+SN	2046	A	Andrew Krighton	repair,vendor	R	1429:0.4173,0.6568,0
+SN	2113	H	Archibald Kava	repair,vendor	R	1420:0.3234,0.6557,0
+SN	2115	H	Joshua Kien	vendor	R	1420:0.3228,0.6553,0
+SN	2116	H	Blacksmith Rand	repair,vendor	R	1420:0.3234,0.663,0
+SN	2117	H	Harold Raims	repair,vendor	R	1420:0.3235,0.6636,0
+SN	2118	H	Abigail Shiel	vendor	R	1420:0.6098,0.5228,0;1420:0.61,0.5246,0
+SN	2134	H	Mrs. Winters	vendor	R	1420:0.6114,0.5273,0
+SN	2135	H	Abe Winters	repair,vendor	R	1420:0.6022,0.5317,0
+SN	2136	H	Oliver Dwor	repair,vendor	R	1420:0.6019,0.5344,0
+SN	2137	H	Eliza Callen	repair,vendor	R	1420:0.6033,0.5273,0
+SN	2140	H	Edwin Harly	vendor	R	1421:0.4396,0.3981,0;1421:0.4404,0.3998,0
+SN	2226	H	Karos Razok	flight	R	1421:0.4566,0.4246,0
+SN	2302	A	Aethalas	battlemaster	R
+SN	2352	A	Innkeeper Anderson	innkeeper	R
+SN	2380	A	Nandar Branson	vendor	R	1424:0.509,0.5710000000000001,0
+SN	2381	A	Micha Yance	vendor	R	1424:0.49,0.552,0
+SN	2388	H	Innkeeper Shay	innkeeper,vendor	R	1424:0.6271,0.1909,0
+SN	2389	H	Zarise	flight	R	1424:0.6019,0.1873,0
+SN	2393	H	Christoph Jeffcoat	vendor	R	1424:0.623,0.1917,0
+SN	2394	H	Mallen Swain	vendor	R	1424:0.6199,0.2086,0;1424:0.6207,0.2116,0
+SN	2397	H	Derak Nightfall	vendor	R	1424:0.6313,0.1952,0
+SN	2401	H	Kayren Soothallow	vendor	R	1424:0.6245,0.1991,0
+SN	2409	A	Felicia Maline	flight	R	1431:0.7752,0.4437,0
+SN	2432	A	Darla Harris	flight	R	1424:0.4937,0.5231,0
+SN	2455	A	Olivia Burnside	banker	R	1453:0.6417,0.8048,0
+SN	2456	A	Newton Burnside	banker	R	1453:0.6381,0.8078,0
+SN	2457	A	John Burnside	banker	R	1453:0.6328,0.8121,0
+SN	2458	H	Randolph Montague	banker	R	1458:0.66,0.4292,0
+SN	2459	H	Mortimer Montague	banker	R	1458:0.6663,0.4433,0
+SN	2460	A	Barnum Stonemantle	banker	R
+SN	2461	A	Bailey Stonemantle	banker	R
+SN	2480	AH	Bro'kin	vendor	R	1416:0.38,0.38,0
+SN	2481	AH	Bliztik	vendor	R	1431:0.18,0.544,0
+SN	2483	AH	Jaquilina Dramet	repair,vendor	R	1434:0.3574,0.1069,0
+SN	2625	AH	Viznik Goldgrubber	banker	R	1434:0.266,0.7655,0
+SN	2626	AH	Old Man Heming	vendor	R	1434:0.2745,0.7713,0
+SN	2663	AH	Narkk	vendor	R	1434:0.2819,0.7451,0
+SN	2664	AH	Kelsey Yance	vendor	R	1434:0.2821,0.7444,0
+SN	2668	A	Danielle Zipstitch	vendor	R	1431:0.758,0.45399999999999996,0
+SN	2669	A	Sheri Zipstitch	vendor	R	1431:0.7559999999999999,0.45399999999999996,0
+SN	2670	AH	Xizk Goodstitch	vendor	R	1434:0.287,0.769,0
+SN	2685	AH	Mazk Snipeshot	vendor	R	1434:0.285,0.7509999999999999,0
+SN	2699	AH	Rikqiz	vendor	R	1434:0.284,0.76,0
+SN	2804	H	Kurden Bloodclaw	battlemaster	R
+SN	2816	A	Androd Fadran	vendor	R	1417:0.451,0.46799999999999997,0
+SN	2819	H	Tunkk	vendor	R	1417:0.748,0.34600000000000003,0
+SN	2820	H	Graud	vendor	R
+SN	2821	H	Keena	vendor	R	1417:0.74,0.326,0
+SN	2835	A	Cedrik Prose	flight	R
+SN	2838	AH	Crazk Sparks	vendor	R	1434:0.282,0.7659999999999999,0
+SN	2843	AH	Jutak	repair,vendor	R	1434:0.2744,0.7744,0
+SN	2844	AH	Hurklor	vendor	R
+SN	2846	AH	Blixrez Goodstitch	vendor	R	1434:0.2826,0.7753,0
+SN	2847	AH	Jansen Underwood	vendor	R
+SN	2848	AH	Glyx Brewright	vendor	R	1434:0.28,0.78,0
+SN	2851	H	Urda	flight	R	1417:0.7309,0.3285,0
+SN	2858	H	Gringer	flight	R	1434:0.2688,0.7705,0
+SN	2859	A	Gyll	flight	R
+SN	2861	H	Gorrik	flight	R	1418:0.0407,0.4492,0
+SN	2908	H	Grawl	vendor	R
+SN	2995	H	Tal	flight	R	1456:0.4679,0.5013,1
+SN	2996	H	Torn	banker	R
+SN	2997	H	Jyn Stonehoof	repair,vendor	R	1456:0.4176,0.6192,1
+SN	2999	H	Taur Stonehoof	repair,vendor	R	1456:0.3956,0.5582,1
+SN	3002	H	Kurm Stonehoof	vendor	R	1456:0.3448,0.5684,1
+SN	3003	H	Fyr Mistrunner	vendor	R	1456:0.4147,0.537,1
+SN	3005	H	Mahu	vendor	R	1456:0.4381,0.4472,1
+SN	3010	H	Mani Winterhoof	vendor	R
+SN	3012	H	Nata Dawnstrider	vendor	R	1456:0.4458,0.3889,1;1456:0.4503,0.3936,1;1456:0.4515,0.3859,1
+SN	3014	H	Nida Winterhoof	vendor	R	1456:0.4922,0.3974,1;1456:0.498,0.3942,1
+SN	3015	H	Kuna Thunderhorn	repair,vendor	R	1456:0.4657,0.4544,1
+SN	3016	H	Tand	vendor	R	1456:0.4925,0.3477,1
+SN	3017	H	Nan Mistrunner	vendor	R	1456:0.4747,0.4209,1
+SN	3018	H	Hogor Thunderhoof	repair,vendor	R	1456:0.5554,0.5651,1
+SN	3019	H	Delgo Ragetotem	vendor	R	1456:0.5379999999999999,0.5720000000000001,1
+SN	3020	H	Etu Ragetotem	vendor	R	1456:0.5820000000000001,0.52,1
+SN	3021	H	Kard Ragetotem	vendor	R	1456:0.536,0.5660000000000001,1
+SN	3022	H	Sunn Ragetotem	repair,vendor	R	1456:0.4956,0.4925,1
+SN	3023	H	Sura Wildmane	repair,vendor	R	1456:0.5164,0.5493,1
+SN	3025	H	Kaga Mistrunner	vendor	R	1456:0.5257,0.4833,1
+SN	3027	H	Naal Mistrunner	vendor	R	1456:0.5101,0.5292,1
+SN	3029	H	Sewa Mistrunner	vendor	R	1456:0.558,0.4715,1
+SN	3053	AH	Synge	repair,vendor	R	1441:0.8034,0.7692,1
+SN	3072	H	Kawnie Softbreeze	vendor	R
+SN	3074	H	Varia Hardhide	vendor	R	1412:0.43799999999999994,0.7759999999999999,1;1412:0.442,0.772,1
+SN	3076	H	Moorat Longstride	vendor	R	1412:0.453,0.614,1
+SN	3079	H	Varg Windwhisper	vendor	R	1412:0.452,0.62,1;1412:0.45799999999999996,0.586,1
+SN	3080	H	Harant Ironbrace	repair,vendor	R	1412:0.4536,0.6214,1
+SN	3081	H	Wunna Darkmane	vendor	R	1412:0.4553,0.6181,1
+SN	3085	A	Gloria Femmel	vendor	R	1433:0.216,0.4358,0
+SN	3089	A	Sherman Femmel	vendor	R	1433:0.2167,0.4343,0
+SN	3091	A	Franklin Hamar	vendor	R	1433:0.221,0.456,0
+SN	3092	H	Tagain	repair,vendor	R	1456:0.435,0.4438,1
+SN	3093	H	Grod	repair,vendor	R	1456:0.4282,0.4336,1
+SN	3095	H	Fela	repair,vendor	R	1456:0.4295,0.445,1
+SN	3096	AH	Captured Servant of Azora	vendor	R	1433:0.6933,0.794,0
+SN	3097	A	Bernard Brubaker	vendor	R	1433:0.8320000000000001,0.71,0
+SN	3133	A	Herble Baubbletump	vendor	R
+SN	3134	AH	Kzixx	vendor	R	1431:0.8173,0.1988,0
+SN	3158	H	Duokna	vendor	R	1411:0.4263,0.6748,1;1411:0.4268,0.6735,1
+SN	3159	H	Kzan Thornslash	repair,vendor	R	1411:0.4056,0.6801,1
+SN	3160	H	Huklah	repair,vendor	R	1411:0.4066,0.6788,1
+SN	3161	H	Rarc	repair,vendor	R	1411:0.4055,0.6787,1
+SN	3162	A	Burdrak Harglhelm	vendor	R	1426:0.302,0.452,0
+SN	3163	H	Uhgar	repair,vendor	R	1411:0.5208,0.4043,1
+SN	3164	H	Jark	vendor	R	1411:0.5433,0.4215,1;1411:0.5438,0.4228,1
+SN	3165	H	Ghrawt	repair,vendor	R	1411:0.5297,0.4111,1
+SN	3166	H	Cutac	repair,vendor	R	1411:0.5318,0.4093,1
+SN	3167	H	Wuark	repair,vendor	R	1411:0.5194,0.4122,1
+SN	3168	H	Flakk	vendor	R	1411:0.5291,0.4196,1;1411:0.5296,0.4208,1
+SN	3186	H	K'waii	vendor	R	1411:0.563,0.7351,1
+SN	3187	H	Tai'tasi	vendor	R	1411:0.5637,0.7376,1
+SN	3291	A	Greishan Ironstove	vendor	R
+SN	3309	H	Karus	banker	R	1454:0.4964,0.6945,1
+SN	3310	H	Doras	flight	R	1454:0.4532,0.6381,1
+SN	3312	H	Olvia	vendor	R
+SN	3313	H	Trak'gen	vendor	R
+SN	3314	H	Urtharo	vendor	R	1454:0.474,0.6859999999999999,1
+SN	3315	H	Tor'phan	vendor	R	1454:0.626,0.506,1
+SN	3316	H	Handor	repair,vendor	R	1454:0.6285,0.4507,1
+SN	3317	H	Ollanus	vendor	R	1454:0.606,0.586,1
+SN	3318	H	Koma	banker	R	1454:0.4998,0.6891,1
+SN	3319	H	Sana	repair,vendor	R	1454:0.5587,0.7318,1
+SN	3320	H	Soran	banker	R	1454:0.4925,0.6983,1
+SN	3321	H	Morgum	vendor	R	1454:0.56,0.732,1
+SN	3322	H	Kaja	repair,vendor	R	1454:0.5223,0.6235,1
+SN	3323	H	Horthus	vendor	R	1454:0.4558,0.5693,1
+SN	3329	H	Kor'jus	vendor	R	1454:0.4908,0.5396,1
+SN	3330	H	Muragus	repair,vendor	R	1454:0.4441,0.4846,1
+SN	3331	H	Kareth	vendor	R	1454:0.46799999999999997,0.636,1
+SN	3333	H	Shankys	vendor	R	1454:0.698,0.2978,1
+SN	3334	H	Rekkul	vendor	R	1454:0.44,0.584,1
+SN	3335	H	Hagrus	vendor	R	1454:0.4616,0.4605,1
+SN	3342	H	Shan'ti	vendor	R
+SN	3346	H	Kithas	vendor	R	1454:0.5368,0.3782,1
+SN	3348	H	Kor'geld	vendor	R	1454:0.5625,0.346,1
+SN	3349	H	Ukra'nor	vendor	R
+SN	3350	H	Asoran	vendor	R
+SN	3351	H	Magenius	vendor	R	1454:0.4591,0.4055,1
+SN	3356	H	Sumi	repair,vendor	R	1454:0.8251,0.2386,1
+SN	3358	H	Gorina	vendor	R	1454:0.7311,0.2642,1
+SN	3360	H	Koru	vendor	R	1454:0.762,0.376,1
+SN	3361	H	Shoma	repair,vendor	R	1454:0.8141,0.1928,1
+SN	3364	H	Borya	vendor	R	1454:0.6291,0.5123,1
+SN	3366	H	Tamar	vendor	R	1454:0.6287,0.4561,1;1454:0.6318,0.4527,1
+SN	3367	H	Felika	vendor	R	1454:0.5911,0.5659,1;1454:0.6052,0.4967,1
+SN	3368	H	Borstan	vendor	R	1454:0.5746,0.5363,1
+SN	3369	H	Gotri	vendor	R
+SN	3400	H	Xen'to	vendor	R	1454:0.5731,0.5319,1;1454:0.5764,0.5346,1
+SN	3409	H	Zendo'jian	vendor	R	1454:0.75,0.366,1
+SN	3410	H	Jin'sora	vendor	R	1454:0.778,0.386,1
+SN	3411	H	Denni'ka	vendor	R	1442:0.7357,0.9548,1
+SN	3413	H	Sovik	vendor	R	1454:0.7548,0.2512,1
+SN	3479	H	Nargal Deatheye	repair,vendor	R	1413:0.5122,0.2919,1
+SN	3480	H	Moorane Hearthgrain	vendor	R	1413:0.5233,0.3055,1
+SN	3481	H	Barg	vendor	R	1413:0.5163,0.2995,1;1413:0.5165,0.3002,1
+SN	3482	H	Tari'qa	vendor	R	1413:0.5166,0.3009,1
+SN	3483	H	Jahan Hawkwing	vendor	R	1413:0.512,0.29,1
+SN	3485	H	Wrahk	vendor	R	1413:0.5222,0.3174,1
+SN	3486	H	Halija Whitestrider	repair,vendor	R	1413:0.5223,0.319,1
+SN	3487	H	Kalyimah Stormcloud	vendor	R	1413:0.5223,0.3197,1
+SN	3488	H	Uthrok	repair,vendor	R	1413:0.5111,0.2912,1
+SN	3489	H	Zargh	vendor	R	1413:0.5258,0.2985,1
+SN	3490	H	Hula'mahi	vendor	R	1413:0.514,0.3015,1;1413:0.514,0.3025,1
+SN	3491	AH	Ironzar	repair,vendor	R	1413:0.6224,0.3753,1
+SN	3492	AH	Vexspindle	vendor	R	1413:0.622,0.384,1
+SN	3493	AH	Grazlix	repair,vendor	R	1413:0.6219,0.3836,1
+SN	3495	AH	Gagsprocket	vendor	R	1413:0.6265,0.3629,1
+SN	3496	AH	Fuzruckle	banker	R	1413:0.6265,0.3745,1
+SN	3497	AH	Kilxx	vendor	R	1413:0.6275,0.3819,1;1413:0.628,0.3829,1
+SN	3498	AH	Jazzik	vendor	R	1413:0.6196,0.3877,1
+SN	3499	AH	Ranik	vendor	R	1413:0.619,0.387,1
+SN	3500	H	Tarhus	vendor	R
+SN	3522	H	Constance Brisboise	repair,vendor	R	1420:0.5255,0.5567,0
+SN	3536	AH	Kris Legace	repair,vendor	R	1424:0.8018,0.3884,0
+SN	3537	AH	Zixil	repair,vendor	R	1424:0.5556,0.3482,0
+SN	3539	H	Ott	repair,vendor	R	1424:0.605,0.2613,0
+SN	3540	A	Hal McAllister	vendor	R	1424:0.5067,0.626,0
+SN	3541	A	Sarah Raycroft	vendor	R
+SN	3544	H	Jason Lemieux	vendor	R	1424:0.6,0.2124,0;1424:0.6066,0.2029,0;1424:0.6141,0.2004,0
+SN	3547	H	Hamlin Atkins	vendor	R	1420:0.5883,0.5167,0;1420:0.5896,0.516,0;1420:0.6006,0.5193,0
+SN	3548	H	Selina Weston	vendor	R	1420:0.6178,0.4991,0
+SN	3550	H	Martine Tramblay	vendor	R	1420:0.6593,0.5972,0
+SN	3551	H	Patrice Dwyer	vendor	R	1421:0.43,0.4186,0
+SN	3552	H	Alexandre Lefevre	repair,vendor	R	1421:0.4464,0.3923,0
+SN	3554	H	Andrea Boynton	repair,vendor	R	1421:0.447,0.3923,0
+SN	3556	H	Andrew Hilbert	vendor	R	1421:0.4323,0.4078,0
+SN	3572	AH	Zizzek	vendor	R	1413:0.6203,0.3913,1
+SN	3589	A	Keina	repair,vendor	R	1438:0.5933,0.4113,1
+SN	3605	A	Nadyia Maneweaver	vendor	R	1438:0.4183,0.4951,1
+SN	3608	A	Aldia	vendor	R	1438:0.5545,0.5722,1
+SN	3610	A	Jeena Featherbow	repair,vendor	R	1438:0.559,0.5927,1
+SN	3612	A	Sinda	repair,vendor	R	1438:0.5626,0.596,1
+SN	3614	A	Narret Shadowgrove	vendor	R	1438:0.5526,0.5711,1
+SN	3615	H	Devrak	flight	R	1413:0.5152,0.3034,1
+SN	3658	AH	Lizzarik	repair,vendor	R	1413:0.5627,0.366,1
+SN	3682	H	Vrang Wildgore	repair,vendor	R	1413:0.4378,0.1216,1;1413:0.4379,0.1223,1
+SN	3683	AH	Kiknikle	repair,vendor	R	1413:0.4179,0.3864,1
+SN	3684	AH	Pizznukle	repair,vendor	R	1413:0.4179,0.3861,1
+SN	3689	H	Laer Stepperunner	vendor	R	1441:0.2113,0.3189,1
+SN	3705	H	Gahroot	vendor	R	1413:0.4479,0.5939,1
+SN	3838	A	Vesprystus	flight	R	1438:0.5835,0.94,1
+SN	3841	A	Caylais Moonfeather	flight	R	1439:0.3633,0.4557,1
+SN	3881	H	Grimtak	vendor	R	1411:0.512,0.4268,1
+SN	3882	H	Zlagk	vendor	R	1411:0.427,0.6731,1
+SN	3883	H	Moodan Sungrain	vendor	R	1412:0.443,0.7825,1;1412:0.4432,0.7812,1
+SN	3884	H	Jhawna Oatwind	vendor	R	1412:0.4674,0.645,1
+SN	3890	H	Brakgul Deathbringer	battlemaster	R
+SN	3933	H	Hai'zan	vendor	R	1411:0.5569,0.7369,1
+SN	3934	H	Innkeeper Boorand Plainswind	innkeeper,vendor	R	1413:0.5202,0.2992,1
+SN	3935	A	Toddrick	vendor	R	1429:0.4428,0.66,0
+SN	3953	A	Tandaan Lightmane	vendor	R	1440:0.344,0.498,1;1440:0.34600000000000003,0.498,1
+SN	3954	A	Dalria	vendor	R	1440:0.3514,0.5208,1
+SN	3955	A	Shandrina	vendor	R	1440:0.495,0.6709999999999999,1
+SN	3956	A	Harklan Moongrove	vendor	R	1440:0.508,0.67,1
+SN	3958	A	Lardan	vendor	R	1440:0.348,0.498,1
+SN	3961	A	Maliynn	vendor	R
+SN	3962	A	Haljan Oakheart	vendor	R	1440:0.3487,0.5091,1
+SN	3969	A	Fahran Silentblade	vendor	R
+SN	3970	A	Llana	vendor	R
+SN	4043	H	Galthuk	vendor	R	1454:0.76,0.37200000000000005,1
+SN	4082	H	Grawnal	vendor	R	1442:0.4597,0.5874,1
+SN	4083	H	Jeeda	vendor	R	1442:0.4758,0.616,1
+SN	4084	A	Chylina	vendor	R
+SN	4086	AH	Veenix	vendor	R	1442:0.5820000000000001,0.516,1
+SN	4164	A	Cylania	repair,vendor	R	1457:0.5908,0.4593,1
+SN	4167	A	Dendrythis	vendor	R	1457:0.3977,0.206,1
+SN	4169	A	Jaeana	vendor	R	1457:0.6202,0.5605,1;1457:0.6215,0.5958,1
+SN	4170	A	Ellandrieth	vendor	R
+SN	4171	A	Merelyssa	vendor	R	1457:0.616,0.638,1
+SN	4173	A	Landria	vendor	R	1457:0.633,0.6629999999999999,1
+SN	4181	A	Fyrenna	vendor	R	1457:0.6973,0.4494,1
+SN	4182	A	Dalmond	vendor	R	1439:0.3748,0.4056,1
+SN	4186	A	Mavralyn	vendor	R	1439:0.37,0.41200000000000003,1
+SN	4188	A	Illyanie	vendor	R	1442:0.354,0.07,1
+SN	4191	A	Allyndia	vendor	R
+SN	4192	A	Taldan	vendor	R	1439:0.3686,0.4394,1
+SN	4200	A	Laird	vendor	R	1439:0.3678,0.4431,1
+SN	4203	A	Ariyell Skyshadow	vendor	R	1457:0.588,0.445,1
+SN	4230	A	Yldan	vendor	R
+SN	4231	A	Kieran	vendor	R	1457:0.61,0.636,1
+SN	4232	A	Glorandiir	vendor	R	1457:0.642,0.59,1
+SN	4233	A	Mythidan	vendor	R	1457:0.604,0.634,1
+SN	4235	A	Turian	vendor	R	1457:0.627,0.6559999999999999,1
+SN	4241	A	Mydrannul	vendor	R	1457:0.7068,0.4515,1
+SN	4259	A	Thurgrum Deepforge	vendor	R
+SN	4265	A	Nyoma	vendor	R	1438:0.5722,0.6131,1
+SN	4266	A	Danlyia	vendor	R	1438:0.554,0.5714,1
+SN	4267	A	Daelyshia	flight	R	1440:0.3442,0.4801,1
+SN	4312	H	Tharm	flight	R	1442:0.452,0.5986,1
+SN	4317	H	Nyse	flight	R	1441:0.451,0.4906,1;1441:0.4517,0.4923,1
+SN	4319	A	Thyssiana	flight	R
+SN	4407	A	Teloren	flight	R
+SN	4549	H	William Montague	banker	R	1458:0.659,0.453,0
+SN	4550	H	Ophelia Montague	banker	R	1458:0.6524,0.442,0
+SN	4551	H	Michael Garrett	flight	R	1458:0.6348,0.488,0
+SN	4553	H	Ronald Burch	vendor	R	1458:0.6243,0.4339,0
+SN	4554	H	Tawny Grisette	vendor	R	1458:0.6509,0.4955,0;1458:0.6549,0.3859,0;1458:0.6625,0.4954,0
+SN	4555	H	Eleanor Rusk	vendor	R	1458:0.6916,0.4817,0
+SN	4556	H	Gordon Wendham	repair,vendor	R	1458:0.6181,0.4207,0
+SN	4557	H	Louis Warren	vendor	R	1458:0.62,0.41200000000000003,0
+SN	4558	H	Lauren Newcomb	vendor	R	1458:0.64,0.38,0
+SN	4559	H	Timothy Weldon	repair,vendor	R	1458:0.6302,0.3982,0
+SN	4560	H	Walter Ellingson	vendor	R	1458:0.628,0.396,0
+SN	4561	H	Daniel Bartlett	vendor	R	1458:0.6427,0.3789,0
+SN	4562	H	Thomas Mordan	vendor	R	1458:0.6922,0.3926,0
+SN	4569	H	Charles Seaton	vendor	R	1458:0.77,0.5,0
+SN	4570	H	Sydney Upton	vendor	R	1458:0.698,0.27399999999999997,0
+SN	4571	H	Morley Bates	vendor	R	1458:0.7556,0.3385,0
+SN	4574	H	Lizbeth Cromwell	vendor	R	1458:0.8097,0.3105,0
+SN	4575	H	Hannah Akeley	vendor	R	1458:0.8258,0.159,0
+SN	4577	H	Millie Gregorian	vendor	R	1458:0.7016,0.2999,0
+SN	4580	H	Lucille Castleton	vendor	R	1458:0.7140000000000001,0.284,0
+SN	4581	H	Salazar Bloch	vendor	R	1458:0.7738,0.3856,0
+SN	4585	H	Ezekiel Graves	vendor	R	1458:0.7558,0.5159,0
+SN	4589	H	Joseph Moore	vendor	R	1458:0.7056,0.5869,0
+SN	4590	H	Jonathan Chambers	vendor	R
+SN	4592	H	Nathaniel Steenwick	vendor	R	1458:0.772,0.502,0
+SN	4597	H	Samuel Van Brunt	repair,vendor	R	1458:0.6126,0.2956,0
+SN	4600	H	Geoffrey Hartwell	vendor	R	1458:0.584,0.326,0
+SN	4601	H	Francis Eliot	repair,vendor	R	1458:0.5859,0.3221,0
+SN	4602	H	Benijah Fenner	vendor	R	1458:0.586,0.326,0
+SN	4603	H	Nicholas Atwood	vendor	R	1458:0.622,0.27,0
+SN	4604	H	Abigail Sawyer	repair,vendor	R	1458:0.5491,0.3807,0
+SN	4610	H	Algernon	vendor	R	1458:0.5163,0.7478,0
+SN	4612	H	Boyle	vendor	R	1458:0.5534,0.6438,0
+SN	4615	H	Katrina Alliestar	vendor	R	1458:0.5467,0.4966,0
+SN	4617	H	Thaddeus Webb	vendor	R	1458:0.6195,0.6077,0
+SN	4731	H	Zachariah Post	vendor	R	1420:0.5992,0.526,0
+SN	4775	H	Felicia Doan	vendor	R	1458:0.644,0.4996,0
+SN	4875	H	Turhaw	vendor	R	1441:0.4546,0.5111,1
+SN	4876	H	Jawn Highmesa	vendor	R	1441:0.4599,0.5146,1
+SN	4877	H	Jandia	vendor	R	1441:0.4611,0.5147,1
+SN	4878	H	Montarr	vendor	R	1441:0.4525,0.5076,1
+SN	4879	H	Ogg'marr	vendor	R	1445:0.3662,0.3095,1
+SN	4884	H	Zulrg	repair,vendor	R	1445:0.3612,0.3171,1
+SN	4981	A	Ben Trias	vendor	R	1453:0.6631,0.7364,0
+SN	5049	A	Lyesa Steelbrow	vendor	R	1455:0.364,0.8440000000000001,0
+SN	5099	A	Soleil Stonemantle	banker	R
+SN	5101	A	Bryllia Ironbrand	vendor	R
+SN	5102	A	Dolman Steelfury	vendor	R	1455:0.366,0.6659999999999999,0
+SN	5103	A	Grenil Steelfury	vendor	R	1455:0.364,0.6659999999999999,0
+SN	5106	A	Bromiir Ormsen	vendor	R	1455:0.326,0.5820000000000001,0
+SN	5107	A	Mangorn Flinthammer	vendor	R	1455:0.32,0.588,0
+SN	5108	A	Raena Flinthammer	vendor	R	1455:0.326,0.58,0
+SN	5109	A	Myra Tyrngaarde	vendor	R	1455:0.298,0.675,0
+SN	5110	A	Barim Jurgenstaad	vendor	R
+SN	5111	A	Innkeeper Firebrew	innkeeper	R
+SN	5118	A	Brogun Stoneshield	battlemaster	R
+SN	5119	A	Hegnar Swiftaxe	vendor	R	1455:0.618,0.8859999999999999,0
+SN	5120	A	Brenwyn Wintersteel	vendor	R	1455:0.618,0.888,0
+SN	5122	A	Skolmin Goldfury	vendor	R	1455:0.716,0.662,0
+SN	5123	A	Bretta Goldfury	vendor	R	1455:0.728,0.648,0
+SN	5124	A	Sognar Cliffbeard	vendor	R	1455:0.621,0.72,0
+SN	5125	A	Dolkin Craghelm	vendor	R	1455:0.5479999999999999,0.8859999999999999,0
+SN	5126	A	Olthran Craghelm	vendor	R	1455:0.55,0.884,0
+SN	5128	A	Bombus Finespindle	vendor	R	1455:0.402,0.33399999999999996,0
+SN	5129	A	Lissyphus Finespindle	vendor	R	1455:0.546,0.882,0
+SN	5132	A	Pithwick	vendor	R
+SN	5138	A	Gwina Stonebranch	vendor	R	1455:0.5522,0.5881,0
+SN	5154	A	Poranna Snowbraid	vendor	R
+SN	5158	A	Tilli Thistlefuzz	vendor	R	1455:0.608,0.442,0
+SN	5175	A	Gearcutter Cogspinner	vendor	R	1455:0.6779999999999999,0.43,0
+SN	5178	A	Soolie Berryfizz	vendor	R	1455:0.6659999999999999,0.546,0
+SN	5188	H	Garyl	vendor	R	1454:0.4387,0.7462,1
+SN	5189	H	Thrumn	vendor	R	1456:0.3746,0.633,1
+SN	5190	H	Merill Pleasance	vendor	R	1458:0.693,0.44799999999999995,0
+SN	5193	A	Rebecca Laughlin	vendor	R	1453:0.6405,0.7739,0
+SN	5411	AH	Krinkle Goodsteel	vendor	R	1446:0.515,0.28800000000000003,1
+SN	5483	A	Erika Tate	vendor	R	1453:0.7851,0.5308,0
+SN	5509	A	Kathrum Axehand	vendor	R	1453:0.596,0.34,0
+SN	5510	A	Thulman Flintcrag	vendor	R	1453:0.618,0.36200000000000004,0
+SN	5512	A	Kaita Deepforge	repair,vendor	R	1453:0.6334,0.3756,0
+SN	5565	A	Jillian Tanner	vendor	R	1453:0.7165,0.6269,0
+SN	5569	A	Fizzlebang Booms	vendor	R
+SN	5594	AH	Alchemist Pestlezugg	vendor	R	1446:0.508,0.27,1
+SN	5611	H	Barkeep Morag	vendor	R	1454:0.545,0.6806,1
+SN	5688	H	Innkeeper Renee	innkeeper,vendor	R	1420:0.6174,0.5212,0
+SN	5695	H	Vance Undergloom	vendor	R	1420:0.617,0.5169,0
+SN	5698	H	Joanna Whitehall	vendor	R	1458:0.5329,0.3494,0
+SN	5748	H	Killian Sanatha	vendor	R	1421:0.3293,0.179,0
+SN	5749	H	Kayla Smithe	vendor	R	1420:0.3089,0.6638,0
+SN	5750	H	Gina Lang	vendor	R	1420:0.6161,0.5249,0
+SN	5754	H	Zane Bradford	repair,vendor	R	1458:0.7008,0.2716,0
+SN	5757	H	Lilly	vendor	R	1421:0.4309,0.5086,0
+SN	5783	AH	Kalldan Felmoon	vendor	R	1414:0.5189,0.5545,1
+SN	5812	H	Tumi	repair,vendor	R	1454:0.8245,0.2349,1
+SN	5814	H	Innkeeper Thulbek	innkeeper	R
+SN	5815	H	Kurgul	vendor	R	1454:0.4768,0.4694,1
+SN	5816	H	Katis	repair,vendor	R	1454:0.4439,0.486,1
+SN	5817	H	Shimra	vendor	R	1454:0.4803,0.8001,1
+SN	5819	H	Mirelle Tremayne	repair,vendor	R	1458:0.6129,0.2858,0
+SN	5820	H	Gillian Moore	repair,vendor	R	1458:0.7062,0.5868,0
+SN	5821	H	Sheldon Von Croy	repair,vendor	R	1458:0.708,0.2859,0
+SN	5870	H	Krond	vendor	R	1442:0.4616,0.5848,1
+SN	5871	H	Larhka	vendor	R
+SN	5886	H	Gwyn Farrow	vendor	R	1421:0.4404,0.3985,0
+SN	5940	H	Harn Longcast	vendor	R	1412:0.467,0.5922,1
+SN	5942	H	Zansoa	vendor	R	1411:0.5613,0.7347,1
+SN	5944	H	Yonada	vendor	R	1413:0.4496,0.5934,1
+SN	6026	H	Breyk	flight	R	1435:0.4617,0.5456,0
+SN	6027	H	Kitha	vendor	R	1411:0.5463,0.4141,1
+SN	6028	H	Burkrum	repair,vendor	R	1440:0.7353,0.6042,1;1440:0.7358,0.6032,1
+SN	6091	A	Dellylah	vendor	R	1438:0.5959,0.4077,1
+SN	6300	A	Elisa Steelhand	repair,vendor	R	1439:0.3815,0.4111,1
+SN	6301	A	Gorbold Steelhand	vendor	R	1439:0.3812,0.4126,1
+SN	6367	A	Donni Anthania	vendor	R	1429:0.4425,0.5335,0
+SN	6491	AH	Spirit Healer	spirithealer	M	1411:0.4415,0.6933,1;1411:0.4708,0.1763,1;1411:0.5352,0.4451,1;1411:0.574,0.733,1;1420:0.1759,0.6766,0;1420:0.3111,0.6488,0;1420:0.3117,0.6488,0;1420:0.5629,0.494,0;1420:0.5629,0.4941,0;1424:0.636,0.1969,0;1424:0.6377,0.1966,0;1431:0.1997,0.493,0;1433:0.1568,0.5648,0;1433:0.1581,0.5668,0;1436:0.5177,0.496,0;1436:0.5177,0.4964,0;1439:0.4194,0.3652,1;1440:0.4016,0.5321,1;1440:0.8056,0.5798,1;2521:0.5538,0.4501,2991
+SN	6495	AH	Riznek	vendor	R	1441:0.8062,0.7632,1
+SN	6496	AH	Brivelthwerp	vendor	R
+SN	6548	AH	Magus Tirth	vendor	R	1441:0.7826,0.7584,1
+SN	6567	H	Ghok'kah	vendor	R	1445:0.35200000000000004,0.308,1
+SN	6568	AH	Vizzklick	vendor	R	1446:0.51,0.273,1
+SN	6574	H	Jun'ha	vendor	R	1417:0.728,0.366,0
+SN	6576	A	Brienna Starglow	vendor	R	1444:0.89,0.45799999999999996,1
+SN	6726	H	Thalon	flight	R	1443:0.2157,0.7417,1;1443:0.2162,0.7399,1
+SN	6727	A	Innkeeper Brianna	innkeeper,vendor	R	1433:0.2184,0.4484,0
+SN	6730	AH	Jinky Twizzlefixxit	vendor	R	1441:0.7771,0.7775,1;1441:0.7771,0.7805,1
+SN	6736	A	Innkeeper Keldamyr	innkeeper	R	1438:0.5569,0.5981,1
+SN	6737	A	Innkeeper Shaussiy	innkeeper,vendor	R	1439:0.37,0.4411,1
+SN	6738	A	Innkeeper Kimlya	innkeeper	R
+SN	6739	H	Innkeeper Bates	innkeeper,vendor	R	1421:0.4312,0.4119,0;1421:0.4321,0.4133,0
+SN	6740	A	Innkeeper Allison	innkeeper,vendor	R	1453:0.6048,0.7522,0
+SN	6741	H	Innkeeper Norman	innkeeper,vendor	R	1458:0.6745,0.383,0
+SN	6746	H	Innkeeper Pala	innkeeper,vendor	R	1456:0.4593,0.6433,1
+SN	6747	H	Innkeeper Kauth	innkeeper,vendor	R	1412:0.4595,0.6413,1
+SN	6749	A	Erma	stablemaster	R	1429:0.4274,0.6598,0
+SN	6790	A	Innkeeper Trelayne	innkeeper	R
+SN	6791	AH	Innkeeper Wiley	innkeeper,vendor	R	1413:0.6206,0.3938,1
+SN	6807	AH	Innkeeper Skindle	innkeeper	R
+SN	6928	H	Innkeeper Grosk	innkeeper,vendor	R	1411:0.5158,0.417,1
+SN	6929	H	Innkeeper Gryshka	innkeeper,vendor	R	1454:0.5414,0.6866,1
+SN	6930	H	Innkeeper Karakul	innkeeper	R
+SN	7410	A	Thelman Slatefist	battlemaster	R
+SN	7427	H	Taim Ragetotem	battlemaster	R
+SN	7485	H	Nargatt	vendor	R	1434:0.3217,0.2923,0
+SN	7683	H	Alessandro Luca	vendor	R	1458:0.5828,0.5521,0
+SN	7714	H	Innkeeper Byula	innkeeper,vendor	R	1413:0.4554,0.5901,1
+SN	7731	H	Innkeeper Jayka	innkeeper,vendor	R	1442:0.4754,0.6203,1
+SN	7733	AH	Innkeeper Fizzgrimble	innkeeper	R	1446:0.524,0.278,1
+SN	7737	H	Innkeeper Greul	innkeeper	R
+SN	7799	AH	Gimblethorn	banker	R	1446:0.5228,0.2885,1
+SN	7823	A	Bera Stonehammer	flight	R
+SN	7824	H	Bulkrek Ragefist	flight	R	1446:0.516,0.2536,1;1446:0.5162,0.2554,1
+SN	7854	H	Jangdor Swiftstrider	vendor	R	1444:0.7449,0.4298,1
+SN	7940	AH	Darnall	vendor	R	1450:0.516,0.332,1
+SN	7955	A	Milli Featherwhistle	vendor	R	1426:0.49,0.48,0
+SN	7976	A	Thalgus Thunderfist	vendor	R	1455:0.618,0.9,0
+SN	8020	H	Shyn	flight	R	1444:0.7542,0.4433,1
+SN	8119	AH	Zikkel	banker	R	1413:0.6268,0.3745,1
+SN	8123	AH	Rickle Goldgrubber	banker	R	1434:0.2656,0.7645,0
+SN	8124	AH	Qizzik	banker	R
+SN	8139	AH	Jabbey	vendor	R	1446:0.67,0.22,1
+SN	8143	H	Loorana	vendor	R	1444:0.7547,0.4382,1
+SN	8145	H	Sheendra Tallgrass	vendor	R	1444:0.745,0.428,1
+SN	8158	H	Bronk	vendor	R	1444:0.7608,0.4337,1
+SN	8159	H	Worb Strongstitch	repair,vendor	R	1444:0.7474,0.4259,1
+SN	8176	H	Gharash	vendor	R	1435:0.456,0.516,0
+SN	8177	H	Rartar	vendor	R	1435:0.45399999999999996,0.57,0
+SN	8305	AH	Kixxle	vendor	R	1437:0.502,0.3786,0
+SN	8307	H	Tarban Hearthgrain	vendor	R	1413:0.5516,0.3203,1
+SN	8356	H	Chesmu	banker	R	1456:0.4665,0.5828,1
+SN	8357	H	Atepa	banker	R	1456:0.4686,0.5925,1
+SN	8358	H	Hewa	repair,vendor	R	1456:0.4521,0.5652,1
+SN	8359	H	Ahanu	repair,vendor	R	1456:0.4536,0.5547,1
+SN	8360	H	Elki	repair,vendor	R	1456:0.45,0.5604,1
+SN	8361	H	Chepi	vendor	R	1456:0.3667,0.5626,1
+SN	8362	H	Kuruk	vendor	R	1456:0.3909,0.6405,1
+SN	8363	H	Shadi Mistrunner	vendor	R	1456:0.4021,0.6356,1
+SN	8364	H	Pakwa	vendor	R	1456:0.3906,0.6376,1
+SN	8398	H	Ohanko	vendor	R	1456:0.536,0.568,1
+SN	8401	H	Halpa	vendor	R	1456:0.6233,0.5827,1
+SN	8403	H	Jeremiah Payson	vendor	R	1458:0.6759999999999999,0.441,0
+SN	8404	H	Xan'tish	vendor	R	1454:0.376,0.758,1
+SN	8508	A	Gretta Ganter	vendor	R	1426:0.316,0.446,0
+SN	8665	A	Shylenai	vendor	R	1457:0.6976,0.4558,1
+SN	8669	A	Auctioneer Tolon	auctioneer	R	1457:0.5643,0.5219,1
+SN	8670	A	Auctioneer Chilton	auctioneer	R	1453:0.6077,0.7144,0
+SN	8672	H	Auctioneer Leeka	auctioneer	R	1458:0.68,0.5232,0
+SN	8673	H	Auctioneer Thathung	auctioneer	R	1454:0.5565,0.6294,1
+SN	8674	H	Auctioneer Stampi	auctioneer	R	1456:0.4025,0.5195,1;1456:0.4039,0.5266,1
+SN	8681	A	Outfitter Eric	vendor	R	1455:0.43,0.292,0
+SN	8719	A	Auctioneer Fitch	auctioneer	R	1453:0.6112,0.712,0
+SN	8721	H	Auctioneer Epitwee	auctioneer	R	1458:0.6428,0.5225,0
+SN	8722	H	Auctioneer Gullem	auctioneer	R	1456:0.3856,0.5065,1;1456:0.391,0.5077,1
+SN	8724	H	Auctioneer Wabang	auctioneer	R	1454:0.5552,0.6479,1
+SN	8878	H	Muuran	repair,vendor	R	1443:0.5566,0.5662,1
+SN	8931	A	Innkeeper Heather	innkeeper,vendor	R	1436:0.5286,0.5364,0
+SN	8934	A	Christopher Hewen	vendor	R	1436:0.5224,0.5295,0
+SN	9099	A	Sraaz	vendor	R	1455:0.466,0.47200000000000003,0
+SN	9179	AH	Jazzrik	vendor	R	1418:0.424,0.525,0
+SN	9356	H	Innkeeper Shul'kar	innkeeper	R
+SN	9501	H	Innkeeper Adegwa	innkeeper,vendor	R	1417:0.7382,0.3263,0
+SN	9553	H	Nadia Vernon	repair,vendor	R	1421:0.4498,0.3944,0
+SN	9555	H	Mu'uta	repair,vendor	R	1417:0.7256,0.3347,0
+SN	9636	H	Kireena	vendor	R	1443:0.51,0.534,1
+SN	9676	A	Tink Sprocketwhistle	vendor	R
+SN	9856	H	Auctioneer Grimful	auctioneer	R	1454:0.551,0.6225,1
+SN	9976	H	Tharlidun	stablemaster	R
+SN	9977	A	Sylista	stablemaster	R
+SN	9978	A	Wesley	stablemaster	R
+SN	9979	H	Sarah Goode	stablemaster	R
+SN	9980	A	Shelby Stoneflint	stablemaster	R
+SN	9981	H	Sikwa	stablemaster	R
+SN	9982	A	Penny	stablemaster	R	1433:0.217,0.4671,0
+SN	9983	H	Kelsuwa	stablemaster	R
+SN	9984	A	Ulbrek Firehand	stablemaster	R	1455:0.6957,0.8384,0
+SN	9985	AH	Laziphus	stablemaster	R
+SN	9986	H	Shyrka Wolfrunner	stablemaster	R
+SN	9987	H	Shoja'my	stablemaster	R
+SN	9988	H	Xon'cha	stablemaster	R
+SN	10045	A	Kirk Maxwell	stablemaster	R	1436:0.5294,0.5312,0
+SN	10046	A	Bethaine Flinthammer	stablemaster	R
+SN	10048	H	Gereck	stablemaster	R
+SN	10049	H	Hekkru	stablemaster	R
+SN	10050	H	Seikwa	stablemaster	R
+SN	10051	A	Seriadne	stablemaster	R	1438:0.5668,0.5964,1
+SN	10052	A	Maluressian	stablemaster	R
+SN	10053	H	Anya Maulray	stablemaster	R
+SN	10054	H	Bulrug	stablemaster	R
+SN	10055	H	Morganus	stablemaster	R
+SN	10057	H	Theodore Mont Claire	stablemaster	R
+SN	10058	H	Greth	stablemaster	R
+SN	10060	AH	Grimestack	stablemaster	R
+SN	10062	A	Steven Black	stablemaster	R
+SN	10063	AH	Reggifuz	stablemaster	R
+SN	10085	A	Jaelysia	stablemaster	R	1439:0.374,0.4426,1
+SN	10360	H	Kergul Bloodaxe	battlemaster	R
+SN	10369	H	Trayexir	repair,vendor	R	1411:0.5645,0.7312,1
+SN	10378	H	Omusa Thunderhorn	flight	R	1413:0.4446,0.5914,1
+SN	10380	H	Sanuye Runetotem	repair,vendor	R	1413:0.4511,0.5897,1
+SN	10897	A	Sindrayl	flight	R
+SN	11069	A	Jenova Stoneshield	stablemaster	R	1453:0.6709,0.3776,0
+SN	11105	H	Aboda	stablemaster	R
+SN	11106	H	Innkeeper Sikewa	innkeeper	R
+SN	11116	H	Innkeeper Abeqwa	innkeeper,vendor	R	1441:0.4608,0.5147,1
+SN	11117	H	Awenasa	stablemaster	R
+SN	11899	H	Shardi	flight	R	1445:0.3559,0.3187,1
+SN	11901	H	Andruk	flight	R	1440:0.1222,0.3391,1
+SN	12019	AH	Dargon	vendor	R
+SN	12021	AH	Daeolyn Summerleaf	vendor	R
+SN	12022	AH	Lorelae Wintersong	vendor	R	1450:0.48200000000000004,0.4,1
+SN	12023	AH	Kharedon	repair,vendor	R	1450:0.5643,0.2998,1;1450:0.566,0.2973,1
+SN	12026	AH	My'lanna	vendor	R
+SN	12027	H	Tukk	vendor	R	1443:0.2501,0.7182,1
+SN	12028	H	Lah'Mawhani	vendor	R
+SN	12031	H	Mai'Lahii	vendor	R	1443:0.2268,0.7206,1
+SN	12033	H	Wulan	vendor	R	1443:0.2618,0.697,1
+SN	12043	H	Kulwia	vendor	R	1442:0.4544,0.5945,1
+SN	12045	H	Hae'Wilani	repair,vendor	R	1443:0.2573,0.7102,1
+SN	12196	H	Innkeeper Kaylisk	innkeeper,vendor	R	1440:0.7394,0.607,1
+SN	12198	H	Martin Lindsey	battlemaster	R
+SN	12245	AH	Vendor-Tron 1000	vendor	R	1443:0.6036,0.3817,1
+SN	12616	H	Vhulgra	flight	R	1440:0.7314,0.615,1;1440:0.7323,0.6157,1
+SN	12776	H	Hraug	vendor	R	1411:0.4063,0.6844,1
+SN	12783	AH	Lieutenant Karter	vendor	R
+SN	12784	A	Lieutenant Jackspring	vendor	R
+SN	12792	AH	Lady Palanseer	repair,vendor	R	1454:0.3707,0.6488,1
+SN	12793	AH	Brave Stonehide	vendor	R	1454:0.3659,0.6589,1
+SN	12795	H	First Sergeant Hola'mahi	vendor	R
+SN	12962	H	Wik'Tar	vendor	R	1440:0.1175,0.3403,1;1440:0.1177,0.3417,1
+SN	13476	H	Balai Lok'Wein	vendor	R	1445:0.364,0.3035,1
+SN	14581	AH	Sergeant Thunderhorn	repair,vendor	R	1454:0.3702,0.675,1
+SN	14828	A	Gelvas Grimegate	vendor	R	1429:0.4152,0.69,0
+SN	14844	AH	Sylannia	vendor	R	1429:0.4213,0.6999,0
+SN	14845	AH	Stamp Thunderhorn	vendor	R	1429:0.4212,0.7004,0
+SN	14942	H	Kartra Bloodsnarl	battlemaster	R
+SN	14981	A	Elfarran	battlemaster	R
+SN	15006	H	Deze Snowbane	battlemaster	R
+SN	15007	H	Sir Malory Wheeler	battlemaster	R
+SN	15008	A	Lady Hoteshem	battlemaster	R
+SN	15126	H	Rutherford Twing	repair,vendor	R	1417:0.734,0.2983,0
+SN	15131	H	Qeeju	stablemaster	R
+SN	15675	H	Auctioneer Stockton	auctioneer	R	1458:0.7142,0.4736,0
+SN	15676	H	Auctioneer Yarly	auctioneer	R	1458:0.7131,0.4144,0
+SN	15677	AH	Auctioneer Graves	auctioneer	R	1434:0.2843,0.7588,0
+SN	15681	AH	Auctioneer O'reely	auctioneer	R	1434:0.2658,0.7638,0
+SN	15682	H	Auctioneer Cain	auctioneer	R	1458:0.6798,0.361,0
+SN	15683	H	Auctioneer Naxxremis	auctioneer	R	1458:0.642,0.356,0
+SN	15684	H	Auctioneer Tricket	auctioneer	R	1458:0.6051,0.4146,0
+SN	15686	H	Auctioneer Rhyker	auctioneer	R	1458:0.6058,0.4689,0
+SN	16094	H	Durik	stablemaster	R
+SN	16227	AH	Bragok	flight	R	1413:0.6309,0.372,1
+SN	16458	A	Innkeeper Faralia	innkeeper	R
+SN	28687	A	Amisi Azuregaze	innkeeper	R	1416:0.1815,0.6638,0
+SN	32631	A	Alfred Copperworth	vendor	R	1416:0.1532,0.5643,0
+SN	214954	H	Rix Xizzix	repair,vendor	R	1434:0.2849,0.758,0
+SN	227853	H	Pix Xizzix	repair,vendor	R	1434:0.2849,0.758,0
+SN	242498	H	Reagent Bot	vendor	R	1440:0.152,0.1509,1;1440:0.1523,0.1524,1;1441:0.4582,0.4989,1;1441:0.4592,0.5003,1
+SN	247227	A	Riley Peltskinner	vendor	R	1429:0.4702,0.3999,0
+SN	248197	H	Gor'mak	repair,vendor	R	1413:0.4984,0.2967,1
+SN	248198	H	Aza'bek	vendor	R	1413:0.4971,0.2931,1
+SN	248199	H	Beneris	vendor	R	1413:0.497,0.2976,1
+SN	248201	H	Pawani	vendor	R	1413:0.4959,0.2966,1
+SN	248202	H	Jim'bek	vendor	R	1413:0.4962,0.2948,1
+SN	251364	AH	Destin Thriceforged	repair,vendor	R	2521:0.4339,0.235,2991
+SN	251365	AH	Jolee Brightmeadows	repair,vendor	R	2521:0.4343,0.2357,2991
+SN	251537	AH	Uualia Suncrest	repair,vendor	R	2521:0.4278,0.2444,2991
+SN	251905	AH	Zerril Softbreeze	vendor	R	2521:0.4382,0.4386,2991
+SN	251913	AH	Aedi Thriceforged	repair,vendor	R	2521:0.4482,0.4432,2991
+SN	251965	AH	Fevrath Skyhammer	repair,vendor	R	2521:0.4332,0.2345,2991
+SN	251991	AH	Taleen Shimmerthread	vendor	R	2521:0.4484,0.4424,2991
+SN	251992	AH	Fenn Fairweather	repair,vendor	R	2521:0.4506,0.4838,2991
+SN	251993	AH	Indari Sunseam	repair,vendor	R	2521:0.4463,0.4456,2991;2521:0.4473,0.4449,2991
+SN	252390	AH	Antelariaa Cloudgaze	vendor	R	2521:0.6305,0.7779,2991
+SN	252449	AH	Iallion Featherfall	vendor	R	2521:0.5892,0.7549,2991
+SN	253004	A	Iaadaria Bitterwind	vendor	R	2521:0.6632,0.7957,2991
+SN	253139	H	Gorhak	vendor	R	1443:0.6637,0.7946,1
+SN	253140	H	Molkar	vendor	R	1443:0.3568,0.9211,1
+SN	254089	AH	Coriella Calmbreeze	innkeeper,vendor	R	2521:0.4304,0.433,2991
+SN	254358	AH	Veena Vericloud	vendor	R	2521:0.4475,0.4545,2991
+SN	254360	AH	Belandiel Farflight	vendor	R	2521:0.4479,0.4517,2991
+SN	255940	AH	Donaal Downbreeze	innkeeper,vendor	R	2521:0.6216,0.7273,2991
+SN	255993	H	Grakna	flight	R	2548:0.5953,0.4508,0
+SN	256400	H	Okamache	vendor	R	1413:0.4969,0.2881,1
+SN	256507	AH	Belann Windwood	repair,vendor	R	2521:0.6294,0.774,2991
+SN	256575	H	Basket of Textile Supplies	vendor	R	1413:0.4961,0.2962,1
+SN	256731	A	Kalsey Sanden	vendor	R	1433:0.1074,0.7278,0
+SN	256732	A	Alynsia	vendor	R	1433:0.1118,0.7153,0
+SN	256734	A	Daniel Stitchsong	vendor	R	1433:0.1006,0.7283,0
+SN	257003	AH	Ishlee Breezewhisper	vendor	R	2521:0.5962,0.7604,2991
+SN	257004	AH	Eaysaa Brightgust	vendor	R	2521:0.5919,0.7629,2991
+SN	257005	AH	Valiena Swiftgale	vendor	R	2521:0.5922,0.7629,2991
+SN	257006	AH	Nyalah Brightfire	vendor	R	2521:0.6065,0.7274,2991
+SN	257008	AH	Baelann Swiftcurrent	vendor	R	2521:0.6325,0.7581,2991
+SN	257019	AH	Nyassa Swiftdraught	vendor	R	2521:0.4372,0.4347,2991
+SN	257020	AH	Nasalanna Windsinger	vendor	R	2521:0.4321,0.4325,2991
+SN	257022	AH	Messana Crestwind	vendor	R	2521:0.4476,0.4452,2991
+SN	257024	AH	Mendalass Tattermend	vendor	R	2521:0.4326,0.4344,2991
+SN	257036	AH	Baelann Favorbreeze	banker	R	2521:0.577,0.7709,2991
+SN	257037	AH	Zelena Favorbreeze	auctioneer	R	2521:0.5788,0.7702,2991
+SN	257421	AH	Tephri Thriceforged	repair,vendor	R	2521:0.4476,0.4425,2991;2521:0.448,0.4409,2991
+SN	257422	AH	Railee Thriceforged	repair,vendor	R	2521:0.5893,0.7543,2991
+SN	258415	H	Angela Ward	vendor	R	1458:0.701,0.3014,0
+SN	258466	H	Boramu	vendor	R	1456:0.4414,0.4494,1
+SN	258568	A	Antonio Bolero	vendor	R	1453:0.5353,0.8179,0
+SN	258878	H	Auctioneer Quickcoin	auctioneer	R	1413:0.4992,0.2946,1
+SN	259190	H	Ephram Barbaro	stablemaster	R	1420:0.2024,0.4658,0
+SN	260559	H	Gilliwigs	vendor	R	2548:0.7929,0.5467,0
+SN	260566	H	Fizzix Boomshot	repair,vendor	R	2548:0.7856,0.5358,0
+SN	262469	H	Tuu'li	vendor	R	1442:0.7152,0.9979,1
+SN	262471	H	Xaphod Bizznox	vendor	R	1442:0.7142,0.9951,1
+SN	263570	H	Creeg Bothunk	repair,vendor	R	1413:0.6503,0.3464,1
+SN	263646	H	Rugbul Boomfirst	battlemaster	R	1458:0.5991,0.8665,0;1458:0.6033,0.8712,0
+SN	264078	H	Sutara Plainstalker	vendor	R	1412:0.3452,0.2295,1
+SN	265574	H	Winklespark	vendor	R	1413:0.6255,0.3757,1
+SN	267324	H	Margaret Weaver	vendor	R	1420:0.3257,0.6573,0
+SN	267325	H	Walter Mason	vendor	R	1420:0.3224,0.6567,0
+SN	267327	H	Kagil	vendor	R	1411:0.4075,0.6797,1
+SN	267328	H	Norzsh	vendor	R	1411:0.4059,0.6814,1
+SN	267330	H	Nawka Wildsong	vendor	R	1412:0.4452,0.7681,1
+SN	267331	H	Vartha Rockmane	vendor	R	1412:0.4434,0.7839,1
+SN	267333	A	Terunne Bearshaper	vendor	R	1438:0.5939,0.387,1
+SN	268745	H	Mayhoa Skyhoof	vendor	R	1454:0.6579,0.3992,1
+SN	271465	AH	Falfaan Halfwind	repair,vendor	R	2521:0.5939,0.758,2991
+SN	271478	AH	Elaria Anvilwind	repair,vendor	R	2521:0.5952,0.7606,2991
+SN	271480	AH	Taliaa Brightsky	repair,vendor	R	2521:0.5929,0.7615,2991
+SN	271483	AH	Ergaan Eastwind	repair,vendor	R	2521:0.5969,0.7597,2991
+SN	276067	H	Angus Hammerhand	repair,vendor	R	1420:0.211,0.4584,0
+SO	142075	A	Mailbox	mailbox	M	1429:0.4249,0.6555,0;1429:0.4251,0.6553,0;1429:0.4251,0.6567,0;1429:0.4255,0.6582,0;1429:0.4265,0.6531,0;1429:0.4265,0.6581,0;1429:0.4266,0.6601,0;1429:0.4269,0.6602,0;1429:0.4271,0.6497,0;1429:0.4274,0.6567,0;1429:0.4276,0.6549,0;1429:0.4276,0.6552,0;1429:0.4279,0.6573,0;1429:0.428,0.6606,0;1429:0.4281,0.6562,0;1429:0.4284,0.6575,0;1429:0.4285,0.6488,0;1429:0.4285,0.6564,0;1429:0.4286,0.6549,0;1429:0.4286,0.6551,0;1429:0.429,0.6564,0;1429:0.4291,0.6561,0;1429:0.4306,0.6563,0;1429:0.4306,0.6567,0;1429:0.4318,0.6578,0;1429:0.4319,0.6597,0;1429:0.432,0.6583,0;1429:0.432,0.6598,0;1429:0.4321,0.6598,0;1429:0.4322,0.6571,0;1429:0.4329,0.6583,0
+SO	142093	A	Mailbox	mailbox	M	1433:0.2137,0.4663,0;1433:0.2145,0.4659,0
+SO	142109	A	Mailbox	mailbox	M	1438:0.5586,0.5842,1;1438:0.5597,0.5861,1;1438:0.5598,0.5814,1;1438:0.5598,0.5834,1;1438:0.5598,0.5844,1;1438:0.5602,0.5854,1;1438:0.5605,0.5841,1;1438:0.5607,0.5825,1;1438:0.5611,0.5833,1;1438:0.5614,0.5799,1;1438:0.5615,0.5824,1;1438:0.5621,0.5802,1;1438:0.5621,0.583,1;1438:0.5628,0.5806,1;1438:0.5638,0.5861,1;1438:0.564,0.5834,1
+SO	142110	A	Mailbox	mailbox	M	1457:0.4059,0.4247,1;1457:0.4141,0.4244,1;1457:0.4145,0.428,1;1457:0.415,0.3976,1;1457:0.4156,0.4388,1;1457:0.4176,0.4083,1;1457:0.4182,0.4195,1;1457:0.4191,0.4254,1;1457:0.4225,0.4187,1;1457:0.4303,0.4165,1
+SO	142111	A	Mailbox	mailbox	M	1439:0.371,0.4373,1;1439:0.3711,0.4385,1;1439:0.3723,0.4382,1;1439:0.373,0.438,1;1439:0.3731,0.4407,1;1439:0.3732,0.4388,1;1439:0.3733,0.4376,1;1439:0.3735,0.4341,1;1439:0.3736,0.4406,1;1439:0.3739,0.4363,1;1439:0.3739,0.44,1;1439:0.3742,0.437,1;1439:0.3743,0.4344,1;1439:0.3744,0.4399,1;1439:0.3747,0.439,1;1439:0.3751,0.4392,1;1439:0.3753,0.4363,1
+SO	143981	H	Mailbox	mailbox	M	1411:0.5163,0.4232,1;1411:0.5168,0.4187,1;1411:0.5169,0.4185,1;1411:0.5172,0.4184,1;1411:0.5173,0.4179,1;1411:0.5176,0.4255,1;1411:0.518,0.4193,1;1411:0.518,0.4194,1;1411:0.518,0.4196,1;1411:0.5183,0.4201,1;1411:0.5183,0.4202,1;1411:0.5184,0.4201,1;1411:0.5184,0.4203,1;1411:0.5184,0.4247,1;1411:0.5185,0.4202,1;1411:0.5185,0.4211,1;1411:0.5185,0.4258,1;1411:0.5186,0.4191,1;1411:0.5187,0.4205,1;1411:0.5187,0.4231,1;1411:0.519,0.4208,1;1411:0.519,0.421,1;1411:0.5191,0.4201,1;1411:0.5192,0.4206,1;1411:0.5192,0.4218,1;1411:0.5193,0.42,1;1411:0.5195,0.4237,1;1411:0.5196,0.4207,1;1411:0.5196,0.4237,1;1411:0.5197,0.4202,1;1411:0.5197,0.4221,1;1411:0.5199,0.4225,1;1411:0.52,0.425,1;1411:0.5203,0.4207,1;1411:0.5203,0.4213,1;1411:0.5203,0.425,1;1411:0.5204,0.4232,1;1411:0.5208,0.4214,1;1411:0.5209,0.4197,1;1411:0.521,0.4224,1;1411:0.5217,0.4198,1;1411:0.5218,0.4199,1;1411:0.5218,0.4231,1;1411:0.5219,0.4228,1;1411:0.522,0.422,1
+SO	143982	H	Mailbox	mailbox	M	1413:0.5187,0.3047,1;1413:0.5188,0.3035,1;1413:0.5188,0.3037,1;1413:0.5188,0.304,1;1413:0.5188,0.3041,1;1413:0.5188,0.3051,1;1413:0.5188,0.3052,1;1413:0.5189,0.3032,1;1413:0.5189,0.3041,1;1413:0.5189,0.3047,1;1413:0.519,0.3037,1;1413:0.519,0.3058,1;1413:0.5191,0.3037,1;1413:0.5191,0.3059,1;1413:0.5192,0.3033,1;1413:0.5193,0.3036,1;1413:0.5193,0.3037,1;1413:0.5193,0.3043,1;1413:0.5194,0.3038,1;1413:0.5194,0.305,1;1413:0.5194,0.3063,1;1413:0.5195,0.3034,1;1413:0.5195,0.3043,1;1413:0.5196,0.304,1;1413:0.5196,0.3048,1;1413:0.5196,0.3056,1;1413:0.5197,0.3022,1;1413:0.5197,0.3033,1;1413:0.5197,0.3037,1;1413:0.5197,0.3044,1;1413:0.5198,0.3033,1;1413:0.5198,0.3042,1;1413:0.5198,0.3048,1;1413:0.5198,0.3053,1;1413:0.5198,0.3061,1;1413:0.5199,0.3062,1;1413:0.52,0.3036,1;1413:0.52,0.3047,1;1413:0.5201,0.302,1;1413:0.5201,0.3021,1;1413:0.5201,0.3038,1;1413:0.5201,0.3041,1;1413:0.5201,0.3046,1;1413:0.5201,0.3053,1;1413:0.5202,0.3021,1;1413:0.5202,0.303,1;1413:0.5202,0.3034,1;1413:0.5202,0.305,1;1413:0.5202,0.3053,1;1413:0.5202,0.3059,1;1413:0.5202,0.3061,1;1413:0.5202,0.3067,1;1413:0.5203,0.302,1;1413:0.5203,0.3024,1;1413:0.5203,0.3029,1;1413:0.5203,0.3034,1;1413:0.5203,0.3035,1;1413:0.5203,0.3037,1;1413:0.5203,0.3038,1;1413:0.5203,0.304,1;1413:0.5203,0.3041,1;1413:0.5203,0.3043,1;1413:0.5203,0.3044,1;1413:0.5203,0.3045,1;1413:0.5203,0.3067,1;1413:0.5204,0.3022,1;1413:0.5204,0.3034,1;1413:0.5204,0.3039,1;1413:0.5204,0.3042,1;1413:0.5204,0.3047,1;1413:0.5204,0.3052,1;1413:0.5205,0.3026,1;1413:0.5205,0.3029,1;1413:0.5205,0.3034,1;1413:0.5205,0.3051,1;1413:0.5205,0.3056,1;1413:0.5205,0.3065,1;1413:0.5206,0.3033,1;1413:0.5206,0.3044,1;1413:0.5206,0.3057,1;1413:0.5206,0.3065,1;1413:0.5207,0.3035,1;1413:0.5207,0.3036,1;1413:0.5207,0.3044,1;1413:0.5207,0.3045,1;1413:0.5207,0.3047,1;1413:0.5207,0.3049,1;1413:0.5207,0.3054,1;1413:0.5208,0.3044,1;1413:0.521,0.3063,1;1413:0.5211,0.3037,1;1413:0.5211,0.3062,1;1413:0.5211,0.3063,1;1413:0.5213,0.3029,1;1413:0.5213,0.3048,1;1413:0.5214,0.3027,1;1413:0.5216,0.3033,1;1413:0.5216,0.3034,1;1413:0.5218,0.3042,1
+SO	143983	H	Mailbox	mailbox	M	1442:0.4774,0.6092,1;1442:0.4787,0.6094,1;1442:0.479,0.6069,1;1442:0.4791,0.6105,1;1442:0.4792,0.6067,1;1442:0.4795,0.611,1;1442:0.4796,0.6116,1;1442:0.4797,0.6065,1;1442:0.4797,0.6085,1;1442:0.4801,0.6094,1;1442:0.4803,0.6106,1;1442:0.4807,0.6097,1;1442:0.4819,0.6077,1;1442:0.4828,0.6093,1;1442:0.4828,0.6095,1;1442:0.4829,0.6092,1;1442:0.4829,0.6098,1;1442:0.483,0.6125,1;1442:0.4831,0.6097,1
+SO	143984	H	Mailbox	mailbox	M	1412:0.4607,0.6373,1;1412:0.4608,0.6348,1;1412:0.4611,0.6363,1;1412:0.4616,0.6359,1;1412:0.4621,0.6354,1;1412:0.4621,0.6358,1;1412:0.4622,0.6315,1;1412:0.4623,0.6351,1;1412:0.4629,0.6316,1;1412:0.4637,0.6346,1;1412:0.464,0.6378,1;1412:0.4648,0.6343,1
+SO	143985	H	Mailbox	mailbox	M	1414:0.4624,0.5731,1;1456:0.4372,0.592,1;1456:0.4376,0.5978,1;1456:0.4391,0.6003,1;1456:0.4392,0.5831,1;1456:0.4393,0.5831,1;1456:0.4403,0.5808,1;1456:0.4403,0.5811,1;1456:0.4412,0.5827,1;1456:0.4413,0.5795,1;1456:0.4414,0.5805,1;1456:0.4415,0.5973,1;1456:0.4418,0.5777,1;1456:0.4419,0.5855,1;1456:0.4423,0.5916,1;1456:0.4429,0.5833,1;1456:0.4429,0.5917,1;1456:0.4436,0.5773,1;1456:0.4439,0.5759,1;1456:0.4445,0.5813,1;1456:0.4447,0.5742,1;1456:0.445,0.5868,1;1456:0.4451,0.6089,1;1456:0.4456,0.5753,1;1456:0.446,0.6009,1;1456:0.4463,0.6027,1;1456:0.4467,0.5864,1;1456:0.4467,0.5876,1;1456:0.4467,0.5883,1;1456:0.4467,0.5962,1;1456:0.4468,0.5901,1;1456:0.4468,0.5936,1;1456:0.4469,0.594,1;1456:0.447,0.5878,1;1456:0.447,0.6058,1;1456:0.4471,0.6058,1;1456:0.4472,0.5916,1;1456:0.4473,0.5771,1;1456:0.4473,0.603,1;1456:0.4475,0.6039,1;1456:0.4478,0.5967,1;1456:0.4481,0.5895,1;1456:0.4481,0.5897,1;1456:0.4481,0.5969,1;1456:0.4483,0.6,1;1456:0.4483,0.6075,1;1456:0.4486,0.5901,1;1456:0.4488,0.5997,1;1456:0.4489,0.5891,1;1456:0.449,0.5976,1;1456:0.4494,0.5913,1;1456:0.4494,0.603,1;1456:0.4495,0.5927,1;1456:0.4501,0.5979,1;1456:0.4502,0.5928,1;1456:0.4505,0.5912,1;1456:0.4514,0.593,1;1456:0.4516,0.59,1;1456:0.4516,0.5909,1;1456:0.4516,0.5958,1;1456:0.4518,0.5914,1;1456:0.4522,0.5856,1;1456:0.4535,0.5915,1;1456:0.4537,0.5858,1;1456:0.4538,0.5896,1;1456:0.4542,0.5883,1;1456:0.4552,0.5892,1;1456:0.4552,0.5904,1;1456:0.4574,0.5878,1;1456:0.4577,0.5877,1;1456:0.4577,0.5879,1;1456:0.4577,0.5882,1;1456:0.4577,0.5884,1;1456:0.4577,0.589,1;1456:0.4578,0.5893,1;1456:0.4604,0.5872,1;1456:0.4605,0.588,1;1456:0.4616,0.5811,1;1456:0.4617,0.5866,1;1456:0.465,0.5856,1;1456:0.465,0.5863,1;1456:0.4651,0.584,1;1456:0.4653,0.584,1;1456:0.4656,0.5863,1;1456:0.4656,0.5885,1;1456:0.4659,0.588,1;1456:0.4662,0.5899,1;1456:0.4668,0.589,1
+SO	143988	H	Mailbox	mailbox	M	1424:0.6215,0.1987,0;1424:0.6216,0.1987,0;1424:0.6217,0.1931,0;1424:0.6222,0.1996,0;1424:0.6225,0.1976,0;1424:0.6231,0.1935,0;1424:0.6232,0.1984,0;1424:0.6234,0.198,0;1424:0.6238,0.1978,0;1424:0.6239,0.1927,0;1424:0.6239,0.1941,0;1424:0.6242,0.1988,0;1424:0.6242,0.2018,0;1424:0.6243,0.1984,0;1424:0.6244,0.199,0;1424:0.6252,0.1957,0;1424:0.6252,0.1967,0;1424:0.6255,0.1947,0;1424:0.6255,0.1993,0;1424:0.6257,0.1954,0;1424:0.6258,0.1938,0;1424:0.6259,0.1922,0;1424:0.6263,0.1915,0;1424:0.6264,0.1925,0
+SO	143989	H	Mailbox	mailbox	M	1421:0.4304,0.4138,0;1421:0.4305,0.4141,0;1421:0.4307,0.4137,0;1421:0.4307,0.4141,0;1421:0.4307,0.4142,0;1421:0.4308,0.4136,0;1421:0.4311,0.418,0;1421:0.4312,0.4182,0;1421:0.4313,0.4191,0;1421:0.4317,0.4197,0;1421:0.4319,0.4137,0;1421:0.4323,0.4107,0;1421:0.4324,0.4131,0;1421:0.4326,0.418,0;1421:0.4327,0.4139,0;1421:0.4327,0.414,0;1421:0.4327,0.4142,0;1421:0.4327,0.4143,0;1421:0.4333,0.415,0;1421:0.4336,0.4132,0;1421:0.4336,0.4168,0;1421:0.4337,0.4177,0;1421:0.4338,0.4154,0;1421:0.4343,0.411,0;1421:0.4345,0.4139,0;1421:0.4345,0.4156,0;1421:0.4346,0.4125,0;1421:0.4346,0.4133,0;1421:0.4346,0.4135,0;1421:0.4347,0.414,0;1421:0.4348,0.415,0;1421:0.4349,0.4104,0;1421:0.435,0.4106,0;1421:0.435,0.4117,0;1421:0.435,0.4172,0;1421:0.4351,0.4133,0;1421:0.4351,0.4157,0;1421:0.4352,0.4125,0;1421:0.4352,0.4155,0;1421:0.4354,0.4119,0;1421:0.4355,0.4142,0;1421:0.436,0.4104,0;1421:0.4366,0.4116,0;1421:0.4368,0.4123,0;1421:0.437,0.4184,0;1421:0.4371,0.412,0;1421:0.4371,0.4124,0;1421:0.4371,0.4127,0;1421:0.4371,0.4145,0;1421:0.4373,0.4128,0;1421:0.4375,0.4166,0
+SO	143990	H	Mailbox	mailbox	M	1415:0.4472,0.223,0;1420:0.6115,0.5299,0;1420:0.6115,0.5303,0;1420:0.6115,0.5316,0;1420:0.6117,0.5329,0;1420:0.6118,0.5284,0;1420:0.6118,0.5289,0;1420:0.6119,0.5281,0;1420:0.6119,0.5285,0;1420:0.612,0.5288,0;1420:0.6122,0.5312,0;1420:0.6123,0.5277,0;1420:0.6123,0.5288,0;1420:0.6124,0.5306,0;1420:0.6126,0.5323,0;1420:0.6128,0.5308,0;1420:0.6128,0.5346,0;1420:0.6129,0.5322,0;1420:0.613,0.5268,0;1420:0.613,0.5307,0;1420:0.613,0.5308,0;1420:0.6131,0.5305,0;1420:0.6131,0.5319,0;1420:0.6132,0.5264,0;1420:0.6134,0.5261,0;1420:0.6134,0.5286,0;1420:0.6136,0.5311,0;1420:0.6136,0.5313,0;1420:0.6136,0.532,0;1420:0.6137,0.531,0;1420:0.6138,0.5286,0;1420:0.6138,0.5296,0;1420:0.6138,0.5299,0;1420:0.614,0.5303,0;1420:0.614,0.5308,0;1420:0.614,0.5309,0;1420:0.6141,0.5358,0;1420:0.6142,0.5337,0;1420:0.6143,0.5305,0;1420:0.6143,0.5325,0;1420:0.6143,0.5337,0;1420:0.6143,0.5341,0;1420:0.6144,0.5326,0;1420:0.6145,0.5349,0;1420:0.6147,0.5326,0;1420:0.6147,0.5356,0;1420:0.6147,0.5359,0;1420:0.6149,0.5356,0;1420:0.6149,0.536,0;1420:0.615,0.5314,0;1420:0.615,0.5338,0;1420:0.615,0.5343,0;1420:0.615,0.5345,0;1420:0.615,0.5359,0;1420:0.6151,0.5313,0;1420:0.6151,0.5316,0;1420:0.6151,0.5327,0;1420:0.6152,0.5314,0;1420:0.6152,0.5324,0;1420:0.6153,0.5328,0;1420:0.6154,0.531,0;1420:0.6155,0.5311,0;1420:0.6155,0.5315,0;1420:0.6156,0.5307,0;1420:0.6156,0.5309,0;1420:0.6157,0.529,0;1420:0.6158,0.5288,0;1420:0.6158,0.529,0;1420:0.6159,0.5291,0;1420:0.6159,0.5302,0;1420:0.616,0.5283,0;1420:0.616,0.5323,0;1420:0.616,0.5327,0;1420:0.616,0.5328,0;1420:0.6163,0.5279,0;1420:0.6164,0.528,0;1420:0.6165,0.5279,0;1420:0.6166,0.5278,0;1420:0.6166,0.53,0;1420:0.6167,0.5279,0;1420:0.6168,0.5277,0;1420:0.6168,0.5353,0;1420:0.617,0.5274,0;1420:0.6172,0.5282,0;1420:0.6174,0.5278,0;1420:0.6182,0.5323,0;1420:0.6184,0.5315,0
+SO	144112	AH	Mailbox	mailbox	M	1446:0.5212,0.2792,1;1446:0.5213,0.2769,1;1446:0.5213,0.2799,1;1446:0.5225,0.2789,1;1446:0.5226,0.2776,1;1446:0.5229,0.2784,1
+SO	144125	AH	Mailbox	mailbox	M	1413:0.6204,0.3907,1;1413:0.6205,0.3917,1;1413:0.6207,0.3928,1;1413:0.6208,0.3923,1;1413:0.6208,0.3933,1;1413:0.6209,0.3898,1;1413:0.6209,0.3899,1;1413:0.6209,0.3925,1;1413:0.621,0.3897,1;1413:0.621,0.3919,1;1413:0.6211,0.3905,1;1413:0.6211,0.3906,1;1413:0.6212,0.3898,1;1413:0.6212,0.3913,1;1413:0.6213,0.3917,1;1413:0.6213,0.392,1;1413:0.6214,0.3906,1;1413:0.6214,0.3917,1;1413:0.6215,0.391,1;1413:0.6216,0.3906,1;1413:0.6217,0.3911,1;1413:0.6218,0.3911,1;1413:0.6218,0.3912,1;1413:0.6218,0.3914,1;1413:0.6221,0.3907,1;1413:0.6221,0.3916,1;1413:0.6221,0.3921,1;1413:0.6222,0.3908,1;1413:0.6224,0.3906,1;1413:0.6225,0.3917,1;1413:0.6225,0.3923,1;1413:0.6228,0.3909,1
+SO	153578	H	Mailbox	mailbox	M	1413:0.4492,0.5864,1;1413:0.4492,0.587,1;1413:0.4493,0.5861,1;1413:0.4495,0.5881,1;1413:0.4498,0.5885,1;1413:0.45,0.5864,1;1413:0.4501,0.5858,1;1413:0.4501,0.5868,1;1413:0.4501,0.5887,1;1413:0.4502,0.5881,1;1413:0.4503,0.5848,1;1413:0.4504,0.5861,1;1413:0.4504,0.5876,1;1413:0.4506,0.5871,1;1413:0.4506,0.5885,1;1413:0.4507,0.5871,1;1413:0.4507,0.5877,1;1413:0.4507,0.5891,1;1413:0.4508,0.5845,1;1413:0.4508,0.5858,1;1413:0.4508,0.587,1;1413:0.4508,0.5887,1;1413:0.4509,0.5853,1;1413:0.451,0.5857,1;1413:0.451,0.5867,1;1413:0.451,0.5887,1;1413:0.4511,0.5864,1;1413:0.4512,0.5846,1;1413:0.4512,0.5863,1;1413:0.4513,0.5862,1;1413:0.4513,0.5869,1;1413:0.4514,0.5846,1;1413:0.4514,0.5872,1;1413:0.4515,0.5858,1;1413:0.4515,0.5862,1;1413:0.4515,0.5871,1;1413:0.4517,0.5868,1;1413:0.4517,0.5886,1;1413:0.4521,0.5859,1;1413:0.4521,0.5861,1;1413:0.4521,0.5867,1;1413:0.4521,0.5868,1;1413:0.4521,0.587,1;1413:0.4521,0.5877,1;1413:0.4522,0.586,1;1413:0.4522,0.5876,1;1413:0.4523,0.5862,1
+SO	153716	A	Mailbox	mailbox	M	1436:0.5269,0.5341,0;1436:0.5272,0.5358,0;1436:0.5287,0.536,0;1436:0.5291,0.5343,0;1436:0.5291,0.5375,0;1436:0.5295,0.5348,0;1436:0.5304,0.5328,0;1436:0.5308,0.5283,0;1436:0.5312,0.5323,0;1436:0.5313,0.5328,0;1436:0.5315,0.5327,0;1436:0.5318,0.5313,0;1436:0.5318,0.533,0;1436:0.5319,0.5335,0;1436:0.5321,0.5316,0;1436:0.5322,0.5274,0;1436:0.5327,0.5322,0;1436:0.5333,0.528,0;1436:0.5338,0.5288,0;1436:0.5341,0.5289,0;1436:0.5344,0.5298,0;1436:0.5345,0.5301,0
+SO	157637	H	Mailbox	mailbox	M	1435:0.4547,0.5431,0
+SO	163645	H	Mailbox	mailbox	M	1434:0.3229,0.2874,0;1434:0.3243,0.2867,0;1434:0.3244,0.2866,0;1434:0.3249,0.2899,0
+SO	164840	H	Mailbox	mailbox	M	1417:0.7342,0.3304,0;1417:0.7353,0.335,0;1417:0.737,0.3312,0;1417:0.7376,0.3357,0;1417:0.7377,0.3316,0
+SO	176324	H	Mailbox	mailbox	M	1441:0.4564,0.5062,1;1441:0.4564,0.5095,1;1441:0.4568,0.5059,1;1441:0.457,0.5089,1;1441:0.4576,0.5072,1;1441:0.4577,0.5086,1;1441:0.4578,0.5053,1;1441:0.4579,0.5069,1;1441:0.4581,0.5102,1;1441:0.4584,0.5052,1;1441:0.4585,0.5092,1;1441:0.4586,0.5052,1;1441:0.4586,0.5085,1;1441:0.4589,0.5084,1;1441:0.459,0.5103,1;1441:0.4591,0.5069,1;1441:0.4593,0.5081,1;1441:0.4595,0.5053,1;1441:0.4599,0.5117,1;1441:0.46,0.5117,1;1441:0.4605,0.5129,1;1441:0.4605,0.5132,1;1441:0.4605,0.5151,1;1441:0.4609,0.5143,1
+SO	178825	AH	Meeting Stone	meetingstone	M	1413:0.4369,0.902,1;1413:0.437,0.8986,1;1413:0.4372,0.8984,1
+SO	178827	AH	Meeting Stone	meetingstone	M	1443:0.3135,0.6197,1;1443:0.318,0.623,1
+SO	178828	AH	Meeting Stone	meetingstone	M	1440:0.1521,0.1526,1
+SO	178834	AH	Meeting Stone	meetingstone	M	1436:0.4115,0.7232,0;1436:0.4123,0.7201,0;1436:0.4151,0.7212,0;1436:0.4168,0.721,0;1436:0.4182,0.7256,0;1436:0.4186,0.7196,0
+SO	178844	AH	Meeting Stone	meetingstone	M	1420:0.8186,0.3891,0
+SO	178845	AH	Meeting Stone	meetingstone	M	1421:0.4588,0.681,0;1421:0.459,0.6805,0;1421:0.4614,0.6779,0;1421:0.4617,0.6779,0;1421:0.4629,0.6802,0;1421:0.4639,0.6786,0
+SO	178864	H	Mailbox	mailbox	M	1440:0.7344,0.6064,1;1440:0.7345,0.6107,1;1440:0.7346,0.6079,1;1440:0.7347,0.6055,1;1440:0.7348,0.612,1;1440:0.7348,0.6123,1;1440:0.735,0.6086,1;1440:0.735,0.6088,1;1440:0.7355,0.6051,1;1440:0.7355,0.6079,1;1440:0.7357,0.6128,1;1440:0.7358,0.6129,1;1440:0.7363,0.6097,1;1440:0.7363,0.6109,1;1440:0.7363,0.613,1;1440:0.7364,0.6102,1;1440:0.7365,0.613,1;1440:0.7366,0.6119,1;1440:0.7368,0.6111,1;1440:0.737,0.6099,1;1440:0.7373,0.6095,1;1440:0.7376,0.6088,1;1440:0.7385,0.6083,1;1440:0.7388,0.6074,1;1440:0.739,0.6085,1;1440:0.739,0.6086,1
+SO	179896	H	Mailbox	mailbox	M	1443:0.2448,0.686,1;1443:0.2482,0.6893,1;1443:0.2486,0.6881,1;1443:0.2489,0.6888,1;1443:0.2492,0.6919,1;1443:0.2499,0.6913,1
+SO	556646	AH	Mailbox	mailbox	M	1424:0.619,0.1987,0;1424:0.6199,0.1991,0;1424:0.6205,0.1996,0;1424:0.6206,0.1984,0;1424:0.6217,0.1984,0;1424:0.6222,0.2013,0;1424:0.6224,0.1984,0;1424:0.6224,0.1998,0;1424:0.6227,0.1983,0;1424:0.6232,0.1984,0;1424:0.6233,0.1998,0;1424:0.6233,0.2012,0;1424:0.6234,0.2,0;1424:0.6234,0.2019,0;1424:0.6236,0.1983,0;1424:0.6236,0.1988,0;1424:0.6237,0.1987,0;1424:0.6237,0.2045,0;1424:0.6239,0.1978,0;1424:0.6239,0.198,0;1424:0.6239,0.1981,0;1424:0.6241,0.2013,0;1424:0.6241,0.2015,0;1424:0.6243,0.2005,0;1424:0.6245,0.1949,0;1424:0.6245,0.1971,0;1424:0.6245,0.2032,0;1424:0.6248,0.1972,0;1424:0.6248,0.1983,0;1424:0.625,0.1992,0;1424:0.6251,0.1959,0;1424:0.6252,0.1975,0;1424:0.6252,0.2031,0;1424:0.6253,0.1941,0;1424:0.6253,0.1952,0;1424:0.6253,0.202,0;1424:0.6255,0.2001,0;1424:0.6256,0.2033,0;1424:0.6257,0.1935,0;1424:0.626,0.1911,0;1424:0.626,0.1918,0;1424:0.626,0.1993,0;1424:0.6261,0.1917,0;1424:0.6261,0.1934,0;1424:0.6263,0.2011,0;1424:0.6264,0.2032,0;1424:0.6269,0.1993,0;1424:0.6287,0.1979,0
+SO	560880	AH	Mailbox	mailbox	M	1416:0.182,0.6553,0
+SO	560886	AH	Mailbox	mailbox	M	1416:0.15,0.6952,0
+SO	561075	AH	Mailbox	mailbox	M	1416:0.1553,0.6326,0;1416:0.1586,0.6346,0
+SO	642744	A	Mailbox	mailbox	M	1453:0.3022,0.4966,0
+SO	644436	H	Mailbox	mailbox	M	1458:0.7057,0.6369,0;1458:0.7058,0.6047,0;1458:0.7061,0.6356,0;1458:0.7067,0.6381,0;1458:0.709,0.639,0;1458:0.7094,0.5927,0;1458:0.7094,0.6023,0;1458:0.713,0.6323,0;1458:0.7131,0.6078,0;1458:0.715,0.6199,0;1458:0.7158,0.6235,0;1458:0.7158,0.6282,0;1458:0.7165,0.623,0;1458:0.7189,0.6124,0;1458:0.7197,0.615,0;1458:0.7252,0.5981,0;1458:0.7299,0.6089,0;1458:0.7305,0.6212,0;1458:0.7306,0.6153,0;1458:0.7307,0.6139,0
+SO	644437	H	Mailbox	mailbox	M	1458:0.6815,0.52,0;1458:0.6818,0.5188,0;1458:0.6899,0.5172,0;1458:0.691,0.5397,0;1458:0.6917,0.5401,0;1458:0.6923,0.4941,0;1458:0.6923,0.5369,0;1458:0.6931,0.4942,0;1458:0.6938,0.4935,0;1458:0.6945,0.5341,0;1458:0.6948,0.4933,0;1458:0.696,0.5313,0;1458:0.6966,0.5066,0;1458:0.6967,0.5275,0;1458:0.6972,0.5259,0;1458:0.6976,0.5268,0;1458:0.6976,0.5275,0;1458:0.6982,0.526,0;1458:0.6984,0.5081,0;1458:0.6986,0.5243,0;1458:0.699,0.5301,0;1458:0.6992,0.5093,0;1458:0.6993,0.5188,0;1458:0.6998,0.503,0;1458:0.6999,0.4977,0;1458:0.7003,0.5109,0;1458:0.7008,0.5222,0;1458:0.7009,0.5168,0;1458:0.7014,0.5126,0;1458:0.7016,0.521,0;1458:0.7019,0.5134,0;1458:0.7023,0.5034,0;1458:0.7035,0.5158,0;1458:0.7035,0.5245,0;1458:0.7041,0.4955,0;1458:0.7063,0.5165,0;1458:0.7066,0.4967,0;1458:0.7085,0.5063,0;1458:0.7088,0.5,0;1458:0.7096,0.5015,0;1458:0.7103,0.5028,0;1458:0.7105,0.5037,0;1458:0.7109,0.5057,0;1458:0.7134,0.5129,0
+SO	644438	H	Mailbox	mailbox	M	1458:0.6078,0.5041,0;1458:0.6092,0.5006,0;1458:0.6093,0.4998,0;1458:0.6103,0.5,0;1458:0.6135,0.495,0;1458:0.6139,0.4969,0;1458:0.6152,0.5018,0;1458:0.6163,0.5204,0;1458:0.6163,0.5215,0;1458:0.6164,0.5069,0;1458:0.6164,0.5163,0;1458:0.6165,0.5147,0;1458:0.6166,0.4989,0;1458:0.6167,0.5087,0;1458:0.6175,0.5084,0;1458:0.6181,0.51,0;1458:0.6181,0.5125,0;1458:0.6185,0.5034,0;1458:0.6185,0.5117,0;1458:0.6185,0.5124,0;1458:0.6185,0.5133,0;1458:0.619,0.5086,0;1458:0.6196,0.5027,0;1458:0.6199,0.5229,0;1458:0.6205,0.4921,0;1458:0.6206,0.4919,0;1458:0.6215,0.5088,0;1458:0.6215,0.5093,0;1458:0.6221,0.4923,0;1458:0.6229,0.5243,0;1458:0.6231,0.5089,0;1458:0.6233,0.4921,0;1458:0.6234,0.495,0;1458:0.6236,0.4924,0;1458:0.6248,0.5246,0;1458:0.6251,0.5245,0;1458:0.6259,0.4926,0;1458:0.626,0.4952,0;1458:0.6266,0.523,0;1458:0.627,0.5112,0;1458:0.6278,0.513,0;1458:0.631,0.5344,0;1458:0.6313,0.5359,0;1458:0.6328,0.5346,0;1458:0.6333,0.5341,0;1458:0.6339,0.5163,0;1458:0.6345,0.5318,0;1458:0.6361,0.5194,0;1458:0.6368,0.5209,0;1458:0.6372,0.5152,0
+SO	644439	H	Mailbox	mailbox	M	1458:0.6065,0.3607,0;1458:0.6072,0.3674,0;1458:0.6081,0.3747,0;1458:0.6095,0.3791,0;1458:0.6102,0.38,0;1458:0.6107,0.3819,0;1458:0.6155,0.3693,0;1458:0.6159,0.3658,0;1458:0.6175,0.3878,0;1458:0.6189,0.3692,0;1458:0.6191,0.3622,0;1458:0.6196,0.3711,0;1458:0.62,0.368,0;1458:0.6202,0.3713,0;1458:0.6205,0.3722,0;1458:0.6207,0.3707,0;1458:0.6211,0.3731,0;1458:0.623,0.3546,0;1458:0.6241,0.3562,0;1458:0.6247,0.3861,0;1458:0.6254,0.3448,0;1458:0.6261,0.3884,0;1458:0.6266,0.3879,0;1458:0.6271,0.3879,0;1458:0.6281,0.3431,0;1458:0.6302,0.3433,0;1458:0.6307,0.3426,0;1458:0.6377,0.3621,0
+SO	644440	H	Mailbox	mailbox	M	1415:0.4488,0.2483,0;1458:0.682,0.3617,0;1458:0.6823,0.362,0;1458:0.6856,0.3487,0;1458:0.686,0.3478,0;1458:0.6868,0.3468,0;1458:0.687,0.3467,0;1458:0.6885,0.3471,0;1458:0.6919,0.3693,0;1458:0.692,0.3678,0;1458:0.6926,0.3884,0;1458:0.6929,0.3579,0;1458:0.6931,0.3564,0;1458:0.694,0.3883,0;1458:0.6946,0.389,0;1458:0.6948,0.3565,0;1458:0.695,0.3893,0;1458:0.6953,0.3566,0;1458:0.6956,0.389,0;1458:0.6958,0.3592,0;1458:0.6968,0.357,0;1458:0.6969,0.357,0;1458:0.6972,0.3897,0;1458:0.6979,0.3627,0;1458:0.6985,0.3713,0;1458:0.6987,0.373,0;1458:0.6991,0.3709,0;1458:0.6993,0.3576,0;1458:0.6993,0.3733,0;1458:0.6995,0.3641,0;1458:0.6995,0.3659,0;1458:0.6995,0.3732,0;1458:0.7,0.3734,0;1458:0.7006,0.3688,0;1458:0.7009,0.383,0;1458:0.701,0.3579,0;1458:0.7024,0.3681,0;1458:0.7026,0.3667,0;1458:0.7026,0.3672,0;1458:0.7035,0.3868,0;1458:0.7045,0.3613,0;1458:0.7048,0.386,0;1458:0.7071,0.3852,0
+SO	644441	H	Mailbox	mailbox	M	1458:0.6487,0.5022,0;1458:0.65,0.4954,0;1458:0.6501,0.4951,0;1458:0.6502,0.4953,0;1458:0.6504,0.4944,0;1458:0.6527,0.4911,0;1458:0.654,0.4906,0;1458:0.6559,0.4909,0;1458:0.656,0.488,0;1458:0.6561,0.4882,0;1458:0.6577,0.4835,0;1458:0.6578,0.4945,0;1458:0.6588,0.5268,0;1458:0.6589,0.4995,0;1458:0.6593,0.4814,0;1458:0.6593,0.4825,0;1458:0.6596,0.4882,0;1458:0.6596,0.5271,0;1458:0.6597,0.482,0;1458:0.6603,0.4815,0;1458:0.6603,0.5276,0;1458:0.6604,0.4824,0;1458:0.6607,0.4982,0;1458:0.6609,0.511,0;1458:0.6611,0.4824,0;1458:0.6613,0.4823,0;1458:0.6614,0.5015,0;1458:0.6617,0.4829,0;1458:0.6618,0.4906,0;1458:0.662,0.5117,0;1458:0.6621,0.5011,0;1458:0.6623,0.4933,0;1458:0.6628,0.4974,0;1458:0.6632,0.4974,0;1458:0.6634,0.4995,0;1458:0.6635,0.4972,0;1458:0.6662,0.4961,0;1458:0.6671,0.4959,0;1458:0.6674,0.4998,0;1458:0.6677,0.503,0;1458:0.6689,0.4961,0;1458:0.6697,0.5007,0;1458:0.6699,0.5011,0;1458:0.6706,0.4991,0;1458:0.6712,0.4936,0;1458:0.6734,0.5036,0;1458:0.6748,0.5056,0;1458:0.6769,0.4902,0;1458:0.6771,0.4912,0;1458:0.6772,0.5035,0;1458:0.6782,0.4913,0;1458:0.6784,0.5024,0;1458:0.6798,0.5088,0;1458:0.6799,0.5073,0;1458:0.68,0.5143,0
+SO	644488	H	Mailbox	mailbox	M	1458:0.6652,0.3852,0;1458:0.6683,0.3902,0;1458:0.6718,0.3879,0;1458:0.673,0.3856,0;1458:0.6735,0.3853,0;1458:0.6743,0.3826,0;1458:0.6745,0.3903,0;1458:0.675,0.3842,0;1458:0.6759,0.3869,0;1458:0.6761,0.3908,0;1458:0.6764,0.3829,0;1458:0.677,0.3846,0;1458:0.6782,0.385,0;1458:0.6785,0.3845,0;1458:0.6787,0.3853,0;1458:0.6796,0.3894,0;1458:0.6803,0.3898,0;1458:0.6835,0.3947,0;1458:0.6839,0.3929,0;1458:0.6843,0.3919,0;1458:0.6872,0.406,0
+SO	650593	A	Mailbox	mailbox	M	1455:0.3202,0.6524,0;1455:0.3242,0.6723,0;1455:0.3245,0.6497,0
+SO	650666	A	Mailbox	mailbox	M	1455:0.7322,0.5068,0;1455:0.7378,0.5076,0;1455:0.7399,0.5028,0
+SO	650720	A	Meeting Stone	meetingstone	M	1455:0.2862,0.4744,0;1455:0.2977,0.4677,0
+SO	651604	AH	Mailbox	mailbox	M	1416:0.1279,0.5206,0
+SO	652323	AH	Mailbox	mailbox	M	2521:0.4309,0.4429,2991;2521:0.4309,0.4434,2991;2521:0.4318,0.4418,2991;2521:0.4318,0.443,2991;2521:0.4321,0.4425,2991;2521:0.4323,0.4427,2991;2521:0.4324,0.4419,2991;2521:0.433,0.4393,2991;2521:0.4331,0.4401,2991;2521:0.4336,0.4408,2991;2521:0.4336,0.4412,2991;2521:0.4337,0.4428,2991;2521:0.4338,0.4438,2991;2521:0.4339,0.4425,2991;2521:0.4341,0.4431,2991;2521:0.4342,0.4423,2991;2521:0.4344,0.4426,2991;2521:0.4346,0.4456,2991;2521:0.4348,0.4454,2991;2521:0.435,0.443,2991;2521:0.4355,0.4442,2991;2521:0.4359,0.4431,2991;2521:0.436,0.4423,2991
+SO	652324	AH	Mailbox	mailbox	M	2521:0.6206,0.7379,2991;2521:0.6217,0.7355,2991;2521:0.6217,0.7386,2991;2521:0.6217,0.7392,2991;2521:0.6218,0.7338,2991;2521:0.6218,0.734,2991;2521:0.6219,0.7338,2991;2521:0.622,0.7352,2991;2521:0.622,0.7366,2991;2521:0.6221,0.7337,2991;2521:0.6221,0.7348,2991;2521:0.6222,0.7356,2991;2521:0.6222,0.7386,2991;2521:0.6222,0.7397,2991;2521:0.6223,0.7361,2991;2521:0.6223,0.7368,2991;2521:0.6223,0.7387,2991;2521:0.6224,0.7366,2991;2521:0.6225,0.7382,2991;2521:0.6226,0.7412,2991;2521:0.6229,0.7385,2991;2521:0.6233,0.7372,2991;2521:0.6235,0.7367,2991;2521:0.6237,0.7364,2991;2521:0.6241,0.7357,2991;2521:0.6241,0.7375,2991;2521:0.6243,0.7368,2991;2521:0.6255,0.7381,2991
+SO	656748	AH	Mailbox	mailbox	M	1434:0.2716,0.7709,0
+SO	658827	H	Mailbox	mailbox	M	1412:0.3361,0.2218,1;1412:0.3369,0.2164,1;1412:0.3369,0.2183,1;1412:0.3369,0.2198,1;1412:0.3374,0.2191,1;1412:0.3382,0.2179,1;1412:0.3385,0.2158,1;1412:0.3385,0.2161,1;1412:0.3389,0.2194,1;1412:0.3389,0.2198,1;1412:0.3391,0.2189,1;1412:0.3391,0.2206,1;1412:0.3393,0.2199,1;1412:0.3407,0.2196,1
+SO	658919	H	Mailbox	mailbox	M	1414:0.5841,0.4542,1;1414:0.5842,0.4542,1;1454:0.5253,0.6583,1;1454:0.5258,0.6644,1;1454:0.5261,0.6566,1;1454:0.5261,0.6641,1;1454:0.5265,0.6506,1;1454:0.5265,0.657,1;1454:0.5267,0.6507,1;1454:0.5268,0.6497,1;1454:0.5269,0.6503,1;1454:0.5269,0.6634,1;1454:0.5269,0.6678,1;1454:0.527,0.6518,1;1454:0.5274,0.6527,1;1454:0.5275,0.6679,1;1454:0.5279,0.6474,1;1454:0.5284,0.6674,1;1454:0.5285,0.6464,1;1454:0.5285,0.6699,1;1454:0.5286,0.6481,1;1454:0.5293,0.6713,1;1454:0.5297,0.6454,1;1454:0.5297,0.6456,1;1454:0.5308,0.6533,1;1454:0.531,0.6468,1;1454:0.531,0.6597,1;1454:0.5312,0.6699,1;1454:0.5314,0.6473,1;1454:0.5316,0.6578,1;1454:0.5323,0.6732,1;1454:0.5324,0.6508,1;1454:0.5326,0.6552,1;1454:0.5327,0.6559,1;1454:0.5329,0.6565,1;1454:0.533,0.6587,1;1454:0.533,0.662,1;1454:0.5332,0.6551,1;1454:0.5333,0.6549,1;1454:0.5333,0.658,1;1454:0.5338,0.6482,1;1454:0.5339,0.6564,1;1454:0.5341,0.6479,1;1454:0.5343,0.661,1;1454:0.5344,0.6471,1;1454:0.5346,0.6601,1;1454:0.5347,0.6607,1;1454:0.5348,0.6473,1;1454:0.5353,0.6592,1;1454:0.5357,0.6443,1;1454:0.5358,0.6447,1;1454:0.5362,0.6477,1;1454:0.5364,0.6443,1;1454:0.5368,0.6472,1;1454:0.5378,0.6426,1;1454:0.5388,0.6461,1
+SO	658920	H	Mailbox	mailbox	M	1454:0.3769,0.7562,1;1454:0.3788,0.7528,1;1454:0.3798,0.7644,1;1454:0.3804,0.7506,1;1454:0.3806,0.7549,1;1454:0.3812,0.7544,1;1454:0.3823,0.7563,1;1454:0.3825,0.7501,1;1454:0.3833,0.7428,1;1454:0.3838,0.7643,1;1454:0.3843,0.7645,1;1454:0.3844,0.7476,1;1454:0.3851,0.7395,1;1454:0.3852,0.745,1;1454:0.389,0.7356,1;1454:0.3915,0.7553,1
+SO	658921	H	Mailbox	mailbox	M	1454:0.8123,0.2184,1;1454:0.8127,0.2181,1;1454:0.8139,0.2253,1;1454:0.8164,0.2279,1
+SO	658922	H	Mailbox	mailbox	M	1454:0.4735,0.3809,1;1454:0.474,0.3743,1;1454:0.4752,0.3691,1;1454:0.4757,0.3682,1;1454:0.4767,0.3728,1;1454:0.477,0.3662,1;1454:0.4787,0.3795,1;1454:0.4803,0.3633,1;1454:0.4808,0.3676,1;1454:0.4818,0.3789,1;1454:0.4852,0.3745,1;1454:0.4896,0.3764,1;1454:0.4933,0.3812,1
+SO	658923	H	Mailbox	mailbox	M	1454:0.5067,0.5902,1;1454:0.5072,0.5945,1;1454:0.5074,0.5871,1;1454:0.5074,0.5934,1;1454:0.5076,0.5929,1;1454:0.5078,0.5953,1;1454:0.5079,0.5988,1;1454:0.508,0.599,1;1454:0.5082,0.5977,1;1454:0.5085,0.5865,1;1454:0.5085,0.5993,1;1454:0.5095,0.6026,1;1454:0.5095,0.6031,1;1454:0.5096,0.5809,1;1454:0.5098,0.6039,1;1454:0.51,0.5945,1;1454:0.5104,0.6024,1;1454:0.5105,0.5898,1;1454:0.5105,0.6029,1;1454:0.5106,0.6033,1;1454:0.5114,0.5782,1;1454:0.5119,0.59,1;1454:0.5131,0.5959,1;1454:0.5132,0.596,1;1454:0.5133,0.5961,1;1454:0.5135,0.5962,1;1454:0.5136,0.5921,1;1454:0.5136,0.5962,1;1454:0.5138,0.5911,1;1454:0.5139,0.5962,1;1454:0.5141,0.5897,1;1454:0.5143,0.5885,1;1454:0.5146,0.593,1;1454:0.5147,0.5869,1;1454:0.5147,0.5893,1;1454:0.5149,0.5858,1;1454:0.5149,0.5861,1;1454:0.5152,0.5923,1;1454:0.5154,0.5933,1;1454:0.5163,0.5849,1;1454:0.5171,0.5905,1;1454:0.5172,0.5858,1;1454:0.5182,0.588,1;1454:0.5185,0.586,1;1454:0.5187,0.5862,1;1454:0.5188,0.5862,1;1454:0.5189,0.5763,1;1454:0.5192,0.5828,1;1454:0.5193,0.5864,1;1454:0.5197,0.5871,1;1454:0.52,0.5758,1;1454:0.52,0.5867,1;1454:0.5205,0.5758,1;1454:0.5212,0.577,1;1454:0.5213,0.5831,1;1454:0.5214,0.5764,1;1454:0.5216,0.5834,1;1454:0.5227,0.5786,1;1454:0.523,0.5774,1;1454:0.5231,0.5786,1;1454:0.5238,0.5791,1;1454:0.5244,0.5787,1;1454:0.5246,0.5803,1;1454:0.5256,0.5801,1
+SO	658924	H	Mailbox	mailbox	M	1454:0.5973,0.5542,1;1454:0.5977,0.5569,1;1454:0.5984,0.5564,1;1454:0.5985,0.55,1;1454:0.5987,0.5472,1;1454:0.5989,0.5597,1;1454:0.6012,0.5428,1;1454:0.6022,0.5426,1;1454:0.6046,0.549,1;1454:0.605,0.5531,1
+SO	658925	H	Mailbox	mailbox	M	1454:0.4468,0.5475,1;1454:0.4473,0.5508,1;1454:0.4476,0.5496,1;1454:0.4501,0.5454,1;1454:0.4511,0.5443,1;1454:0.4516,0.5448,1;1454:0.4521,0.5409,1;1454:0.454,0.5414,1;1454:0.4551,0.5407,1;1454:0.4616,0.5315,1
+SO	658926	H	Mailbox	mailbox	M	1454:0.5077,0.4736,1;1454:0.5081,0.4706,1;1454:0.5084,0.4714,1;1454:0.5126,0.4608,1;1454:0.5163,0.4637,1;1454:0.5166,0.4679,1;1454:0.517,0.4659,1;1454:0.5186,0.4533,1;1454:0.5189,0.4583,1;1454:0.519,0.4637,1;1454:0.5199,0.4543,1;1454:0.5206,0.4543,1;1454:0.5208,0.454,1;1454:0.522,0.4551,1;1454:0.5228,0.4545,1
+SO	658927	H	Mailbox	mailbox	M	1454:0.4834,0.7148,1;1454:0.4836,0.713,1;1454:0.4836,0.7143,1;1454:0.4842,0.7188,1;1454:0.4876,0.7119,1;1454:0.4877,0.7129,1;1454:0.4904,0.7116,1;1454:0.4907,0.7142,1;1454:0.4908,0.7158,1;1454:0.491,0.7175,1;1454:0.4918,0.7132,1;1454:0.4932,0.7147,1;1454:0.4937,0.6999,1;1454:0.496,0.7146,1;1454:0.4972,0.7143,1;1454:0.4976,0.7122,1;1454:0.4985,0.7117,1;1454:0.4987,0.7043,1;1454:0.4988,0.7037,1;1454:0.4994,0.7008,1;1454:0.4995,0.7006,1;1454:0.5003,0.717,1;1454:0.501,0.7104,1;1454:0.5035,0.7118,1;1454:0.5042,0.7104,1;1454:0.5043,0.7047,1;1454:0.5055,0.7081,1;1454:0.5055,0.7082,1;1454:0.5055,0.7091,1;1454:0.5057,0.7125,1
+SO	658970	H	Mailbox	mailbox	M	1414:0.5874,0.4444,1;1454:0.6114,0.4022,1;1454:0.6115,0.4062,1;1454:0.6116,0.4056,1;1454:0.6119,0.4107,1;1454:0.6135,0.3991,1;1454:0.6137,0.4087,1;1454:0.6146,0.415,1;1454:0.6147,0.4173,1;1454:0.6156,0.4136,1;1454:0.6156,0.4146,1;1454:0.616,0.415,1;1454:0.6168,0.4107,1;1454:0.6173,0.4041,1;1454:0.6177,0.405,1;1454:0.6177,0.4139,1;1454:0.6177,0.4145,1;1454:0.6185,0.4147,1;1454:0.6191,0.4081,1;1454:0.6193,0.4086,1;1454:0.6195,0.4091,1;1454:0.6198,0.4088,1;1454:0.6199,0.4066,1;1454:0.6202,0.4107,1;1454:0.6203,0.4038,1;1454:0.6206,0.4089,1;1454:0.6208,0.409,1;1454:0.6209,0.4097,1;1454:0.6214,0.4013,1;1454:0.6215,0.4011,1;1454:0.6228,0.3999,1;1454:0.6236,0.3978,1;1454:0.6236,0.4013,1;1454:0.6239,0.4095,1;1454:0.6245,0.3948,1;1454:0.6247,0.3986,1;1454:0.6249,0.41,1;1454:0.6257,0.3967,1;1454:0.6261,0.3973,1;1454:0.6265,0.4194,1;1454:0.6279,0.3935,1;1454:0.6288,0.3922,1;1454:0.6289,0.392,1;1454:0.6291,0.3939,1
+SO	659159	H	Mailbox	mailbox	M	1414:0.5834,0.456,1;1454:0.4977,0.7056,1;1454:0.4977,0.7137,1;1454:0.4981,0.6999,1;1454:0.4986,0.6987,1;1454:0.4987,0.7155,1;1454:0.4989,0.7157,1;1454:0.4992,0.7068,1;1454:0.4998,0.7023,1;1454:0.5002,0.7054,1;1454:0.5006,0.7082,1;1454:0.5008,0.7093,1;1454:0.5013,0.7065,1;1454:0.5016,0.7073,1;1454:0.5018,0.7103,1;1454:0.5021,0.7113,1;1454:0.5026,0.7154,1;1454:0.5028,0.7092,1;1454:0.5029,0.7085,1;1454:0.5038,0.7035,1;1454:0.5038,0.7135,1;1454:0.5041,0.708,1;1454:0.5046,0.7088,1;1454:0.5053,0.7098,1;1454:0.5056,0.7103,1;1454:0.506,0.7084,1;1454:0.5061,0.7077,1;1454:0.5061,0.7115,1;1454:0.5063,0.7112,1;1454:0.5064,0.7113,1;1454:0.5065,0.71,1;1454:0.5065,0.716,1;1454:0.5068,0.704,1;1454:0.5069,0.7023,1;1454:0.507,0.7069,1;1454:0.5072,0.7074,1;1454:0.5072,0.7144,1;1454:0.5073,0.7062,1;1454:0.5074,0.709,1;1454:0.5075,0.708,1;1454:0.5077,0.7018,1;1454:0.5078,0.6997,1;1454:0.5078,0.7124,1;1454:0.5079,0.7061,1;1454:0.5081,0.7108,1;1454:0.5082,0.7201,1;1454:0.5083,0.6878,1;1454:0.5083,0.6975,1;1454:0.5084,0.7024,1;1454:0.5086,0.6988,1;1454:0.5086,0.6998,1;1454:0.5086,0.7042,1;1454:0.5088,0.7025,1;1454:0.5089,0.6982,1;1454:0.5089,0.6997,1;1454:0.5089,0.7084,1;1454:0.5089,0.72,1;1454:0.5091,0.6987,1;1454:0.5091,0.7091,1;1454:0.5092,0.6894,1;1454:0.5092,0.7088,1;1454:0.5094,0.699,1;1454:0.5097,0.704,1;1454:0.5097,0.7055,1;1454:0.5098,0.7023,1;1454:0.5101,0.6893,1;1454:0.5102,0.7053,1;1454:0.5103,0.7049,1;1454:0.5104,0.7006,1;1454:0.5106,0.7123,1;1454:0.5107,0.6932,1;1454:0.5108,0.7035,1;1454:0.5108,0.7065,1;1454:0.5109,0.7052,1;1454:0.5109,0.7097,1;1454:0.511,0.7063,1;1454:0.5111,0.6965,1;1454:0.5114,0.7018,1;1454:0.5115,0.719,1;1454:0.5119,0.689,1;1454:0.5119,0.6935,1;1454:0.512,0.6902,1;1454:0.5121,0.7022,1;1454:0.5121,0.703,1;1454:0.5123,0.6898,1;1454:0.5123,0.7032,1;1454:0.5126,0.6977,1;1454:0.5126,0.7037,1;1454:0.5127,0.6927,1;1454:0.5129,0.6986,1;1454:0.5135,0.708,1;1454:0.5135,0.7149,1;1454:0.5136,0.6923,1;1454:0.5139,0.6919,1;1454:0.5147,0.6967,1;1454:0.5148,0.703,1;1454:0.5148,0.7156,1;1454:0.5151,0.7156,1;1454:0.5154,0.6931,1;1454:0.5156,0.6959,1;1454:0.5161,0.6973,1;1454:0.5161,0.7135,1;1454:0.5168,0.7014,1;1454:0.5172,0.6977,1
+SO	659181	H	Meeting Stone	meetingstone	M	1414:0.5835,0.4481,1;1414:0.5837,0.4479,1;1454:0.5079,0.4829,1;1454:0.5097,0.501,1;1454:0.5098,0.4872,1;1454:0.5099,0.4825,1;1454:0.5103,0.4816,1;1454:0.5117,0.4813,1;1454:0.5122,0.4945,1;1454:0.5125,0.5038,1;1454:0.5129,0.4826,1;1454:0.5178,0.4953,1;1454:0.5179,0.4956,1
+SO	659816	AH	Mailbox	mailbox	M	2548:0.7844,0.5339,0;2548:0.7848,0.535,0;2548:0.7852,0.5362,0;2548:0.7853,0.5376,0
+SO	696264	A	Mailbox	mailbox	M	1415:0.4361,0.6939,0;1453:0.6082,0.7098,0;1453:0.6097,0.6999,0;1453:0.6115,0.6994,0;1453:0.6124,0.7003,0;1453:0.6138,0.7005,0;1453:0.6146,0.7015,0;1453:0.6158,0.7065,0;1453:0.616,0.6944,0;1453:0.6166,0.7067,0;1453:0.6168,0.7015,0;1453:0.6168,0.7095,0;1453:0.617,0.7079,0;1453:0.6171,0.7086,0;1453:0.6171,0.7088,0;1453:0.6173,0.7098,0;1453:0.6175,0.7058,0;1453:0.6178,0.7018,0;1453:0.6186,0.6953,0;1453:0.6186,0.7035,0;1453:0.6186,0.7089,0;1453:0.6188,0.7048,0;1453:0.619,0.7072,0;1453:0.6194,0.711,0;1453:0.6213,0.7171,0;1453:0.6228,0.7141,0;1453:0.6233,0.7126,0;1453:0.6241,0.7048,0;1453:0.6241,0.7049,0
+SO	696265	A	Mailbox	mailbox	M	1453:0.6194,0.7565,0;1453:0.6202,0.758,0;1453:0.6203,0.7417,0;1453:0.6206,0.7385,0;1453:0.6207,0.7519,0;1453:0.6213,0.7584,0;1453:0.6215,0.7441,0;1453:0.6216,0.7355,0;1453:0.6219,0.7479,0;1453:0.622,0.7357,0;1453:0.6224,0.7491,0;1453:0.623,0.7525,0;1453:0.6279,0.7449,0;1453:0.6285,0.742,0;1453:0.6305,0.7457,0;1453:0.6318,0.7451,0;1453:0.6325,0.7473,0
+SO	696266	A	Mailbox	mailbox	M	1453:0.7213,0.4793,0;1453:0.7218,0.4938,0
+SO	696267	A	Mailbox	mailbox	M	1453:0.7545,0.6342,0;1453:0.7654,0.6479,0
+SO	696270	A	Mailbox	mailbox	M	1453:0.5423,0.5649,0
+SO	696273	A	Mailbox	mailbox	M	1453:0.453,0.5463,0
+SO	696276	A	Mailbox	mailbox	M	1453:0.5682,0.708,0;1453:0.5734,0.7241,0
+SO	696277	A	Mailbox	mailbox	M	1453:0.538,0.6266,0;1453:0.5424,0.6292,0
+SO	696278	A	Mailbox	mailbox	M	1453:0.6103,0.504,0;1453:0.6131,0.514,0
+SO	696279	A	Mailbox	mailbox	M	1453:0.6812,0.5034,0
+SO	696280	A	Mailbox	mailbox	M	1453:0.6069,0.4295,0;1453:0.6113,0.4344,0;1453:0.6129,0.446,0
+SO	696281	A	Mailbox	mailbox	M	1453:0.6613,0.6435,0;1453:0.6621,0.6432,0;1453:0.6631,0.6424,0;1453:0.6672,0.6543,0;1453:0.6717,0.645,0;1453:0.6718,0.6441,0
+SO	696374	A	Mailbox	mailbox	M	1453:0.7372,0.555,0
+SO	696751	A	Mailbox	mailbox	M	1453:0.6154,0.7482,0;1453:0.6162,0.7514,0;1453:0.6164,0.7554,0;1453:0.6168,0.7614,0;1453:0.6169,0.7613,0;1453:0.6171,0.7595,0;1453:0.6172,0.7614,0;1453:0.6174,0.7622,0;1453:0.6175,0.7605,0;1453:0.6184,0.7553,0;1453:0.6196,0.7604,0;1453:0.6197,0.7606,0;1453:0.6205,0.7498,0;1453:0.6206,0.7499,0;1453:0.6207,0.7672,0;1453:0.6229,0.7679,0;1453:0.6235,0.7664,0
+SO	700632	H	Meeting Stone	meetingstone	M	1421:0.6939,0.448,0
+SO	703257	AH	Mailbox	mailbox	M	2521:0.5812,0.7653,2991;2521:0.5816,0.7609,2991;2521:0.5822,0.765,2991;2521:0.5828,0.7646,2991;2521:0.5829,0.765,2991;2521:0.583,0.7663,2991;2521:0.583,0.7685,2991;2521:0.5835,0.7641,2991;2521:0.5839,0.7634,2991
+SO	703896	A	Mailbox	mailbox	M	1414:0.401,0.1205,1;1457:0.5774,0.567,1;1457:0.5784,0.5623,1;1457:0.5802,0.5477,1;1457:0.5833,0.5649,1;1457:0.5864,0.5537,1;1457:0.5892,0.5693,1;1457:0.5918,0.563,1;1457:0.5942,0.5618,1;1457:0.5965,0.5594,1;1457:0.6018,0.5502,1;1457:0.6037,0.5575,1
+]==]
+-- END GENERATED BASE SERVICES
