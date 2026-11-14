@@ -58,6 +58,15 @@ def main():
             after=run(script,'reload',state,faction=faction)
             assert before==after,faction+' real identities changed after reload'
             run(script,'import',state,faction=faction)
+        script=tmp/'passive.lua'
+        script.write_text(lua_prelude()+(ROOT/'tests/discovery_passive_trainers.lua').read_text())
+        for faction in ('Alliance','Horde'):
+            for source in ('personal','import'):
+                for path in ('merge','ticker'):
+                    state=tmp/(faction+source+path+'.lua')
+                    before=run(script,'observe',state,source,path,faction=faction)
+                    after=run(script,'reload',state,source,path,faction=faction)
+                    assert before==after,'passive trainer changed after fresh-interpreter reload'
         print('Discovery roundtrip: 60 source/reaction/access cases x both factions; fresh VMs identical')
 
 

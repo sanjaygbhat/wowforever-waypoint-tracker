@@ -19,8 +19,8 @@ Trainers.additionalServices = { trainer_pet_hunter = true }
 for key in pairs(Trainers.classes) do Trainers.services["trainer_class_" .. key] = true end
 for _, p in ipairs(Trainers.professions) do Trainers.services["trainer_profession_" .. p.key] = true end
 
--- Created only by a trainer request. Keep text parsing out of login and out
--- of the candidate loop; merges invalidate resolved entries and corrections.
+-- Parsed on demand for trainer queries and discovery comparisons.
+-- Merges invalidate resolved entries and corrections.
 local index
 function Trainers.Index(generation)
     local data = WaypointTrackerData
@@ -42,13 +42,15 @@ function Trainers.Index(generation)
         return index
     end
     index = { generation = generation, roster = roster, locations = locations,
-        services = {}, positions = {}, entries = {}, pending = {} }
+        services = {}, positions = {}, entries = {}, pending = {}, members = {} }
     for line in roster:gmatch("[^\n]+") do
         local service, values = line:match("^([^\t]+)\t(.+)$")
         if Trainers.services[service] or Trainers.additionalServices[service] then
             local list = {}
             for id, fac in values:gmatch("(%d+):(%a*)") do
-                list[#list + 1] = { id = tonumber(id), fac = fac }
+                id = tonumber(id)
+                list[#list + 1] = { id = id, fac = fac }
+                index.members[id] = true
             end
             index.services[service] = list
         end
@@ -72,7 +74,7 @@ function Trainers.Index(generation)
                     end
                 end
             end
-            index.positions[id] = { name = ns.CleanText(name) or "", points = points,
+            index.positions[id] = { name = name, points = points,
                 observed = mode == "observed" or mode == "player" }
         end
     end

@@ -17,6 +17,8 @@ UnitFactionGroup=function()return 'Alliance'end
 local first=DB.TrainerEntries('trainer_weapon');assert(#first==1 and first[1].id==991001)
 local index=ns.Trainers.Index(DB.generation)
 assert(#index.services.trainer_weapon==3 and index.positions[991001])
+assert(index.members[991001] and index.members[991004] and not index.members[991099],
+    "discovery comparisons reuse exact roster membership")
 for i=1,100 do
  local entries=DB.TrainerEntries('trainer_weapon')
  assert(entries[1]==first[1] and ns.Trainers.Index(DB.generation)==index,'warm requests reuse parsed text and resolved fallback')

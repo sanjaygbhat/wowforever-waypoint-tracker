@@ -58,14 +58,16 @@ local function Lines(s)
 end
 
 -- Keep the supplement as text until a service or a discovery needs its facts.
-local supplementSource, supplementCache
+local EMPTY = {}
+local supplementSource, supplementCache, supplementLines
 local function ServiceRows(service, kind, id)
     local text = WaypointTrackerData and WaypointTrackerData.serviceSupplement or ""
     if text ~= supplementSource then
-        supplementSource, supplementCache = text, {}
+        supplementSource, supplementCache, supplementLines = text, {}, nil
     end
     local key = service or kind .. id
     if supplementCache[key] then return supplementCache[key] end
+    if not service and supplementLines and not supplementLines[key] then return EMPTY end
     local rows = {}
     local function Add(line)
         if service then
@@ -84,16 +86,22 @@ local function ServiceRows(service, kind, id)
     if service then
         for line in text:gmatch("[^\n]+") do Add(line) end
     else
-        local prefix = (kind == "npc" and "SN" or "SO") .. "\t" .. id .. "\t"
-        local pos = 1
-        while true do
-            local first = text:find(prefix, pos, true)
-            if not first then break end
-            local last = text:find("\n", first, true) or (#text + 1)
-            if first == 1 or text:sub(first - 1, first - 1) == "\n" then Add(text:sub(first, last - 1)) end
-            pos = last + 1
+        -- Index text once, then parse only identities with discoveries.
+        if not supplementLines then
+            supplementLines = {}
+            for line in text:gmatch("[^\n]+") do
+                local tag, rid = line:match("^S([NO])\t(%d+)\t")
+                if rid then
+                    local identity = (tag == "N" and "npc" or "object") .. rid
+                    local list = supplementLines[identity] or {}
+                    supplementLines[identity] = list
+                    list[#list + 1] = line
+                end
+            end
         end
+        for _, line in ipairs(supplementLines[key] or {}) do Add(line) end
     end
+    if not service and #rows == 0 then rows = EMPTY end
     supplementCache[key] = rows
     return rows
 end
@@ -286,7 +294,7 @@ function DB.Load()
         WaypointTrackerData.forever = nil
     end
     -- learned data lives in SavedVariables: if it's damaged, Find still works
-    ns.Call(DB.MergeLearned)
+    ns.Call(DB.MergeLearned, true)
     if not shipped then
         return true, "missing"
     end
@@ -522,6 +530,8 @@ local function SupplementFacts(ship, kind, id)
         -- A newly created entry's name came from the discovery, not shipping.
         if ship.fresh or ship.name == "" then ship.name = row.name end
         ship.fresh = false
+        if ship.services == EMPTY then ship.services = {} end
+        if ship.access == EMPTY then ship.access = {} end
         for service in row.services:gmatch("[^,]+") do
             ship.services[service] = true
             ship.access[service] = ns.Trainers.MergeAccess(ship.access[service], row.fac)
@@ -544,10 +554,12 @@ function DB.Snapshot(e, created)
         end
         return ship
     end
-    local services, access = {}, {}
-    for service in pairs(e.svc or {}) do services[service] = true end
-    for service, fac in pairs(e.svcAccess or {}) do access[service] = fac end
-    return SupplementFacts({ fresh = created, findFresh = created or e.name == "", name = e.name, title = e.title, spots = #(e.extra or {}),
+    local services, access = e.svc and {} or EMPTY, e.svcAccess and {} or EMPTY
+    for service in pairs(e.svc or EMPTY) do services[service] = true end
+    for service, fac in pairs(e.svcAccess or EMPTY) do access[service] = fac end
+    local extra = e.extra and {} or EMPTY
+    for _, p in ipairs(e.extra or EMPTY) do extra[#extra + 1] = p end
+    return SupplementFacts({ extra = extra, fresh = created, findFresh = created or e.name == "", name = e.name, title = e.title, spots = #(e.extra or {}),
         enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }, e.kind, e.id)
 end
 
@@ -774,7 +786,7 @@ local function MergeStore(st, source)
 end
 
 -- (Re)adds discoveries. Safe to call again after learning more.
-function DB.MergeLearned()
+function DB.MergeLearned(deferCompaction)
     if not DB.ready then
         return
     end
@@ -817,7 +829,7 @@ function DB.MergeLearned()
     local learned = ns.Learn and ns.Learn.Store(true)
     MergeStore(learned, "you")
     -- keep only what adds to the database in your saved discoveries
-    if learned and ns.Learn.Compact then
+    if learned and ns.Learn.Compact and not deferCompaction then
         ns.Learn.Compact(true)
     end
     -- mark what was added so the next merge can take it out again
@@ -838,7 +850,7 @@ end)
 function DB.MergeIfLearned()
     if learnedSinceMerge and DB.ready then
         learnedSinceMerge = false
-        ns.Call(DB.MergeLearned)
+        ns.Call(DB.MergeLearned, true)
     end
 end
 
@@ -847,10 +859,10 @@ end
 -- name (both in the client's language), so they match WoW Forever's maps.
 -- ---------------------------------------------------------------------------
 local areaMap = {}
-function DB.MapForArea(area)
+function DB.MapForArea(area, treeOnly)
     local cached = areaMap[area]
-    if cached ~= nil then
-        return cached or nil
+    if cached then
+        return cached
     end
     local names = {}
     if C_Map.GetAreaInfo then
@@ -875,13 +887,13 @@ function DB.MapForArea(area)
     for _, name in ipairs(names) do
         local key = Geo.Squash(name)
         found = Match(zones, key)
-        if not found then
+        if not found and not treeOnly then
             zones = Geo.GetZoneList()
             found = Match(zones, key)
         end
         if found then break end
     end
-    areaMap[area] = found
+    if found or not treeOnly then areaMap[area] = found end
     return found or nil
 end
 
@@ -947,6 +959,7 @@ function DB.Points(e)
     if e.points then
         return e.points
     end
+    if e.classicCoords ~= e.coords then e.classic = nil end
     local pts, curated, seen = {}, {}, {}
     for _, w in ipairs(e.world or {}) do
         local x, y = Geo.WorldToMap(w[1], w[3], w[4], w[2] ~= 0 and w[2] or nil)
@@ -963,7 +976,7 @@ function DB.Points(e)
             seen[p.m] = true
         end
     end
-    for m, list in pairs(ClassicPoints(e)) do
+    for m, list in pairs(e.classic or ClassicPoints(e)) do
         if not curated[m] and not (seen[m] and #list <= MOVED_NPC_SPOTS) then
             for _, p in ipairs(list) do
                 pts[#pts + 1] = p
@@ -992,6 +1005,8 @@ function DB.Points(e)
     return pts
 end
 
+local FlightAliases
+
 -- Does something you discovered add to what the database knows? Sharing
 -- leaves out what it already has. kind "npc"/"object" (value: your entry),
 -- "drop"/"sold" (id: the item, value: "U123"/"O45").
@@ -1010,11 +1025,9 @@ function DB.AddsSomething(kind, id, value, cachedOnly)
     if type(value) ~= "table" then return true end
     -- Service text alone cannot reconstruct a Find identity on next login.
     if not e then return true end
-    -- Tickers keep observations until an explicit query has resolved the map.
-    if cachedOnly then
-        for area in (e.coords or ""):gmatch("(%d+):") do
-            if areaMap[tonumber(area)] == nil then return true end
-        end
+    -- Tickers resolve through the native tree only; unavailable areas retry.
+    for area in (e.coords or ""):gmatch("(%d+):") do
+        if not DB.MapForArea(tonumber(area), cachedOnly) then return true, true end
     end
     e.ship = e.ship or DB.Snapshot(e, false)
     local ship = SupplementFacts(e.ship, kind, id)
@@ -1027,11 +1040,11 @@ function DB.AddsSomething(kind, id, value, cachedOnly)
     end
     -- Find infers enemies from an empty faction. Service/roster evidence can
     -- still offer that NPC, so an explicit hostile sighting must survive.
-    local serviceHostility
+    local serviceHostility, trainers
     if kind == "npc" and value.hostile and ship.hostile == nil then
-        local roster = WaypointTrackerData and WaypointTrackerData.trainers or ""
+        trainers = ns.Trainers.Index(DB.generation)
         serviceHostility = next(ship.services) or (type(value.services) == "table" and next(value.services))
-            or roster:find("\t" .. id .. ":", 1, true) or roster:find("," .. id .. ":", 1, true)
+            or trainers.members[id]
     end
     if kind == "npc" and value.hostile ~= nil and ship.enemy ~= nil and (value.hostile ~= ship.enemy or serviceHostility) then
         return true
@@ -1054,23 +1067,145 @@ function DB.AddsSomething(kind, id, value, cachedOnly)
     if not next(spots) then
         return false
     end
+    -- Raw-only identities have no alternative consumer positions. Compare
+    -- the changed maps directly instead of allocating a second spawn list.
+    if kind == "npc" then trainers = trainers or ns.Trainers.Index(DB.generation) end
+    local location = trainers and trainers.positions[id]
+    if location then
+        for _, pending in pairs(trainers.pending) do
+            for i = 1, #pending, 2 do
+                if pending[i] == id then return true, true end
+            end
+        end
+    end
+    if ship.spots == 0 and not e.world and not e.fixes and #ship.supplement == 0
+        and not (location and location.observed) then
+        local classic = e.classicCoords == e.coords and e.classic or ClassicPoints(e)
+        e.classic, e.classicCoords = classic, e.coords
+        for m, list in pairs(spots) do
+            local known = classic[m] or EMPTY
+            for i = 1, #list - 1, 2 do
+                local x, y, found = ns.Num(list[i]), ns.Num(list[i + 1]), false
+                for _, p in ipairs(known) do
+                    if x and y and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then found = true; break end
+                end
+                if not found then return true end
+            end
+            if #known <= MOVED_NPC_SPOTS then
+                for _, p in ipairs(known) do
+                    local found = false
+                    for i = 1, #list - 1, 2 do
+                        local x, y = ns.Num(list[i]), ns.Num(list[i + 1])
+                        if x and y and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then found = true; break end
+                    end
+                    if not found then return true end
+                end
+            end
+        end
+        if not location or next(classic) then return false end
+    end
     -- Judge Find against the shipped overlay, before personal spots suppress
     -- Classic spawns; judge each service against its R/M effective locations.
-    local shipped = { coords = e.coords, world = e.world, extra = {}, fixes = e.fixes }
-    for i = 1, ship.spots do shipped.extra[i] = e.extra and e.extra[i] end
-    local known = {}
-    for _, p in ipairs(DB.Points(shipped)) do
-        known[p.m] = known[p.m] or {}
-        known[p.m][#known[p.m] + 1] = p
+    local shipped = ship.comparison
+    if not shipped or shipped.fixes ~= e.fixes then
+        shipped = { coords = e.coords, world = e.world, extra = ship.extra, fixes = e.fixes }
+        if e.fixes then
+            shipped.extra = {}
+            for _, p in ipairs(ship.extra) do shipped.extra[#shipped.extra + 1] = p end
+            for i = ship.spots + 1, #(e.extra or EMPTY) do
+                local p = e.extra[i]
+                if p.fixed then shipped.extra[#shipped.extra + 1] = p end
+            end
+        end
+        shipped.classic = e.classicCoords == e.coords and e.classic or ClassicPoints(shipped)
+        shipped.classicCoords = shipped.coords
+        e.classic, e.classicCoords = shipped.classic, shipped.coords
+        ship.comparison = shipped
     end
-    local function Has(points, m, x, y)
-        for _, p in ipairs(points) do
-            if p.m == m and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then return true end
+    local data = WaypointTrackerData or {}
+    local memo = ship.observation
+    local same = memo and memo.shipped == shipped and memo.supplement == ship.supplement
+        and memo.trainers == data.trainers and memo.locations == data.trainerLocations
+    if same then
+        for m, list in pairs(spots) do
+            local old = memo.spots[m]
+            if not old or #old ~= #list then same = false; break end
+            for i, n in ipairs(list) do if old[i] ~= n then same = false; break end end
+            if not same then break end
+        end
+        for m in pairs(memo.spots) do if not spots[m] then same = false; break end end
+        if same then return memo.adds end
+    end
+    local function Result(adds)
+        if adds then
+            memo = { shipped = shipped, supplement = ship.supplement, trainers = data.trainers,
+                locations = data.trainerLocations, spots = {}, adds = true }
+            for m, list in pairs(spots) do
+                local copy = {}; memo.spots[m] = copy
+                for i, n in ipairs(list) do copy[i] = n end
+            end
+            ship.observation = memo
+        else
+            ship.observation = nil
+        end
+        return adds
+    end
+    local observed = { world = e.world, extra = {}, fixes = e.fixes }
+    for _, p in ipairs(shipped.extra) do observed.extra[#observed.extra + 1] = p end
+    Spots(spots, observed.extra)
+    local points = not e.world and not e.fixes and observed.extra or DB.Points(observed)
+    local function Has(list, point, tolerance)
+        for _, p in ipairs(list) do
+            if p.m == point.m and math.abs(p.x - point.x) <= tolerance and math.abs(p.y - point.y) <= tolerance then return true end
         end
         return false
     end
+    local function Changes(other)
+        local tolerance = 0.000500001 -- half of Learn's 0.001 coordinate step
+        local observedSet, otherSet = {}, {}
+        for _, p in ipairs(points) do observedSet[p] = true end
+        for _, p in ipairs(other) do
+            if not observedSet[p] and not Has(points, p, tolerance) then return true end
+            otherSet[p] = true
+        end
+        for _, p in ipairs(points) do
+            -- Shared Classic/curated point objects cannot have changed.
+            if not otherSet[p] and not Has(other, p, tolerance) then return true end
+        end
+        return false
+    end
+    -- Unaffected Classic spawns share their point objects. Only additions
+    -- and the one/two static spawns suppressed on observed maps can differ.
+    local normal
+    if next(shipped.extra) or e.world or e.fixes then normal = DB.Points(shipped) end
+    local function Known(p, tolerance)
+        return Has(normal or shipped.classic[p.m] or EMPTY, p, tolerance)
+    end
+    for _, p in ipairs(points) do
+        if not Known(p, NEAR_KNOWN) then return Result(true) end
+    end
+    for m, list in pairs(shipped.classic) do
+        if spots[m] and #list <= MOVED_NPC_SPOTS then
+            for _, p in ipairs(list) do
+                if Known(p, 1e-9) and not Has(points, p, NEAR_KNOWN) then return Result(true) end
+            end
+        end
+    end
+    local function AllPoints()
+        if not observed.classic then
+            observed.classic, observed.points = shipped.classic, nil
+            points = DB.Points(observed)
+        end
+    end
     for _, row in ipairs(ship.supplement) do
+        if kind == "npc" and not e.fixes and not e.hostile
+            and ("," .. row.services .. ","):find(",flight,", 1, true) then
+            -- Presence of a passive spot also suppresses nearby taxi labels.
+            if next(FlightAliases(row)) then return Result(true) end
+            if row.aliasGeneration ~= DB.generation then return true, true end
+        end
         if #row.spots > 0 then
+            AllPoints()
             local effective = {}
             for _, p in ipairs(row.spots) do effective[#effective + 1] = p end
             for _, p in ipairs(DB.Points(shipped)) do
@@ -1078,31 +1213,26 @@ function DB.AddsSomething(kind, id, value, cachedOnly)
             end
             -- An observation selects the normal Find points instead of the
             -- supplement wrapper. Retain it if either result would change.
-            for _, p in ipairs(DB.Points(e)) do
-                if not Has(effective, p.m, p.x, p.y) then return true end
-            end
-            for _, p in ipairs(effective) do
-                if not Has(DB.Points(e), p.m, p.x, p.y) then return true end
-            end
+            local candidate = { extra = effective, fixes = e.fixes }
+            -- Learn rounds coordinates to 0.001; a canonical service spot
+            -- within its half-step adds no measurable discovery precision.
+            if Changes(DB.Points(candidate)) then return Result(true) end
         end
     end
-    for m, list in pairs(spots) do
-        local here = known[tonumber(m)] or {}
-        for i = 1, #list - 1, 2 do
-            local x, y = ns.Num(list[i]), ns.Num(list[i + 1])
-            local found = false
-            for _, p in ipairs(here) do
-                if x and y and math.abs(p.x - x) <= NEAR_KNOWN and math.abs(p.y - y) <= NEAR_KNOWN then
-                    found = true
-                    break
-                end
+    -- A passive spot also disables the trainer roster's observed-position
+    -- override, even when no trainer service was learned at the window.
+    if kind == "npc" then
+        if location and (location.observed or #DB.Points(shipped) == 0) then
+            AllPoints()
+            local fallback = { extra = {}, fixes = e.fixes }
+            for _, p in ipairs(location.points) do fallback.extra[#fallback.extra + 1] = p end
+            for _, p in ipairs(shipped.extra) do
+                if p.fixed then fallback.extra[#fallback.extra + 1] = p end
             end
-            if not found then
-                return true
-            end
+            if Changes(DB.Points(fallback)) then return Result(true) end
         end
     end
-    return false
+    return Result(false)
 end
 
 -- Names of the zones something can be found in.
@@ -1727,7 +1857,7 @@ end
 
 -- Client taxi labels describe the same stop as a nearby observed flight NPC.
 -- Associate using the shipped point, before applying movement/removal fixes.
-local function FlightAliases(row)
+FlightAliases = function(row)
     if row.aliasGeneration == DB.generation then return row.aliases end
     local aliases, pending = {}, false
     for _, p in ipairs(row.spots) do
@@ -1823,7 +1953,7 @@ function DB.TrainerEntries(service)
                     local cached = index.entries[id]
                     if not cached or cached.fac ~= fac then
                         -- Existing/localized names and corrections still win.
-                        local name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and location.name or "")
+                        local name = e and e.name ~= "" and e.name or (GetLocale() == "enUS" and ns.CleanText(location.name) or "")
                         local points = {}
                         for _, p in ipairs(location.points) do points[#points + 1] = p end
                         -- A correction's replacement is already a resolved point.

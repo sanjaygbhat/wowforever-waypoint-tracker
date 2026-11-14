@@ -13,6 +13,11 @@ for i=1,1000 do
     ns.Learn.Unit('npc','vendor')
 end
 WaypointTrackerData.serviceSupplement=table.concat(supplement,'\n')
+local mapForArea=ns.DB.MapForArea
+ns.DB.MapForArea=function(area,treeOnly)
+    if treeOnly and area==12 then return nil end
+    return mapForArea(area,treeOnly)
+end
 local adds=ns.DB.AddsSomething
 local checked,total,worst,ticks=0,0,0,0
 ns.DB.AddsSomething=function(...)
@@ -29,23 +34,21 @@ ns.Learn.Compact=function(all)
     ticks=ticks+1
     return n
 end
-for i=1,52 do M.Tick(5) end
-assert(total==1000,'all touched records must drain across ticks: '..total)
-assert(ticks==50,'no idle compaction once drained: '..ticks)
+for i=1,72 do M.Tick(5.1,5.1) end
+assert(total==1080 and ticks==72,'unresolved records stay queued and retry within the same budget: '..total..' / '..ticks)
 assert(worst<=5,'compaction tick exceeded 5 ms: '..worst)
 assert(#M.errors==0,table.concat(M.errors,'\n'))
 print(('Compaction cold budget: 1000 NPCs, %d ticks, max %.3f ms'):format(ticks,worst))
+ns.DB.MapForArea=mapForArea
 for i=1,1000 do
     local id=992000+i
     assert(ns.Learn.Store().npcs[id],'cold ticker must keep deferred observations')
     assert(not ns.DB.units[id].ship,'cold ticker must not build shipped facts')
     ns.DB.Points(ns.DB.units[id]) -- explicit query warms geography outside the ticker
-    M.units.npc={guid='Creature-0-1-2-3-'..id..'-ABC',name='Budget '..i,reaction=5,level=10}
-    ns.Learn.Unit('npc','vendor')
 end
 total,ticks,worst=0,0,0
-for i=1,52 do M.Tick(5) end
-assert(total==1000 and ticks==50,'warm touched records must drain')
+for i=1,72 do M.Tick(5.1,5.1) end
+assert(total==1000 and ticks==67,'deferred records must drain without another observation; no idle compaction')
 assert(worst<=5,'warm compaction tick exceeded 5 ms: '..worst)
 assert(#M.errors==0,table.concat(M.errors,'\n'))
 print(('Compaction warm budget: 1000 NPCs, %d ticks, max %.3f ms'):format(ticks,worst))
@@ -63,3 +66,18 @@ M.Tick(5.1)
 assert(not ns.Learn.Store().npcs[60],'warm-map sightings compact even without entry.points')
 assert(#M.errors==0,table.concat(M.errors,'\n'))
 print('Warm-map reconciliation keeps the existing five-second behavior')
+
+-- Explicit compaction must also preserve deferred work for a later ticker.
+local id=994001
+ns.DB.units[id]={kind='npc',id=id,name='Deferred full',key='deferred full',fac='A',coords='12:500,500'}
+M.player.inst,M.player.wx,M.player.wy=ns.Geo.MapToWorld(37,.5,.5)
+M.units.npc={guid='Creature-0-1-2-3-'..id..'-ABC',name='Deferred full',reaction=5,level=10,faction='Alliance'}
+ns.Learn.Unit('npc')
+ns.DB.MapForArea=function(area,treeOnly)if area~=12 then return mapForArea(area,treeOnly)end end
+ns.Learn.Compact(true)
+assert(ns.Learn.Store().npcs[id],'full compaction must keep unavailable areas')
+ns.DB.MapForArea=mapForArea
+for i=1,72 do M.Tick(5.1,5.1) end
+assert(not ns.Learn.Store().npcs[id],'full-compaction deferrals must retry without a new observation')
+assert(#M.errors==0,table.concat(M.errors,'\n'))
+print('Explicit compaction deferrals also reconcile on the bounded ticker')
