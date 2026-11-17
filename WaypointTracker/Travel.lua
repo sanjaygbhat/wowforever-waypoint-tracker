@@ -1324,6 +1324,12 @@ end
 -- (the arrow asks every frame): places are kept in plans as anchors, so a
 -- returned place is never changed by this file.
 local lastPlace, lastM, lastX, lastY, lastData
+-- Steer's own look at where the player stands (PlaceNow, below): one table
+-- written over as they move, which nothing keeps. liveM, liveX, liveY and
+-- liveData say what it holds while that can be given again (liveValid).
+local livePlace = { id = nil, area = nil, city = nil, cont = nil, wx = nil, wy = nil, m = nil, x = nil, y = nil,
+    player = true, terrainEndpoint = nil, terrainOnly = nil }
+local liveM, liveX, liveY, liveData, liveValid
 local function PlayerPlace()
     local m, x, y = Geo.GetPlayerMapPosition()
     if not m then
@@ -1351,9 +1357,72 @@ local function PlayerPlace()
     else
         lastPlace = nil
     end
+    liveValid = false -- this table is the player's place now
     return place
 end
 Travel._PlayerPlace = PlayerPlace -- tests
+
+-- The same answer for Steer, which asks every frame and mostly only reads
+-- it: PlayerPlace's table while there is one for this very spot, else
+-- livePlace, filled like a new table (and, like one, the same table again
+-- while they haven't moved). Whatever keeps the place (a job, a route
+-- re-anchored on it) takes it through Kept first, so livePlace is never
+-- held by anything: every table that is held is PlayerPlace's or Kept's,
+-- made once and never changed, and "the very same table" still means
+-- "hasn't moved since".
+local function PlaceNow()
+    local m, x, y = Geo.GetPlayerMapPosition()
+    if not m then
+        return nil
+    end
+    if lastPlace and m == lastM and x == lastX and y == lastY and data == lastData then
+        return lastPlace
+    end
+    if liveValid and m == liveM and x == liveX and y == liveY and data == liveData then
+        return livePlace
+    end
+    local cont, wx, wy = Geo.MapToWorldLive(m, x, y)
+    local fromMap = cont ~= nil
+    if not cont then
+        cont, wx, wy = Geo.GetPlayerWorld()
+    end
+    if not cont then
+        return nil
+    end
+    local area, city = Travel.AreaAt(m, x, y, nil, true)
+    -- PlayerPlace would have made a new table here: the one it kept for
+    -- the spot before is no longer where the player is
+    lastPlace = nil
+    local p = livePlace
+    p.area, p.city, p.cont, p.wx, p.wy, p.m, p.x, p.y = area, city, cont, wx, wy, m, x, y
+    p.terrainEndpoint, p.terrainOnly = nil, nil -- what a walk check notes on a place (Terrain.lua)
+    -- only a position worked out from the map alone is the same for the same map point
+    liveM, liveX, liveY, liveData, liveValid = m, x, y, data, fromMap
+    return p
+end
+
+-- The place as a table of its own, for what keeps it. PlayerPlace's
+-- tables are their own already; livePlace becomes the table PlayerPlace
+-- gives from now on while the player stays there (so a kept place and the
+-- player's place are one table until they move, as ever).
+local function Kept(p)
+    if p ~= livePlace then
+        return p
+    end
+    -- made since this frame's look (a job answered: Finish asks PlayerPlace)
+    if lastPlace and p.m == lastM and p.x == lastX and p.y == lastY and data == lastData then
+        return lastPlace
+    end
+    local place = { id = nil, area = p.area, city = p.city, cont = p.cont, wx = p.wx, wy = p.wy,
+        m = p.m, x = p.x, y = p.y, player = true }
+    place.terrainEndpoint, place.terrainOnly = p.terrainEndpoint, p.terrainOnly
+    if liveValid then
+        lastPlace, lastM, lastX, lastY, lastData = place, liveM, liveX, liveY, liveData
+        liveValid = false
+    end
+    return place
+end
+Travel._LivePlace = livePlace -- tests: nothing but Steer's frame may hold it
 
 -- A new copy of the player's place for a route search to start from. A
 -- search notes things on its start (Terrain.lua marks a start standing on a
@@ -2348,7 +2417,7 @@ function Travel.Steer(wp, shared)
     end
     Travel.Offer(wp)
     local now = GetTime()
-    local here = PlayerPlace()
+    local here = PlaceNow() -- read only, until a re-plan keeps it (Kept)
     if here then
         Sample(here)
         NoteSpeed()
@@ -2431,6 +2500,7 @@ function Travel.Steer(wp, shared)
             queuedUrgent = false
         end
         if due then
+            here = Kept(here) -- a job, or the route re-anchored here, holds it
             Replan(wp, here, now, urgent)
         end
         if job and lastPump ~= now then
@@ -2669,7 +2739,7 @@ function Travel._Reset()
     HideOffer()
     trip = nil
     data, plan, riding, taxiNames, atDock, planWp = nil, nil, nil, nil, nil, nil
-    noRoute, job, replanQueued, lastPlace = false, nil, false, nil
+    noRoute, job, replanQueued, lastPlace, liveValid = false, nil, false, nil, false
     jobEnded, lastPump, seenM, seenX, seenY = nil, nil, nil, nil, nil
     queuedUrgent, jobPlace, seenPlan, seenIndex, rejected, held, answered = false, nil, nil, nil, false, nil, nil
     bindCache, samples = {}, {}
