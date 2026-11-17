@@ -238,14 +238,22 @@ function Terrain.Refresh()
     local co = Thread()
     if co then searchFloor[co] = floorPosition or false end
 end
+-- Records are applied only on the client build they were surveyed for. On
+-- any other build Terrain.Record answers nil whatever is stored, so nothing
+-- the sampler writes (traces, the floor position) is ever read there.
+local function RecordsApply()
+    if GetBuildInfo then
+        local _,build = GetBuildInfo();build=ns.Str(build)
+        if build and tostring(build) ~= "70338" then return false end
+    end
+    return true
+end
+Terrain.RecordsApply = RecordsApply
 function Terrain.Record(e)
     local st = Store()
     local r = st and st.records[e.key]
     if not r or r.build ~= loaded.buildKey or r.scope ~= Scope() then return nil end
-    if GetBuildInfo then
-        local _,build = GetBuildInfo();build=ns.Str(build)
-        if build and tostring(build) ~= "70338" then return nil end
-    end
+    if not RecordsApply() then return nil end
     local floorAt = floorPosition
     local co = Thread()
     if co and searchFloor[co] ~= nil then floorAt = searchFloor[co] or nil end
@@ -521,11 +529,27 @@ function Terrain.Sample()
 end
 
 -- One inexpensive accumulator per frame; sampling/allocations run at 5 Hz.
+-- On a client build where records are never applied (RecordsApply) there is
+-- nothing to sample for. What sampling did besides still happens: with Real
+-- routes on, the travel network is read at the first tick (not at your
+-- first step or waypoint). Then the ticker stops, until a setting changes.
 local ticker = CreateFrame("Frame")
+Terrain._ticker = ticker -- tests
+local function Unused()
+    if not loaded and ns.Get("realRoutes") and ns.Travel then ns.Travel.Data() end
+    Forget()
+    ticker:Hide()
+end
 ticker:SetScript("OnUpdate", function(_,dt)
     dt=Number(dt);if not dt then return end
     elapsed=elapsed+dt
-    if elapsed >= SAMPLE then elapsed=0; ns.Call(Terrain.Sample) end
+    if elapsed < SAMPLE then return end
+    elapsed=0
+    if RecordsApply() then ns.Call(Terrain.Sample) else ns.Call(Unused) end
+end)
+-- (Real routes turned on later reads the network at the next tick, as before)
+ns.On("SETTING_CHANGED", function(key)
+    if key == nil or key == "realRoutes" then ticker:Show() end
 end)
 for _,event in ipairs({"PLAYER_ENTERING_WORLD","PLAYER_DEAD","PLAYER_ALIVE","PLAYER_UNGHOST","ZONE_CHANGED_NEW_AREA"}) do
     ns.RegisterEvent(event,function() last=nil;active={};floorPosition=nil end)

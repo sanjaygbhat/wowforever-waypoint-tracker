@@ -130,6 +130,9 @@ function GetItemCount() return 0 end
 -- The planner budgets its work in expansions when the clock gives nothing,
 -- which keeps every run identical; the client has the function.
 function debugprofilestop() return nil end
+-- A live client build, as the game reports it (the mock has no build): the
+-- terrain sampler's records apply on the surveyed build 70338 only.
+function GetBuildInfo() return "1.60.1", "70862", "Nov 10 2026", 16001 end
 local mockBestMap = C_Map.GetBestMapForUnit
 C_Map.GetBestMapForUnit = function(...)
     if not useShipped then return mockBestMap(...) end
