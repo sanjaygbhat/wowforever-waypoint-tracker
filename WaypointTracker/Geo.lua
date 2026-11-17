@@ -183,7 +183,9 @@ end
 
 -- Position of a world point on a given map (may be outside 0..1).
 function Geo.WorldToMap(cont, wx, wy, mapID)
-    local ok, resultMap, pos = pcall(C_Map and C_Map.GetMapPosFromWorldPos, cont, Vector(wx, wy), mapID)
+    -- LiveVector must be given numbers (it may refill the game's own point)
+    local vec = (type(wx) == "number" and type(wy) == "number") and LiveVector(wx, wy) or Vector(wx, wy)
+    local ok, resultMap, pos = pcall(C_Map and C_Map.GetMapPosFromWorldPos, cont, vec, mapID)
     resultMap, pos = Num(resultMap), Plain(pos)
     if ok and resultMap and resultMap > 0 and resultMap < math.huge and resultMap % 1 == 0 and pos then
         local x, y = ns.XY(pos)
@@ -468,8 +470,34 @@ end
 -- Distance (yards) and absolute bearing (radians, counter-clockwise from
 -- north, the same convention as GetPlayerFacing) from the player to a
 -- waypoint. Returns nil, reason when it can't be worked out.
-function Geo.GetVector(wp)
-    local cont, wx, wy = Geo.MapToWorld(wp.m, wp.x, wp.y)
+-- `steady`: the same table is asked about again and again (the arrow's
+-- waypoint, every frame), so where it is in the world is kept beside it
+-- (for as long as the table lives and its m, x, y stay what they were)
+-- instead of building MapToWorld's key each time.
+local steadyWorld = setmetatable({}, { __mode = "k" })
+local function SteadyWorld(wp)
+    local c = steadyWorld[wp]
+    local m, x, y = wp.m, wp.x, wp.y
+    if c and c[4] == m and c[5] == x and c[6] == y then
+        return c[1], c[2], c[3]
+    end
+    local cont, wx, wy = Geo.MapToWorld(m, x, y)
+    -- only answers are kept: a miss is asked again (MapToWorld retries)
+    steadyWorld[wp] = cont and { cont, wx, wy, m, x, y } or nil
+    return cont, wx, wy
+end
+
+-- Where a waypoint is in the world (cont, wx, wy), kept the same way: for
+-- lists drawn again and again (the minimap's pins).
+Geo.GetVectorWorld = SteadyWorld
+
+function Geo.GetVector(wp, steady)
+    local cont, wx, wy
+    if steady then
+        cont, wx, wy = SteadyWorld(wp)
+    else
+        cont, wx, wy = Geo.MapToWorld(wp.m, wp.x, wp.y)
+    end
     if not cont then
         return nil, "nomap"
     end
@@ -499,6 +527,16 @@ end
 -- ---------------------------------------------------------------------------
 -- Formatting
 -- ---------------------------------------------------------------------------
+-- The last whole-number line written is kept: the arrow asks every frame,
+-- and the yards (or metres) shown change a few times a second at most.
+local wholeFormat, wholeNumber, wholeText
+local function Whole(fmt, n)
+    if fmt ~= wholeFormat or n ~= wholeNumber then
+        wholeFormat, wholeNumber, wholeText = fmt, n, fmt:format(n)
+    end
+    return wholeText
+end
+
 function Geo.FormatDistance(yards)
     if not yards then
         return ""
@@ -508,9 +546,9 @@ function Geo.FormatDistance(yards)
         if m >= 1000 then
             return L.DISTANCE_KM:format(m / 1000)
         end
-        return L.DISTANCE_METRES:format(floor(m + 0.5))
+        return Whole(L.DISTANCE_METRES, floor(m + 0.5))
     end
-    return L.DISTANCE_YARDS:format(floor(yards + 0.5))
+    return Whole(L.DISTANCE_YARDS, floor(yards + 0.5))
 end
 
 function Geo.FormatTime(seconds)
