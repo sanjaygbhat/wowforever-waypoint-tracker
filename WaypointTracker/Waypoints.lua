@@ -116,15 +116,16 @@ end
 -- next of its points, not the closest one. Returns a waypoint or nil.
 WP.nextHook = nil
 
--- A route followed in steps: returns its id and the one stop it is on.
--- Choices made for you (the closest waypoint, the one after a waypoint
--- that goes, the one after loading) leave its other stops alone, so the
--- arrow never jumps ahead to whichever of them is nearest.
+-- A route followed in steps: returns its id, the stop it is on, and which
+-- of its other stops may come next (true: any; a set; nil: none). Choices
+-- made for you (the closest waypoint, the one after a waypoint that goes)
+-- leave its other stops alone, so the arrow never jumps ahead to whichever
+-- of them is nearest; after loading it is on the stop the route is on.
 WP.heldHook = nil
 
 -- false for a waypoint choices made for you must leave alone
-local function Free(wp, heldID, allowed)
-    return not heldID or wp.routeID ~= heldID or wp == allowed
+local function Free(wp, heldID, cur, allow)
+    return not heldID or wp.routeID ~= heldID or wp == cur or allow == true or (allow ~= nil and allow[wp] == true)
 end
 
 -- ---------------------------------------------------------------------------
@@ -363,13 +364,13 @@ end
 -- Closest waypoint you can actually walk to (same continent), else the
 -- newest. auto: a choice made for you (see WP.heldHook).
 function WP.Closest(exclude, auto)
-    local heldID, allowed
+    local heldID, cur, allow
     if auto and WP.heldHook then
-        heldID, allowed = WP.heldHook()
+        heldID, cur, allow = WP.heldHook()
     end
     local best, bestDist
     for _, wp in ipairs(list) do
-        if wp ~= exclude and Free(wp, heldID, allowed) then
+        if wp ~= exclude and Free(wp, heldID, cur, allow) then
             local dist = Geo.GetVector(wp)
             if dist and (not bestDist or dist < bestDist) then
                 best, bestDist = wp, dist
@@ -378,7 +379,7 @@ function WP.Closest(exclude, auto)
     end
     if not best then
         for i = #list, 1, -1 do
-            if list[i] ~= exclude and Free(list[i], heldID, allowed) then
+            if list[i] ~= exclude and Free(list[i], heldID, cur, allow) then
                 return list[i]
             end
         end
@@ -529,9 +530,9 @@ local function Load()
     end
     -- else the newest one, a route's by the stop it is on (not its last)
     if not toActivate and WP.heldHook then
-        local heldID, allowed = WP.heldHook()
+        local heldID, cur = WP.heldHook()
         for i = #list, 1, -1 do
-            if Free(list[i], heldID, allowed) then
+            if Free(list[i], heldID, cur) then
                 toActivate = list[i]
                 break
             end

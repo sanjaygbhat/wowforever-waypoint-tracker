@@ -549,6 +549,7 @@ L.ROUTE_SHARE_SAVED_TITLE = "저장했습니다! 이제 알려 주세요"
 L.ROUTE_SHARE_TITLE = "%s 공유"
 L.ROUTE_STOP_END = "보고: %s"
 L.ROUTE_QUEST_DONE = "퀘스트 목록에서 완료됨: 다음은 %s"
+L.ROUTE_ALL_DONE = "%s: 퀘스트 목록에서 모든 단계가 완료되었습니다."
 L.ROUTE_STOP_START = "시작: %s"
 L.ROUTE_SUGGESTED_RARES = "희귀 몬스터"
 

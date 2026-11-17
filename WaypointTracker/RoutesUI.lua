@@ -326,7 +326,8 @@ RefreshDetail = function()
         actions[#actions + 1] = { L.ROUTE_START, function()
             R().Start(r.id)
             local now = R().Run()
-            if now and now.id == r.id then
+            -- (a start your quest log moved on already says so)
+            if now and now.id == r.id and (now.done or 0) == 0 then
                 Status(L.ROUTE_STARTED:format(r.name, #r.pts), true)
             end
         end }

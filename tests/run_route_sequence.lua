@@ -364,6 +364,115 @@ Log(301, nil)
 M.Tick(1)
 
 -- ---------------------------------------------------------------------------
+-- 8. Review findings. The run keeps its own quest steps: the kept route
+-- replaced meanwhile (a newer version, another character starting it)
+-- never makes the quest log take off a different stop.
+-- ---------------------------------------------------------------------------
+local four = {
+    { m = 37, x = .30, y = .30, t = "Start A", q = 501, role = "start" },
+    { m = 37, x = .60, y = .60, t = "Hand in A", q = 501, role = "end" },
+    { m = 37, x = .30, y = .35, t = "Start B", q = 502, role = "start" },
+    { m = 37, x = .60, y = .65, t = "Hand in B", q = 502, role = "end" },
+}
+Here(37, .45, .45)
+run = Start("order", four)
+check(Step() == 1 and run.steps and run.steps[1].q == 501 and run.steps[4].role == "end",
+    "starting keeps each stop's quest with the run")
+Routes.Store().list[ID] = Route(ID, "order", { four[3], four[1], four[4], four[2] })
+Log(502, { objectives = {} })
+M.FireEvent("QUEST_ACCEPTED", 502)
+Settle()
+check(Step() == 1 and Stop(1) ~= nil, "a replaced kept route doesn't make the quest log skip the wrong stop (got " .. tostring(Step()) .. ")")
+Log(502, nil)
+Routes.Stop(true)
+
+-- "Always point to the closest waypoint" still goes round a loop, and in
+-- "nearest next" takes the closest stop allowed next (not a hand-in still
+-- waiting for its objectives).
+local loopPts = {}
+for k = 1, 5 do
+    loopPts[k] = { m = 37, x = .20 + k * .1, y = .50, t = "Copper Vein" }
+end
+Here(37, .30, .50)
+Start("loop", loopPts)
+check(Step() == 1, "a loop starts at the closest node")
+ns.Set("autoClosest", true)
+Here(37, .70, .50)
+M.Tick(3)
+check(Step() == 5, "always-closest moves round a loop to the node you are at (got " .. tostring(Step()) .. ")")
+Here(WILLEM[1], WILLEM[2], WILLEM[3])
+Start("nearest", near)
+Reach(1)
+check(Step() == 2, "nearest next: picked up, on to an objective")
+M.Tick(3)
+check(Step() == 2, "always-closest skips the hand-in waiting where you stand (got " .. tostring(Step()) .. ")")
+Here(37, .52, .40)
+M.Tick(3)
+check(Step() == 3, "always-closest takes the closest objective (got " .. tostring(Step()) .. ")")
+ns.Set("autoClosest", false)
+Routes.Stop(true)
+
+-- Reaching or skipping onto a stop the quest log already shows done moves
+-- on without waiting for a quest log event.
+local five = {
+    { m = 37, x = .30, y = .30, t = "Start C", q = 601, role = "start" },
+    { m = 37, x = .60, y = .60, t = "Hand in C", q = 601, role = "end" },
+    { m = 37, x = .30, y = .35, t = "Start D", q = 602, role = "start" },
+    { m = 37, x = .60, y = .65, t = "Hand in D", q = 602, role = "end" },
+    { m = 37, x = .35, y = .35, t = "Start E", q = 603, role = "start" },
+}
+Here(37, .45, .45)
+Start("order", five)
+M.completedQuests = { [601] = true } -- no quest log event
+Reach(1)
+M.Tick(0.7)
+check(Step() == 3, "reaching onto a stop the log shows done goes on to step 3 (got " .. tostring(Step()) .. ")")
+M.completedQuests[602] = true
+Routes.Skip()
+M.Tick(0.7)
+check(Step() == 5, "skipping onto a stop the log shows done goes on to step 5 (got " .. tostring(Step()) .. ")")
+Routes.Stop(true)
+
+-- Skip with the arrow on something else skips the stop the route waits at.
+M.completedQuests = nil
+Start()
+Follow.TrackQuest(101)
+local printed = #M.printed
+Routes.Skip()
+check(WP.GetActive().source == "quest" and Stop(1) == nil and Routes.Run().cur == 2 and #M.printed == printed,
+    "Skip while a quest has the arrow skips the route's step and leaves the arrow")
+M.FireEvent("QUEST_TURNED_IN", 101)
+check(Step() == 2, "the quest handed in: the arrow goes to step 2 (got " .. tostring(Step()) .. ")")
+Routes.Stop(true)
+
+-- Starting from the Routes tab keeps the quest log's message; a chain the
+-- quest log shows all done says so and leaves your waypoints alone.
+local UI = ns.RoutesUI
+WP.ClearAll(true)
+Routes.Store().list[ID] = Route(ID, "order", pts)
+M.completedQuests = { [65] = true }
+UI.Show()
+UI.Select(ID)
+local startButton
+for _, b in ipairs(UI.widgets.detail.buttons) do
+    if b:IsShown() and b:GetText() == L.ROUTE_START then startButton = b end
+end
+check(startButton ~= nil, "the Routes tab offers Start")
+if startButton then startButton:Click() end
+check(Routes.Run() and Routes.Run().done > 0 and Step() and Step() > 2
+    and ns.Window.frame.status:GetText() == L.ROUTE_QUEST_DONE:format(WP.ShortName(WP.GetActive())),
+    "Start in the Routes tab keeps the quest log's message (" .. tostring(ns.Window.frame.status:GetText()) .. ")")
+Routes.Stop(true)
+M.completedQuests = { [65] = true, [132] = true, [135] = true, [141] = true, [142] = true, [155] = true, [166] = true }
+local own = WP.Add(37, .5, .5, { title = "Mine", silent = true })
+check(Routes.Start(ID) == false and Routes.Run() == nil and WP.IsValid(own) and WP.Count() == 1 and M.lastPopup ~= "WAYPOINTTRACKER_ROUTE_ASK",
+    "a chain done in the quest log doesn't start, ask or clear anything")
+check(ns.Window.frame.status:GetText() == L.ROUTE_ALL_DONE:format("Defias test chain"), "the status line says it is all done")
+check(Routes.Apply(ID, "replace") == false and WP.IsValid(own), "nor when applied directly")
+M.completedQuests = nil
+WP.ClearAll(true)
+
+-- ---------------------------------------------------------------------------
 -- 7. The ready-made Defias Brotherhood chain knows each stop's quest; the
 -- quest tags never go out with a shared route.
 -- ---------------------------------------------------------------------------
