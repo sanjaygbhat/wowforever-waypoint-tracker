@@ -36,6 +36,22 @@ local incoming = {} -- sender .. id .. v -> { total, parts, at }
 local loopbackUntil = 0 -- the self-test: messages from yourself count
 local testState
 
+-- Whispers. A whisper to someone who has logged out, or who the server can't
+-- reach (other faction, other realm), makes the game print "No player named
+-- 'X' is currently playing." So the addon only whispers players it has
+-- verifiably heard from directly (guild, group or a whisper) a moment ago, or
+-- whoever the player picked themselves; it stops whispering a name the
+-- server reports as gone, and hides only the "not found" lines its own
+-- whispers caused.
+local MAX_ASKS = 3 -- requests waiting for one sender
+local REACH_WINDOW = 120 -- seconds a direct message proves a player reachable
+local GONE_FOR = 900 -- seconds a "not found" player is left alone
+local ECHO_WINDOW = 30 -- seconds the server may take to say "not found"
+local DIRECT = { GUILD = true, PARTY = true, RAID = true, INSTANCE_CHAT = true, WHISPER = true }
+local direct = {} -- sender -> when we last heard them over guild, group or whisper
+local gone = {} -- lower-case name -> until when we don't whisper them
+local echoes = {} -- lower-case name -> { target, n = whispers not yet answered, untilAt }
+
 local function Routes()
     return ns.Routes
 end
@@ -56,11 +72,148 @@ end
 -- ---------------------------------------------------------------------------
 -- Sending
 -- ---------------------------------------------------------------------------
-local function Enqueue(msg, chat, target, batch, travel)
+local function Enqueue(msg, chat, target, batch, travel, explicit)
     if not (travel and TravelSharing() or not travel and Sharing()) or #msg > 255 then
         return
     end
-    queue[#queue + 1] = { msg = msg, chat = chat, target = target, batch = batch or {}, travel = travel }
+    queue[#queue + 1] = { msg = msg, chat = chat, target = target, batch = batch or {}, travel = travel, explicit = explicit }
+end
+
+-- "Name-Realm" and "Name" (how the game may print it), lower-case
+local function NameKeys(name)
+    if type(name) ~= "string" or name == "" then
+        return nil
+    end
+    local full = name:lower()
+    local base = full:match("^(.-)%-") or full
+    return full, base ~= full and base or nil
+end
+
+local function IsGone(name)
+    local full = NameKeys(name)
+    local untilAt = full and gone[full]
+    return untilAt ~= nil and untilAt > GetTime()
+end
+
+-- whispers waiting to go out to one player are dropped
+local function DropWhispers(target)
+    for i = #queue, 1, -1 do
+        local q = queue[i]
+        if q.chat == "WHISPER" and q.target == target then
+            table.remove(queue, i)
+        end
+    end
+end
+
+local function MarkGone(target)
+    local full = NameKeys(target)
+    if full then
+        gone[full] = GetTime() + GONE_FOR
+    end
+    DropWhispers(target)
+end
+
+-- Only players the player picked, or who just reached us directly.
+-- A channel advert alone doesn't prove the server lets us whisper them.
+local function CanWhisper(q)
+    if type(q.target) ~= "string" or q.target == "" or IsGone(q.target) then
+        return false
+    end
+    if q.explicit then
+        return true
+    end
+    local at = direct[q.target]
+    return at ~= nil and GetTime() - at <= REACH_WINDOW
+end
+
+local notFoundPattern
+local function NotFoundName(msg)
+    msg = ns.Str(msg)
+    if not msg then
+        return nil
+    end
+    if notFoundPattern == nil then
+        notFoundPattern = false
+        local fmt = ns.Str(ERR_CHAT_PLAYER_NOT_FOUND_S)
+        if fmt then
+            fmt = fmt:gsub("%%1%$s", "%%s")
+            if fmt:find("%s", 1, true) then
+                local p = fmt:gsub("[%^%$%(%)%.%[%]%*%+%-%?%%]", "%%%0")
+                notFoundPattern = "^" .. p:gsub("%%%%s", "(.+)", 1) .. "$"
+            end
+        end
+    end
+    return notFoundPattern and msg:match(notFoundPattern) or nil
+end
+
+-- The whisper record a "not found" line is about, while it's expected.
+local function EchoFor(msg)
+    if not next(echoes) then
+        return nil
+    end
+    local name = NotFoundName(msg)
+    if not name then
+        return nil
+    end
+    local key = name:lower()
+    local rec = echoes[key]
+    if not rec then
+        local full = ns.Routes and ns.Routes.FullName(name)
+        rec = full and echoes[full:lower()]
+    end
+    if rec and rec.untilAt >= GetTime() then
+        return rec
+    end
+end
+
+-- The game's CHAT_MSG_SYSTEM: someone we whispered isn't there. Runs even
+-- when no chat window shows system messages.
+local function OnSystemMessage(msg)
+    local rec = EchoFor(msg)
+    if rec then
+        MarkGone(rec.target)
+    end
+end
+
+-- Chat filter: hides one "not found" line per addon whisper that caused
+-- it. Each chat window runs filters for the same line, so remember the line.
+local lastLine, lastMsg, lastAt, lastHide
+local function SystemFilter(_, _, msg, ...)
+    if not next(echoes) then
+        return false
+    end
+    msg = ns.Str(msg)
+    local lineID = ns.Plain(select(10, ...))
+    local now = GetTime()
+    if (lineID ~= nil and lineID == lastLine) or (lineID == nil and lastLine == nil and msg == lastMsg and now == lastAt) then
+        return lastHide
+    end
+    lastLine, lastMsg, lastAt, lastHide = lineID, msg, now, false
+    local rec = EchoFor(msg)
+    if rec and rec.n > 0 then
+        rec.n = rec.n - 1
+        MarkGone(rec.target)
+        lastHide = true
+    end
+    return lastHide
+end
+
+local filterOn = false
+local function NoteWhisper(target)
+    local full, base = NameKeys(target)
+    if not full then
+        return
+    end
+    if not filterOn and ChatFrameUtil and ChatFrameUtil.AddMessageEventFilter then
+        filterOn = pcall(ChatFrameUtil.AddMessageEventFilter, "CHAT_MSG_SYSTEM", SystemFilter) and true or false
+    end
+    local rec = echoes[full] or { target = target, n = 0 }
+    rec.n = rec.n + 1
+    rec.untilAt = GetTime() + ECHO_WINDOW
+    echoes[full] = rec
+    if base then
+        echoes[base] = rec
+    end
 end
 
 local function PruneQueue()
@@ -93,37 +246,50 @@ local function Pump(elapsed)
     end
     while tokens >= 1 and queue[1] do
         local q = table.remove(queue, 1)
-        local ok, result = pcall(C_ChatInfo.SendAddonMessage, PREFIX, q.msg, q.chat, q.target)
-        local results = Enum and Enum.SendAddonMessageResult or {}
-        tokens = tokens - 1
-        if ok and (result == nil or result == true or result == (results.Success or 0)) then
-            stats.sent = stats.sent + 1
-        elseif ok and (result == (results.AddonMessageThrottle or 3)
-                or result == (results.ChannelThrottle or 8)
-                or result == (results.AddOnMessageLockdown or 11)) then
-            q.retries = (q.retries or 0) + 1
-            if q.retries <= MAX_RETRIES then
-                table.insert(queue, 1, q)
-            else
-                -- Abandon this transmission's remaining fragments only at its
-                -- destination. ChannelThrottle restricts that channel, so also
-                -- drop pending announcements there without losing other sends.
-                local channel = q.chat == "CHANNEL" and result == (results.ChannelThrottle or 8)
-                for i = #queue, 1, -1 do
-                    local pending = queue[i]
-                    if pending.chat == q.chat and pending.target == q.target
-                            and (channel or pending.batch == q.batch) then
-                        table.remove(queue, i)
-                    end
+        local whisper = q.chat == "WHISPER"
+        if whisper and not CanWhisper(q) then
+            -- not verifiably reachable (anymore): drop the rest for them too
+            DropWhispers(q.target)
+        else
+            local ok, result = pcall(C_ChatInfo.SendAddonMessage, PREFIX, q.msg, q.chat, q.target)
+            local results = Enum and Enum.SendAddonMessageResult or {}
+            result = ns.Plain(result)
+            tokens = tokens - 1
+            if ok and (result == nil or result == true or result == (results.Success or 0)) then
+                stats.sent = stats.sent + 1
+                if whisper then
+                    NoteWhisper(q.target)
                 end
+            elseif ok and whisper and (result == (results.TargetOffline or 12) or result == (results.TargetRequired or 6)) then
+                -- the game already knows they're gone: stop, don't retry
+                MarkGone(q.target)
+            elseif ok and (result == (results.AddonMessageThrottle or 3)
+                    or result == (results.ChannelThrottle or 8)
+                    or result == (results.AddOnMessageLockdown or 11)) then
+                q.retries = (q.retries or 0) + 1
+                if q.retries <= MAX_RETRIES then
+                    table.insert(queue, 1, q)
+                else
+                    -- Abandon this transmission's remaining fragments only at its
+                    -- destination. ChannelThrottle restricts that channel, so also
+                    -- drop pending announcements there without losing other sends.
+                    local channel = q.chat == "CHANNEL" and result == (results.ChannelThrottle or 8)
+                    for i = #queue, 1, -1 do
+                        local pending = queue[i]
+                        if pending.chat == q.chat and pending.target == q.target
+                                and (channel or pending.batch == q.batch) then
+                            table.remove(queue, i)
+                        end
+                    end
+                    SendFailed()
+                end
+                local lockdown = result == (results.AddOnMessageLockdown or 11)
+                retryAt = GetTime() + (lockdown and LOCKDOWN_DELAY or THROTTLE_DELAY)
+                tokens = 0
+                break
+            else
                 SendFailed()
             end
-            local lockdown = result == (results.AddOnMessageLockdown or 11)
-            retryAt = GetTime() + (lockdown and LOCKDOWN_DELAY or THROTTLE_DELAY)
-            tokens = 0
-            break
-        else
-            SendFailed()
         end
     end
 end
@@ -166,8 +332,8 @@ local function AnnounceMsg(r)
     return table.concat({ "A", r.id, r.v or 1, Field(r.author, 60), r.cat or "other", #r.pts, Field(r.name, 60) }, "^")
 end
 
--- the whole route, in pieces, to one player
-local function SendRoute(r, target)
+-- the whole route, in pieces, to one player (explicit: the player chose them)
+local function SendRoute(r, target, explicit)
     if not Sharing() then return 0 end
     local text = Routes().Serialize(r)
     if #text > MAX_TEXT then
@@ -176,7 +342,7 @@ local function SendRoute(r, target)
     local total = math.ceil(#text / CHUNK)
     local batch = {}
     for i = 1, total do
-        Enqueue(("R^%s^%d^%d^%d^%s"):format(r.id, r.v or 1, i, total, text:sub((i - 1) * CHUNK + 1, i * CHUNK)), "WHISPER", target, batch)
+        Enqueue(("R^%s^%d^%d^%d^%s"):format(r.id, r.v or 1, i, total, text:sub((i - 1) * CHUNK + 1, i * CHUNK)), "WHISPER", target, batch, nil, explicit)
     end
     return total
 end
@@ -270,10 +436,16 @@ function Net.Share(msg)
     return true
 end
 
-handlers.A = function(f, sender)
+handlers.A = function(f, sender, chat)
     local R = Routes()
     local id, v, author = f[2], tonumber(f[3]), f[4]
     if not (R.ValidID(id) and v and author) or id:find("-", 1, true) then
+        return
+    end
+    -- Asking means whispering the sender. Only ask players who reached us
+    -- directly (guild, group): an advert on the shared channel can come
+    -- from anyone, who may be gone or unreachable by the time we'd ask.
+    if not DIRECT[chat] or IsGone(sender) then
         return
     end
     local st = R.Store()
@@ -286,6 +458,16 @@ handlers.A = function(f, sender)
         return
     end
     if requested[key] and GetTime() - requested[key] < REQUEST_MEMORY then
+        return
+    end
+    -- one sender at a time: at most a few open requests each
+    local open = 0
+    for _, q in ipairs(queue) do
+        if q.chat == "WHISPER" and q.target == sender then
+            open = open + 1
+        end
+    end
+    if open >= MAX_ASKS then
         return
     end
     -- plenty waiting to go out already: ask later, when it's announced again
@@ -388,6 +570,7 @@ function Net.OnMessage(prefix, msg, chat, sender)
     if sender == me and GetTime() > loopbackUntil then
         return
     end
+    chat = ns.Str(chat)
     local f = Split(msg)
     -- each kind of message only while its sharing is on
     local fn
@@ -406,8 +589,11 @@ function Net.OnMessage(prefix, msg, chat, sender)
     stats.got = stats.got + 1
     if sender ~= me then
         peers[sender] = GetTime()
+        if DIRECT[chat] then
+            direct[sender] = GetTime()
+        end
     end
-    fn(f, sender)
+    fn(f, sender, chat)
 end
 
 -- ---------------------------------------------------------------------------
@@ -428,7 +614,10 @@ function Net.SendTo(id, name)
     if not r or type(name) ~= "string" or name == "" then
         return 0
     end
-    return SendRoute(r, name)
+    -- the player asked again: give a "not found" player another try
+    local full = NameKeys(name)
+    gone[full] = nil
+    return SendRoute(r, name, true)
 end
 
 -- ---------------------------------------------------------------------------
@@ -523,7 +712,7 @@ function Net.SelfTest()
     copy.author = L.ROUTE_TEST_AUTHOR
     r = R.Validate(copy)
     r.src = "shared"
-    local pieces = SendRoute(r, R.Me())
+    local pieces = SendRoute(r, R.Me(), true)
     local chan = ChannelNumber()
     if chan then
         Enqueue("P^" .. testState.nonce, "CHANNEL", chan)
@@ -574,6 +763,15 @@ pump:SetScript("OnUpdate", function(_, elapsed)
                 incoming[k] = nil
             end
         end
+        for k, at in pairs(direct) do
+            if now - at > REACH_WINDOW then direct[k] = nil end
+        end
+        for k, untilAt in pairs(gone) do
+            if untilAt <= now then gone[k] = nil end
+        end
+        for k, rec in pairs(echoes) do
+            if rec.untilAt < now then echoes[k] = nil end
+        end
     end
 end)
 
@@ -587,6 +785,9 @@ end)
 ns.RegisterEvent("CHAT_MSG_ADDON", function(prefix, msg, chat, sender)
     Net.OnMessage(prefix, msg, chat, sender)
 end)
+
+-- "No player named 'X' is currently playing." after one of our whispers
+ns.RegisterEvent("CHAT_MSG_SYSTEM", OnSystemMessage)
 
 -- A join can complete after the two-second fallback, even after opting out.
 ns.RegisterEvent("CHAT_MSG_CHANNEL_NOTICE", ReconcileChannel)
@@ -607,6 +808,7 @@ ns.On("SETTING_CHANGED", function(key)
         if not Sharing() then
             wipe(incoming)
             wipe(requested)
+            wipe(direct)
             testState = nil
             loopbackUntil = 0
             joinedOnce = false
