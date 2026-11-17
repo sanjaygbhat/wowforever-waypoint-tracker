@@ -24,6 +24,9 @@ if mode == 'preference' then
     chosen.preference = 'fastest'
     T.Select(wp, chosen)
     assert(wp.travelPreference == 'fastest' and wp.travelChosen)
+    -- an objective finished and the game's marker moved to the next one
+    -- (a marker hopping on its own is kept; see run_route_sequence.lua)
+    M.quests[1].objectives = { { numFulfilled = 1, numRequired = 1, finished = true } }
     M.quests[1].onMap[37] = {.44, .82}
     M.FireEvent('QUEST_LOG_UPDATE')
     M.Tick(.7)
@@ -45,6 +48,7 @@ elseif mode == 'ghost' or mode == 'ghost_arrival' or mode == 'ghost_arrival_sele
     M.FireEvent('PLAYER_DEAD')
     assert(WP.GetActive().source == 'corpse', 'corpse owns arrow')
     M.player.ghost = true
+    M.quests[1].objectives = { { numFulfilled = 1, numRequired = 1, finished = true } }
     M.quests[1].onMap[37] = {.44, .82}
     M.FireEvent('QUEST_LOG_UPDATE')
     M.Tick(.7)

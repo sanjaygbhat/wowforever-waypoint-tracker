@@ -567,6 +567,8 @@ L.ROUTE_SHARE = "Partager..."
 L.ROUTE_SHARE_SAVED_TITLE = "Enregistré ! Parlez-en aux autres"
 L.ROUTE_SHARE_TITLE = "Partager %s"
 L.ROUTE_STOP_END = "À rendre : %s"
+L.ROUTE_QUEST_DONE = "Déjà fait d’après votre journal de quêtes : direction %s"
+L.ROUTE_ALL_DONE = "%s : d’après votre journal de quêtes, toutes les étapes sont faites."
 L.ROUTE_STOP_START = "Départ : %s"
 L.ROUTE_SUGGESTED_RARES = "Ennemis rares"
 

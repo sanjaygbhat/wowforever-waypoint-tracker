@@ -572,6 +572,8 @@ L.ROUTE_REC_EMPTY = "No stops yet: nothing to save."
 L.ROUTE_REC_NONE = "You're not recording a route. Open Routes and press Create route."
 L.ROUTE_STOP_START = "Start: %s"
 L.ROUTE_STOP_END = "Hand in: %s"
+L.ROUTE_QUEST_DONE = "Done in your quest log: on to %s"
+L.ROUTE_ALL_DONE = "%s: your quest log shows every step done."
 L.ROUTE_SUGGESTED_RARES = "Rare spawns"
 
 -- Route levels and map preview

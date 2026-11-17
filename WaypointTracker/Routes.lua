@@ -240,6 +240,11 @@ local function MainMap(pts)
     return best
 end
 
+-- A ready-made quest route's stop knows its quest (q) and what it is for
+-- there (role): pick it up, an objective, hand it in. Ranked in that order.
+-- Made on your own computer; sharing never carries them.
+local QUEST_ROLE = { start = 1, goal = 2, ["end"] = 3 }
+
 -- A clean copy, or nil when it isn't a usable route. Drafts (no id yet)
 -- pass with allowDraft.
 function Routes.Validate(r, allowDraft)
@@ -266,7 +271,9 @@ function Routes.Validate(r, allowDraft)
         end
         local m, x, y = ns.Int(type(p) == "table" and p.m), tonumber(type(p) == "table" and p.x), tonumber(type(p) == "table" and p.y)
         if m and x and y and x >= 0 and x <= 1 and y >= 0 and y <= 1 and Geo.IsValidMap(m) then
-            out.pts[#out.pts + 1] = { m = m, x = x, y = y, t = CleanTitle(p.t) }
+            local q = ns.Int(p.q)
+            out.pts[#out.pts + 1] = { m = m, x = x, y = y, t = CleanTitle(p.t),
+                q = q and QUEST_ROLE[p.role] and q or nil, role = q and QUEST_ROLE[p.role] and p.role or nil }
         end
     end
     if #out.pts == 0 then
@@ -954,7 +961,8 @@ local function QuestStops(DB, id, pts)
     end
     local start = NearestPoint(DB, DB.QuestTargets(q, "start"), true)
     if start then
-        pts[#pts + 1] = { m = start.p.m, x = start.p.x, y = start.p.y, t = L.ROUTE_STOP_START:format(start.e.name ~= "" and start.e.name or q.name) }
+        pts[#pts + 1] = { m = start.p.m, x = start.p.x, y = start.p.y, t = L.ROUTE_STOP_START:format(start.e.name ~= "" and start.e.name or q.name),
+            q = id, role = "start" }
     end
     for _, e in ipairs(DB.QuestTargets(q, "objective")) do
         local own = {}
@@ -963,12 +971,14 @@ local function QuestStops(DB, id, pts)
         end
         own = Cluster(own, 0.03)
         for i = 1, math.min(#own, 12) do
+            own[i].q, own[i].role = id, "goal"
             pts[#pts + 1] = own[i]
         end
     end
     local finish = NearestPoint(DB, DB.QuestTargets(q, "end"), true)
     if finish then
-        pts[#pts + 1] = { m = finish.p.m, x = finish.p.x, y = finish.p.y, t = L.ROUTE_STOP_END:format(finish.e.name ~= "" and finish.e.name or q.name) }
+        pts[#pts + 1] = { m = finish.p.m, x = finish.p.x, y = finish.p.y, t = L.ROUTE_STOP_END:format(finish.e.name ~= "" and finish.e.name or q.name),
+            q = id, role = "end" }
     end
 end
 
@@ -1107,22 +1117,54 @@ local function RoutePoints(id)
 end
 Routes.RoutePoints = RoutePoints
 
+-- A followed route keeps each quest stop's quest and role with the run
+-- (run.steps[routeIndex] = { q, role }), copied when it starts: the kept
+-- route can be replaced meanwhile (a newer version, another character).
+
+-- A quest's stops go: pick it up, its objectives, hand it in. The lowest
+-- role left for each quest among pts (not counting gone, one going now).
+local function Ranks(pts, gone, steps)
+    local low = {}
+    for _, o in ipairs(pts) do
+        local s = steps and o ~= gone and steps[o.routeIndex or 0]
+        local rank = type(s) == "table" and QUEST_ROLE[s.role]
+        if rank and (not low[s.q] or rank < low[s.q]) then
+            low[s.q] = rank
+        end
+    end
+    return low
+end
+
+-- True while a stop of p's quest that comes before it is left.
+local function Waits(p, low, steps)
+    local s = steps and steps[p.routeIndex or 0]
+    local rank = type(s) == "table" and QUEST_ROLE[s.role]
+    return rank and rank > (low[s.q] or rank) or false
+end
+
+-- The closest of pts (other than gone) that doesn't wait for another.
+local function Nearest(pts, gone, steps)
+    local low = Ranks(pts, gone, steps)
+    local best, bestD, first
+    for _, p in ipairs(pts) do
+        if p ~= gone and not Waits(p, low, steps) then
+            first = first or p
+            local d = Geo.GetVector(p)
+            if d and (not bestD or d < bestD) then
+                best, bestD = p, d
+            end
+        end
+    end
+    return best or first
+end
+
 -- the point after wp: the next one in order (round again for a loop), or
 -- the closest one left for "nearest"
 local function NextPoint(wp, run)
     local pts = RoutePoints(run.id)
     local best
     if run.mode == "nearest" then
-        local bestD
-        for _, p in ipairs(pts) do
-            if p ~= wp then
-                local d = Geo.GetVector(p)
-                if d and (not bestD or d < bestD) then
-                    best, bestD = p, d
-                end
-            end
-        end
-        return best or (pts[1] ~= wp and pts[1]) or pts[2]
+        return Nearest(pts, wp, run.steps) or (pts[1] ~= wp and pts[1]) or pts[2]
     end
     local i = wp.routeIndex or 0
     local lowest
@@ -1138,6 +1180,37 @@ local function NextPoint(wp, run)
     end
     return best or lowest
 end
+
+-- The stop the route is on: the one the arrow last pointed at for it
+-- (run.cur). When that one has gone, the next one in order ("nearest
+-- next": the closest left). A route followed since before run.cur was
+-- kept is on its lowest stop.
+local function CurrentPoint(run)
+    local pts = RoutePoints(run.id)
+    local cur = ns.Int(run.cur)
+    local after, lowest
+    for _, p in ipairs(pts) do
+        local i = p.routeIndex
+        if i then
+            if i == cur then
+                return p
+            end
+            if cur and i > cur and (not after or i < after.routeIndex) then
+                after = p
+            end
+            if not lowest or i < lowest.routeIndex then
+                lowest = p
+            end
+        end
+    end
+    if run.mode == "nearest" and pts[1] then
+        return Nearest(pts, nil, run.steps)
+    end
+    return after or lowest
+end
+Routes.CurrentPoint = CurrentPoint
+
+local QueueCatchUp
 
 local function Feedback(r, run)
     if run.asked or (run.secs or 0) < Routes.feedbackAfter or Routes.IsMine(r) then
@@ -1161,10 +1234,45 @@ local function Finish(reason)
     Changed()
 end
 
+local CatchUp, ProvenDone
+
+-- The route to start: a ready-made one kept from an earlier start goes as
+-- it is made now (which knows the quest of each quest stop). Also returns
+-- the fresh one when it replaces the kept copy.
+local function ToStart(id)
+    local r = Routes.Get(id)
+    local fresh = r and r.src == "suggested" and Routes.GetSuggested(id)
+    if fresh and fresh ~= r then
+        r = fresh
+    end
+    return Routes.Prepare(r), fresh
+end
+
+-- Every stop a quest stop the quest log proves done: nothing left to do.
+local function AllDone(r)
+    for _, p in ipairs(r.pts) do
+        if not ProvenDone(p) then
+            return false
+        end
+    end
+    return r.pts[1] ~= nil
+end
+
+local function SayAllDone(r)
+    if ns.Window and ns.Window.SetStatus then
+        ns.Window.SetStatus(L.ROUTE_ALL_DONE:format(r.name), "info")
+    end
+end
+
 -- Start a route. how: "replace" your waypoints, or "add" to them.
 function Routes.Apply(id, how)
-    local r = Routes.Prepare(Routes.Get(id))
+    local r, fresh = ToStart(id)
     if not r then
+        return false
+    end
+    -- a chain your quest log shows done: say so, and touch nothing
+    if AllDone(r) then
+        SayAllDone(r)
         return false
     end
     local st = Store()
@@ -1174,10 +1282,17 @@ function Routes.Apply(id, how)
         Routes.Stop(true)
     end
     -- kept from now on, so following it survives a reload
-    if st and not st.list[id] then
+    if st and (fresh or not st.list[id]) then
         st.list[id] = r
     end
     local run = { id = id, mode = r.mode, total = #r.pts, done = 0, secs = 0, lap = 0, seen = {} }
+    for i, p in ipairs(r.pts) do
+        local q = ns.Int(p.q)
+        if q and QUEST_ROLE[p.role] then
+            run.steps = run.steps or {}
+            run.steps[i] = { q = q, role = p.role }
+        end
+    end
     ns.charDB.routeRun = run
     local total = #r.pts
     WP.Batch(function()
@@ -1191,7 +1306,9 @@ function Routes.Apply(id, how)
             end
         end
     end)
-    -- where to begin: the first point, or the closest one for a loop or "nearest"
+    -- where to begin: the first point, or the closest one for a loop or
+    -- "nearest" (a quest's hand-in or objectives not before picking it up).
+    -- Only here: later on, a route never jumps to whichever stop is near.
     local pts = RoutePoints(id)
     local first
     if r.mode == "order" then
@@ -1201,27 +1318,27 @@ function Routes.Apply(id, how)
             end
         end
     else
-        local bestD
-        for _, p in ipairs(pts) do
-            local d = Geo.GetVector(p)
-            if d and (not bestD or d < bestD) then
-                first, bestD = p, d
-            end
-        end
-        first = first or pts[1]
+        first = Nearest(pts, nil, run.steps) or pts[1]
     end
     if first then
         WP.SetActive(first, true)
-        run.start = first.routeIndex
+        run.start, run.cur = first.routeIndex, first.routeIndex
     end
     ns.Print(L.ROUTE_STARTED:format(r.name, total))
     Changed()
+    -- begin at the first stop your quest log doesn't show done
+    CatchUp()
     return true
 end
 
 -- Start, asking first whether to replace your waypoints when you have some.
 function Routes.Start(id)
     if not Routes.Get(id) then
+        return false
+    end
+    local r = ToStart(id)
+    if r and AllDone(r) then
+        SayAllDone(r)
         return false
     end
     local others = 0
@@ -1260,10 +1377,26 @@ function Routes.Stop(quiet)
     end
 end
 
--- Skip the point the arrow is on.
+-- Skip the point the arrow is on; when the arrow is on something else (a
+-- quest, a treasure), the stop the route waits at, leaving the arrow be.
 function Routes.Skip()
     local run = Run()
     local wp = WP.GetActive()
+    if run and not (wp and wp.routeID == run.id) then
+        local cur = CurrentPoint(run)
+        if cur then
+            local nxt = NextPoint(cur, run)
+            if run.mode ~= "loop" then
+                WP.Remove(cur, true, true)
+            end
+            if nxt and nxt ~= cur and WP.IsValid(nxt) then
+                run.cur = nxt.routeIndex
+                ns.Fire("WAYPOINTS_CHANGED")
+                QueueCatchUp()
+            end
+            return
+        end
+    end
     if not run or not wp or wp.routeID ~= run.id then
         ns.Print(L.ROUTE_NONE, true)
         return
@@ -1325,6 +1458,146 @@ WP.nextHook = function(wp)
         return NextPoint(wp, run)
     end
 end
+
+-- Choices made for you see the route only by the stop it is on: when the
+-- arrow is taken by something else (a quest, a treasure, your corpse, a
+-- spot you looked up) and that goes, the arrow comes back to that stop,
+-- not to whichever of the route's stops is nearest.
+-- In order, that is the stop it is on. A loop may go on at any of its
+-- stops, "nearest next" at any not waiting for its quest to be picked up.
+WP.heldHook = function()
+    local run = Run()
+    local cur = run and CurrentPoint(run)
+    if not cur then
+        return nil
+    end
+    if run.mode == "loop" then
+        return run.id, cur, true
+    elseif run.mode == "nearest" then
+        local pts, allow = RoutePoints(run.id), {}
+        local low = Ranks(pts, nil, run.steps)
+        for _, p in ipairs(pts) do
+            if not Waits(p, low, run.steps) then
+                allow[p] = true
+            end
+        end
+        return run.id, cur, allow
+    end
+    return run.id, cur
+end
+
+-- Pointing the arrow at one of the route's stops (arriving, skipping, a
+-- click on it) makes it the stop the route is on; the quest log may show
+-- it done already.
+ns.On("ACTIVE_CHANGED", function(wp)
+    local run = Run()
+    if run and wp and wp.routeID == run.id and wp.routeIndex then
+        run.cur = wp.routeIndex
+        QueueCatchUp()
+    end
+end)
+
+-- ---------------------------------------------------------------------------
+-- Quest stops and your quest log. A ready-made quest stop is done when the
+-- log proves it: picked up (in the log, or handed in), objectives complete,
+-- handed in. Unknown is never done.
+-- ---------------------------------------------------------------------------
+local handedIn = {} -- quests handed in this session (before the log says so)
+
+local function Ask(fn, q)
+    if type(fn) ~= "function" then
+        return nil
+    end
+    local ok, v = pcall(fn, q)
+    if ok then
+        return ns.Plain(v)
+    end
+end
+
+ProvenDone = function(tag)
+    local q = type(tag) == "table" and ns.Int(tag.q)
+    local rank = q and QUEST_ROLE[tag.role]
+    if not rank or type(C_QuestLog) ~= "table" then
+        return false
+    end
+    if handedIn[q] or Ask(C_QuestLog.IsQuestFlaggedCompleted, q) == true then
+        return true
+    end
+    if rank == 3 then
+        return false
+    end
+    local index = ns.Num(Ask(C_QuestLog.GetLogIndexForQuestID, q))
+    if not index or index < 1 then
+        return false
+    end
+    return rank == 1 or Ask(C_QuestLog.IsComplete, q) == true
+end
+Routes._ProvenDone = ProvenDone -- tests
+
+-- Stops the quest log proves done are behind you. From the stop the route
+-- is on, each one in turn is taken off as if reached and the route goes on
+-- to its next stop, in order; it stops at the first one not proven, and
+-- never skips to a stop because it is near. The arrow follows when it was
+-- on the route; otherwise the route waits at its new stop.
+CatchUp = function()
+    local run = Run()
+    if not run or run.mode == "loop" then
+        return
+    end
+    local steps = run.steps
+    local cur = type(steps) == "table" and CurrentPoint(run)
+    if not (cur and ProvenDone(steps[cur.routeIndex])) then
+        return
+    end
+    local active = WP.GetActive()
+    local onRoute = active == nil or active.routeID == run.id
+    run.arriving = true -- the last stop gone this way: the route is complete
+    WP.Batch(function()
+        while cur and ProvenDone(steps[cur.routeIndex]) do
+            local nxt = NextPoint(cur, run)
+            run.done = (run.done or 0) + 1
+            WP.Remove(cur, true, true)
+            cur = nxt ~= cur and WP.IsValid(nxt) and nxt or nil
+        end
+    end)
+    if Run() ~= run then
+        return -- every stop was done
+    end
+    run.arriving = nil
+    if cur then
+        run.cur = cur.routeIndex
+        if onRoute then
+            WP.SetActive(cur, true)
+        end
+        if ns.Window and ns.Window.SetStatus then
+            ns.Window.SetStatus(L.ROUTE_QUEST_DONE:format(WP.ShortName(cur)), true)
+        end
+    end
+end
+Routes.CatchUp = CatchUp
+
+-- Quest log events come in bursts: look at most twice a second.
+local catchUpQueued = false
+QueueCatchUp = function()
+    if catchUpQueued or not Run() then
+        return
+    end
+    catchUpQueued = true
+    C_Timer.After(0.5, function()
+        catchUpQueued = false
+        ns.Call(CatchUp)
+    end)
+end
+ns.RegisterEvent("QUEST_TURNED_IN", function(id)
+    id = ns.Int(ns.Num(id))
+    if id then
+        handedIn[id] = true
+    end
+    QueueCatchUp()
+end)
+ns.RegisterEvent("QUEST_ACCEPTED", QueueCatchUp)
+ns.RegisterEvent("QUEST_LOG_UPDATE", QueueCatchUp)
+ns.On("LOGIN", QueueCatchUp)
 
 -- The route ends when none of its points are left (all done, or cleared).
 ns.On("WAYPOINTS_CHANGED", function()

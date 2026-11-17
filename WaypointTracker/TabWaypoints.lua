@@ -333,7 +333,7 @@ local function RefreshStatus()
         local r = routes.Get and routes.Get(run.id)
         local name = r and r.name or run.id
         local following = run.mode == "loop" and L.FOLLOWING_LOOP:format(name, (run.lap or 0) + 1)
-            or L.FOLLOWING_ROUTE:format(name, wp and wp.routeID == run.id and wp.routeIndex or (run.done or 0) + 1, run.total or 0)
+            or L.FOLLOWING_ROUTE:format(name, wp and wp.routeID == run.id and wp.routeIndex or ns.Int(run.cur) or (run.done or 0) + 1, run.total or 0)
         widgets.route:SetText(following)
     end
 end

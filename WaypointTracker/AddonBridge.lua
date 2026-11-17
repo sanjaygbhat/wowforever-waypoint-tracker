@@ -73,7 +73,8 @@ function Bridge:SetCrazyArrow(uid)
 end
 
 function Bridge:SetClosestWaypoint()
-    return WP.SetClosest(true)
+    -- another addon's choice: a route you follow counts by the stop it is on
+    return WP.SetClosest(true, true)
 end
 
 function Bridge:GetDistanceToWaypoint(uid)

@@ -96,7 +96,9 @@ check(active and active.source == 'quest' and active.m == 37 and near(active.x, 
     'POI click points the arrow at the quest objective (got ' .. tostring(active and (active.m .. ' ' .. active.x .. ',' .. active.y)) .. ')')
 check(Follow.GetTrackedQuestID() == 101, 'the clicked quest is the tracked quest')
 
--- 2. It follows the latest objective as the quest log updates.
+-- 2. It follows the latest objective as the quest log updates (an
+-- objective finished; the marker hopping on its own is kept).
+M.quests[1].objectives = { { numFulfilled = 1, numRequired = 1, finished = true } }
 M.quests[1].onMap[37] = { 0.47, 0.71 }
 M.FireEvent('QUEST_LOG_UPDATE'); M.Tick(0.7)
 active = WP.GetActive()

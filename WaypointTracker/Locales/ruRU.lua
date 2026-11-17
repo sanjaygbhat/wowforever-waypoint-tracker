@@ -549,6 +549,8 @@ L.ROUTE_SHARE = "Поделиться..."
 L.ROUTE_SHARE_SAVED_TITLE = "Сохранено! Расскажите другим"
 L.ROUTE_SHARE_TITLE = "Поделиться: %s"
 L.ROUTE_STOP_END = "Сдать: %s"
+L.ROUTE_QUEST_DONE = "Уже выполнено по журналу заданий: дальше %s"
+L.ROUTE_ALL_DONE = "%s: по журналу заданий все шаги выполнены."
 L.ROUTE_STOP_START = "Начало: %s"
 L.ROUTE_SUGGESTED_RARES = "Редкие враги"
 
