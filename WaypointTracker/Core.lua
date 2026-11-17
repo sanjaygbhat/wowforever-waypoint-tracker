@@ -157,15 +157,44 @@ local function WithStack(err)
 end
 
 -- Calls fn(...) and reports an error (once) instead of breaking the UI.
+-- xpcall hands its function no arguments, so they wait in a record the
+-- function reads. Each depth of nested calls keeps one record and one
+-- function for good: a call makes no table and no closure (events, callbacks
+-- and every frame's updates all come through here).
+local callDepth, callRecords = 0, {}
+local function CallRecord(depth)
+    local r = { fn = false, n = 0 }
+    r.run = function()
+        return r.fn(unpack(r, 1, r.n))
+    end
+    callRecords[depth] = r
+    return r
+end
+
 function ns.Call(fn, ...)
+    local n = select("#", ...)
     local ok, err
-    if select("#", ...) == 0 then
+    if n == 0 then
         ok, err = xpcall(fn, WithStack)
     else
-        local args, n = { ... }, select("#", ...)
-        ok, err = xpcall(function()
-            return fn(unpack(args, 1, n))
-        end, WithStack)
+        local depth = callDepth + 1
+        callDepth = depth
+        local r = callRecords[depth] or CallRecord(depth)
+        r.fn, r.n = fn, n
+        if n <= 4 then
+            r[1], r[2], r[3], r[4] = ...
+        else
+            for i = 1, n do
+                r[i] = (select(i, ...))
+            end
+        end
+        ok, err = xpcall(r.run, WithStack)
+        -- nothing is kept alive by a finished call
+        r.fn = false
+        for i = 1, n do
+            r[i] = nil
+        end
+        callDepth = depth - 1
     end
     if not ok then
         ns.ReportError(err)
