@@ -334,7 +334,8 @@ function Travel.ProjectPolyline(points, here, first, last, minimum)
     return nil
 end
 
-function Travel.LookAhead(points, projection, yards, last)
+-- `into`: a table of the caller's to write the point in, instead of a new one.
+function Travel.LookAhead(points, projection, yards, last, into)
     -- the point walked to so far, in locals (Pos of a point with wx: its fields)
     local pc, px, py = Pos(projection.point)
     local remaining = yards
@@ -346,10 +347,18 @@ function Travel.LookAhead(points, projection, yards, last)
         local distance = sqrt(dx * dx + dy * dy)
         if distance > remaining then
             local t = remaining / distance
+            if into then
+                into.cont, into.wx, into.wy = cont, px + t * (x - px), py + t * (y - py)
+                return into
+            end
             return { cont = cont, wx = px + t * (x - px), wy = py + t * (y - py) }
         end
         remaining = remaining - distance
         pc, px, py = cont, x, y
+    end
+    if into then
+        into.cont, into.wx, into.wy = pc, px, py
+        return into
     end
     return { cont = pc, wx = px, wy = py }
 end
@@ -1456,10 +1465,14 @@ end
 -- ProjectPlan's projection, filled again on every call (it runs every
 -- frame): Steer reads it before the next call, and nothing keeps it.
 local planProjection = { point = {} }
+-- The point to aim at, the same way, when the caller says nothing keeps it
+-- (`scratch`): written again on every call, and cleared of what a walk
+-- check notes on a place (Terrain.lua), as a new table would be.
+local planAim = {}
 
 -- Progress belongs to segments, not the nearest vertex. Stop the projection
 -- at the next action/doorway or road bend whose shortcut is not walkable.
-local function ProjectPlan(p, here)
+local function ProjectPlan(p, here, scratch)
     local path, index = p.path, p.index
     if not here or not index or not PlainWalk(path[index].via) then return nil end
     p.points = p.points or {}
@@ -1489,14 +1502,25 @@ local function ProjectPlan(p, here)
     local nextIndex = projection.segment + 1
     for i = index, nextIndex - 1 do reached[path[i].node] = true end
     p.index, p.target = nextIndex, path[nextIndex]
-    local aim = Travel.LookAhead(p.points, projection, LOOK_AHEAD, limit)
+    local aim
+    if scratch then
+        planAim.terrainEndpoint, planAim.terrainOnly = nil, nil
+        aim = Travel.LookAhead(p.points, projection, LOOK_AHEAD, limit, planAim)
+    else
+        aim = Travel.LookAhead(p.points, projection, LOOK_AHEAD, limit)
+    end
     local observed = p.c.ghost and path[projection.segment].node.corridor
         and path[projection.segment].node.corridor == path[nextIndex].node.corridor
     -- A look-ahead chord around a bend must not cut a wall or ridge. Explicit
     -- crossings retain their next gate; observed ghost legs retain their mode.
     if not observed and not CanWalk(here, aim) then
         local cont, wx, wy = Pos(path[nextIndex].node)
-        aim = { cont = cont, wx = wx, wy = wy }
+        if scratch then
+            aim.cont, aim.wx, aim.wy = cont, wx, wy
+            aim.terrainEndpoint, aim.terrainOnly = nil, nil
+        else
+            aim = { cont = cont, wx = wx, wy = wy }
+        end
     end
     return projection, aim
 end
@@ -1895,6 +1919,7 @@ local function FinishRide(destination)
 end
 
 local rideCandidates = {}
+local NO_STEPS = {} -- no plan: nothing to look through (never written)
 local function UpdateRiding(here)
     if UnitIsGhost and UnitIsGhost("player") then
         riding, atDock = nil, nil
@@ -1926,7 +1951,7 @@ local function UpdateRiding(here)
         if atDock and GetTime() - atDock.t < 900 then
             candidates[1] = atDock.link
         end
-        for _, e in ipairs(plan and plan.path or {}) do
+        for _, e in ipairs(plan and plan.path or NO_STEPS) do
             local l = type(e.via) == "table" and e.via
             if l and (l.method == "ship" or l.method == "zeppelin") then
                 local dd = Dist(here, l.from)
@@ -2301,7 +2326,22 @@ local function SteerText(path, i, wpName)
     return text
 end
 
-function Travel.Steer(wp)
+-- `shared`: the answer is read before the next call and never kept (the
+-- arrow, every frame), so it comes in one table that is emptied and filled
+-- again instead of a new one a frame; its aim point likewise. Without it
+-- every answer is a table of its own.
+local steerResult = {}
+local function Result(shared)
+    if not shared then
+        return {}
+    end
+    local s = steerResult
+    s.total, s.step, s.steps, s.sub, s.title, s.dist, s.pin = nil, nil, nil, nil, nil, nil, nil
+    s.wait, s.aim, s.progress, s.deviation, s.bearing, s.trail = nil, nil, nil, nil, nil, nil
+    return s
+end
+
+function Travel.Steer(wp, shared)
     if not wp or not Travel.Enabled() then
         plan, noRoute, job, replanQueued, held = nil, false, nil, false, nil
         return nil
@@ -2318,7 +2358,8 @@ function Travel.Steer(wp)
         if job then job.rode = true end -- it waits, and starts again where you land
         held = nil
         local title = riding.method == "taxi" and L.TRAVEL_ON_TAXI or L.TRAVEL_ON_BOAT
-        local s = { title = title:format(riding.to and PlaceName(riding.to) or WP.ShortName(wp)), sub = WP.ShortName(wp) }
+        local s = Result(shared)
+        s.title, s.sub = title:format(riding.to and PlaceName(riding.to) or WP.ShortName(wp)), WP.ShortName(wp)
         if riding.to and here then
             s.dist = Dist(here, riding.to)
         end
@@ -2327,7 +2368,7 @@ function Travel.Steer(wp)
     local moved = here and plan and plan.here and Dist(here, plan.here)
     local changedArea = here and plan and plan.here
         and (here.area ~= plan.here.area or here.city ~= plan.here.city)
-    local projection = plan and ProjectPlan(plan, here)
+    local projection = plan and ProjectPlan(plan, here, true) -- its aim point is not used
     local deviated = projection and projection.distance > DEVIATION
     local due = planWp ~= wp or planGeneration ~= generation or now - lastPlanTime >= REPLAN_EVERY
         or (now - lastPlanTime >= REPLAN_MIN and (deviated or changedArea or (moved and moved >= REPLAN_MOVED)))
@@ -2410,7 +2451,9 @@ function Travel.Steer(wp)
         local t = plan.target
         local how = t and type(t.via) == "table" and t.via
         if how and how.method == "tram" then
-            return { title = StepText(plan.path, plan.index, WP.ShortName(wp)), sub = WP.ShortName(wp) }
+            local s = Result(shared)
+            s.title, s.sub = StepText(plan.path, plan.index, WP.ShortName(wp)), WP.ShortName(wp)
+            return s
         end
         return nil
     end
@@ -2422,7 +2465,9 @@ function Travel.Steer(wp)
         end
         -- No reachable graph route: do not replace it with a straight arrow
         -- through a known barrier or an unavailable transport connection.
-        return { title = L.TRAVEL_NO_PLAN, sub = WP.ShortName(wp), pin = true }
+        local s = Result(shared)
+        s.title, s.sub, s.pin = L.TRAVEL_NO_PLAN, WP.ShortName(wp), true
+        return s
     end
     local path = plan.path
     -- a plain walk to a waypoint in the same area: the normal arrow
@@ -2444,7 +2489,7 @@ function Travel.Steer(wp)
             return nil -- what remains is a plain walk to the waypoint: the normal arrow
         end
     else
-        progress, aim = ProjectPlan(plan, here)
+        progress, aim = ProjectPlan(plan, here, shared)
         i = plan.index
     end
     local e = path[i]
@@ -2452,9 +2497,15 @@ function Travel.Steer(wp)
     if type(how) == "table" and (how.method == "ship" or how.method == "zeppelin") then
         atDock = { link = how, t = now }
     end
-    -- every field the result can get, sized once (nil until set)
-    local s = { total = plan.total, step = i - 1, steps = #path - 1, sub = WP.ShortName(wp), title = nil,
-        dist = nil, pin = nil, wait = nil, aim = nil, progress = nil, deviation = nil, bearing = nil, trail = nil }
+    local s
+    if shared then
+        s = Result(true)
+        s.total, s.step, s.steps, s.sub = plan.total, i - 1, #path - 1, WP.ShortName(wp)
+    else
+        -- every field the result can get, sized once (nil until set)
+        s = { total = plan.total, step = i - 1, steps = #path - 1, sub = WP.ShortName(wp), title = nil,
+            dist = nil, pin = nil, wait = nil, aim = nil, progress = nil, deviation = nil, bearing = nil, trail = nil }
+    end
     s.title = SteerText(path, i, WP.ShortName(wp))
     if type(how) == "table" and (how.kind or TRANSPORT[how.method]) then
         -- at the dock, flight master or portal (or about to cast): no direction

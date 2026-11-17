@@ -168,6 +168,9 @@ function Terrain.Load(T, d, rows)
     end)
 end
 
+-- The nine buckets around a point. Resolve and Sample read the same ones
+-- in this order by number (grid), which is what runs; this is the lookup
+-- they mirror.
 local function Nearby(cont, x, y, visit)
     local ix, iy = floor(x/64), floor(y/64)
     for dx = -1,1 do for dy = -1,1 do
@@ -276,6 +279,89 @@ function Terrain.Corridors()
     table.sort(list,function(a,b) return a.e.key<b.e.key end)
     return list
 end
+-- The reviewed blocked chords a point lies on (within 3 yards), with its
+-- projection on each, in `blocked` order: Decide's test for a place
+-- without a node ID. Kept for the last point asked about, since the answer
+-- depends only on where the point is and the player's place is tested
+-- against several stops every frame. A chord's box (its ends, 3 yards and a
+-- little more around) rules it out without the projection: a point outside
+-- it is further than 3 yards from every point of the chord. The boxes are
+-- also listed by the squares they touch (chordGrid[cont][ix][iy], chords in
+-- `blocked` order; big squares, as these chords run for miles), so only
+-- the chords around the point are looked at.
+local CHORD_SQUARE = 1024
+local chordList, chordT, chordCount = {}, {}, 0
+local chordFor, chordC, chordX, chordY
+local boxFor, boxMinX, boxMaxX, boxMinY, boxMaxY, chordGrid
+local function Boxes()
+    boxFor, boxMinX, boxMaxX, boxMinY, boxMaxY, chordGrid = blocked, {}, {}, {}, {}, {}
+    for i = 1, #blocked do
+        local pa, pb = blocked[i].a, blocked[i].b
+        local x0, x1 = min(pa.wx, pb.wx) - 3.01, max(pa.wx, pb.wx) + 3.01
+        local y0, y1 = min(pa.wy, pb.wy) - 3.01, max(pa.wy, pb.wy) + 3.01
+        boxMinX[i], boxMaxX[i], boxMinY[i], boxMaxY[i] = x0, x1, y0, y1
+        local byX = chordGrid[pa.cont]
+        if byX == nil then byX = {}; chordGrid[pa.cont] = byX end
+        local ix0, ix1 = floor(x0/CHORD_SQUARE), floor(x1/CHORD_SQUARE)
+        local iy0, iy1 = floor(y0/CHORD_SQUARE), floor(y1/CHORD_SQUARE)
+        if byX and (ix1-ix0+1)*(iy1-iy0+1) <= 1024 then
+            for ix = ix0, ix1 do
+                local byY = byX[ix] or {}
+                byX[ix] = byY
+                for iy = iy0, iy1 do
+                    local list = byY[iy] or {}
+                    byY[iy] = list
+                    list[#list+1] = i
+                end
+            end
+        else
+            -- a chord too long to list by square (or not a finite one): this
+            -- continent's chords are all looked at, as before
+            chordGrid[pa.cont] = false
+        end
+    end
+end
+local function ChordsAt(c, x, y)
+    if chordFor == blocked and chordC == c and chordX == x and chordY == y then return chordCount end
+    if boxFor ~= blocked then Boxes() end
+    chordFor = nil -- until the list is whole
+    local count = 0
+    local byX = chordGrid[c]
+    if not y or byX == false then
+        -- every chord of the continent (a missing y goes to Projection, as
+        -- it always did)
+        for i = 1, #blocked do
+            local proof = blocked[i]
+            if c == proof.a.cont and (not y or not (x < boxMinX[i] or x > boxMaxX[i] or y < boxMinY[i] or y > boxMaxY[i])) then
+                local t, d = Projection(proof.a, proof.b, x, y)
+                if d <= 3 then
+                    count = count + 1
+                    chordList[count], chordT[count] = proof, t
+                end
+            end
+        end
+    else
+        local byY = byX and byX[floor(x/CHORD_SQUARE)]
+        local near = byY and byY[floor(y/CHORD_SQUARE)]
+        if near then
+            for k = 1, #near do
+                local i = near[k]
+                if not (x < boxMinX[i] or x > boxMaxX[i] or y < boxMinY[i] or y > boxMaxY[i]) then
+                    local proof = blocked[i]
+                    local t, d = Projection(proof.a, proof.b, x, y)
+                    if d <= 3 then
+                        count = count + 1
+                        chordList[count], chordT[count] = proof, t
+                    end
+                end
+            end
+        end
+    end
+    for i = count + 1, chordCount do chordList[i], chordT[i] = nil, nil end
+    chordFor, chordC, chordX, chordY, chordCount = blocked, c, x, y, count
+    return count
+end
+
 function Terrain.Decide(a,b,explicit)
     local pa,pb = Resolve(a),Resolve(b)
     if pa and pa.node.terrainOnly then a.terrainOnly = true end
@@ -301,16 +387,12 @@ function Terrain.Decide(a,b,explicit)
     if not a.id or not b.id then
         local c,ax,ay = ns.Travel.Pos(a); local bc,bx,by = ns.Travel.Pos(b)
         if c and c == bc and ax and bx then
-            for _,proof in ipairs(blocked) do
-                if c == proof.a.cont then
-                    local ta,da = Projection(proof.a,proof.b,ax,ay)
-                    -- b's projection only matters when a lies on the chord
-                    if da <= 3 then
-                        local tb,db = Projection(proof.a,proof.b,bx,by)
-                        if db <= 3 and abs(min(1,max(0,ta))-min(1,max(0,tb)))*Distance(proof.a,proof.b) > 30 then
-                            return false,0,proof
-                        end
-                    end
+            -- b's projection only matters when a lies on the chord
+            for i = 1, ChordsAt(c, ax, ay) do
+                local proof, ta = chordList[i], chordT[i]
+                local tb,db = Projection(proof.a,proof.b,bx,by)
+                if db <= 3 and abs(min(1,max(0,ta))-min(1,max(0,tb)))*Distance(proof.a,proof.b) > 30 then
+                    return false,0,proof
                 end
             end
         end
@@ -338,27 +420,43 @@ local function Append(trace,x,y,z)
     trace.error=0;pts[#pts+1] = {x,y,z}; return true
 end
 
+-- Sampling runs five times a second for as long as you play, so it makes
+-- nothing it can keep: the traces' table is replaced only when it holds
+-- some, the last sample is one record written over (only Sample reads it),
+-- and the floor position is a new table only when it has changed (a search
+-- may hold the one it began with: searchFloor).
+local lastSample = {}
+local function Forget()
+    last = nil
+    if next(active) ~= nil then active = {} end
+end
 function Terrain.Sample()
     if not loaded and ns.Get("realRoutes") and ns.Travel then ns.Travel.Data() end
-    if not loaded or not ns.Get("realRoutes") or not ns.Get("travelTrails") then last=nil; active={}; return end
+    if not loaded or not ns.Get("realRoutes") or not ns.Get("travelTrails") then return Forget() end
     if Flag(UnitIsDeadOrGhost) or Flag(UnitIsGhost) or Flag(UnitOnTaxi) or Flag(IsFlying)
         or Flag(IsSwimming) or Flag(IsFalling) or Flag(UnitInVehicle)
-        or Flag(UnitAffectingCombat) or ns.Travel.Riding() then last=nil; active={}; return end
+        or Flag(UnitAffectingCombat) or ns.Travel.Riding() then return Forget() end
     local speed = GetUnitSpeed and Number(ns.Num(GetUnitSpeed("player")))
     local m,x,y = ns.Geo.GetPlayerMapPosition()
     m,x,y = Number(m),Number(x),Number(y)
-    if not speed or not m or not x or not y then last=nil; active={}; return end
+    if not speed or not m or not x or not y then return Forget() end
     local cont,wx,wy = ns.Geo.MapToWorldLive(m,x,y)
     cont,wx,wy = Number(cont),Number(wx),Number(wy)
     local z,positionInstance
     if UnitPosition then
         local px,py,pz,instance = UnitPosition("player")
         px,py,z,positionInstance = Number(ns.Num(px)),Number(ns.Num(py)),Number(ns.Num(pz)),Number(ns.Num(instance))
-        if not px or not py or not z or not positionInstance then last=nil; active={}; return end
+        if not px or not py or not z or not positionInstance then return Forget() end
     end
-    floorPosition = z and {wx=wx,wy=wy,z=z,cont=cont} or nil
+    if not z then floorPosition = nil
+    else
+        local f = floorPosition
+        if not (f and f.wx == wx and f.wy == wy and f.z == z and f.cont == cont) then
+            floorPosition = {wx=wx,wy=wy,z=z,cont=cont}
+        end
+    end
     local now,scope = Number(GetTime()),Scope()
-    if not cont or not wx or not wy or not now or not scope then last=nil; active={}; return end
+    if not cont or not wx or not wy or not now or not scope then return Forget() end
     local continuous = last and last.cont == cont and last.m == m and last.scope == scope
         and last.instance == positionInstance and now-last.t > 0 and now-last.t <= .8
     if continuous then
@@ -367,9 +465,14 @@ function Terrain.Sample()
             and (not z or not last.z or abs(z-last.z) <= 6)
         if speed <= .1 and dd > .5 then continuous = false end -- moving deck
     end
-    if not continuous then active={} end
-    last = {m=m,cont=cont,wx=wx,wy=wy,z=z,t=now,scope=scope,instance=positionInstance,speed=speed}
-    if speed <= .1 then active={}; return end -- pauses are not refutation
+    if not continuous and next(active) ~= nil then active={} end
+    last = lastSample
+    last.m,last.cont,last.wx,last.wy,last.z,last.t = m,cont,wx,wy,z,now
+    last.scope,last.instance,last.speed = scope,positionInstance,speed
+    if speed <= .1 then -- pauses are not refutation
+        if next(active) ~= nil then active={} end
+        return
+    end
     for key,trace in pairs(active) do
         local _,deviation = Projection(trace.from,trace.to,wx,wy)
         if deviation > 40 or now-trace.started > 1200 or not Append(trace,wx,wy,z) then active[key]=nil
@@ -390,19 +493,31 @@ function Terrain.Sample()
         end
     end
     local count=0;for _ in pairs(active) do count=count+1 end
-    Nearby(cont,wx,wy,function(p)
-        if sqrt((p.wx-wx)^2+(p.wy-wy)^2) <= 3 then
-            for _,e in ipairs(p.edges) do
-                if count < 8 and not active[e.key] then
-                    local to = e.a == p and e.b or e.a
-                    if Distance(p,to) > 8 then
-                        active[e.key] = {e=e,from=p,to=to,started=now,points={{wx,wy,z}},peak=0,turns=0,samples=1}
-                        count=count+1
+    -- Nearby's nine buckets in Nearby's order, by number (as Resolve reads
+    -- them): no key strings and no function made per sample
+    local byX = grid[cont]
+    if not byX then return end
+    local ix, iy = floor(wx/64), floor(wy/64)
+    for gx = ix-1, ix+1 do
+        local byY = byX[gx]
+        if byY then
+            for gy = iy-1, iy+1 do
+                for _,p in ipairs(byY[gy] or NONE) do
+                    if sqrt((p.wx-wx)^2+(p.wy-wy)^2) <= 3 then
+                        for _,e in ipairs(p.edges) do
+                            if count < 8 and not active[e.key] then
+                                local to = e.a == p and e.b or e.a
+                                if Distance(p,to) > 8 then
+                                    active[e.key] = {e=e,from=p,to=to,started=now,points={{wx,wy,z}},peak=0,turns=0,samples=1}
+                                    count=count+1
+                                end
+                            end
+                        end
                     end
                 end
             end
         end
-    end)
+    end
 end
 
 -- One inexpensive accumulator per frame; sampling/allocations run at 5 Hz.
