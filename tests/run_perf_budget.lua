@@ -7,6 +7,9 @@
 -- a call added to every frame (one small table a frame is 4 KB a second).
 -- Times are printed by the tool and never gated here.
 --
+-- The profile reports a live client build, so the terrain sampler (which
+-- only works for build 70338) is at rest, as it is for players.
+--
 -- A ceiling that fails after a deliberate change: run
 --     lua5.1 tools/perf_profile.lua --quick --verbose
 -- to see which handler grew, and raise the ceiling only when the cost is
@@ -15,7 +18,8 @@
 package.path = "./tests/?.lua;" .. package.path
 local P = assert(loadfile("tools/perf_profile.lua"))("module")
 
--- 300 CPU seconds at most (it takes about ten): a hang fails, not blocks
+-- 300 CPU seconds at most (it takes about forty seconds on an idle
+-- machine): a hang fails, not blocks
 local results = P.Run({ quick = true, seconds = 300 })
 
 local passed, failed = 0, 0
@@ -28,36 +32,36 @@ end
 local BUDGET = {
     -- nothing to do: no waypoint
     { "idle.alloc_addon_kb_per_s", 0.5 },
-    { "idle.api_calls_per_s", 150 },
+    { "idle.api_calls_per_s", 95 },
     { "idle.widget_calls_per_s", 10 },
-    { "idle_moving.alloc_addon_kb_per_s", 2.5 },
-    { "idle_moving.api_calls_per_s", 150 },
+    { "idle_moving.alloc_addon_kb_per_s", 1 },
+    { "idle_moving.api_calls_per_s", 95 },
     { "idle_moving.widget_calls_per_s", 10 },
     { "idle_after_all.alloc_addon_kb_per_s", 0.5 },
     { "idle_after_all.widget_calls_per_s", 10 },
     { "real_route_after_clear.alloc_addon_kb_per_s", 0.5 },
     { "real_route_after_clear.widget_calls_per_s", 10 },
     -- one waypoint: walking to it, standing, and with the arrow turned off
-    { "waypoint_walk.alloc_addon_kb_per_s", 52 },
-    { "waypoint_walk.api_calls_per_s", 1000 },
+    { "waypoint_walk.alloc_addon_kb_per_s", 6 },
+    { "waypoint_walk.api_calls_per_s", 730 },
     { "waypoint_walk.widget_calls_per_s", 310 },
     { "waypoint_still.alloc_addon_kb_per_s", 4 },
-    { "waypoint_still.api_calls_per_s", 640 },
+    { "waypoint_still.api_calls_per_s", 530 },
     { "waypoint_still.widget_calls_per_s", 185 },
-    { "waypoint_arrow_hidden.alloc_addon_kb_per_s", 3.5 },
-    { "waypoint_arrow_hidden.api_calls_per_s", 260 },
+    { "waypoint_arrow_hidden.alloc_addon_kb_per_s", 2 },
+    { "waypoint_arrow_hidden.api_calls_per_s", 195 },
     { "waypoint_arrow_hidden.widget_calls_per_s", 220 },
     -- ten waypoints with minimap pins and the coordinates box; maps and window
-    { "ten_waypoints.alloc_addon_kb_per_s", 52 },
-    { "ten_waypoints.api_calls_per_s", 1020 },
+    { "ten_waypoints.alloc_addon_kb_per_s", 6 },
+    { "ten_waypoints.api_calls_per_s", 740 },
     { "ten_waypoints.widget_calls_per_s", 360 },
-    { "worldmap_open.alloc_addon_kb_per_s", 52 },
+    { "worldmap_open.alloc_addon_kb_per_s", 6 },
     { "worldmap_open.widget_calls_per_s", 360 },
-    { "window_open.alloc_addon_kb_per_s", 55 },
+    { "window_open.alloc_addon_kb_per_s", 8 },
     { "window_open.widget_calls_per_s", 920 },
     -- Real routes: following a route through two zones (the searches too)
-    { "real_route_walk.alloc_addon_kb_per_s", 195 },
-    { "real_route_walk.api_calls_per_s", 760 },
+    { "real_route_walk.alloc_addon_kb_per_s", 140 },
+    { "real_route_walk.api_calls_per_s", 600 },
     { "real_route_walk.widget_calls_per_s", 330 },
     -- events that come in bursts: per event, with the delayed work they queue
     { "ev_quest_log_update.alloc_addon_kb_per_event", 0.08 },
