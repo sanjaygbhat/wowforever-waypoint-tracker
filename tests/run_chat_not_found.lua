@@ -46,7 +46,16 @@ local function whispersTo(name, from)
     return n
 end
 local function notFound(name)
-    return M.SystemMessage(ERR_CHAT_PLAYER_NOT_FOUND_S:format(name))
+    -- the client string may use "%s" or a positional "%1$s"
+    local fmt = (ERR_CHAT_PLAYER_NOT_FOUND_S:gsub("%%1%$s", "%%s"))
+    return M.SystemMessage(fmt:format(name))
+end
+local function channelAdverts()
+    local n = 0
+    for _, s in ipairs(sent) do
+        if s.chat == "CHANNEL" and s.msg:sub(1, 2) == "A^" then n = n + 1 end
+    end
+    return n
 end
 
 -- A route long enough to need several whispered pieces.
@@ -67,6 +76,13 @@ check(#sent == 0 and joined == 0, "sharing off: zero addon messages and no chann
 check(#(M.chatFilters.CHAT_MSG_SYSTEM or {}) == 0, "sharing off: no chat filter installed")
 check(notFound("Stranger-TestRealm"), "sharing off: a 'not found' line (the player's own whisper) is shown")
 
+-- Older chat code: no ChatFrameUtil filters, only the legacy globals.
+local util = { add = ChatFrameUtil.AddMessageEventFilter, remove = ChatFrameUtil.RemoveMessageEventFilter }
+ChatFrameUtil.AddMessageEventFilter, ChatFrameUtil.RemoveMessageEventFilter = nil, nil
+local legacyAdds, legacyRemoves = 0, 0
+ChatFrame_AddMessageEventFilter = function(...) legacyAdds = legacyAdds + 1; return util.add(...) end
+ChatFrame_RemoveMessageEventFilter = function(...) legacyRemoves = legacyRemoves + 1; return util.remove(...) end
+
 -- 2. Sharing on: a stranger's advert on the shared channel is not answered
 -- by whisper (this is the reported bug: the old code whispered "Q" back).
 ns.Set("routeSharing", true)
@@ -86,6 +102,16 @@ receive("A^rguild001^1^Guildie-TestRealm^other^2^Guild route", "GUILD", "Guildie
 M.Tick(3, 1)
 check(whispersTo("Guildie-TestRealm", mark + 1) == 1 and sent[#sent].msg == "Q^rguild001^1",
     "a guild member's advert is requested by whisper")
+check(legacyAdds == 1 and #(M.chatFilters.CHAT_MSG_SYSTEM or {}) == 1,
+    "without ChatFrameUtil the filter is added through ChatFrame_AddMessageEventFilter")
+check(not notFound("Guildie-TestRealm"), "the legacy-installed filter hides our 'not found' line")
+-- Opting out removes the filter; back on, ChatFrameUtil is used again.
+ns.Set("routeSharing", false)
+check(legacyRemoves == 1 and #(M.chatFilters.CHAT_MSG_SYSTEM or {}) == 0, "opting out removes the chat filter")
+ChatFrameUtil.AddMessageEventFilter, ChatFrameUtil.RemoveMessageEventFilter = util.add, util.remove
+ChatFrame_AddMessageEventFilter, ChatFrame_RemoveMessageEventFilter = nil, nil
+ns.Set("routeSharing", true)
+M.Tick(5, 1)
 
 -- 4. A requester logs out while the route's pieces go out: the server's
 -- "not found" stops the rest, and that line (ours) is hidden.
@@ -118,9 +144,62 @@ check(#(M.chatFilters.CHAT_MSG_SYSTEM or {}) == 1, "one chat filter, installed o
 -- not heard from since.
 mark = #sent
 receive("Q^" .. mine.id .. "^1", "WHISPER", "Late-TestRealm")
-M.now = M.now + 300
+M.now = M.now + 400
 M.Tick(30, 1)
 check(whispersTo("Late-TestRealm", mark + 1) == 0, "stale whispers are dropped, not sent")
+
+-- 6b. Requests waiting behind other traffic still get every piece: three
+-- guild members ask for the long route at once.
+local bigPts = {}
+for i = 1, 200 do
+    bigPts[i] = { m = 37, x = 0.1 + i * 0.003, y = 0.1 + i * 0.003, t = "A stop with a long descriptive name for padding " .. i }
+end
+local big = R.SaveMine({ name = "Big public route", public = true, pts = bigPts })
+local bigPieces = math.ceil(#R.Serialize(big) / 200)
+check(bigPieces >= 40, "the big route needs about two minutes of whispers per requester")
+mark = #sent
+for _, who in ipairs({ "Alice-TestRealm", "Bobby-TestRealm", "Cathy-TestRealm" }) do
+    receive("Q^" .. big.id .. "^1", "WHISPER", who)
+end
+M.Tick(400, 1)
+check(whispersTo("Alice-TestRealm", mark + 1) == bigPieces and whispersTo("Bobby-TestRealm", mark + 1) == bigPieces
+    and whispersTo("Cathy-TestRealm", mark + 1) == bigPieces, "queued replies deliver every piece to each requester")
+local pieces = math.ceil(#R.Serialize(mine) / 200)
+
+-- 6c. A stale automatic reply is dropped without taking the player's own
+-- send to the same player with it.
+mark = #sent
+receive("Q^" .. mine.id .. "^1", "WHISPER", "Carol-TestRealm")
+M.now = M.now + 400
+check(Net.SendTo(mine.id, "Carol-TestRealm") == pieces, "the player sends the route to the same player")
+M.Tick(200, 1)
+check(whispersTo("Carol-TestRealm", mark + 1) == pieces, "the stale reply is dropped; the player's send arrives in full")
+
+-- 6d. Forever names: "Name Surname-Realm" may be printed as "Name Surname"
+-- or "Name"; same short name on two realms keeps two records.
+mark = #sent
+receive("A^rsurname1^1^Ann Smith-TestRealm^other^2^Ann's route", "GUILD", "Ann Smith-TestRealm")
+receive("A^rbobrealm^1^Bob-RealmA^other^2^Bob A", "GUILD", "Bob-RealmA")
+receive("A^rbobrealm2^1^Bob-RealmB^other^2^Bob B", "GUILD", "Bob-RealmB")
+M.Tick(1.1, 1.1)
+check(whispersTo("Ann Smith-TestRealm", mark + 1) == 1 and whispersTo("Bob-RealmA", mark + 1) == 1
+    and whispersTo("Bob-RealmB", mark + 1) == 1, "three requests went out")
+check(not notFound("Ann"), "a bare first name maps back to the surnamed target")
+check(notFound("Ann"), "once that is answered, the player's own /w Ann shows")
+check(not notFound("Bob-RealmA"), "Bob on realm A is hidden")
+check(not notFound("Bob-RealmB"), "Bob on realm B keeps its own pending line")
+check(notFound("Annie") and notFound("Ann Smithers"), "other players' names are not hidden")
+
+-- 6e. A localized client string with a positional placeholder.
+local english = ERR_CHAT_PLAYER_NOT_FOUND_S
+ERR_CHAT_PLAYER_NOT_FOUND_S = "Kein Spieler namens '%1$s' ist derzeit online."
+mark = #sent
+receive("A^rlocale01^1^Dora-TestRealm^other^2^Dora", "GUILD", "Dora-TestRealm")
+M.Tick(1.1, 1.1)
+check(whispersTo("Dora-TestRealm", mark + 1) == 1, "request to Dora went out")
+check(not notFound("Dora-TestRealm"), "a %1$s pattern still matches our 'not found' line")
+check(notFound("Dora-TestRealm"), "and the player's own line after it still shows")
+ERR_CHAT_PLAYER_NOT_FOUND_S = english
 
 -- 7. The game says the target is offline: stop at once, print no retries.
 mark = #sent
@@ -165,6 +244,24 @@ sendToTarget()
 M.Tick(60, 1)
 check(whispersTo("Peer-OtherRealm", mark + 1) > 1, "an online same-faction target gets the route")
 UnitIsConnected = nil
+
+-- 8c. Route adverts never go to the shared channel; votes still do.
+check(channelAdverts() == 0, "no route adverts (A^) on the shared channel while sharing is on")
+mark = #sent
+Net.Announce(mine.id)
+M.Tick(601, 1)
+local guildAdverts, channelVotes = 0, 0
+for i = mark + 1, #sent do
+    if sent[i].chat == "GUILD" and sent[i].msg:sub(1, 2) == "A^" then guildAdverts = guildAdverts + 1 end
+end
+local other = R.Keep({ id = "rvote0001", v = 1, author = "Friend-TestRealm", name = "Someone else's", pts = mine.pts })
+check(other and R.Vote(other.id, 1), "a vote on someone else's route")
+M.Tick(2, 1)
+for i = mark + 1, #sent do
+    if sent[i].chat == "CHANNEL" and sent[i].msg:sub(1, 2) == "V^" then channelVotes = channelVotes + 1 end
+end
+check(guildAdverts >= 1 and channelAdverts() == 0, "route lists still go to the guild, not the channel")
+check(channelVotes >= 1, "votes are still shared on the channel")
 
 -- 9. Opting out sends nothing more, and the filter stays harmless.
 ns.Set("routeSharing", false)

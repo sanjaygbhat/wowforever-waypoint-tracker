@@ -870,6 +870,18 @@
     "UnitInRaid": {
       "status": "verified",
       "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "ChatFrameUtil.RemoveMessageEventFilter": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameFilters.lua"
+    },
+    "ChatFrame_AddMessageEventFilter": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
+    },
+    "ChatFrame_RemoveMessageEventFilter": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
     }
   },
   "native_binary_sha256": "0d89aed141d61541513aad0f02946f5cb76bc74e967ec35139811e280d488620"
