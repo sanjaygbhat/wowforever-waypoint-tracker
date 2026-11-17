@@ -81,6 +81,7 @@ local function Unkey(k)
     return floor(k / 4096) - OFFSET, k % 4096 - OFFSET
 end
 
+local STORE_KEYS = { "own", "shared", "pending", "crossings", "boats", "senders" }
 local function Store()
     local db = WaypointTrackerDB
     if type(db) ~= "table" then
@@ -90,7 +91,8 @@ local function Store()
         db.trails = {}
     end
     local t = db.trails
-    for _, k in ipairs({ "own", "shared", "pending", "crossings", "boats", "senders" }) do
+    for i = 1, #STORE_KEYS do
+        local k = STORE_KEYS[i]
         if type(t[k]) ~= "table" then
             t[k] = {}
         end
@@ -226,6 +228,7 @@ end
 -- Recording
 -- ---------------------------------------------------------------------------
 local last -- { cont, cx, cy, wx, wy, area, m, x, y, t }
+local spotA, spotB = {}, {}
 local fresh = {} -- own steps not shared yet: { cont, ax, ay, bx, by, t }
 
 local function OnBoard()
@@ -283,8 +286,13 @@ local function Record()
         last = nil
         return
     end
+    -- asked first: standing still (most samples) needs no position at all
+    if not Walking() then
+        last = nil
+        return
+    end
     local cont, wx, wy, m, x, y = Here()
-    if not cont or not Walking() then
+    if not cont then
         last = nil
         return
     end
@@ -295,7 +303,10 @@ local function Record()
         area, city = T.AreaAt(m, x, y, nil, true) -- live: the player's position
     end
     local now = GetTime()
-    local here = { cont = cont, cx = cx, cy = cy, wx = wx, wy = wy, m = m, x = x, y = y, area = area, city = city, t = now }
+    -- two records take turns being `here` and `last` (nothing else keeps them)
+    local here = (last == spotA) and spotB or spotA
+    here.cont, here.cx, here.cy, here.wx, here.wy = cont, cx, cy, wx, wy
+    here.m, here.x, here.y, here.area, here.city, here.t = m, x, y, area, city, now
     if last and last.cont == cont then
         local dx, dy = wx - last.wx, wy - last.wy
         local moved = sqrt(dx * dx + dy * dy)

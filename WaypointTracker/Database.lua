@@ -1322,6 +1322,11 @@ function DB.Search(text, kinds, opts, limit)
     end
     local scored = {}
     local first = q:sub(1, 1)
+    -- the player's faction, asked once for the search (not once an entry)
+    local myLetter, myRaces
+    if opts.faction then
+        myLetter, myRaces = MyFaction()
+    end
 
     -- fast: exact, starts with, every word starts a word, contains
     local function quick(e)
@@ -1374,7 +1379,7 @@ function DB.Search(text, kinds, opts, limit)
     end
 
     local function consider(e, allowTypos)
-        if opts.faction and not DB.ForMyFaction(e) then
+        if opts.faction and not ForFaction(e, myLetter, myRaces) then
             return
         end
         local s
@@ -1535,9 +1540,14 @@ function DB.Nearby(kinds, opts, limit)
     if not (cached and cached.gen == DB.generation) then
         local areas = AreasOn(m)
         local list = {}
+        -- the player's faction, asked once for the scan (not once an entry)
+        local myLetter, myRaces
+        if opts.faction then
+            myLetter, myRaces = MyFaction()
+        end
         local function look(tbl, want)
             for _, e in pairs(tbl or {}) do
-                if want(e) and (not opts.faction or DB.ForMyFaction(e)) and MaybeOn(e, m, areas) then
+                if want(e) and (not opts.faction or ForFaction(e, myLetter, myRaces)) and MaybeOn(e, m, areas) then
                     list[#list + 1] = e
                 end
             end
