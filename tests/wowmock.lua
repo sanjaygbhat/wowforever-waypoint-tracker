@@ -2048,7 +2048,41 @@ ChatFrameUtil = {
         M.chatText = (M.chatText or "") .. text
         return true
     end,
+    -- Message filters, as Blizzard_ChatFrameBase/Shared/ChatFrameFilters.lua:
+    -- each chat window runs every filter for every line it would show.
+    AddMessageEventFilter = function(event, fn)
+        M.chatFilters[event] = M.chatFilters[event] or {}
+        table.insert(M.chatFilters[event], fn)
+    end,
+    RemoveMessageEventFilter = function(event, fn)
+        for i, f in ipairs(M.chatFilters[event] or {}) do
+            if f == fn then table.remove(M.chatFilters[event], i); return end
+        end
+    end,
 }
+M.chatFilters = {}
+M.systemLines = {} -- system lines the chat windows showed
+ERR_CHAT_PLAYER_NOT_FOUND_S = "No player named '%s' is currently playing."
+local systemLineID = 0
+-- A CHAT_MSG_SYSTEM line: the event reaches addons, and each of
+-- M.chatWindows (default 2) windows filters it and shows it unless discarded.
+function M.SystemMessage(text)
+    systemLineID = systemLineID + 1
+    M.FireEvent("CHAT_MSG_SYSTEM", text, "", "", "", "", "", 0, 0, "", 0, systemLineID)
+    local shown = false
+    for w = 1, (M.chatWindows or 2) do
+        local discard = false
+        for _, fn in ipairs(M.chatFilters.CHAT_MSG_SYSTEM or {}) do
+            if fn({ id = w }, "CHAT_MSG_SYSTEM", text, "", "", "", "", "", 0, 0, "", 0, systemLineID) then
+                discard = true
+                break
+            end
+        end
+        if not discard then shown = true end
+    end
+    if shown then M.systemLines[#M.systemLines + 1] = text end
+    return shown
+end
 function M.TypeSlash(handler, msg)
     M.chatOpen, M.chatText = true, ""
     handler(msg)

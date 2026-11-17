@@ -99,6 +99,8 @@ local function Network(results, send)
     local netNS = { L = ns.L, Get = function() return true end,
         On = function() end, RegisterEvent = function() end,
         Print = function(text) notices[#notices + 1] = text end,
+        Plain = function(v) return v end,
+        Str = function(v) return type(v) == "string" and v or nil end,
         Routes = { Get = function(id) return { id = id, v = 1 } end,
             Serialize = function() return string.rep("x", 450) end } }
     assert(loadfile("WaypointTracker/RoutesNet.lua"))("WaypointTracker", netNS)
