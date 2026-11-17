@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.2
+
+- **Fixes "No player named 'X' is currently playing" messages** about players you don't know while Route sharing & votes (beta) is on. Route sharing no longer whispers players who haven't contacted you through your guild, group or a whisper, stops whispering anyone the game reports offline, and hides the leftover "not found" lines its own messages caused. **Send to my target (beta)** refuses a target who is offline or of the other faction. Route lists are now exchanged with your guild and group only; votes are still shared more widely.
+- **Quest chain routes stay on the step you're on.** Following a chain such as The Defias Brotherhood, the arrow no longer jumps to whichever stop is nearest: after a followed quest, a lookup, a treasure or your corpse waypoint ends, with **Always point to the closest waypoint** on, when another addon asks for the closest waypoint, or after `/reload`. Steps go in order; when your quest log shows steps already done, only those are skipped, in order. **Skip This Point** works even while the arrow points at something else, and a chain your quest log shows all done says so instead of starting. Loops and **Nearest next** routes still go to the closest point, and `/wp closest` still jumps on purpose.
+- Following a tracked quest keeps its objective area until one of its objectives is finished, instead of switching when the game's map marker moves between areas.
+- **Lighter on your game:** far less memory churn and fewer game calls every second. With nothing to show the addon does almost nothing; walking to a waypoint or with the window open makes about 95% less garbage than 1.4.1, and following a Real route about half as much. The arrow and minimap pins rest when there is nothing to show, and the terrain recorder no longer runs on live game builds, where its data is not used.
+- **Updating from 1.4.1:** `/reload` is enough. From an older version, fully restart the game.
+- New regression tests cover route sharing with offline and unknown players, quest chains step by step, followed quest areas, the arrow and minimap pins at rest, the terrain recorder, and a budget for what the addon allocates and calls each second.
+
 ## 1.4.1
 
 - **Nearest comes ready to use:** a complete trainer database with over 500 trainers across capitals, starting areas and towns of both factions. Covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Pick the closest one and follow the arrow by the fastest route; your discoveries add to the shipped database.

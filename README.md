@@ -288,7 +288,7 @@ Click the preview or one of its pins to open the same route on the normal world 
 
 You can also press **Start Route** or double-click a row to begin. While following it, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** holds copying, editing and removal actions where available.
 
-**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Walked-path sharing for Real routes has a separate setting, off by default.
+**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists with other Waypoint Tracker players in your guild and group, and to share votes more widely through the addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Walked-path sharing for Real routes has a separate setting, off by default.
 
 ### Fastest route (Real routes)
 
