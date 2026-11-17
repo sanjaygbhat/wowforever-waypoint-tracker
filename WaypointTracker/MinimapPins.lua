@@ -79,10 +79,8 @@ end
 -- same fallback rules as the arrow); the three lists are emptied each time
 local askedCont, contX, contY = {}, {}, {}
 
+-- (the driver below asks whether the minimap shows before it calls this)
 local function Update()
-    if not Minimap:IsVisible() then
-        return
-    end
     local showPins, showEdge = ns.Get("minimapPins"), ns.Get("minimapEdge")
     local list = WP.List()
     if (not showPins and not showEdge) or #list == 0 then
@@ -190,8 +188,9 @@ driver:SetScript("OnUpdate", function(_, elapsed)
         return
     end
     acc = 0
-    -- no waypoints and no pin showing: the update would have nothing to do
-    if shown == 0 and WP.Count() == 0 then
+    -- no waypoints and no pin showing, or the minimap hidden (the pins
+    -- stay as they are until it shows again): nothing to do
+    if (shown == 0 and WP.Count() == 0) or not Minimap:IsVisible() then
         return
     end
     safeUpdate()
