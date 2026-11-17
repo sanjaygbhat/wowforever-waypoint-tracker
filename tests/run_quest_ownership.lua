@@ -23,9 +23,12 @@ M.FireEvent('QUEST_TURNED_IN', 101)
 assert(not WP.IsValid(quest), 'turned-in quest pin removed'); preserved()
 -- Replacement at the same authored location must not adopt the persistent pin.
 quest = assert(ns.Follow.TrackQuest(101))
+-- objectives finishing move the marker (it hopping alone is kept)
+M.quests[1].objectives = { { numFulfilled = 1, numRequired = 1, finished = true }, { numFulfilled = 0, numRequired = 1, finished = false } }
 M.quests[1].onMap[37] = {.44, .82}
 M.FireEvent('QUEST_LOG_UPDATE'); M.Tick(.7)
 assert(not WP.IsValid(quest) and WP.GetActive().x == .44, 'moving quest replaces only its own pin'); preserved()
+M.quests[1].objectives[2].finished = true
 M.quests[1].onMap[37] = {.39, .82}
 M.FireEvent('QUEST_LOG_UPDATE'); M.Tick(.7)
 quest = WP.GetActive()
