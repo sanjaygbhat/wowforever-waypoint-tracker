@@ -548,6 +548,7 @@ L.ROUTE_SHARE = "分享..."
 L.ROUTE_SHARE_SAVED_TITLE = "已保存！告诉大家吧"
 L.ROUTE_SHARE_TITLE = "分享 %s"
 L.ROUTE_STOP_END = "交任务：%s"
+L.ROUTE_QUEST_DONE = "任务日志显示已完成：前往%s"
 L.ROUTE_STOP_START = "起点：%s"
 L.ROUTE_SUGGESTED_RARES = "稀有怪物"
 

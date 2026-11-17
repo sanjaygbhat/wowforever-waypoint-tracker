@@ -503,7 +503,7 @@ local function Update(dt)
         closestTimer = closestTimer + dt
         if closestTimer >= 1 then
             closestTimer = 0
-            local best, bestDist = WP.Closest()
+            local best, bestDist = WP.Closest(nil, true) -- a route: only the stop it is on
             if best and best ~= wp and bestDist and (not dist or bestDist < dist - 5) then
                 WP.SetActive(best, true)
                 return

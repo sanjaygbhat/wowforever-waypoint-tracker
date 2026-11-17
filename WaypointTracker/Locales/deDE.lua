@@ -566,6 +566,7 @@ L.ROUTE_SHARE = "Teilen..."
 L.ROUTE_SHARE_SAVED_TITLE = "Gespeichert! Sag es weiter"
 L.ROUTE_SHARE_TITLE = "%s teilen"
 L.ROUTE_STOP_END = "Abgeben: %s"
+L.ROUTE_QUEST_DONE = "Laut Questlog erledigt: weiter zu %s"
 L.ROUTE_STOP_START = "Start: %s"
 L.ROUTE_SUGGESTED_RARES = "Seltene Gegner"
 
