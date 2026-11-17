@@ -661,10 +661,14 @@ driver:SetScript("OnUpdate", function(_, elapsed)
     -- once when there is something to show.
     if resting and not Arrow.moving and not Arrow.editing and not Arrow.preview and not WP.GetActive() then
         rested = rested + elapsed
-        if rested < 1 then
-            acc = 0
-            return
+        acc = 0
+        if rested >= 1 then
+            -- whatever the frame rate: a frame shorter than the 0.016 s
+            -- below must not put the second's look off for good
+            rested = 0
+            safeUpdate(min(elapsed, 1))
         end
+        return
     end
     rested = 0
     acc = acc + elapsed
