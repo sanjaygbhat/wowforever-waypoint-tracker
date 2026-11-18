@@ -38,7 +38,11 @@ DB.loaded = false
 -- game never stops for it. Every loop that reads rows calls Tick; while a
 -- slice of a spread-out load runs (`pace`), Tick pauses the load once the
 -- frame's share is used up. All at once, Tick does nothing.
-local SLICE_MS, SLICE_COMBAT_MS = 8, 2 -- a frame's share: out of combat, in combat
+local SLICE_MS, SLICE_COMBAT_MS = 8, 2 -- a frame's share: out of combat (at most), in combat
+-- Out of combat a slice takes this much of what the rest of the last frame
+-- took, so a high frame rate stays high (at 144 frames a second about
+-- 3 ms, at 60 about 7), but never less than SLICE_MIN_MS.
+local SLICE_SHARE, SLICE_MIN_MS = 0.4, 3
 -- the same without a readable clock, counted in rows (about 100 a millisecond)
 local SLICE_UNITS, SLICE_COMBAT_UNITS = 800, 200
 local CLOCK_EVERY = 16 -- rows between two looks at the clock
@@ -394,62 +398,72 @@ local function ReadFiles()
     end
 end
 
+-- The shipped rows are in the tables and the load has not finished: so
+-- only when a failure nothing protects ended a spread-out load half-way.
+-- The next try goes on from there (the game reads the data addon's files
+-- once a session: there is no asking for the rows again).
+local parsed = false
+
 -- Everything after the files, the same all at once and a little each frame.
 -- `call`: ns.Call, or its like for a step that may pause (Paused). `spread`:
 -- the database says it is ready only when all of it is (other code runs
 -- between the slices); all at once it says so where it always did.
 local function Build(call, spread)
-    local shipped = WaypointTrackerData and WaypointTrackerData.raw
-    if not shipped and DB.ready then
+    local data = WaypointTrackerData
+    if data and data.raw then
+        if not call(Parse, data) then
+            return false, "broken"
+        end
+        parsed = true
+        -- the raw text isn't needed any more
+        data.raw = nil
+        for k in pairs(data) do
+            if type(k) == "string" and k:find("^names_") then
+                data[k] = nil
+            end
+        end
+    elseif not parsed and DB.ready then
         -- still no database folder: keep searching your own discoveries
         DB.MergeIfLearned()
         return true, "missing"
     end
-    if shipped then
-        if not call(Parse, WaypointTrackerData) then
-            return false, "broken"
-        end
-        -- the raw text isn't needed any more
-        WaypointTrackerData.raw = nil
-        for k in pairs(WaypointTrackerData) do
-            if k:find("^names_") then
-                WaypointTrackerData[k] = nil
-            end
-        end
+    local hasShipped = parsed
+    if data and data.clientItems then
+        call(DB.ParseClientItems, data)
+        data.clientItems, data.clientItemNames = nil, nil
     end
-    if WaypointTrackerData and WaypointTrackerData.clientItems then
-        call(DB.ParseClientItems, WaypointTrackerData)
-        WaypointTrackerData.clientItems, WaypointTrackerData.clientItemNames = nil, nil
+    if data and data.sources then
+        call(DB.ParseSources, data)
+        data.sources, data.sourceNames = nil, nil
     end
-    if WaypointTrackerData and WaypointTrackerData.sources then
-        call(DB.ParseSources, WaypointTrackerData)
-        WaypointTrackerData.sources, WaypointTrackerData.sourceNames = nil, nil
+    if data and type(data.client) == "table" then
+        call(DB.ParseClient, data.client)
+        data.client = nil
     end
-    if WaypointTrackerData and type(WaypointTrackerData.client) == "table" then
-        call(DB.ParseClient, WaypointTrackerData.client)
-        WaypointTrackerData.client = nil
-    end
-    local hasShipped = shipped and true or false
     if not spread then
         DB.hasShipped = hasShipped
         DB.ready = true
         -- without the database folder, try loading it again next time
         DB.loaded = hasShipped
+        parsed = false
     end
     -- Forever content: what the community shared (shipped with the data
-    -- addon) and what you discovered yourself
-    -- the curated WoW Forever database (same format as discoveries)
-    if WaypointTrackerData and type(WaypointTrackerData.curated) == "string" and ns.Learn then
-        local curated = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
-        ns.Learn.Import(WaypointTrackerData.curated, curated, true, Tick)
-        DB.curated = curated
-        WaypointTrackerData.curated = nil
-    end
-    if WaypointTrackerData and type(WaypointTrackerData.forever) == "string" and ns.Learn then
-        local community = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
-        ns.Learn.Import(WaypointTrackerData.forever, community, true, Tick)
-        DB.community = community
-        WaypointTrackerData.forever = nil
+    -- addon) and what you discovered yourself. A shipped store is the same
+    -- format as discoveries; one that cannot be read is reported and left
+    -- out (its text is let go first: it is not tried again), and Find
+    -- works on with the rest.
+    if ns.Learn then
+        for _, source in ipairs({ "curated", "community" }) do
+            local field = source == "curated" and "curated" or "forever"
+            local text = data and data[field]
+            if type(text) == "string" then
+                data[field] = nil
+                local st = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
+                if call(ns.Learn.Import, text, st, true, Tick) then
+                    DB[source] = st
+                end
+            end
+        end
     end
     bakeNext = hasShipped
     -- learned data lives in SavedVariables: if it's damaged, Find still works
@@ -458,8 +472,9 @@ local function Build(call, spread)
         DB.hasShipped = hasShipped
         DB.ready = true
         DB.loaded = hasShipped
+        parsed = false
     end
-    if not shipped then
+    if not hasShipped then
         return true, "missing"
     end
     return true
@@ -482,6 +497,18 @@ local function Sliced()
 end
 DB.Sliced = Sliced
 
+-- An error raised in a coroutine, with where it was raised when the client says.
+local function Traced(co, err)
+    local traceback = type(debug) == "table" and debug.traceback
+    if type(traceback) == "function" then
+        local ok, text = pcall(traceback, co, tostring(err))
+        if ok and type(text) == "string" then
+            return text
+        end
+    end
+    return err
+end
+
 -- ns.Call for a step of a spread-out load: the step runs in a coroutine of
 -- its own (a pause can't cross xpcall), which this one hands every pause
 -- on from. An error is reported once and the load goes on, as with ns.Call.
@@ -493,25 +520,23 @@ local function Paused(fn, ...)
         ok, err = coroutine.resume(co)
     end
     if not ok then
-        local traceback = type(debug) == "table" and debug.traceback
-        if type(traceback) == "function" then
-            local okTrace, text = pcall(traceback, co, tostring(err))
-            if okTrace and type(text) == "string" then err = text end
-        end
-        ns.ReportError(err)
+        ns.ReportError(Traced(co, err))
     end
     return ok
 end
 
--- The load under way: { co, pace, waiting, share, stats } (nil: none).
+-- The load under way: { co, pace, waiting, share, stats, spent } (nil: none).
 -- A hidden frame's OnUpdate gives it a slice every frame.
 local job
+local building = false -- DB.Load is reading it all at once right now
 local driver = CreateFrame("Frame")
 driver:Hide()
 
--- Rows a whole load reads, for the share done (DB.Loading). It only has to
--- be about right: the share stops at 99% until the load has finished.
-local EXPECTED_UNITS = 180000
+-- Rows a whole load reads, for the share done (DB.Loading): in English,
+-- and in the other languages (which also read the English names, for
+-- what theirs leave out). It only has to be about right: the share stops
+-- at 99% until the load has finished.
+local EXPECTED_UNITS, EXPECTED_UNITS_OTHER = 180000, 204000
 
 local function Finish(j, ok, why)
     job = nil
@@ -526,19 +551,38 @@ local function Finish(j, ok, why)
 end
 
 -- One slice. `atOnce`: the rest of the load, now (DB.Load while it runs).
+-- `elapsed`: the seconds the last frame took (OnUpdate's).
 -- Returns whether the load has finished, and then its answer.
-local function Slice(j, atOnce)
+local function Slice(j, atOnce, elapsed)
+    local status = coroutine.status(j.co)
+    if status == "dead" then
+        return true, Finish(j, false, "broken")
+    elseif status ~= "suspended" then
+        return false -- asked for from inside the load itself: it is running
+    end
     local p = j.pace
     if atOnce then
         pace = nil
     else
-        local combat = InCombatLockdown and ns.Plain(InCombatLockdown()) and true or false
+        local ms, max = SLICE_MS, SLICE_UNITS
+        if InCombatLockdown and ns.Plain(InCombatLockdown()) then
+            ms, max = SLICE_COMBAT_MS, SLICE_COMBAT_UNITS
+        else
+            -- what the rest of the last frame took: all of it but our own slice
+            local frame = ns.Num(elapsed)
+            if frame and frame > 0 then
+                ms = math.max(SLICE_MIN_MS, math.min(SLICE_MS, (frame * 1000 - (j.spent or 0)) * SLICE_SHARE))
+            end
+        end
         p.units, p.next, p.start = 0, CLOCK_EVERY, Clock()
-        p.ms, p.max = combat and SLICE_COMBAT_MS or SLICE_MS, combat and SLICE_COMBAT_UNITS or SLICE_UNITS
+        p.ms, p.max = ms, max
         pace = p
     end
     local ok, a, b = coroutine.resume(j.co)
     pace = nil
+    -- (with a clock that reads: without one a slice is a number of rows)
+    local now = not atOnce and p.start and Clock()
+    j.spent = now and now >= p.start and now - p.start or nil
     p.all = p.all + p.units
     if p.units > j.stats.most then
         j.stats.most = p.units
@@ -549,28 +593,28 @@ local function Slice(j, atOnce)
         return false
     end
     if not ok then
-        -- a step that isn't protected failed (reading a shipped store): as
-        -- a database that couldn't be read
-        ns.ReportError(a)
+        -- a failure that nothing protects (every step is protected: so in
+        -- the loader's own lines): as a database that couldn't be read
+        ns.ReportError(Traced(j.co, a))
         return true, Finish(j, false, "broken")
     end
     return true, Finish(j, a, b)
 end
 
-driver:SetScript("OnUpdate", function()
+driver:SetScript("OnUpdate", ns.Safe(function(_, elapsed)
     local j = job
     if not j then
         driver:Hide()
         return
     end
-    if not Slice(j) then
-        local share = math.min(0.99, j.pace.all / EXPECTED_UNITS)
+    if not Slice(j, false, elapsed) then
+        local share = math.min(0.99, j.pace.all / j.expected)
         if share > j.share then
             j.share = share
         end
         ns.Fire("DB_LOADING", j.share)
     end
-end)
+end))
 
 -- The share of a spread-out load that is done (0..1), or nil when none runs.
 function DB.Loading()
@@ -578,8 +622,9 @@ function DB.Loading()
 end
 
 -- Returns true when the database is ready, or false plus a reason
--- ("missing" when the data addon isn't installed). All of it now: also
--- what is left of a load that was being spread over frames.
+-- ("missing" when the data addon isn't installed; "loading" when asked
+-- from inside the load itself, which only a mistake would do). All of it
+-- now: also what is left of a load that was being spread over frames.
 function DB.Load()
     if DB.loaded then
         DB.MergeIfLearned()
@@ -587,14 +632,26 @@ function DB.Load()
     end
     local j = job
     if j then
+        if coroutine.status(j.co) ~= "suspended" then
+            return false, "loading"
+        end
         local done, ok, why = Slice(j, true)
         while not done do
             done, ok, why = Slice(j, true)
         end
         return ok, why
     end
+    if building then
+        return false, "loading"
+    end
     ReadFiles()
-    return Build(ns.Call, false)
+    building = true
+    local ran, ok, why = pcall(Build, ns.Call, false)
+    building = false
+    if not ran then
+        error(ok, 0)
+    end
+    return ok, why
 end
 
 -- The same, without stopping the game for it where loading can be spread
@@ -604,27 +661,34 @@ end
 -- DB.Loading() says how far it is, DB_LOADING fires as it goes on and
 -- DB_LOADED when it has finished.
 function DB.LoadAsync(fn)
-    if DB.loaded or not Sliced() then
+    if DB.loaded or building or not Sliced() then
         return DB.Load()
     end
+    local started = false
     if not job then
         ReadFiles()
-        if not (WaypointTrackerData and WaypointTrackerData.raw) and DB.ready then
+        if not (WaypointTrackerData and WaypointTrackerData.raw) and not parsed and DB.ready then
             -- still no database folder: nothing to spread out
             return Build(ns.Call, false)
         end
+        local locale = GetLocale and ns.Str(GetLocale())
         job = {
             co = coroutine.create(function()
                 return Build(Paused, true)
             end),
             pace = { units = 0, next = CLOCK_EVERY, all = 0 },
             waiting = {}, share = 0, stats = { slices = 0, most = 0 },
+            expected = (locale == nil or locale == "enUS" or locale == "enGB") and EXPECTED_UNITS or EXPECTED_UNITS_OTHER,
         }
-        driver:Show()
-        ns.Fire("DB_LOADING", 0)
+        started = true
     end
+    -- (first: what the announcement below leads to may finish the load)
     if fn then
         job.waiting[#job.waiting + 1] = fn
+    end
+    if started then
+        driver:Show()
+        ns.Fire("DB_LOADING", 0)
     end
 end
 
