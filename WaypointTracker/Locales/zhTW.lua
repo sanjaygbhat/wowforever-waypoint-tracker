@@ -245,6 +245,7 @@ L.NO_LOCATION = "還不知道它的位置。"
 L.DB_BROKEN = "無法載入尋找資料庫。請確認 WaypointTracker_Data 已在插件清單中啟用，然後輸入 /reload。"
 L.DB_LOADING = "正在載入尋找資料庫（%d%%）..."
 L.WAY_SEARCH = "「%s」沒有唯一的符合結果。請在「尋找」標籤中搜尋。"
+L.NEAREST_SKIPPED = "已略過「最近的」：資料庫載入期間你已讓箭頭指向別處。"
 L.HELP_FIND = "/wp find [名稱] - 搜尋任務、NPC、敵人、物件和物品"
 L.BINDING_FIND = "開啟或關閉尋找"
 

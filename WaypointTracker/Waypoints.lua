@@ -43,6 +43,21 @@ function WP.GetActive()
     return active
 end
 
+-- How often you yourself have said where the arrow should point: a
+-- waypoint you added (typed, clicked on the map, picked in Find), a click
+-- on a waypoint or its pin, a quest's icon, "closest". Not the addon moving
+-- it: an arrival, a quest's next stage, a route's next stop, your corpse,
+-- another addon. What waits to move the arrow (Nearest asked for while the
+-- database loads) gives way to a choice of yours made since, and to
+-- nothing else.
+local userChoices = 0
+function WP.UserChose()
+    userChoices = userChoices + 1
+end
+function WP.UserChoices()
+    return userChoices
+end
+
 function WP.IsValid(wp)
     if not wp then
         return false
@@ -213,6 +228,13 @@ end
 -- ---------------------------------------------------------------------------
 -- Changing the list
 -- ---------------------------------------------------------------------------
+-- Points the arrow at a waypoint you picked yourself (a click on it or on
+-- its pin): WP.SetActive, counted as a choice of yours.
+function WP.Choose(wp, silent)
+    WP.UserChose()
+    return WP.SetActive(wp, silent)
+end
+
 function WP.SetActive(wp, silent)
     if wp and not WP.IsValid(wp) then
         return
@@ -248,6 +270,11 @@ function WP.Add(mapID, x, y, opts)
     end
     -- titles can come from other addons: no escape codes, sensible length
     local title = ns.CleanText(opts.title, 100)
+    -- yours: typed or clicked ("user"), a place picked, something from Find
+    local source = opts.source or "user"
+    if source == "user" or source == "place" or source == "find" then
+        WP.UserChose()
+    end
 
     -- same spot twice? reuse the existing one
     for _, wp in ipairs(list) do
@@ -391,6 +418,9 @@ end
 function WP.SetClosest(silent, auto)
     local wp = WP.Closest(nil, auto)
     if wp then
+        if not auto then
+            WP.UserChose()
+        end
         WP.SetActive(wp, silent)
     end
     return wp

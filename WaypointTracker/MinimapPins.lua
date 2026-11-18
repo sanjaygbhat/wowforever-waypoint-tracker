@@ -31,7 +31,7 @@ end
 
 local function OnPinClick(self)
     if self.wp then
-        WP.SetActive(self.wp)
+        WP.Choose(self.wp)
     end
 end
 

@@ -134,6 +134,7 @@ end
 function Follow.TrackQuest(id)
     local wp = TrackQuest(id, true)
     if wp then
+        WP.UserChose() -- (a click on the quest's icon; what follows it by itself is not)
         clickedQuest = questID
         ns.Fire("QUEST_TRACKING_CHANGED")
     end
