@@ -40,8 +40,12 @@ DB.loaded = false
 -- frame's share is used up. All at once, Tick does nothing.
 local SLICE_MS, SLICE_COMBAT_MS = 8, 2 -- a frame's share: out of combat (at most), in combat
 -- Out of combat a slice takes this much of what the rest of the last frame
--- took, so a high frame rate stays high (at 144 frames a second about
--- 3 ms, at 60 about 7), but never less than SLICE_MIN_MS.
+-- took (the frame less our own slice in it), so a high frame rate stays
+-- high, but never less than SLICE_MIN_MS. With the frame rate capped at
+-- 60 that settles at about 4.8 ms a frame (16.7 ms less the slice, times
+-- 0.4); at 144 it is the least, 3 ms; the most, 8 ms, from about 36
+-- frames a second down. Where the frame rate is not capped and the slice
+-- lengthens the frame, 60 frames a second give about 6.7 ms.
 local SLICE_SHARE, SLICE_MIN_MS = 0.4, 3
 -- the same without a readable clock, counted in rows (about 100 a millisecond)
 local SLICE_UNITS, SLICE_COMBAT_UNITS = 800, 200
@@ -541,6 +545,7 @@ local EXPECTED_UNITS, EXPECTED_UNITS_OTHER = 180000, 204000
 local function Finish(j, ok, why)
     job = nil
     driver:Hide()
+    j.finished, j.ok, j.why = true, ok, why
     j.stats.units = j.pace.all
     DB.loadStats = j.stats -- { slices, units, most (rows in one slice) }: how the load went (tests, the profile)
     for _, fn in ipairs(j.waiting) do
@@ -621,6 +626,31 @@ function DB.Loading()
     return job and job.share or nil
 end
 
+-- A failure in the loader's own lines, with where it was.
+local function Trace(err)
+    local stack = (type(debugstack) == "function" and debugstack(2))
+        or (type(debug) == "table" and type(debug.traceback) == "function" and debug.traceback("", 2))
+    return type(stack) == "string" and (tostring(err) .. "\n" .. stack) or err
+end
+
+-- All of it at once, the files having been asked for. An error in the
+-- loader's own lines (every step is protected) goes on to whoever asked,
+-- with where it happened.
+local function BuildNow()
+    if building then
+        return false, "loading"
+    end
+    building = true
+    local ran, ok, why = xpcall(function()
+        return Build(ns.Call, false)
+    end, Trace)
+    building = false
+    if not ran then
+        error(ok, 0)
+    end
+    return ok, why
+end
+
 -- Returns true when the database is ready, or false plus a reason
 -- ("missing" when the data addon isn't installed; "loading" when asked
 -- from inside the load itself, which only a mistake would do). All of it
@@ -645,13 +675,7 @@ function DB.Load()
         return false, "loading"
     end
     ReadFiles()
-    building = true
-    local ran, ok, why = pcall(Build, ns.Call, false)
-    building = false
-    if not ran then
-        error(ok, 0)
-    end
-    return ok, why
+    return BuildNow()
 end
 
 -- The same, without stopping the game for it where loading can be spread
@@ -669,7 +693,7 @@ function DB.LoadAsync(fn)
         ReadFiles()
         if not (WaypointTrackerData and WaypointTrackerData.raw) and not parsed and DB.ready then
             -- still no database folder: nothing to spread out
-            return Build(ns.Call, false)
+            return BuildNow()
         end
         local locale = GetLocale and ns.Str(GetLocale())
         job = {
@@ -682,13 +706,18 @@ function DB.LoadAsync(fn)
         }
         started = true
     end
-    -- (first: what the announcement below leads to may finish the load)
-    if fn then
-        job.waiting[#job.waiting + 1] = fn
-    end
+    local j = job
     if started then
         driver:Show()
         ns.Fire("DB_LOADING", 0)
+        -- what the announcement led to has finished the load (DB.Load,
+        -- asked for by someone listening): then this is the answer, now
+        if j.finished then
+            return j.ok, j.why
+        end
+    end
+    if fn then
+        j.waiting[#j.waiting + 1] = fn
     end
 end
 
