@@ -215,6 +215,8 @@ local _, chosen = Travel.Choices(followed)
 assert(chosen)
 chosen.preference = 'fastest'
 Travel.Select(followed, chosen)
+-- an objective finished: the marker moves on (it hopping alone is kept)
+M.quests[1].objectives = { { numFulfilled = 1, numRequired = 1, finished = true }, { numFulfilled = 0, numRequired = 1, finished = false } }
 M.quests[1].onMap[37] = { 0.44, 0.82 }
 M.FireEvent('QUEST_LOG_UPDATE'); M.Tick(0.7)
 local updated = WP.GetActive()
@@ -233,6 +235,7 @@ local nearDeath = WP.Add(37, 0.3, 0.3, { title = 'Near death', silent = true, se
 M.player.dead = true; M.FireEvent('PLAYER_DEAD')
 check(WP.GetActive().source == 'corpse', 'corpse takes the arrow before the quest update')
 M.player.ghost = true
+M.quests[1].objectives[2].finished = true
 M.quests[1].onMap[37] = { 0.46, 0.82 }
 M.FireEvent('QUEST_LOG_UPDATE'); M.Tick(0.7)
 check(WP.GetActive().source == 'corpse' and not WP.IsValid(updated), 'quest update leaves corpse navigation active')

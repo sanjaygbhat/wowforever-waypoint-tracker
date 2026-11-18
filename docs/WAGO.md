@@ -8,14 +8,17 @@
 
 **Nearest in one click, with a shipped database.** Find a mailbox, innkeeper, flight master, repair, merchant, bank, auction house, stable master, spirit healer, battlemaster, meeting stone, Class Trainer, Profession Trainer, Weapon Master or Riding Trainer. Class Trainer picks your class automatically; Profession Trainer opens a choice of 12 professions and finds the closest trainer in the database for your faction.
 
+**Quest chains step by step, and light on your game.** Follow a ready-made quest chain route and the arrow keeps to the step you're on. The database loads in small slices instead of freezing the game the first time you search, and with nothing to show the addon does almost nothing.
+
 Free, open source and in nine languages.
 
-## New in 1.4.1
+## New in 1.5.0
 
-- **A complete trainer database, ready to use:** over 500 trainers across capitals, starting areas and towns of both factions. All nine classes, all 12 professions, weapon masters and riding trainers, including Alliance shamans and Horde paladins. No need to visit them first.
-- **More places in Nearest:** more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, plus a flight master list cleared of internal client points.
-- **Faster Nearest lookups:** a one-time index speeds up repeat searches. Pick the closest service or trainer for your faction, then follow the arrow by the fastest route.
-- **Updating:** from 1.4.0, `/reload` is enough. From an older version, fully restart the game.
+- **No freeze the first time you search:** the database now loads in small slices over a few frames, so your first use of Find, Nearest, Routes or Treasure (beta) no longer stops the game for about a second. Progress shows below the window title, and a search, Nearest click or `/way` you type meanwhile runs as soon as it is ready.
+- **Lighter on your game:** about 17% less memory once the database is loaded, and much less work every second. Walking to a waypoint or with the window open makes about 95% less garbage than 1.4.1; with nothing to show, the addon does almost nothing.
+- **Quest chains, step by step:** following a chain such as The Defias Brotherhood, the arrow stays on the step you're on instead of jumping to the nearest stop, and skips only the steps your quest log shows as done.
+- **Fixed:** "No player named ... is currently playing" messages while Route sharing & votes (beta) is on. Route lists now go to your guild and group only; votes are still shared more widely.
+- **Updating:** from 1.4.1, `/reload` is enough. From an older version, fully restart the game.
 
 ![The arrow turns to face the waypoint, goes from gold to green as you walk, then shows 'You have arrived!'](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/images/arrow-demo.gif)
 
@@ -41,6 +44,8 @@ Open **Find** with `/wp` and search as you type; typos are fine.
 - **Items** show what drops or sells them and which quests need them.
 
 Find covers the classic world and WoW Forever's new content, and learns as you play: NPCs you pass, vendor stock, quest givers and loot. What you see in the game always wins.
+
+The first time you need it, the database loads in small slices over a few frames (smaller still in combat), with progress below the window title, so the game doesn't freeze. A search you type meanwhile runs as soon as it is ready.
 
 [![Silverpine Forest world map with waypoint pins and a gold arrow pointing toward Lady Sylvanas Windrunner, 777 yds away](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/02-map.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/02-map.jpg)
 
@@ -72,7 +77,7 @@ Open the **Find** tab and click a **Nearest** button. Or right-click the minimap
 
 Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
 
-Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
+Nearest also covers mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, leaves internal client points out of the flight master list, and uses a one-time index so repeat lookups are quick.
 
 ## Fastest route (Real routes)
 
@@ -96,8 +101,9 @@ Addons that point their waypoint buttons at Waypoint Tracker:
 
 - **Pin colour:** make the active waypoint's pin on the world map and minimap gold, green, pink, purple, red or white, so it stands out from quest ! and ? icons (**Settings → Maps**).
 - **Share a spot:** right-click a waypoint and choose **Share** to put a clickable map pin in chat. Friends don't need the addon.
-- **Routes:** ready-made and your own lists of stops, with a map preview.
-- **Route sharing & votes (beta):** off by default; enable it in **Settings → Routes**.
+- **Routes:** ready-made and your own lists of stops, with a map preview. Quest chain routes go step by step, in order, and skip only steps your quest log shows as done.
+- **Route sharing & votes (beta):** off by default; enable it in **Settings → Routes**. Route lists go to your guild and group only; votes are shared more widely.
+- **Treasure hunt (beta):** rare and chest alerts, off by default. To turn it on, type `/wp`, open the **Treasure (beta)** tab and click **Enable treasure hunt (beta)** (more below).
 
 The arrow never catches mouse clicks. Place it in **Esc → Edit Mode**.
 
@@ -139,7 +145,7 @@ Use `/wp treasure status` to report what it sees. [Full guide](https://github.co
 
 1. In the **Wago app**, choose your WoW Forever install and click Install. (By hand: unzip into `World of Warcraft\_forever_\Interface\AddOns\` on Windows, or `World of Warcraft/_forever_/Interface/AddOns/` on macOS.)
 2. Keep both folders enabled: **WaypointTracker** and **WaypointTracker_Data** (the database, loaded when needed).
-3. On first install, fully restart the game, then type `/wp`. **Updating from 1.4.0 to 1.4.1 needs only `/reload`; from an older version, fully restart the game.**
+3. On first install, fully restart the game, then type `/wp`. **Updating from 1.4.1 to 1.5.0 needs only `/reload`; from an older version, fully restart the game.**
 
 ## Commands
 
@@ -169,7 +175,9 @@ Every command and setting: [Commands & Options](https://github.com/sanjaygbhat/w
 
 **Is there a TomTom-style arrow for WoW Forever?** Yes, this is one. It understands the same `/way` commands and accepts waypoints from addons built for TomTom.
 
-**Lua errors from party or raid frames mentioning WaypointTracker?** Fixed in 1.2.5. Update to 1.4.1. From 1.4.0, `/reload` is enough; from an older version, fully restart the game. Opening Edit Mode from the addon (Settings, the quick menu or `/wp editmode`) affected the game's own frames in earlier versions.
+**Lua errors from party or raid frames mentioning WaypointTracker?** Fixed in 1.2.5. Update to 1.5.0. From 1.4.1, `/reload` is enough; from an older version, fully restart the game. Opening Edit Mode from the addon (Settings, the quick menu or `/wp editmode`) affected the game's own frames in earlier versions.
+
+**Will it slow my game down?** It is built to stay light. With nothing to show it does almost nothing, and the database loads in small slices instead of freezing the game the first time you search. Version 1.5.0 uses about 17% less memory than 1.4.1 once the database is loaded, and walking to a waypoint makes about 95% less garbage.
 
 **How do I find an NPC or quest giver?** Type `/wp find` and a name, or a title like `blacksmith`, then double-click a result.
 

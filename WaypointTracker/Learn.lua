@@ -655,10 +655,15 @@ local function Remember(unit)
             wipe(nameCache)
             nameCacheSize = 0
         end
-        if not nameCache[guid] then
+        local level = Plain(UnitLevel(unit))
+        local known = nameCache[guid]
+        if known then
+            -- the same spawn again (every mouseover): its record, written over
+            known.name, known.level = name, level
+        else
             nameCacheSize = nameCacheSize + 1
+            nameCache[guid] = { name = name, level = level }
         end
-        nameCache[guid] = { name = name, level = Plain(UnitLevel(unit)) }
     end
 end
 
@@ -1163,7 +1168,9 @@ end
 Learn.Split = Split
 
 -- Adds shared discoveries to yours. Returns how many entries it read.
-function Learn.Import(text, st, quiet)
+-- `tick` (the database's loader, reading a shipped store): called after
+-- every line with about how much work it was, and may pause the import.
+function Learn.Import(text, st, quiet, tick)
     st = st or Learn.Store()
     if not st or type(text) ~= "string" or not text:find(EXPORT_TAG, 1, true) then
         return 0
@@ -1287,6 +1294,9 @@ function Learn.Import(text, st, quiet)
                 n = n + 1
             end
         end
+        if tick then
+            tick(2 + #line * 0.03)
+        end
     end
     if not quiet then
         Changed()
@@ -1326,15 +1336,16 @@ end)
 -- a vendor's list can fill in over a moment (item details load), so read it
 -- again shortly after it changes
 local merchantPending = false
+local function ReadMerchantNow()
+    merchantPending = false
+    ns.Call(Learn.Merchant)
+end
 local function ReadMerchantSoon()
     if merchantPending or not Enabled() then
         return
     end
     merchantPending = true
-    C_Timer.After(0.5, function()
-        merchantPending = false
-        ns.Call(Learn.Merchant)
-    end)
+    C_Timer.After(0.5, ReadMerchantNow)
 end
 local merchantOpen = false
 ns.RegisterEvent("MERCHANT_SHOW", function()
@@ -1354,15 +1365,16 @@ ns.RegisterEvent("GET_ITEM_INFO_RECEIVED", function()
 end)
 
 local areaPending = false
+local function ReadQuestAreas()
+    areaPending = false
+    ns.Call(QuestAreas)
+end
 ns.RegisterEvent("QUEST_LOG_UPDATE", function()
     if areaPending or not Enabled() then
         return
     end
     areaPending = true
-    C_Timer.After(3, function()
-        areaPending = false
-        ns.Call(QuestAreas)
-    end)
+    C_Timer.After(3, ReadQuestAreas)
 end)
 
 ns.On("LOGIN", function()

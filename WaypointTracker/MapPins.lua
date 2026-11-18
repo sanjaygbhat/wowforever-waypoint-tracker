@@ -86,7 +86,7 @@ function PinMethods:OnClick(button)
     if IsAltKeyDown() then
         WP.Remove(self.wp)
     else
-        WP.SetActive(self.wp)
+        WP.Choose(self.wp)
     end
 end
 

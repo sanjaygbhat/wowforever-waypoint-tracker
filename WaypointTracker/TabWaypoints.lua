@@ -256,7 +256,7 @@ end
 
 local function RowMenu(row, wp)
     W.Menu(row, function(root)
-        root:CreateButton(L.ROW_MENU_POINT, function() WP.SetActive(wp, true) end)
+        root:CreateButton(L.ROW_MENU_POINT, function() WP.Choose(wp, true) end)
         if ns.Share then
             local share = root:CreateButton(L.SHARE)
             local nested = share and type(share.CreateButton) == "function"
@@ -333,7 +333,7 @@ local function RefreshStatus()
         local r = routes.Get and routes.Get(run.id)
         local name = r and r.name or run.id
         local following = run.mode == "loop" and L.FOLLOWING_LOOP:format(name, (run.lap or 0) + 1)
-            or L.FOLLOWING_ROUTE:format(name, wp and wp.routeID == run.id and wp.routeIndex or (run.done or 0) + 1, run.total or 0)
+            or L.FOLLOWING_ROUTE:format(name, wp and wp.routeID == run.id and wp.routeIndex or ns.Int(run.cur) or (run.done or 0) + 1, run.total or 0)
         widgets.route:SetText(following)
     end
 end
@@ -461,7 +461,7 @@ local function Build(parent)
             elseif IsShiftKeyDown and IsShiftKeyDown() and ns.Share then
                 ns.Share.ToChatBox(wp)
             else
-                WP.SetActive(wp, true)
+                WP.Choose(wp, true)
             end
         end,
     })

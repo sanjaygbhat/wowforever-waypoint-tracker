@@ -43,6 +43,21 @@ function WP.GetActive()
     return active
 end
 
+-- How often you yourself have said where the arrow should point: a
+-- waypoint you added (typed, clicked on the map, picked in Find), a click
+-- on a waypoint or its pin, a quest's icon, "closest". Not the addon moving
+-- it: an arrival, a quest's next stage, a route's next stop, your corpse,
+-- another addon. What waits to move the arrow (Nearest asked for while the
+-- database loads) gives way to a choice of yours made since, and to
+-- nothing else.
+local userChoices = 0
+function WP.UserChose()
+    userChoices = userChoices + 1
+end
+function WP.UserChoices()
+    return userChoices
+end
+
 function WP.IsValid(wp)
     if not wp then
         return false
@@ -115,6 +130,18 @@ end
 -- Who picks the next waypoint when the arrow's one goes: a route wants the
 -- next of its points, not the closest one. Returns a waypoint or nil.
 WP.nextHook = nil
+
+-- A route followed in steps: returns its id, the stop it is on, and which
+-- of its other stops may come next (true: any; a set; nil: none). Choices
+-- made for you (the closest waypoint, the one after a waypoint that goes)
+-- leave its other stops alone, so the arrow never jumps ahead to whichever
+-- of them is nearest; after loading it is on the stop the route is on.
+WP.heldHook = nil
+
+-- false for a waypoint choices made for you must leave alone
+local function Free(wp, heldID, cur, allow)
+    return not heldID or wp.routeID ~= heldID or wp == cur or allow == true or (allow ~= nil and allow[wp] == true)
+end
 
 -- ---------------------------------------------------------------------------
 -- Blizzard map pin (optional): mirrors the arrow's waypoint
@@ -201,6 +228,13 @@ end
 -- ---------------------------------------------------------------------------
 -- Changing the list
 -- ---------------------------------------------------------------------------
+-- Points the arrow at a waypoint you picked yourself (a click on it or on
+-- its pin): WP.SetActive, counted as a choice of yours.
+function WP.Choose(wp, silent)
+    WP.UserChose()
+    return WP.SetActive(wp, silent)
+end
+
 function WP.SetActive(wp, silent)
     if wp and not WP.IsValid(wp) then
         return
@@ -236,6 +270,11 @@ function WP.Add(mapID, x, y, opts)
     end
     -- titles can come from other addons: no escape codes, sensible length
     local title = ns.CleanText(opts.title, 100)
+    -- yours: typed or clicked ("user"), a place picked, something from Find
+    local source = opts.source or "user"
+    if source == "user" or source == "place" or source == "find" then
+        WP.UserChose()
+    end
 
     -- same spot twice? reuse the existing one
     for _, wp in ipairs(list) do
@@ -318,9 +357,9 @@ function WP.Remove(wp, silent, noAdvance)
     if wp == active then
         active = nil
         -- move on to the next of a route's points, or the closest remaining
-        -- waypoint, if there is one
+        -- waypoint, if there is one (a route counts by the stop it is on)
         if #list > 0 and not noAdvance then
-            active = (WP.nextHook and WP.nextHook(wp)) or WP.Closest()
+            active = (WP.nextHook and WP.nextHook(wp)) or WP.Closest(nil, true)
         end
         ns.Safe(UpdateBlizzardPin)()
         ns.Fire("ACTIVE_CHANGED", active)
@@ -349,11 +388,16 @@ function WP.ClearAll(silent)
     end
 end
 
--- Closest waypoint you can actually walk to (same continent).
-function WP.Closest(exclude)
+-- Closest waypoint you can actually walk to (same continent), else the
+-- newest. auto: a choice made for you (see WP.heldHook).
+function WP.Closest(exclude, auto)
+    local heldID, cur, allow
+    if auto and WP.heldHook then
+        heldID, cur, allow = WP.heldHook()
+    end
     local best, bestDist
     for _, wp in ipairs(list) do
-        if wp ~= exclude then
+        if wp ~= exclude and Free(wp, heldID, cur, allow) then
             local dist = Geo.GetVector(wp)
             if dist and (not bestDist or dist < bestDist) then
                 best, bestDist = wp, dist
@@ -362,7 +406,7 @@ function WP.Closest(exclude)
     end
     if not best then
         for i = #list, 1, -1 do
-            if list[i] ~= exclude then
+            if list[i] ~= exclude and Free(list[i], heldID, cur, allow) then
                 return list[i]
             end
         end
@@ -370,9 +414,13 @@ function WP.Closest(exclude)
     return best, bestDist
 end
 
-function WP.SetClosest(silent)
-    local wp = WP.Closest()
+-- auto: asked for by another addon, not by you (see WP.heldHook)
+function WP.SetClosest(silent, auto)
+    local wp = WP.Closest(nil, auto)
     if wp then
+        if not auto then
+            WP.UserChose()
+        end
         WP.SetActive(wp, silent)
     end
     return wp
@@ -509,6 +557,16 @@ local function Load()
     -- the waypoint you had before logging out wins
     if not toActivate and earlyActive and WP.IsValid(earlyActive) then
         toActivate = earlyActive
+    end
+    -- else the newest one, a route's by the stop it is on (not its last)
+    if not toActivate and WP.heldHook then
+        local heldID, cur = WP.heldHook()
+        for i = #list, 1, -1 do
+            if Free(list[i], heldID, cur) then
+                toActivate = list[i]
+                break
+            end
+        end
     end
     active = toActivate or list[#list]
     loaded = true

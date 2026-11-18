@@ -70,7 +70,9 @@ Click the preview or a pin to open the route on the normal world map, outside co
 
 **Start Route** or a row double-click also starts the route. While running, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** contains Copy text, Edit and Delete for your routes, or Copy text, Remove and Hide This Author for shared routes. Ready-made routes offer Copy text.
 
-**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists and votes with other Waypoint Tracker players in your guild, group and addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Walked-path sharing for Real routes has a separate setting, off by default.
+Quest chain routes go step by step: the arrow stays on the step you're on, even after another waypoint ends or a `/reload`, and skips only the steps your quest log shows as done. **Skip This Point** moves on by hand. Loops and **Nearest next** routes still go to the closest stop.
+
+**Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists with other Waypoint Tracker players in your guild and group, and to share votes more widely through the addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Walked-path sharing for Real routes has a separate setting, off by default.
 
 ### Fastest route (Real routes)
 
@@ -106,7 +108,7 @@ Open the **Find** tab and click a **Nearest** button. Or right-click the minimap
 
 Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
 
-Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
+Nearest also covers mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, leaves internal client points out of the flight master list, and uses a one-time index so repeat lookups are quick.
 
 ## Treasure hunt (beta)
 

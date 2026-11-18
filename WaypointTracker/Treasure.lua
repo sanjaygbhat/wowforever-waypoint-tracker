@@ -761,9 +761,16 @@ end
 
 local function Start()
     if not On() then return end
-    -- the database knows the chests and the rares' spawns
-    if ns.DB and ns.DB.Load then
-        ns.Call(ns.DB.Load)
+    -- the database knows the chests and the rares' spawns (read a little
+    -- each frame where the client allows it: then looked through again
+    -- once it is ready)
+    if ns.DB and ns.DB.LoadAsync then
+        ns.Call(ns.DB.LoadAsync, function()
+            if On() then
+                Treasure.Scan()
+                KnownSpots()
+            end
+        end)
     end
     Treasure.Scan()
     KnownSpots()

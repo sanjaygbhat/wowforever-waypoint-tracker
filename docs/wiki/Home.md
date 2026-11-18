@@ -2,7 +2,7 @@
 
 **Set a waypoint. Follow the arrow. That's it.**
 
-Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever. Find quests, NPCs and items by name, follow the fastest route, or use Nearest for services and trainers. It accepts `/way` coordinates and TomTom-compatible waypoints and shares spots as clickable map pins. This guide covers **1.4.1**, client **1.60.1**, interface **16001**.
+Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever. Find quests, NPCs and items by name, follow the fastest route, or use Nearest for services and trainers. It accepts `/way` coordinates and TomTom-compatible waypoints and shares spots as clickable map pins. This guide covers **1.5.0**, client **1.60.1**, interface **16001**.
 
 [![A green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 
@@ -29,9 +29,11 @@ Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft
 
 Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
 
-Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
+Nearest also covers mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, leaves internal client points out of the flight master list, and uses a one-time index so repeat lookups are quick.
 
 Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placement. **Real routes** is on by default: the arrow follows passes, gates, transport, your hearthstone and class teleports. Turn it off in **Settings → Routes** for a straight arrow.
+
+**New in 1.5.0:** no freeze the first time you use Find, Nearest, Routes or Treasure (beta), because the database loads in small slices with progress below the window title; about 17% less memory once loaded; quest chain routes that stay on the step you're on; and a fix for "No player named ... is currently playing" messages from Route sharing & votes (beta). Updating from 1.4.1 needs only `/reload`. Full list: [changelog](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md).
 
 **Safe or fastest, your choice.** The default **Safe route** preference is danger-aware. When a quicker, riskier route saves at least 15 seconds and 5% of the trip, the arrow offers it for ten seconds and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take the quickest route every time without asking.
 

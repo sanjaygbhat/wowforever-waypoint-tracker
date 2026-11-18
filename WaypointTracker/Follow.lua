@@ -44,6 +44,9 @@ end)
 -- The quest you're tracking
 -- ---------------------------------------------------------------------------
 local questWp, questID, clickedQuest
+-- questWp's quest stage when it was placed, and whether the game's marker
+-- on your map placed it
+local questStage, questFromMap
 local beforeDeath -- corpse navigation restores this after resurrection
 local Follow = {}
 ns.Follow = Follow
@@ -52,7 +55,26 @@ local function ClearQuestWaypoint()
     if questWp and WP.IsValid(questWp) then
         WP.Remove(questWp, true)
     end
-    questWp, questID, clickedQuest = nil, nil, nil
+    questWp, questID, clickedQuest, questStage, questFromMap = nil, nil, nil, nil, nil
+end
+
+local function Ask(fn, id)
+    if type(fn) ~= "function" then return nil end
+    local ok, v = pcall(fn, id)
+    if ok then return ns.Plain(v) end
+end
+
+-- Done or not, and which objectives are finished (not how far along).
+local function Stage(id)
+    local log = type(C_QuestLog) == "table" and C_QuestLog or {}
+    local stage = Ask(log.IsComplete, id) == true and "done" or "open"
+    local objectives = Ask(log.GetQuestObjectives, id)
+    if type(objectives) == "table" then
+        for _, o in ipairs(objectives) do
+            stage = stage .. (type(o) == "table" and ns.Plain(o.finished) == true and "+" or "-")
+        end
+    end
+    return stage
 end
 
 -- Explicit clicks and automatic super-tracking share one waypoint. A click
@@ -63,13 +85,22 @@ local function TrackQuest(id, explicit)
     id = ns.Int(ns.Num(id))
     if not id then return end
     if explicit then Places.FollowQuest(id) end
-    local ok, m, x, y = pcall(Places.QuestPosition, id, not explicit and "auto" or nil)
+    local ok, m, x, y, kind = pcall(Places.QuestPosition, id, not explicit and "auto" or nil)
     if not ok then return end
     m, x, y = ns.Int(ns.Num(m)), ns.Num(x), ns.Num(y)
     if not m or not x or not y or x < 0 or x > 1 or y < 0 or y > 1 then return end
     local changedQuest = id ~= questID
     if questWp and WP.IsValid(questWp) and not changedQuest and questWp.m == m and math.abs(questWp.x - x) < 0.002 and math.abs(questWp.y - y) < 0.002 then
         if explicit then WP.SetActive(questWp, true) end
+        return questWp
+    end
+    -- The game's marker shows one of the quest's objective areas, and can
+    -- hop to another as you move or cross into another zone. An update keeps
+    -- the area the marker gave until an objective is finished or the quest
+    -- is done (or it can't be reached from here); a click picks again.
+    local stage = Stage(id)
+    if not explicit and not changedQuest and questFromMap and stage == questStage
+        and questWp and WP.IsValid(questWp) and ns.Geo.GetVector(questWp) then
         return questWp
     end
     local wasActive = questWp and WP.GetActive() == questWp
@@ -91,6 +122,7 @@ local function TrackQuest(id, explicit)
         setActive = explicit or (changedQuest and not (ns.IsPlayerDead and ns.IsPlayerDead())) or wasActive or WP.GetActive() == nil,
     })
     questID = questWp and id or nil
+    questStage, questFromMap = stage, kind == "map"
     if questWp then
         questWp.travelPreference, questWp.travelChosen = preference or nil, chosen or nil
         questWp.travelTrip = travelTrip or nil
@@ -102,6 +134,7 @@ end
 function Follow.TrackQuest(id)
     local wp = TrackQuest(id, true)
     if wp then
+        WP.UserChose() -- (a click on the quest's icon; what follows it by itself is not)
         clickedQuest = questID
         ns.Fire("QUEST_TRACKING_CHANGED")
     end

@@ -9,7 +9,7 @@ local function Menu(root)
         for _, wp in ipairs(WP.List()) do
             if Geo.TranslateToMap(wp.m, wp.x, wp.y, mapID) then
                 root:CreateRadio(WP.ShortName(wp), function() return WP.GetActive() == wp end,
-                    function() WP.SetActive(wp) end)
+                    function() WP.Choose(wp) end)
             end
         end
     end

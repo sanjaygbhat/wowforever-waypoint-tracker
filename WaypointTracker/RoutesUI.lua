@@ -106,10 +106,22 @@ local function RefreshList()
     if not frame then
         return
     end
-    -- suggested routes come from Find's database (loaded once, when needed)
-    if ns.DB and not ns.DB.ready and not frame.triedDB and (state.tab == "all" or state.tab == "suggested") then
-        frame.triedDB = true
-        ns.DB.Load()
+    -- suggested routes come from Find's database (loaded once, when needed:
+    -- a little each frame where the client allows it, and the list is
+    -- filled in again once it is ready)
+    if ns.DB and not ns.DB.ready and (state.tab == "all" or state.tab == "suggested") then
+        if not frame.triedDB then
+            frame.triedDB = true
+            ns.DB.LoadAsync(ns.Safe(function()
+                if frame and frame:IsShown() then
+                    RefreshList()
+                end
+            end))
+        end
+        -- meanwhile the status line says so, where nothing else is said
+        if ns.DB.Loading and ns.DB.Loading() and ns.Find and ns.Find.ShowLoading and RoutesUI.IsShown() then
+            ns.Find.ShowLoading(true)
+        end
     end
     local q = Geo.Squash(searchBox.edit:GetText())
     local here = C_Map and C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
@@ -326,7 +338,8 @@ RefreshDetail = function()
         actions[#actions + 1] = { L.ROUTE_START, function()
             R().Start(r.id)
             local now = R().Run()
-            if now and now.id == r.id then
+            -- (a start your quest log moved on already says so)
+            if now and now.id == r.id and (now.done or 0) == 0 then
                 Status(L.ROUTE_STARTED:format(r.name, #r.pts), true)
             end
         end }
@@ -834,6 +847,29 @@ ShowMore = function(r)
     end)
 end
 
+-- A whisper to an offline or other-faction target only makes the game say
+-- "No player named ... is currently playing", so don't send one.
+local function TargetReachable()
+    if UnitIsConnected then
+        local ok, online = pcall(UnitIsConnected, "target")
+        online = ns.Plain(online)
+        if ok and online == false then
+            return false
+        end
+    end
+    if UnitFactionGroup then
+        local theirs = ns.Str(UnitFactionGroup("target"))
+        local mine = ns.Str(UnitFactionGroup("player"))
+        -- other faction: only reachable in a shared (cross-faction) group
+        if theirs and mine and theirs ~= mine
+                and not (UnitInParty and ns.Plain(UnitInParty("target")))
+                and not (UnitInRaid and ns.Plain(UnitInRaid("target"))) then
+            return false
+        end
+    end
+    return true
+end
+
 local function ShareMenu(r, justSaved)
     return function(root)
         root:CreateTitle(justSaved and L.ROUTE_SHARE_SAVED_TITLE or L.ROUTE_SHARE_TITLE:format(r.name))
@@ -856,6 +892,7 @@ local function ShareMenu(r, justSaved)
                 local name = UnitIsPlayer and ns.Plain(UnitIsPlayer("target")) and R().UnitIdentity("target")
                 local isSelf = UnitIsUnit and ns.Plain(UnitIsUnit("target", "player"))
                 if not name or isSelf then Status(L.ROUTE_SEND_NO_TARGET); return end
+                if not TargetReachable() then Status(L.ROUTE_SEND_UNREACHABLE); return end
                 if ns.RoutesNet and ns.RoutesNet.SendTo and ns.RoutesNet.SendTo(r.id, name) > 0 then
                     Status(L.ROUTE_SENT:format(r.name, name), true)
                 end

@@ -340,6 +340,8 @@ local function AutoPosition(questID)
     return Scan(questID)
 end
 
+-- Returns map, x, y and, when it is the game's marker on the map you are
+-- on, "map" (the marker can hop between the quest's objective areas).
 function Places.QuestPosition(questID, mode)
     if not questID or questID == 0 then
         return nil
@@ -351,7 +353,7 @@ function Places.QuestPosition(questID, mode)
             for _, q in ipairs(quests) do
                 if q.questID == questID and ns.Num(q.x) and ns.Num(q.y) then
                     if followed.id == questID then followed.missUntil = nil end
-                    return current, q.x, q.y
+                    return current, q.x, q.y, "map"
                 end
             end
         end

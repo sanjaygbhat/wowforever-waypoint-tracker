@@ -92,6 +92,7 @@ local arrived = frame:CreateTexture(nil, "ARTWORK")
 arrived:SetTexture(ARRIVED_TEX)
 arrived:SetSize(ARROW_H * 1.1, ARROW_H * 1.1)
 arrived:SetPoint("CENTER")
+arrived:SetVertexColor(GREEN[1], GREEN[2], GREEN[3]) -- it never changes
 arrived:Hide()
 
 local pin = frame:CreateTexture(nil, "ARTWORK")
@@ -255,10 +256,19 @@ end
 
 Arrow.moving = false
 
+-- Kept by the update loop below, and reset where the frames are shown,
+-- hidden or restyled from outside it:
+-- `resting`: nothing to point at and both frames hidden (the update's last
+-- answer); until a waypoint, a preview, a move or an arrival starts, the
+-- frames' driver only looks whether one has.
+-- `shownAlpha`: the see-through last given to the arrow's frame.
+local resting, shownAlpha = false, nil
+
 -- Legacy placement for clients without Edit Mode.
 function Arrow.SetMoving(on)
     on = on and true or false
     Arrow.moving = on
+    resting, shownAlpha = false, nil
     frame:EnableMouse(on)
     textFrame:EnableMouse(on)
     for _, t in ipairs(moveParts) do
@@ -360,10 +370,55 @@ local function SetMode(m)
     pin:SetShown(m == "pin")
 end
 
+-- The lines, the colour and the fade reach the game only when they change:
+-- most frames the name, the whole yards and the colour are what they were.
+local shownText = {}
+local function SetLine(fs, text)
+    if shownText[fs] ~= text then
+        shownText[fs] = text
+        fs:SetText(text)
+    end
+end
+
 local function SetTexts(t, d, e)
-    title:SetText(ns.Get("showTitle") and t or "")
-    distText:SetText(ns.Get("showDistance") and d or "")
-    etaText:SetText(ns.Get("showETA") and e or "")
+    SetLine(title, ns.Get("showTitle") and t or "")
+    SetLine(distText, ns.Get("showDistance") and d or "")
+    SetLine(etaText, ns.Get("showETA") and e or "")
+end
+
+local shownR, shownG, shownB
+local function SetArrowColour(r, g, b)
+    if r ~= shownR or g ~= shownG or b ~= shownB then
+        shownR, shownG, shownB = r, g, b
+        arrow:SetVertexColor(r, g, b)
+    end
+end
+
+-- Lines with a time in them are written again when the whole second
+-- changes (Geo.FormatTime rounds to it), not every frame.
+local etaSecs, etaLine
+local function EtaLine(seconds)
+    local whole = floor(seconds + 0.5)
+    if whole ~= etaSecs then
+        etaSecs, etaLine = whole, L.ETA:format(Geo.FormatTime(seconds))
+    end
+    return etaLine
+end
+local waitSecs, waitLine
+local function WaitLine(seconds)
+    local whole = floor(seconds + 0.5)
+    if whole ~= waitSecs then
+        waitSecs, waitLine = whole, L.TRAVEL_LEAVES_IN:format(Geo.FormatTime(seconds))
+    end
+    return waitLine
+end
+local totalSecs, totalSub, totalLine
+local function TotalLine(sub, seconds)
+    local whole = floor(seconds + 0.5)
+    if whole ~= totalSecs or sub ~= totalSub then
+        totalSecs, totalSub, totalLine = whole, sub, L.TRAVEL_TOTAL:format(sub, Geo.FormatTime(seconds))
+    end
+    return totalLine
 end
 
 local function ArrowColour(dist, rel, wp)
@@ -391,6 +446,7 @@ local previewAngle = 0
 ns.On("ARRIVED", function(wp)
     arrivedUntil = GetTime() + ARRIVED_SHOW_TIME
     arrivedName = WP.ShortName(wp)
+    resting = false
 end)
 
 ns.On("ACTIVE_CHANGED", function()
@@ -431,10 +487,15 @@ end
 -- while you're already heading the right way.
 local function SetFade(target, dt)
     fade = fade + (target - fade) * min(1, dt * 5)
-    frame:SetAlpha(ns.Get("arrowAlpha") * fade)
+    local alpha = ns.Get("arrowAlpha") * fade
+    if alpha ~= shownAlpha then
+        shownAlpha = alpha
+        frame:SetAlpha(alpha)
+    end
 end
 
 local function Update(dt)
+    resting = false
     local now = GetTime()
     local wp = WP.GetActive()
     local show = ShouldShow()
@@ -443,7 +504,7 @@ local function Update(dt)
     if not Arrow.moving and (now < arrivedUntil or (wp and wp.arrivedAt)) then
         -- keep checking the waypoint we're standing on (for walking away)
         if wp and wp.arrivedAt then
-            local dist = Geo.GetVector(wp)
+            local dist = Geo.GetVector(wp, true)
             if dist then
                 WP.CheckArrival(wp, dist)
             end
@@ -455,10 +516,10 @@ local function Update(dt)
         SetShown(true)
         SetMode("arrived")
         SetArrivedIndex(floor(now * 40) % AFRAMES)
-        arrived:SetVertexColor(GREEN[1], GREEN[2], GREEN[3])
         arrived:SetPoint("CENTER", frame, "CENTER", 0, sin(now * 5) * 3)
-        SetTexts(wp and wp.arrivedAt and WP.ShortName(wp) or arrivedName or "", L.ARRIVED, "")
-        distText:SetText(L.ARRIVED) -- even with the distance hidden
+        SetLine(title, ns.Get("showTitle") and (wp and wp.arrivedAt and WP.ShortName(wp) or arrivedName or "") or "")
+        SetLine(distText, L.ARRIVED) -- even with the distance hidden
+        SetLine(etaText, "")
         SetFade(1, dt)
         return
     end
@@ -470,19 +531,20 @@ local function Update(dt)
         SetMode("arrow")
         previewAngle = (previewAngle + dt * 0.8) % TWO_PI
         SetArrowIndex(Arrow.IndexFor(previewAngle))
-        arrow:SetVertexColor(Arrow.DistanceColour((sin(now * 0.8) + 1) / 2))
-        title:SetText(L.ADDON_TITLE)
-        distText:SetText(Arrow.moving and L.MOVING_HINT or "")
-        etaText:SetText("")
+        SetArrowColour(Arrow.DistanceColour((sin(now * 0.8) + 1) / 2))
+        SetLine(title, L.ADDON_TITLE)
+        SetLine(distText, Arrow.moving and L.MOVING_HINT or "")
+        SetLine(etaText, "")
         SetFade(1, dt)
         return
     end
     if not wp then
         SetShown(false)
+        resting = true
         return
     end
 
-    local dist, bearing = Geo.GetVector(wp)
+    local dist, bearing = Geo.GetVector(wp, true)
 
     if dist then
         if not wp.startDist then
@@ -503,7 +565,7 @@ local function Update(dt)
         closestTimer = closestTimer + dt
         if closestTimer >= 1 then
             closestTimer = 0
-            local best, bestDist = WP.Closest()
+            local best, bestDist = WP.Closest(nil, true) -- a route: only the stop it is on
             if best and best ~= wp and bestDist and (not dist or bestDist < dist - 5) then
                 WP.SetActive(best, true)
                 return
@@ -522,31 +584,32 @@ local function Update(dt)
     if dist and WP.IsWaiting(wp) then
         SetMode("pin")
         SetFade(1, dt)
-        SetTexts(name, L.YOU_ARE_HERE, "")
-        distText:SetText(L.YOU_ARE_HERE) -- even with the distance hidden
+        SetLine(title, ns.Get("showTitle") and name or "")
+        SetLine(distText, L.YOU_ARE_HERE) -- even with the distance hidden
+        SetLine(etaText, "")
         return
     end
     -- Real routes: the way there, one step at a time, not the straight line
-    local steer = ns.Travel and ns.Travel.Steer(wp)
+    local steer = ns.Travel and ns.Travel.Steer(wp, true) -- read here, never kept
     if steer then
         local distLine = steer.dist and Geo.FormatDistance(steer.dist) or ""
         if steer.wait then
-            distLine = L.TRAVEL_LEAVES_IN:format(Geo.FormatTime(steer.wait))
+            distLine = WaitLine(steer.wait)
         end
-        local etaLine = steer.total and L.TRAVEL_TOTAL:format(steer.sub, Geo.FormatTime(steer.total)) or steer.sub
+        local etaLine = steer.total and TotalLine(steer.sub, steer.total) or steer.sub
         local facing = steer.bearing and Geo.GetFacing()
         if facing then
             local rel = Geo.RelativeAngle(steer.bearing, facing)
             SetMode("arrow")
             SetArrowIndex(Arrow.IndexFor(rel))
-            arrow:SetVertexColor(ArrowColour(dist or steer.dist or 0, rel, wp))
+            SetArrowColour(ArrowColour(dist or steer.dist or 0, rel, wp))
         else
             SetMode("pin")
         end
         SetFade(1, dt)
-        title:SetText(steer.title or name) -- always shown: it says what to do next
-        distText:SetText(ns.Get("showDistance") and distLine or "")
-        etaText:SetText(ns.Get("showETA") and etaLine or "")
+        SetLine(title, steer.title or name) -- always shown: it says what to do next
+        SetLine(distText, ns.Get("showDistance") and distLine or "")
+        SetLine(etaText, ns.Get("showETA") and etaLine or "")
         return
     end
     if dist and bearing then
@@ -555,7 +618,7 @@ local function Update(dt)
             local rel = Geo.RelativeAngle(bearing, facing)
             SetMode("arrow")
             SetArrowIndex(Arrow.IndexFor(rel))
-            arrow:SetVertexColor(ArrowColour(dist, rel, wp))
+            SetArrowColour(ArrowColour(dist, rel, wp))
 
             local target = 1
             if ns.Get("fadeOnCourse") then
@@ -570,7 +633,7 @@ local function Update(dt)
 
             local eta = ""
             if speed and speed > 0.5 then
-                eta = L.ETA:format(Geo.FormatTime(dist / speed))
+                eta = EtaLine(dist / speed)
             end
             SetTexts(name, Geo.FormatDistance(dist), eta)
             return
@@ -581,17 +644,33 @@ local function Update(dt)
     SetMode("pin")
     SetFade(1, dt)
     if bearing == "continent" then
-        SetTexts(name, L.ANOTHER_CONTINENT, "")
-        etaText:SetText(Geo.GetMapName(wp.m))
+        SetLine(title, ns.Get("showTitle") and name or "")
+        SetLine(distText, ns.Get("showDistance") and L.ANOTHER_CONTINENT or "")
+        SetLine(etaText, Geo.GetMapName(wp.m))
     else
         SetTexts(name, L.CANT_TRACK_HERE, "")
     end
 end
 
 local driver = CreateFrame("Frame")
-local acc = 0
+local acc, rested = 0, 0
 local safeUpdate = ns.Safe(Update)
 driver:SetScript("OnUpdate", function(_, elapsed)
+    -- At rest the update would only hide the hidden frames again: it runs
+    -- once a second instead (should anything else have shown them), and at
+    -- once when there is something to show.
+    if resting and not Arrow.moving and not Arrow.editing and not Arrow.preview and not WP.GetActive() then
+        rested = rested + elapsed
+        acc = 0
+        if rested >= 1 then
+            -- whatever the frame rate: a frame shorter than the 0.016 s
+            -- below must not put the second's look off for good
+            rested = 0
+            safeUpdate(min(elapsed, 1))
+        end
+        return
+    end
+    rested = 0
     acc = acc + elapsed
     if acc < 0.016 then
         return
@@ -608,6 +687,7 @@ driver:Hide()
 -- Blizzard's Edit Mode is open: show the arrow so it can be placed there.
 function Arrow.SetEditMode(on)
     Arrow.editing = on and true or false
+    resting, shownAlpha = false, nil -- Edit Mode shows and hides the frames itself
     if on and Arrow.moving then
         Arrow.SetMoving(false)
     end
@@ -615,6 +695,7 @@ end
 
 function Arrow.SetPreview(on)
     Arrow.preview = on and true or false
+    resting = false
 end
 
 ns.On("LOGIN", function()
@@ -664,6 +745,7 @@ ns.On("LOGIN", function()
 end)
 
 ns.On("SETTING_CHANGED", function(key, value)
+    resting, shownAlpha = false, nil
     if key == "textSeparate" and value and not ns.SavedPoint(SavedPosition("text")) then
         PinTextWhereItIs()
     end

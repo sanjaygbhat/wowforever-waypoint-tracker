@@ -854,6 +854,34 @@
       "status": "verified",
       "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/bebcb6bf309cf41b41bd74f8ca651e6a105b2676/Interface/AddOns/Blizzard_Menu/Menu.lua",
       "note": "Forever branch checked 2026-11-13: lines 758-787 define the guarded hook; EnterFrame at 2429-2435 invokes it before deferred CheckForSubmenu. Used to populate profession choices only on entry, preserving lazy data loads."
+    },
+    "ChatFrameUtil.AddMessageEventFilter": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameFilters.lua"
+    },
+    "UnitIsConnected": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitInParty": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "UnitInRaid": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua"
+    },
+    "ChatFrameUtil.RemoveMessageEventFilter": {
+      "status": "verified",
+      "source": "https://raw.githubusercontent.com/Gethe/wow-ui-source/943764493e6b16d63ded3ab304150d1f05e58b57/Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameFilters.lua"
+    },
+    "ChatFrame_AddMessageEventFilter": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
+    },
+    "ChatFrame_RemoveMessageEventFilter": {
+      "status": "optional-guarded",
+      "source": "reviewed capability guard in Share.lua/RoutesNet.lua/MinimapPins.lua; legacy chat compatibility or third-party minimap-shape convention, not required to exist on this client"
     }
   },
   "native_binary_sha256": "0d89aed141d61541513aad0f02946f5cb76bc74e967ec35139811e280d488620"
