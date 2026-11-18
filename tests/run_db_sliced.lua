@@ -1,8 +1,12 @@
 -- The Find database read a little each frame (DB.LoadAsync), as the game
 -- client does it: nothing is ready until all of it is, the window's status
--- line says how far the load is, and whatever was asked for meanwhile (a
--- search, a Nearest button, "/way <name>", the Routes tab) is answered once
--- it is ready. Also: the shared empty ID list is never written.
+-- line says how far the load is (where nothing else is said), and whatever
+-- was asked for meanwhile (a search, a Nearest button, "/way <name>", the
+-- Routes tab) is answered once it is ready. Slices by a frame clock, at
+-- several frame rates and in combat. A shipped store that cannot be read,
+-- with the data addon's files read once a session as the game does. The
+-- database asked for from inside its own load. Also: the shared empty ID
+-- list is never written.
 -- (That the database comes out the same as read all at once is
 -- tests/run_db_equivalence.lua.) Run from the repository root:
 --     lua5.1 tests/run_db_sliced.lua
@@ -12,6 +16,29 @@ local passed, failed = 0, 0
 local function check(cond, msg)
     if cond then passed = passed + 1
     else failed = failed + 1; print("FAIL: " .. tostring(msg)) end
+end
+
+-- "--share" (run by this test itself in another language): only how far
+-- the share done gets, with the data as shipped
+if arg and arg[1] == "--share" then
+    function UnitFactionGroup() return "Alliance" end
+    local ns = M.LoadAddon("WaypointTracker", "WaypointTracker")
+    M.FireEvent("ADDON_LOADED", "WaypointTracker")
+    M.FireEvent("PLAYER_LOGIN")
+    ns.settings.learn = false
+    ns.DB._SetSliced(true)
+    local done
+    assert(ns.DB.LoadAsync(function(ok) done = ok end) == nil)
+    local frames, share, held = 0, 0, 0
+    while done == nil and frames < 100000 do
+        M.Tick(1 / 60, 1 / 60)
+        frames = frames + 1
+        share = ns.DB.Loading() or share
+        if ns.DB.Loading() == 0.99 then held = held + 1 end
+    end
+    local good = done == true and share > 0.93 and share <= 0.99 and held <= frames * 0.03
+    print(("%s: the share done ends at %.3f, %d of %d frames at its last value"):format(GetLocale(), share, held, frames))
+    os.exit(good and 0 or 1)
 end
 
 local feedback = {}
@@ -62,6 +89,7 @@ local function Reset()
     DB.loaded, DB.ready, DB.hasShipped, DB.curated, DB.community, DB.loadStats = false, nil, nil, nil, nil, nil
     DB.zoneNames, DB.foreverQuests = nil, nil
     WaypointTrackerData = nil
+    M.addonsLoaded["WaypointTracker_Data"] = nil
     shares, loadedEvents, feedback = {}, {}, {}
     WP.ClearAll(true)
 end
@@ -77,37 +105,45 @@ fw.search:Type("hogger")
 M.Tick(0.3)
 check(DB.Loading() ~= nil and not DB.ready and not DB.loaded, "a search starts the load and nothing is ready yet")
 check(IsLoadingLine(fw.empty:GetText()) and fw.empty:IsShown(), "the list says the database is loading: " .. tostring(fw.empty:GetText()))
-check(IsLoadingLine(Window.frame.status:GetText()), "the status line says so too: " .. tostring(Window.frame.status:GetText()))
+-- (the first visit's tip is in the status line: the list says it instead)
+check(Window.frame.status:GetText() == L.DB_NOTE, "the status line keeps what it said: " .. tostring(Window.frame.status:GetText()))
 check(not fw.rows[1]:IsShown(), "no results while loading")
-local first = Window.frame.status:GetText()
-local sawReady, statusChanged, statusAlwaysLoading = false, false, true
+local firstList = fw.empty:GetText()
+local sawReady, listChanged, listAlwaysLoading, tipKept = false, false, true, true
 local frames, before = 0, #loadedEvents
 while #loadedEvents == before and frames < 20000 do
     Frame()
     frames = frames + 1
     if #loadedEvents == before then
         if DB.ready or DB.loaded then sawReady = true end
-        local text = Window.frame.status:GetText()
-        if text ~= first then statusChanged = true end
-        if not IsLoadingLine(text) then statusAlwaysLoading = false end
+        local text = fw.empty:GetText()
+        if text ~= firstList then listChanged = true end
+        if not IsLoadingLine(text) then listAlwaysLoading = false end
+        if Window.frame.status:GetText() ~= L.DB_NOTE then tipKept = false end
     end
 end
 local normalFrames = frames
 check(#loadedEvents == 1 and loadedEvents[1][1] == true and loadedEvents[1][2] == nil, "the load finishes once, well")
 check(frames > 100, "the load is spread over many frames (" .. frames .. ")")
 check(not sawReady, "the database never says ready before all of it is")
-check(statusChanged and statusAlwaysLoading, "the status line follows the load")
+check(listChanged and listAlwaysLoading, "the list's line follows the load")
+check(tipKept and Window.frame.status:GetText() == L.DB_NOTE, "and the status line is never taken from what it said")
 local rising, top = true, 0
 for i, share in ipairs(shares) do
     if share < top or share > 0.99 then rising = false end
     top = share
 end
 check(#shares > 100 and rising and shares[1] == 0, "the share done only rises and stops short of 100% (" .. top .. ")")
-check(top > 0.8, "the share is near the end when the load finishes (" .. top .. ")")
+check(top > 0.93, "the share is near the end when the load finishes (" .. top .. ")")
+-- in a language that also reads the English names (more rows) it gets as far
+do
+    local lua = arg and arg[-1] or "lua5.1"
+    local status = os.execute(("WT_LOCALE=deDE '%s' tests/run_db_sliced.lua --share"):format(lua:gsub("'", "'\\''")))
+    check(status == 0 or status == true, "in another language the share done is as near the end, and does not wait there")
+end
 check(DB.ready and DB.loaded and DB.hasShipped and DB.Loading() == nil, "then the database is ready")
 check(fw.rows[1]:IsShown() and fw.rows[1].entry and fw.rows[1].entry.name == "Hogger", "the search that was typed has run by itself")
 check(not fw.empty:IsShown(), "the loading line has left the list")
-check(Window.frame.status:GetText() == "", "the status line is cleared: " .. tostring(Window.frame.status:GetText()))
 local stats = DB.loadStats
 check(type(stats) == "table" and stats.slices >= frames and stats.slices <= frames + 30 and stats.units > 100000, "the load keeps its figures")
 check(stats and stats.most <= 900, "no slice reads much more than its share (" .. tostring(stats and stats.most) .. " rows)")
@@ -122,6 +158,53 @@ local everything = 0
 for _, name in ipairs({ "units", "objects", "quests", "items" }) do
     for _ in pairs(DB[name]) do everything = everything + 1 end
 end
+
+-- ---------------------------------------------------------------------------
+-- 1b. The status line: ours while it shows the loading line, and only then
+-- ---------------------------------------------------------------------------
+Reset()
+Window.SetStatus("")
+fw.search:Type("hogge")
+M.Tick(0.3)
+check(IsLoadingLine(Window.frame.status:GetText()), "an empty status line says the database is loading: " .. tostring(Window.frame.status:GetText()))
+local firstStatus, statusChanged, statusAlwaysLoading = Window.frame.status:GetText(), false, true
+for _ = 1, 60 do
+    Frame()
+    local text = Window.frame.status:GetText()
+    if text ~= firstStatus then statusChanged = true end
+    if not IsLoadingLine(text) then statusAlwaysLoading = false end
+end
+check(DB.Loading() and statusChanged and statusAlwaysLoading, "and follows the load")
+Window.SetStatus("Something else was said", true)
+local kept = true
+before = #loadedEvents
+while #loadedEvents == before do
+    Frame()
+    if Window.frame.status:GetText() ~= "Something else was said" then kept = false end
+end
+check(kept and Window.frame.status:GetText() == "Something else was said", "what is said meanwhile stays, also when the load has finished")
+Reset()
+Window.SetStatus("")
+fw.search:Type("hogger")
+M.Tick(0.3)
+UntilLoaded()
+check(Window.frame.status:GetText() == "", "a loading line still there at the end is cleared: " .. tostring(Window.frame.status:GetText()))
+-- the window opened while a load runs that it did not ask for
+Window.Hide()
+Reset()
+check(DB.LoadAsync() == nil, "a load starts with the window closed")
+for _ = 1, 5 do Frame() end
+Window.Show("waypoints")
+Window.SetStatus("Waypoint added: somewhere", true)
+kept = true
+before = #loadedEvents
+while #loadedEvents == before do
+    Frame()
+    if Window.frame.status:GetText() ~= "Waypoint added: somewhere" then kept = false end
+end
+check(kept, "the window opened meanwhile keeps its own status line")
+check(#feedback == 0, "and nothing is said on screen for a load nobody asked for by a click (" .. #feedback .. ")")
+Window.ShowTab("find")
 
 -- ---------------------------------------------------------------------------
 -- 2. Nearest clicked while it loads: the last click is answered when ready
@@ -141,22 +224,95 @@ check(WP.Count() == 1 and got and ex and got.mapID == ex[1] and got.x == ex[2] a
     "once ready the arrow goes to the last one asked for, only: " .. tostring(got and got.title))
 check(#feedback == 3 and not IsLoadingLine(feedback[3]), "and says so")
 check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
+-- the arrow sent somewhere else since the click stays there
+Reset()
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits again")
+local mine = WP.Add(37, 0.5, 0.5, { title = "Set after the click" })
+WP.SetActive(mine)
+check(WP.GetActive() == mine, "a waypoint is set meanwhile")
+UntilLoaded()
+check(WP.Count() == 1 and WP.GetActive() == mine, "the click from before it is dropped")
+check(#feedback == 1, "without a word (" .. #feedback .. ")")
+-- the profession menu, built when the pointer comes over its entry
+Reset()
+local titles, buttons = {}, {}
+local root = {
+    CreateTitle = function(_, text) titles[#titles + 1] = text end,
+    CreateButton = function(_, text, fn) buttons[#buttons + 1] = fn; return {} end,
+}
+Find.ProfessionMenu(root)
+check(DB.Loading() ~= nil and IsLoadingLine(titles[#titles]), "the profession menu starts the load and says so in the menu")
+check(#feedback == 0, "and not on screen: nothing was clicked (" .. #feedback .. ")")
+check(#buttons > 0 and buttons[1] ~= nil, "every profession can be chosen meanwhile")
+buttons[1]()
+check(#feedback == 1 and IsLoadingLine(feedback[1]), "a click is told the database is loading")
+UntilLoaded()
+check(#feedback == 2 and not IsLoadingLine(feedback[2]), "and answered once it is ready: " .. tostring(feedback[2]))
+check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
 
 -- ---------------------------------------------------------------------------
 -- 3. /way <name> while it loads
 -- ---------------------------------------------------------------------------
+local way = SlashCmdList.WAYPOINTTRACKERWAY
 WP.ClearAll(true)
 local direct = Find.Way("Hogger")
 local dx = direct and { direct.mapID, direct.x, direct.y }
 check(direct ~= nil, "/way Hogger sets the arrow with the database ready")
+-- another name that is one thing only
+local other, ox
+for _, name in ipairs({ "Marshal Dughan", "Brog Hamfist", "Brother Danil", "Tharynn Bouden" }) do
+    WP.ClearAll(true)
+    Window.Hide()
+    local wp = Find.Way(name)
+    if wp then other, ox = name, { wp.mapID, wp.x, wp.y } break end
+end
+check(other ~= nil, "another name is one thing only")
 Window.Hide()
 Reset()
-SlashCmdList.WAYPOINTTRACKERWAY("Hogger")
+M.printed = {}
+way(other)
+way("Hogger")
 check(WP.Count() == 0 and DB.Loading() ~= nil, "/way <name> waits for the database")
+check(#feedback == 2 and IsLoadingLine(feedback[1]), "and says it is loading")
 UntilLoaded()
 got = WP.GetActive()
-check(WP.Count() == 1 and got and dx and got.mapID == dx[1] and got.x == dx[2] and got.y == dx[3], "and sets the arrow once it is ready")
+check(WP.Count() == 1 and got and dx and got.mapID == dx[1] and got.x == dx[2] and got.y == dx[3], "the last one asked for sets the arrow once it is ready, only")
 check(not Window.IsShown(), "without opening the window")
+check(#feedback == 3 and feedback[3] == L.ADDED:format(WP.Describe(got)) and #M.printed == 0, "said on screen, not in chat: " .. tostring(feedback[3]))
+-- a name to choose from, asked for with the window closed: Find opens, as at once
+Reset()
+way("kobold")
+UntilLoaded()
+check(Window.IsShown() and Window.GetTab() == "find" and fw.search:GetText() == "kobold", "a name to choose from opens Find when the window is as it was")
+check(WP.Count() == 0, "and sets nothing")
+-- the window closed meanwhile stays closed
+Reset()
+Window.Show("waypoints")
+way("kobold")
+for _ = 1, 5 do Frame() end
+Window.Hide()
+feedback = {}
+UntilLoaded()
+check(not Window.IsShown(), "the window closed since stays closed")
+check(#feedback == 1 and feedback[1] == L.WAY_SEARCH:format("kobold"), "and the answer is said on screen: " .. tostring(feedback[1]))
+-- another tab opened meanwhile stays open
+Reset()
+Window.Show("waypoints")
+way("kobold")
+for _ = 1, 5 do Frame() end
+Window.ShowTab("treasure")
+UntilLoaded()
+check(Window.IsShown() and Window.GetTab() == "treasure", "another tab opened since stays open")
+check(Window.frame.status:GetText() == L.WAY_SEARCH:format("kobold"), "and the answer is in the status line: " .. tostring(Window.frame.status:GetText()))
+-- one thing only: the arrow, whatever the window did
+Reset()
+Window.ShowTab("waypoints")
+way("Hogger")
+for _ = 1, 5 do Frame() end
+Window.Hide()
+UntilLoaded()
+check(WP.Count() == 1 and not Window.IsShown(), "one thing only still gets its arrow with the window closed since")
+check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
 
 -- ---------------------------------------------------------------------------
 -- 4. DB.Load() while it loads: the rest at once
@@ -178,6 +334,57 @@ for _, name in ipairs({ "units", "objects", "quests", "items" }) do
 end
 check(count == everything, "with everything in it (" .. count .. " of " .. everything .. ")")
 
+-- DB.Load asked for from inside the load itself (a mistake: but it must
+-- neither hang nor start another), a slice a frame and all at once
+local isChest = ns.Treasure.IsChestName
+for _, sliced in ipairs({ true, false }) do
+    Reset()
+    DB._SetSliced(sliced)
+    local inside
+    ns.Treasure.IsChestName = function(name)
+        if not inside then
+            inside = { DB.Load() }
+            inside[3], inside[4] = DB.LoadAsync(function() inside.called = (inside.called or 0) + 1 end)
+        end
+        return isChest(name)
+    end
+    local how = sliced and "a slice a frame" or "all at once"
+    if sliced then
+        check(DB.LoadAsync() == nil, "a load starts")
+        check(UntilLoaded() < 20000, how .. ": the load finishes")
+    else
+        check(DB.Load() == true, how .. ": the load finishes")
+    end
+    check(inside and inside[1] == false and inside[2] == "loading", how .. ": DB.Load from inside the load answers that it is loading: " .. tostring(inside and inside[2]))
+    if sliced then
+        check(inside[3] == nil and inside.called == 1, how .. ": DB.LoadAsync from inside waits like anyone else")
+    else
+        check(inside[3] == false and inside[4] == "loading" and not inside.called, how .. ": DB.LoadAsync from inside answers the same")
+    end
+    count = 0
+    for _, name in ipairs({ "units", "objects", "quests", "items" }) do
+        for _ in pairs(DB[name]) do count = count + 1 end
+    end
+    check(DB.loaded and DB.ready and count == everything, how .. ": with everything in it, once (" .. count .. ")")
+    ns.Treasure.IsChestName = isChest
+end
+DB._SetSliced(true)
+-- the load's first announcement leads to DB.Load: whoever started it is still told
+Reset()
+local finishAtOnce = true
+ns.On("DB_LOADING", function(share)
+    if finishAtOnce and share == 0 then
+        finishAtOnce = false
+        DB.Load()
+    end
+end)
+answers = {}
+ok = DB.LoadAsync(function(a, b) answers[#answers + 1] = { a, b } end)
+check(ok == nil and #answers == 1 and answers[1][1] == true and DB.loaded, "a load finished by its own first announcement still answers who started it, once")
+for _ = 1, 5 do Frame() end
+check(#answers == 1 and #loadedEvents == 1, "and not again")
+check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
+
 -- ---------------------------------------------------------------------------
 -- 5. In combat the slices are smaller
 -- ---------------------------------------------------------------------------
@@ -190,13 +397,65 @@ check(DB.ready and combatFrames > normalFrames * 2.5, "in combat a slice is a fr
 check(DB.loadStats and DB.loadStats.most <= 300, "no combat slice reads much more than its share (" .. tostring(DB.loadStats and DB.loadStats.most) .. " rows)")
 
 -- ---------------------------------------------------------------------------
+-- 5b. By the frame clock, as in the game: a slice is a share of what the
+-- rest of the frame took, at most 8 ms and at least 3; 2 ms in combat
+-- ---------------------------------------------------------------------------
+DB._SetSliced(nil)
+check(DB.Sliced() == false, "left to the client, this mock loads all at once")
+local clock = 0
+function debugprofilestop() -- every look at it takes a fifth of a millisecond
+    clock = clock + 0.2
+    return clock
+end
+check(DB.Sliced() == true, "a client with a frame clock loads a slice a frame")
+local function Clocked(fps, combat)
+    Reset()
+    M.player.combat = combat
+    check(DB.LoadAsync() == nil, "a load starts by the clock")
+    local longest, shortest, n = 0, math.huge, 0
+    local done = #loadedEvents
+    while #loadedEvents == done and n < 100000 do
+        local t = clock
+        M.Tick(1 / fps, 1 / fps)
+        n = n + 1
+        if #loadedEvents == done and n > 3 then -- (the first slices find their pace; the last is cut short)
+            local took = clock - t
+            if took > longest then longest = took end
+            if took < shortest then shortest = took end
+        end
+    end
+    M.player.combat = false
+    count = 0
+    for _, name in ipairs({ "units", "objects", "quests", "items" }) do
+        for _ in pairs(DB[name]) do count = count + 1 end
+    end
+    check(DB.loaded and count == everything, ("at %d frames a second%s the load finishes with everything in it"):format(fps, combat and " in combat" or ""))
+    return shortest, longest, n
+end
+local low, high, n30 = Clocked(30)
+check(low > 7 and high < 9, ("at 30 frames a second a slice is 8 ms (%.1f to %.1f)"):format(low, high))
+local n60
+low, high, n60 = Clocked(60)
+check(low > 4 and high < 7.5, ("at 60 it is a share of the frame (%.1f to %.1f ms)"):format(low, high))
+local n144
+low, high, n144 = Clocked(144)
+check(low > 2.5 and high < 4, ("at 144 it is the least, 3 ms (%.1f to %.1f)"):format(low, high))
+check(n30 < n60 and n60 < n144, ("so a higher frame rate takes more frames (%d, %d, %d)"):format(n30, n60, n144))
+low, high = Clocked(30, true)
+check(low > 1.5 and high < 3, ("in combat a slice is 2 ms at any frame rate (%.1f to %.1f)"):format(low, high))
+check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
+debugprofilestop = nil
+DB._SetSliced(true)
+
+-- ---------------------------------------------------------------------------
 -- 6. The Routes tab asks for the database too
 -- ---------------------------------------------------------------------------
 Reset()
-Window.Show() -- (on Find, whose search starts the load and says so)
-Window.ShowTab("routes") -- (which empties the status line)
+Window.Show("waypoints")
+check(DB.Loading() == nil, "nothing asks for the database on the Waypoints tab")
+Window.ShowTab("routes")
+check(DB.Loading() ~= nil, "opening Routes starts the load")
 Frame()
-check(DB.Loading() ~= nil, "opening the window starts the load")
 check(IsLoadingLine(Window.frame.status:GetText()), "the status line says the database is loading: " .. tostring(Window.frame.status:GetText()))
 UntilLoaded()
 check(DB.ready and #ns.Routes.Suggested() > 0, "the suggested routes are there once it is ready")
@@ -246,6 +505,103 @@ C_AddOns.LoadAddOn = loader
 M.errors = {}
 
 -- ---------------------------------------------------------------------------
+-- 8b. The game reads the data addon's files once a session: asked again it
+-- does nothing. A shipped store that cannot be read is left out, and a
+-- load that failed half-way goes on from where the rows were read.
+-- ---------------------------------------------------------------------------
+local reads, communityText = 0, nil
+C_AddOns.LoadAddOn = function(name)
+    if M.addonsLoaded[name] then return true end
+    reads = reads + 1
+    local a, b = loader(name)
+    communityText = WaypointTrackerData.forever
+    return a, b
+end
+local import, failure = ns.Learn.Import, nil -- (an error is reported once a session: each try has its own)
+ns.Learn.Import = function(text, st, quiet, tick)
+    if quiet and text == communityText then error(failure) end
+    return import(text, st, quiet, tick)
+end
+for _, sliced in ipairs({ true, false }) do
+    Reset()
+    Window.Hide()
+    M.errors, reads = {}, 0
+    DB._SetSliced(sliced)
+    local how = sliced and "a slice a frame" or "all at once"
+    failure = "simulated: a bad line in the community store, read " .. how
+    if sliced then
+        check(DB.LoadAsync() == nil, "a load starts")
+        UntilLoaded()
+        ok, why = loadedEvents[1] and loadedEvents[1][1], loadedEvents[1] and loadedEvents[1][2]
+    else
+        local ran
+        ran, ok, why = pcall(DB.Load)
+        check(ran, how .. ": no error reaches whoever asked: " .. tostring(ok))
+    end
+    check(ok == true and why == nil, how .. ": a store that cannot be read does not stop the load: " .. tostring(why))
+    check(DB.loaded and DB.ready and DB.hasShipped, how .. ": the database is ready, with the shipped rows")
+    check(#M.errors == 1 and tostring(M.errors[1]):find("simulated", 1, true), how .. ": the failure is reported once (" .. #M.errors .. ")")
+    check(DB.community == nil and type(DB.curated) == "table", how .. ": that store is left out, the other is there")
+    check(WaypointTrackerData.forever == nil and WaypointTrackerData.curated == nil, how .. ": neither text is kept to be tried again")
+    count = 0
+    for _ in pairs(DB.units) do count = count + 1 end
+    check(count > 8000, how .. ": the NPCs are there (" .. count .. ")")
+    ok, why = DB.LoadAsync()
+    check(ok == true and why == nil, how .. ": asked again it is ready at once")
+    ok, why = DB.Load()
+    check(ok == true and why == nil and reads == 1 and #M.errors == 1, how .. ": and again, without reading or failing again")
+    local hogger = false
+    for _, e in ipairs(DB.Search("hogger", { npc = true, enemy = true }, {}, 20)) do
+        if e.name == "Hogger" then hogger = true end
+    end
+    check(hogger, how .. ": and Find finds things")
+end
+ns.Learn.Import = import
+-- a failure in the loader's own lines, after the rows were read; then
+-- asked again, a slice a frame or all at once
+for _, again in ipairs({ "a slice a frame", "all at once" }) do
+    DB._SetSliced(true)
+    Reset()
+    M.errors, reads = {}, 0
+    local fault, curatedText = true, nil
+    C_AddOns.LoadAddOn = function(name)
+        if M.addonsLoaded[name] then return true end
+        reads = reads + 1
+        local a, b = loader(name)
+        curatedText = WaypointTrackerData.curated
+        WaypointTrackerData.curated = nil
+        setmetatable(WaypointTrackerData, { __index = function(_, key)
+            if key == "curated" and fault then error("simulated: the loader itself fails, before asking again " .. again) end
+        end })
+        return a, b
+    end
+    check(DB.LoadAsync() == nil, "a load starts")
+    UntilLoaded()
+    check(loadedEvents[1] and loadedEvents[1][1] == false and loadedEvents[1][2] == "broken", "a failure nothing protects ends the load")
+    check(not DB.loaded and not DB.ready and DB.Loading() == nil and #M.errors == 1, "reported once, nothing keeps running (" .. #M.errors .. ")")
+    check(tostring(M.errors[1]):find("Database.lua:%d+"), "with where it failed: " .. tostring(M.errors[1]):sub(1, 200))
+    fault = false
+    rawset(WaypointTrackerData, "curated", curatedText)
+    if again == "all at once" then
+        ok, why = DB.Load()
+    else
+        check(DB.LoadAsync() == nil, "asked again, the load goes on")
+        UntilLoaded()
+        ok, why = loadedEvents[2] and loadedEvents[2][1], loadedEvents[2] and loadedEvents[2][2]
+    end
+    check(ok == true and why == nil, "asked again " .. again .. ", the load finishes well: " .. tostring(why))
+    count = 0
+    for _, name in ipairs({ "units", "objects", "quests", "items" }) do
+        for _ in pairs(DB[name]) do count = count + 1 end
+    end
+    check(DB.loaded and DB.hasShipped and reads == 1 and count == everything, "with everything in it, the files read once (" .. count .. " of " .. everything .. ")")
+    ok, why = DB.Load()
+    check(ok == true and why == nil, "and stays ready")
+end
+C_AddOns.LoadAddOn = loader
+M.errors = {}
+
+-- ---------------------------------------------------------------------------
 -- 9. The shared empty ID list
 -- ---------------------------------------------------------------------------
 Reset()
@@ -254,13 +610,13 @@ WaypointTrackerDB.learned = nil
 ok = DB.Load()
 check(ok == true and DB.ready, "the database loads all at once")
 -- the shipped stores are kept as what a merge needs of them, not whole
-local kept = 0
+local whole = 0
 for _, source in ipairs({ "curated", "community" }) do
     for _, kind in ipairs({ "npcs", "objects", "quests", "items" }) do
-        for _ in pairs(DB[source][kind] or {}) do kept = kept + 1 end
+        for _ in pairs(DB[source][kind] or {}) do whole = whole + 1 end
     end
 end
-check(kept > 0 and kept < 3000, "only the shipped records that wait for something are kept whole (" .. kept .. ")")
+check(whole > 0 and whole < 3000, "only the shipped records that wait for something are kept whole (" .. whole .. ")")
 local FIELDS = { quests = { "startU", "startO", "endU", "endO", "objU", "objO", "objI" }, items = { "dropU", "dropO", "soldBy" } }
 local function Lists()
     local shared, own, emptyOwn = 0, 0, 0

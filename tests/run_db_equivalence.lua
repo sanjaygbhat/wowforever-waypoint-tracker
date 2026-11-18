@@ -1,5 +1,6 @@
 -- The Find database is the same however it is built: read all at once
--- (DB.Load), read a little each frame (DB.LoadAsync), or by the loader of
+-- (DB.Load), read a little each frame (DB.LoadAsync: by a count of rows, and
+-- by a frame clock as in the game), or by the loader of
 -- 1.4.2 (tests/fixtures/loader-1.4.2: Database.lua, Learn.lua and Core.lua
 -- as released, which read every shipped store whole on every merge).
 -- tests/db_dump.lua builds it each way in a process of its own and writes
@@ -8,7 +9,9 @@
 -- into a shipped store and stores put in the shipped ones' place. The
 -- stores are given more than they hold today (corrections, a curated
 -- mailbox, records waiting for an NPC only you have seen, objectives
--- matched by name), so every part of a merge is compared. The files
+-- matched by name), so every part of a merge is compared, and a matrix of
+-- NPCs and quests that pairs everything the curated store, the community
+-- store and you can each say about one. The files
 -- must be the same, line for line: so yours still win over the community's,
 -- and the community's over the curated store's, with the two shipped stores
 -- kept only as what a merge needs of them.
@@ -70,10 +73,10 @@ end
 -- Every way, against the released loader: in English as an Alliance
 -- player, and in another language (with the English fallback names, and
 -- esMX reading esES) as a Horde player
-for _, case in ipairs({ { "enUS", "Alliance" }, { "esMX", "Horde" } }) do
+for _, case in ipairs({ { "enUS", "Alliance", { "sync", "sliced", "clocked" } }, { "esMX", "Horde", { "sync", "sliced" } } }) do
     local locale, side = case[1], case[2]
     local reference = Dump(locale, side, "reference")
-    for _, mode in ipairs({ "sync", "sliced" }) do
+    for _, mode in ipairs(case[3]) do
         local path = Dump(locale, side, mode)
         local lines, differ, stages = Compare(reference, path)
         local what = locale .. " " .. side .. " " .. mode

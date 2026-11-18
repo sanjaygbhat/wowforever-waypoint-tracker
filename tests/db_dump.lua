@@ -5,12 +5,14 @@
 --     [WT_LOCALE=xx] [WT_SIDE=Horde] lua5.1 tests/db_dump.lua MODE OUTFILE
 -- MODE: sync      DB.Load(), all at once
 --       sliced    DB.LoadAsync(), a slice a frame (forced on: the mock has no frame clock)
+--       clocked   DB.LoadAsync() with a frame clock, as in the game: slices by time
 --       reference the 1.4.2 loader (tests/fixtures/loader-1.4.2: Database.lua,
 --                 Learn.lua and Core.lua as released), all at once
 -- Two runs that write the same file built the same database.
 package.path = "./tests/?.lua;" .. package.path
 local mode, outPath = arg[1], arg[2]
-assert(mode == "sync" or mode == "sliced" or mode == "reference", "usage: db_dump.lua sync|sliced|reference OUTFILE")
+assert(mode == "sync" or mode == "sliced" or mode == "clocked" or mode == "reference",
+    "usage: db_dump.lua sync|sliced|clocked|reference OUTFILE")
 local M = require("wowmock")
 local out = assert(io.open(assert(outPath, "no output file"), "w"))
 
@@ -143,6 +145,7 @@ local function Snapshot(watch, unordered)
         for i, e in ipairs(trainer and DB.TrainerEntries(service) or DB.ServiceEntries(service)) do
             ids[i] = tostring(e.id) .. "/" .. #DB.Points(e)
         end
+        if unordered then table.sort(ids) end -- (they come in their rows' order)
         all["offer " .. service] = table.concat(ids, " ")
     end
     for _, name in ipairs(TABLES) do
@@ -236,7 +239,7 @@ do
     }, "\n")
 end
 WaypointTrackerDB.questTitles = { locale = GetLocale(), names = { [NEW_QUEST] = "A quest the game named" } }
-WaypointTrackerDB.learned = {
+local personal = {
     npcs = {
         [own1] = { name = "Renamed by the game", hostile = true, level = 61, spots = { [37] = { 0.411, 0.322 } } },
         [theirs1] = { name = "An imported name", shared = true, spots = { [37] = { 0.52, 0.53 } } },
@@ -256,23 +259,104 @@ WaypointTrackerDB.learned = {
     fixes = { ["N" .. own2] = { { wrong = { 37, 0.5, 0.5 }, right = { 37, 0.51, 0.52 } } } },
 }
 
+-- A matrix of records in the shipped stores' own text (so they are taken
+-- apart like the real ones): every pairing of what the curated store, the
+-- community store and you say about an NPC's hostility and faction, with
+-- services, corrections from each, records without a name or a spot for
+-- NPCs only you have seen; and quests whose level, giver, taker, area and
+-- faction each of the three sets or leaves alone.
+local MATRIX = 997000
+do
+    local D = WaypointTrackerData
+    local cur, com = {}, {}
+    local HOSTILE, FACTION, SERVICE = { "", "1", "0" }, { "", "A", "H", "AH" }, { "vendor", "trainer_weapon", "innkeeper" }
+    local id = MATRIX
+    for ch = 1, 3 do for cf = 1, 4 do for oh = 1, 3 do for of = 1, 4 do
+        for s = 1, 3, 2 do
+            id = id + 1
+            local service = SERVICE[((ch + cf + oh + of + s) % 3) + 1]
+            cur[#cur + 1] = ("N\t%d\tCurated %d\t%s\t\t%s\t37:%d,%d\t%s"):format(id, id, HOSTILE[ch], service, 100 + id % 700, 200, FACTION[cf])
+            if id % 5 == 0 then
+                -- the community store only knows of an NPC that is yours alone
+                com[#com + 1] = ("N\t%d\t\t%s\t\t%s\t\t%s"):format(id + 5000, HOSTILE[oh], service, FACTION[of])
+                personal.npcs[id + 5000] = { name = "Only yours " .. id, spots = { [37] = { 0.3, 0.3 } } }
+            else
+                com[#com + 1] = ("N\t%d\tCommunity %d\t%s\t\t%s\t37:%d,%d\t%s"):format(id, id, HOSTILE[oh], service, 300, 100 + id % 700, FACTION[of])
+            end
+            -- yours: hostile or not, a faction and the service, or a correction of the curated spot
+            local k = id % 4
+            if k == 1 then
+                personal.npcs[id] = { hostile = (id % 8 == 1), spots = { [37] = { 0.41, 0.42 } } }
+            elseif k == 2 then
+                personal.npcs[id] = { fac = (id % 8 == 2) and "H" or "A", services = { [service] = true } }
+            elseif k == 3 then
+                personal.fixes["N" .. id] = { { wrong = { 37, (100 + id % 700) / 1000, 0.2 }, right = { 37, 0.55, 0.56 } } }
+            end
+            -- both stores correct the same NPC
+            if id % 6 == 0 then
+                cur[#cur + 1] = ("C\tN\t%d\t37:%d,200\t37:610,620"):format(id, 100 + id % 700)
+                com[#com + 1] = ("C\tN\t%d\t37:300,%d"):format(id, 100 + id % 700)
+            end
+        end
+    end end end end
+    for q = 1, 60 do
+        local qid = MATRIX + 20000 + q
+        cur[#cur + 1] = ("Q\t%d\tCurated quest %d\t%s\tU%d\tU%d\t%s\t\t\t\t%s"):format(qid, q, q % 3 == 0 and "" or tostring(q),
+            MATRIX + q, MATRIX + q + 1, q % 2 == 0 and "37:100,100" or "", q % 4 == 0 and "A" or "")
+        if q % 2 == 1 then
+            com[#com + 1] = ("Q\t%d\t\t%s\t%s\tO%d\t%s\t\t\t\t%s"):format(qid, q % 5 == 0 and "" or tostring(q + 1),
+                q % 3 == 0 and "" or ("U" .. (MATRIX + q + 2)), 4000 + q, q % 4 == 1 and "37:200,200" or "", q % 4 == 3 and "H" or "")
+        end
+        if q % 3 == 1 then
+            personal.quests[qid] = { level = 70 + q, giver = q % 2 == 0 and ("U" .. (MATRIX + q + 3)) or nil,
+                area = q % 5 == 1 and { 37, 0.3, 0.3 } or nil, shared = (q % 6 == 4) or nil }
+        end
+    end
+    D.curated = D.curated .. "\n" .. table.concat(cur, "\n")
+    D.forever = D.forever .. "\n" .. table.concat(com, "\n")
+end
+WaypointTrackerDB.learned = personal
+
 -- ---------------------------------------------------------------------------
 -- Loading
 -- ---------------------------------------------------------------------------
-if mode == "sliced" then
+if mode == "sliced" or mode == "clocked" then
     assert(DB.LoadAsync and DB._SetSliced, "this loader cannot be sliced")
-    DB._SetSliced(true)
+    if mode == "clocked" then
+        -- a frame clock for the length of the load (every look at it takes
+        -- a tenth of a millisecond): the loader finds it and slices by time
+        local now = 0
+        function debugprofilestop()
+            now = now + 0.1
+            return now
+        end
+        assert(DB.Sliced() == true, "a client with a frame clock loads a slice a frame")
+    else
+        DB._SetSliced(true)
+    end
     local answer
     assert(DB.LoadAsync(function(ok, why) answer = { ok, why } end) == nil, "a sliced load answers later")
     assert(not DB.loaded and not DB.ready, "a sliced load is not ready at once")
-    local frames = 0
+    local frames, share, held = 0, 0, 0
     while not answer and frames < 100000 do
         M.Tick(1 / 60, 1 / 60)
         frames = frames + 1
         assert(answer or not DB.ready, "the database says ready before its load has finished")
+        local now = DB.Loading()
+        if now then
+            assert(now >= share and now <= 0.99, "the share done only rises, and not to all of it")
+            share = now
+            if now == 0.99 then held = held + 1 end
+        end
     end
+    debugprofilestop = nil
     assert(answer and answer[1] == true and answer[2] == nil, "the sliced load finished: " .. tostring(answer and answer[2]))
     assert(frames > 20, "the load was spread over frames (" .. frames .. ")")
+    -- in every language the share says about how far the load is: near
+    -- the end when it ends, and not held at its last value for long
+    assert(share > 0.9, "the share done is near the end when the load ends (" .. share .. ")")
+    -- (this history's own records are a tenth more to read than is shipped)
+    assert(held <= frames * 0.1, "the share done does not wait at 99% (" .. held .. " of " .. frames .. " frames)")
 else
     local ok, why = DB.Load()
     assert(ok == true and why == nil, "the database loaded: " .. tostring(why))
@@ -305,6 +389,20 @@ st.quests[questC] = { giver = "O990301", ender = "U" .. NEW_NPC, area = { 37, 0.
 st.items[curated.I[1]] = { from = { ["O990301"] = true } }
 st.quests[questArea] = { area = { 37, 0.1, 0.1 }, level = 3, fac = "H", giver = "U" .. NEW_NPC }
 st.quests[questLevel] = { area = { 37, 0.2, 0.2 }, level = 9, ender = "O990301" }
+-- the matrix: some of yours go, hostile turns friendly and back, half your corrections go
+for id, l in pairs(st.npcs) do
+    if id > MATRIX then
+        if id % 3 == 0 then
+            st.npcs[id] = nil
+        elseif l.hostile ~= nil then
+            l.hostile = not l.hostile
+        end
+    end
+end
+for key in pairs(st.fixes) do
+    local id = tonumber(key:sub(2))
+    if id > MATRIX and id % 2 == 0 then st.fixes[key] = nil end
+end
 side = AWAY
 Merge("more")
 
@@ -312,6 +410,12 @@ Merge("more")
 st.npcs[own1], st.npcs[own3] = nil, nil
 st.quests[questA], st.quests[questC] = nil, nil
 st.quests[questArea], st.quests[questLevel] = nil, nil
+for id in pairs(st.quests) do
+    if id > MATRIX and id % 2 == 0 then st.quests[id] = nil end
+end
+for id in pairs(st.npcs) do
+    if id > MATRIX then st.npcs[id] = nil end
+end
 st.fixes = {}
 st.mailboxes = {}
 WaypointTrackerDB.questTitles.names[NEW_QUEST + 1] = "Another the game named"
