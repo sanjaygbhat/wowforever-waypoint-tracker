@@ -188,7 +188,7 @@ def shell(filename, title, description, body, faq, items):
 <section id="method"><h2>How we compared</h2>
 <p class="checked">Last checked: <time datetime="{DATE}">{DATE}</time> · {esc(DATA['baseline'])}</p>
 {para(METHOD)}
-<h3>Waypoint Tracker 1.4.1 sources</h3>{source_links(OWN_SOURCES)}
+<h3>{esc(DATA['baseline'])} sources</h3>{source_links(OWN_SOURCES)}
 <h3>Competitor sources</h3>{source_links(list(dict.fromkeys(s for row in items for s in row['sources'])))}
 </section>
 </main>

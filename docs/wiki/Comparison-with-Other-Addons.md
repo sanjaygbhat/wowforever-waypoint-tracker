@@ -28,7 +28,7 @@ Treasure hunt (beta) and Route sharing & votes (beta) are off by default.
 
 | Addon | Official client support | Price | Licence | Arrow | Waypoints | Quest objectives on map | NPC / item search | Nearest services / trainers | Routing | Rare / treasure alerts | TomTom API | Languages |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Waypoint Tracker 1.4.1 | Forever 1.60.1 / interface 16001 | Free | MIT | 3D arrow | /way, map clicks, Find | Follows native quest POIs; quest Find | Quests, NPCs, enemies, objects, items | Shipped services; complete trainer database, all 9 classes and 12 professions; weapon and riding trainers | Real routes: flights, boats, zeppelins, tram, hearthstone, teleports | Treasure hunt (beta), opt-in | Compatible waypoint API; yields to TomTom | English, German, French, Spanish, Portuguese, Russian, Korean, Simplified/Traditional Chinese |
+| Waypoint Tracker 1.5.0 | Forever 1.60.1 / interface 16001 | Free | MIT | 3D arrow | /way, map clicks, Find | Follows native quest POIs; quest Find | Quests, NPCs, enemies, objects, items | Shipped services; complete trainer database, all 9 classes and 12 professions; weapon and riding trainers | Real routes: flights, boats, zeppelins, tram, hearthstone, teleports | Treasure hunt (beta), opt-in | Compatible waypoint API; yields to TomTom | English, German, French, Spanish, Portuguese, Russian, Korean, Simplified/Traditional Chinese |
 | TomTom | Forever listed; interface not stated | — | All Rights Reserved | Yes | Commands and map clicks | Uses quest POIs; database not stated | — | — | — | — | Native API | — |
 | Questie | Forever listed; interface not stated | — | GPL-3.0 | Through TomTom | Objective arrow through TomTom | Starts, objectives, turn-ins | Database search | — | — | — | Documented integration | English, German, French, Spanish, Portuguese, Russian, Chinese, Taiwanese, Korean; Ukrainian via companion |
 | pfQuest | Forever not stated; Vanilla/TBC, WotLK beta documented | — | MIT | Yes | Database/map targets | Quest objectives | NPCs, items, objects, quests | Service tracking lists; nearest not stated | — | Rare/chest locations; alerts not stated | — | English, Korean, French, German, Chinese, Spanish, Russian |
@@ -677,9 +677,9 @@ Use a leveling guide when you want instructions about which quests to accept, co
 
 ## How we compared
 
-Last checked: **2026-11-13**. Baseline: **Waypoint Tracker 1.4.1**.
+Last checked: **2026-11-13**. Baseline: **Waypoint Tracker 1.5.0**.
 
-Compared by the Waypoint Tracker project using the official sources below, last checked 2026-11-13; our baseline is 1.4.1. This is a selected catalog snapshot, with no live-client or performance tests. Features vary by client: check for a Forever release. Integration is described only where documented; keep required dependencies.
+Compared by the Waypoint Tracker project using the official sources below, last checked 2026-11-13; our baseline is 1.5.0. This is a selected catalog snapshot, with no live-client or performance tests. Features vary by client: check for a Forever release. Integration is described only where documented; keep required dependencies.
 
 ### Waypoint Tracker sources
 
