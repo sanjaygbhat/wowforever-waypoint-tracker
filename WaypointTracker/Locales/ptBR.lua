@@ -262,6 +262,7 @@ L.NO_LOCATION = "Ainda não se conhece um local para isso."
 L.DB_BROKEN = "Não foi possível carregar o banco de dados da Busca. Verifique se WaypointTracker_Data está ativado na lista de AddOns e digite /reload."
 L.DB_LOADING = "Carregando o banco de dados da Busca (%d%%)..."
 L.WAY_SEARCH = "Nenhum resultado único para \"%s\". Procure na aba Buscar."
+L.NEAREST_SKIPPED = "\"Mais próximo\" foi ignorado: você apontou a seta para outro lugar enquanto o banco de dados carregava."
 L.HELP_FIND = "/wp find [nome] - busca missões, PNJs, inimigos, objetos e itens"
 L.BINDING_FIND = "Abrir ou fechar Buscar"
 

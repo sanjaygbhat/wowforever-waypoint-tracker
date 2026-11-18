@@ -37,7 +37,9 @@ if arg and arg[1] == "--share" then
         if ns.DB.Loading() == 0.99 then held = held + 1 end
     end
     local good = done == true and share > 0.93 and share <= 0.99 and held <= frames * 0.03
-    print(("%s: the share done ends at %.3f, %d of %d frames at its last value"):format(GetLocale(), share, held, frames))
+    print(("%s: the share done ends at %.3f, %d of %d frames at its last value (%d rows read)%s"):format(GetLocale(), share, held, frames,
+        ns.DB.loadStats and ns.DB.loadStats.units or 0,
+        good and "" or ": the data has changed, set EXPECTED_UNITS and EXPECTED_UNITS_OTHER in Database.lua to a little over the rows read in English and in another language"))
     os.exit(good and 0 or 1)
 end
 
@@ -134,12 +136,14 @@ for i, share in ipairs(shares) do
     top = share
 end
 check(#shares > 100 and rising and shares[1] == 0, "the share done only rises and stops short of 100% (" .. top .. ")")
-check(top > 0.93, "the share is near the end when the load finishes (" .. top .. ")")
+check(top > 0.93, ("the share is near the end when the load finishes (%s, %d rows read: when the data has changed, set EXPECTED_UNITS in Database.lua to a little over the rows read)"):format(
+    tostring(top), DB.loadStats and DB.loadStats.units or 0))
 -- in a language that also reads the English names (more rows) it gets as far
 do
     local lua = arg and arg[-1] or "lua5.1"
     local status = os.execute(("WT_LOCALE=deDE '%s' tests/run_db_sliced.lua --share"):format(lua:gsub("'", "'\\''")))
-    check(status == 0 or status == true, "in another language the share done is as near the end, and does not wait there")
+    check(status == 0 or status == true, "in another language the share done is as near the end, and does not wait there"
+        .. " (when the data has changed, set EXPECTED_UNITS_OTHER in Database.lua to a little over the rows read: the line above)")
 end
 check(DB.ready and DB.loaded and DB.hasShipped and DB.Loading() == nil, "then the database is ready")
 check(fw.rows[1]:IsShown() and fw.rows[1].entry and fw.rows[1].entry.name == "Hogger", "the search that was typed has run by itself")
@@ -224,15 +228,93 @@ check(WP.Count() == 1 and got and ex and got.mapID == ex[1] and got.x == ex[2] a
     "once ready the arrow goes to the last one asked for, only: " .. tostring(got and got.title))
 check(#feedback == 3 and not IsLoadingLine(feedback[3]), "and says so")
 check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
--- the arrow sent somewhere else since the click stays there
+-- What the addon does to the arrow meanwhile does not take the click's
+-- answer away: an arrival that clears the waypoint, a quest's next stage,
+-- a route's next stop, your corpse
+local function Answered(what)
+    UntilLoaded()
+    local wp = WP.GetActive()
+    check(wp and ex and wp.mapID == ex[1] and wp.x == ex[2] and wp.y == ex[3] and wp.title == ex[4],
+        what .. ": the click is still answered: " .. tostring(wp and wp.title))
+    check(feedback[#feedback] == L.ADDED:format(WP.Describe(wp)), what .. ": and says so: " .. tostring(feedback[#feedback]))
+end
+Reset()
+ns.Set("autoClear", true)
+local target = WP.Add(37, 0.5, 0.5, { title = "Where you were going", silent = true })
+check(Find.GoToNearest("mailbox") == nil and WP.GetActive() == target, "Nearest waits, the arrow on a waypoint")
+for _ = 1, 5 do Frame() end
+WP.CheckArrival(target, 500) -- (far away first: a waypoint is not reached where it was made)
+WP.CheckArrival(target, 1)
+check(not WP.IsValid(target), "arriving clears the waypoint meanwhile")
+Answered("an arrival")
+Reset()
+local stage = WP.Add(37, 0.5, 0.5, { title = "Quest, first stage", persistent = false, silent = true, source = "quest", noReuse = true })
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits, the arrow on a quest")
+for _ = 1, 5 do Frame() end
+WP.Remove(stage, true, true) -- (as Follow does when the quest's objective moves on)
+stage = WP.Add(37, 0.6, 0.6, { title = "Quest, next stage", persistent = false, silent = true, source = "quest", noReuse = true, setActive = true })
+check(WP.GetActive() == stage, "the quest's next stage takes the arrow meanwhile")
+Answered("a quest's next stage")
+Reset()
+local stop1 = WP.Add(37, 0.5, 0.5, { title = "1/2 A route", silent = true, setActive = false, source = "route" })
+local stop2 = WP.Add(37, 0.6, 0.6, { title = "2/2 A route", silent = true, setActive = false, source = "route" })
+WP.SetActive(stop1, true)
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits, the arrow on a route")
+for _ = 1, 5 do Frame() end
+WP.SetActive(stop2) -- (as Routes does at a stop)
+Answered("a route's next stop")
+Reset()
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits")
+for _ = 1, 5 do Frame() end
+local corpse = WP.Add(37, 0.4, 0.4, { title = "Corpse", source = "corpse", persistent = false, silent = true, noReuse = true })
+WP.SetActive(corpse, true)
+Answered("your corpse")
+Reset()
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits")
+TomTom:AddWaypoint(37, 0.45, 0.45, { title = "From another addon" })
+Answered("another addon's waypoint")
+-- A target you chose yourself since the click stays, and the click is
+-- dropped with a word: a waypoint you added, one you clicked, a quest's icon
+local function Dropped(what, mine)
+    local n = WP.Count()
+    feedback = {}
+    UntilLoaded()
+    check(WP.Count() == n and (mine == nil or WP.GetActive() == mine), what .. ": the click from before it is dropped")
+    check(#feedback == 1 and feedback[1] == L.NEAREST_SKIPPED, what .. ": and the status line says so: " .. tostring(feedback[1]))
+end
 Reset()
 check(Find.GoToNearest("mailbox") == nil, "Nearest waits again")
 local mine = WP.Add(37, 0.5, 0.5, { title = "Set after the click" })
-WP.SetActive(mine)
-check(WP.GetActive() == mine, "a waypoint is set meanwhile")
+check(WP.GetActive() == mine, "a waypoint is added meanwhile")
+Dropped("a waypoint you added", mine)
+Reset()
+local one = WP.Add(37, 0.5, 0.5, { title = "One of yours", silent = true })
+local two = WP.Add(37, 0.6, 0.6, { title = "Another of yours", silent = true })
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits again")
+WP.Choose(one, true) -- (a click on its row, its pin or its map menu entry)
+Dropped("a waypoint you clicked", one)
+Reset()
+one = WP.Add(37, 0.5, 0.5, { title = "One of yours", silent = true })
+two = WP.Add(37, 0.6, 0.6, { title = "Another of yours", silent = true })
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits again")
+WaypointTracker_SetClosest()
+Dropped("the closest one, asked for by its key")
+Reset()
+Window.Show("waypoints")
+Window.SetStatus("")
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits with the window open")
+mine = WP.Add(37, 0.5, 0.5, { title = "Set after the click", silent = true })
 UntilLoaded()
-check(WP.Count() == 1 and WP.GetActive() == mine, "the click from before it is dropped")
-check(#feedback == 1, "without a word (" .. #feedback .. ")")
+check(WP.GetActive() == mine and Window.frame.status:GetText() == L.NEAREST_SKIPPED, "with the window open the status line says so: " .. tostring(Window.frame.status:GetText()))
+Window.Hide()
+-- /way <name> asked for before the click is no choice made since: both are answered
+Reset()
+SlashCmdList.WAYPOINTTRACKERWAY("Hogger")
+check(Find.GoToNearest("mailbox") == nil, "Nearest waits after a /way")
+UntilLoaded()
+got = WP.GetActive()
+check(WP.Count() == 2 and got and ex and got.mapID == ex[1] and got.x == ex[2] and got.y == ex[3], "a /way asked for before the click does not take its answer away")
+check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
 -- the profession menu, built when the pointer comes over its entry
 Reset()
 local titles, buttons = {}, {}
@@ -369,7 +451,8 @@ for _, sliced in ipairs({ true, false }) do
     ns.Treasure.IsChestName = isChest
 end
 DB._SetSliced(true)
--- the load's first announcement leads to DB.Load: whoever started it is still told
+-- the load's first announcement leads to DB.Load: whoever started it has
+-- the answer at once, and nothing goes on saying "loading"
 Reset()
 local finishAtOnce = true
 ns.On("DB_LOADING", function(share)
@@ -379,10 +462,19 @@ ns.On("DB_LOADING", function(share)
     end
 end)
 answers = {}
-ok = DB.LoadAsync(function(a, b) answers[#answers + 1] = { a, b } end)
-check(ok == nil and #answers == 1 and answers[1][1] == true and DB.loaded, "a load finished by its own first announcement still answers who started it, once")
+ok, why = DB.LoadAsync(function(a, b) answers[#answers + 1] = { a, b } end)
+check(ok == true and why == nil and DB.loaded and DB.Loading() == nil, "a load finished by its own first announcement answers who started it at once")
 for _ = 1, 5 do Frame() end
-check(#answers == 1 and #loadedEvents == 1, "and not again")
+check(#answers == 0 and #loadedEvents == 1, "and so not again later")
+Reset()
+Window.Show("waypoints")
+Window.SetStatus("")
+finishAtOnce = true
+local wp = Find.GoToNearest("mailbox")
+check(wp ~= nil and WP.GetActive() == wp and DB.loaded, "Nearest is answered at once then")
+for _ = 1, 30 do Frame() end
+check(not IsLoadingLine(Window.frame.status:GetText()) and WP.Count() == 1, "and the status line does not go on saying it is loading: " .. tostring(Window.frame.status:GetText()))
+Window.Hide()
 check(#M.errors == 0, "no errors: " .. tostring(M.errors[1]))
 
 -- ---------------------------------------------------------------------------

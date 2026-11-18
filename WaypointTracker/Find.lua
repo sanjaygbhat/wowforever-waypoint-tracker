@@ -198,17 +198,23 @@ end
 Find.SERVICES = SERVICES
 
 -- Nearest asked for while the database was loading: { service, profession,
--- active = the waypoint the arrow pointed to then } of the last click, which
--- is answered when it is ready, unless you have sent the arrow somewhere
--- else since.
+-- choices = how often you had chosen the arrow's target yourself by then }
+-- of the last click, which is answered when it is ready. Unless you have
+-- chosen another target since (WP.UserChoices: not an arrival, a quest's
+-- next stage, a route's next stop or your corpse, which the addon does):
+-- then your choice stays, and the status line says so.
 local nearestAsked
 local function NearestWhenReady(ok)
     local asked = nearestAsked
     nearestAsked = nil
     if not ok then
         Status(L.DB_BROKEN)
-    elseif asked and WP.GetActive() == asked.active then
-        Find.GoToNearest(asked[1], asked[2])
+    elseif asked then
+        if WP.UserChoices() ~= asked.choices then
+            Status(L.NEAREST_SKIPPED, "info")
+        else
+            Find.GoToNearest(asked[1], asked[2])
+        end
     end
 end
 
@@ -237,7 +243,7 @@ function Find.GoToNearest(service, profession)
     local waiting = nearestAsked ~= nil
     local loaded, loadReason = Database(not waiting and NearestWhenReady or nil)
     if loaded == nil then
-        nearestAsked = { asked, profession, active = WP.GetActive() } -- the last click wins
+        nearestAsked = { asked, profession, choices = WP.UserChoices() } -- the last click wins
         return nil
     end
     nearestAsked = nil
@@ -1182,6 +1188,11 @@ local function WayWhenReady(ok)
     end
     local e = ok and OnlyMatch(asked.text)
     local wp = e and WaypointFor(e)
+    -- (a Nearest still to be answered was clicked after this was asked for:
+    -- this arrow is no choice made since that click)
+    if nearestAsked then
+        nearestAsked.choices = WP.UserChoices()
+    end
     if wp then
         Status(L.ADDED:format(WP.Describe(wp)), true)
     elseif (Window.IsShown() and true or false) == asked.shown and (not asked.shown or Window.GetTab() == asked.tab) then

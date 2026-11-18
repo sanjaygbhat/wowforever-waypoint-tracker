@@ -264,6 +264,7 @@ L.DB_MISSING = "The WaypointTracker_Data folder is missing or disabled, so only 
 L.DB_BROKEN = "The Find database couldn't be loaded. Make sure WaypointTracker_Data is enabled in the AddOns list, then type /reload."
 L.DB_LOADING = "Loading the Find database (%d%%)..."
 L.WAY_SEARCH = "No single match for \"%s\". Search for it in Find."
+L.NEAREST_SKIPPED = "Nearest was skipped: you pointed the arrow somewhere else while the database was loading."
 L.HELP_FIND = "/wp find [name] - search quests, NPCs, enemies, objects and items"
 L.BINDING_FIND = "Open or close Find"
 L.TAB_ENEMIES = "Enemies"

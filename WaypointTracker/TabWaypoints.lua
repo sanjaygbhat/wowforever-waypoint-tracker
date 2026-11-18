@@ -256,7 +256,7 @@ end
 
 local function RowMenu(row, wp)
     W.Menu(row, function(root)
-        root:CreateButton(L.ROW_MENU_POINT, function() WP.SetActive(wp, true) end)
+        root:CreateButton(L.ROW_MENU_POINT, function() WP.Choose(wp, true) end)
         if ns.Share then
             local share = root:CreateButton(L.SHARE)
             local nested = share and type(share.CreateButton) == "function"
@@ -461,7 +461,7 @@ local function Build(parent)
             elseif IsShiftKeyDown and IsShiftKeyDown() and ns.Share then
                 ns.Share.ToChatBox(wp)
             else
-                WP.SetActive(wp, true)
+                WP.Choose(wp, true)
             end
         end,
     })
