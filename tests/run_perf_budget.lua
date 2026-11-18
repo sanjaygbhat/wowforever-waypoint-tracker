@@ -1,7 +1,11 @@
 -- Resource budget: what the addon allocates and how many game calls it
 -- makes per second of play, in fixed scenarios (tools/perf_profile.lua,
--- without the ones that load the database). Only exact numbers are gated:
--- KB allocated by the addon's own Lua, game API calls and widget calls.
+-- without the search and Treasure hunt ones). Only exact numbers are gated:
+-- KB allocated by the addon's own Lua, game API calls and widget calls;
+-- and for the Find database its heap once loaded, and the longest step of
+-- its load in thousands of VM instructions (the load is spread over
+-- frames: one step is what a single frame has to wait for; the whole load
+-- at once, as in 1.4.2, was one step of about 17,000).
 -- They do not depend on the machine's speed and repeat from run to run, so
 -- a ceiling a little above the measured value catches a table, a string or
 -- a call added to every frame (one small table a frame is 4 KB a second).
@@ -18,7 +22,7 @@
 package.path = "./tests/?.lua;" .. package.path
 local P = assert(loadfile("tools/perf_profile.lua"))("module")
 
--- 300 CPU seconds at most (it takes about forty seconds on an idle
+-- 300 CPU seconds at most (it takes under a minute on an idle
 -- machine): a hang fails, not blocks
 local results = P.Run({ quick = true, seconds = 300 })
 
@@ -75,6 +79,11 @@ local BUDGET = {
     { "ev_chat_addon_other.alloc_addon_kb_per_event", 0.01 },
     { "ev_vignettes.alloc_addon_kb_per_event", 0.01 },
     { "ev_item_info.alloc_addon_kb_per_event", 0.01 },
+    -- the Find database (measured for 1.5.0: 33,483 KB; 243 thousand
+    -- instructions in the longest frame of its load; 820 rows in a slice)
+    { "database.heap_kb", 35500 },
+    { "database.longest_step_kinstr", 320 },
+    { "database.slice_rows_max", 900 },
 }
 
 for _, b in ipairs(BUDGET) do
@@ -89,6 +98,8 @@ end
 -- the scenarios ran what they say: an arrow to a waypoint, a followed route
 check((results["waypoint_walk.widget_calls_per_s"] or 0) > 60, "the arrow was drawn while walking to the waypoint")
 check((results["real_route_walk.alloc_addon_kb_per_s"] or 0) > 5, "the route scenario planned a route")
+check((results["database.frames"] or 0) >= 150, "the database was loaded a slice a frame (" .. tostring(results["database.frames"]) .. " frames)")
+check((results["database.heap_kb"] or 0) > 20000, "the database was loaded")
 check(#P.mock.errors == 0, "no Lua errors while profiling: " .. tostring(P.mock.errors[1]))
 
 print(("Performance budget: %d passed, %d failed"):format(passed, failed))
