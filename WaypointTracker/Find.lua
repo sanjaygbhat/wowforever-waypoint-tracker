@@ -132,23 +132,43 @@ end
 -- (DB.LoadAsync). Until it is ready the line below the window's title says
 -- how far it is, and what was asked for happens once it is: the search that
 -- was typed, the last Nearest button that was clicked, "/way <name>".
-local loadingText -- the loading line as last shown (nil: not loading)
+-- The loading line as we put it in the status line, while it is still
+-- there: only then is the line ours to keep up to date and to clear.
+local loadingText
 local function LoadingLine()
     return L.DB_LOADING:format(math.floor((DB.Loading() or 0) * 100))
 end
 
-local function ShowLoading()
-    loadingText = LoadingLine()
-    Status(loadingText, "info")
+local function StatusText()
+    local status = Window.frame and Window.frame.status
+    return status and status:GetText() or nil
 end
 
--- DB.LoadAsync, saying so when the answer comes later. Returns ok, reason
--- now, or nil while loading; then `again` (if given) is called with the
--- answer's ok once the database is ready.
-local function Database(again)
+-- Says that the database is loading: as the answer to a click or a
+-- command; or, `quiet` (a list that waits for it), only in the open
+-- window and only where nothing else is said.
+local function ShowLoading(quiet)
+    local text = LoadingLine()
+    if quiet then
+        local shown = StatusText()
+        if not Window.IsShown() or not (shown == nil or shown == "" or shown == loadingText) then
+            return
+        end
+        Window.SetStatus(text, "info")
+    else
+        Status(text, "info")
+    end
+    loadingText = text
+end
+Find.ShowLoading = ShowLoading
+
+-- DB.LoadAsync, saying so when the answer comes later (`quiet`: as
+-- ShowLoading). Returns ok, reason now, or nil while loading; then `again`
+-- (if given) is called with the answer's ok once the database is ready.
+local function Database(again, quiet)
     local ok, why = DB.LoadAsync(again)
     if ok == nil then
-        ShowLoading()
+        ShowLoading(quiet)
     end
     return ok, why
 end
@@ -177,15 +197,17 @@ end
 
 Find.SERVICES = SERVICES
 
--- Nearest asked for while the database was loading: { service, profession }
--- of the last click, which is answered when it is ready.
+-- Nearest asked for while the database was loading: { service, profession,
+-- active = the waypoint the arrow pointed to then } of the last click, which
+-- is answered when it is ready, unless you have sent the arrow somewhere
+-- else since.
 local nearestAsked
 local function NearestWhenReady(ok)
     local asked = nearestAsked
     nearestAsked = nil
     if not ok then
         Status(L.DB_BROKEN)
-    elseif asked then
+    elseif asked and WP.GetActive() == asked.active then
         Find.GoToNearest(asked[1], asked[2])
     end
 end
@@ -215,7 +237,7 @@ function Find.GoToNearest(service, profession)
     local waiting = nearestAsked ~= nil
     local loaded, loadReason = Database(not waiting and NearestWhenReady or nil)
     if loaded == nil then
-        nearestAsked = { asked, profession } -- the last click wins
+        nearestAsked = { asked, profession, active = WP.GetActive() } -- the last click wins
         return nil
     end
     nearestAsked = nil
@@ -242,7 +264,9 @@ end
 
 function Find.ProfessionMenu(root, hasTitle)
     if not hasTitle then root:CreateTitle(L.SERVICE_PROFESSION_TRAINER) end
-    local loaded, reason = Database()
+    -- (the menu is built when the pointer comes over its entry: the load
+    -- starts, and the menu says so; a message is for a click)
+    local loaded, reason = DB.LoadAsync()
     -- still loading: every profession can be chosen, and is answered when ready
     local loading = loaded == nil
     if loading then
@@ -519,12 +543,12 @@ local function DoSearch()
     if readFailed then
         ok = false
     else
-        ok, why = Database(not searchWaits and SearchWhenReady or nil)
+        ok, why = Database(not searchWaits and SearchWhenReady or nil, true)
     end
     if ok == nil then
         searchWaits = true
         results, total = {}, 0
-        emptyText:SetText(loadingText)
+        emptyText:SetText(LoadingLine())
         emptyText:Show()
         countText:SetText("")
         RefreshRows()
@@ -584,28 +608,25 @@ RunSearch = function()
     ns.Call(DoSearch)
 end
 
--- The loading line follows the load, as long as nothing else was said since.
+-- The loading line follows the load while it is ours: once anything else
+-- was said in the status line (or a tab change emptied it), it is not.
 ns.On("DB_LOADING", function()
-    if not (Window.frame and Window.IsShown()) then
-        return
-    end
     local text = LoadingLine()
-    -- (an empty line too: another tab was opened meanwhile)
-    local shown = Window.frame.status and Window.frame.status:GetText()
-    if shown ~= text and (loadingText == nil or shown == loadingText or shown == nil or shown == "") then
-        Window.SetStatus(text, "info")
-    end
-    if text ~= loadingText then
-        if searchWaits and emptyText then
-            emptyText:SetText(text)
+    if loadingText then
+        if StatusText() ~= loadingText then
+            loadingText = nil
+        elseif text ~= loadingText then
+            Window.SetStatus(text, "info")
+            loadingText = text
         end
-        loadingText = text
+    end
+    if searchWaits and emptyText and emptyText:GetText() ~= text then
+        emptyText:SetText(text)
     end
 end)
 
 ns.On("DB_LOADED", function()
-    local shown = Window.frame and Window.frame.status and Window.frame.status:GetText()
-    if loadingText and shown == loadingText then
+    if loadingText and StatusText() == loadingText then
         Window.SetStatus("")
     end
     loadingText = nil
@@ -1137,27 +1158,54 @@ end
 -- "/way <name>": when exactly one thing has that exact name, the arrow goes
 -- straight there. Several with that name, or none: Find opens to choose.
 local EVERYTHING = { quest = true, npc = true, enemy = true, object = true, item = true, place = true }
-function Find.Way(text)
-    local loaded = Database(function(ok)
-        if ok then Find.Way(text) else Find.Show(text) end
-    end)
-    if loaded == nil then
-        return nil -- answered once the database is ready
-    end
-    if loaded then
-        local q = Geo.PrepareQuery(text)
-        local exact = {}
-        for _, e in ipairs(DB.Search(text, EVERYTHING, { faction = ns.Get("findFaction") }, 50)) do
-            if e.key == q then
-                exact[#exact + 1] = e
-            end
+local function OnlyMatch(text)
+    local q = Geo.PrepareQuery(text)
+    local exact = {}
+    for _, e in ipairs(DB.Search(text, EVERYTHING, { faction = ns.Get("findFaction") }, 50)) do
+        if e.key == q then
+            exact[#exact + 1] = e
         end
-        if #exact == 1 then
-            local wp = WaypointFor(exact[1])
-            if wp then
-                ns.Print(L.ADDED:format(WP.Describe(wp)), true)
-                return wp
-            end
+    end
+    return #exact == 1 and exact[1] or nil
+end
+
+-- Asked for while the database was loading: { text, shown, tab } of the
+-- last one (the window as it was then). Answered when it is ready: the
+-- arrow, said in the status line; or Find to choose in, but only with the
+-- window as it was (closed or moved to another tab since, it stays so).
+local wayAsked
+local function WayWhenReady(ok)
+    local asked = wayAsked
+    wayAsked = nil
+    if not asked then
+        return
+    end
+    local e = ok and OnlyMatch(asked.text)
+    local wp = e and WaypointFor(e)
+    if wp then
+        Status(L.ADDED:format(WP.Describe(wp)), true)
+    elseif (Window.IsShown() and true or false) == asked.shown and (not asked.shown or Window.GetTab() == asked.tab) then
+        Find.Show(asked.text)
+    else
+        Status(ok and L.WAY_SEARCH:format(asked.text) or L.DB_BROKEN)
+    end
+end
+
+function Find.Way(text)
+    local waiting = wayAsked ~= nil
+    local loaded = Database(not waiting and WayWhenReady or nil)
+    if loaded == nil then
+        -- answered once the database is ready (the last one asked for)
+        wayAsked = { text = text, shown = Window.IsShown() and true or false, tab = Window.GetTab() }
+        return nil
+    end
+    wayAsked = nil
+    if loaded then
+        local e = OnlyMatch(text)
+        local wp = e and WaypointFor(e)
+        if wp then
+            ns.Print(L.ADDED:format(WP.Describe(wp)), true)
+            return wp
         end
     end
     Find.Show(text)

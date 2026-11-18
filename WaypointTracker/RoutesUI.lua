@@ -109,13 +109,19 @@ local function RefreshList()
     -- suggested routes come from Find's database (loaded once, when needed:
     -- a little each frame where the client allows it, and the list is
     -- filled in again once it is ready)
-    if ns.DB and not ns.DB.ready and not frame.triedDB and (state.tab == "all" or state.tab == "suggested") then
-        frame.triedDB = true
-        ns.DB.LoadAsync(ns.Safe(function()
-            if frame and frame:IsShown() then
-                RefreshList()
-            end
-        end))
+    if ns.DB and not ns.DB.ready and (state.tab == "all" or state.tab == "suggested") then
+        if not frame.triedDB then
+            frame.triedDB = true
+            ns.DB.LoadAsync(ns.Safe(function()
+                if frame and frame:IsShown() then
+                    RefreshList()
+                end
+            end))
+        end
+        -- meanwhile the status line says so, where nothing else is said
+        if ns.DB.Loading and ns.DB.Loading() and ns.Find and ns.Find.ShowLoading and RoutesUI.IsShown() then
+            ns.Find.ShowLoading(true)
+        end
     end
     local q = Geo.Squash(searchBox.edit:GetText())
     local here = C_Map and C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
