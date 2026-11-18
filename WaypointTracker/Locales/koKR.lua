@@ -243,6 +243,7 @@ L.RESULTS_FMT = "%d개 찾음"
 L.NO_RESULTS = "찾은 결과가 없습니다. 더 짧게 입력하거나, 전체 탭을 보거나, 현재 지역만 체크를 해제해 보세요."
 L.NO_LOCATION = "아직 위치를 모릅니다."
 L.DB_BROKEN = "찾기 데이터베이스를 불러오지 못했습니다. 애드온 목록에서 WaypointTracker_Data가 켜져 있는지 확인한 뒤 /reload를 입력하세요."
+L.DB_LOADING = "찾기 데이터베이스를 불러오는 중입니다 (%d%%)..."
 L.HELP_FIND = "/wp find [이름] - 퀘스트, NPC, 적, 오브젝트, 아이템 검색"
 L.BINDING_FIND = "찾기 열기 또는 닫기"
 

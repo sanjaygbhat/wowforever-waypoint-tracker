@@ -128,6 +128,31 @@ local function Status(text, good)
     end
 end
 
+-- The database is read a little each frame where the client allows it
+-- (DB.LoadAsync). Until it is ready the line below the window's title says
+-- how far it is, and what was asked for happens once it is: the search that
+-- was typed, the last Nearest button that was clicked, "/way <name>".
+local loadingText -- the loading line as last shown (nil: not loading)
+local function LoadingLine()
+    return L.DB_LOADING:format(math.floor((DB.Loading() or 0) * 100))
+end
+
+local function ShowLoading()
+    loadingText = LoadingLine()
+    Status(loadingText, "info")
+end
+
+-- DB.LoadAsync, saying so when the answer comes later. Returns ok, reason
+-- now, or nil while loading; then `again` (if given) is called with the
+-- answer's ok once the database is ready.
+local function Database(again)
+    local ok, why = DB.LoadAsync(again)
+    if ok == nil then
+        ShowLoading()
+    end
+    return ok, why
+end
+
 -- Sends the arrow to the nearest spawn of any of `entries`.
 local function WaypointToNearest(entries, title, measured)
     local e, p, distance = DB.NearestOf(entries, { faction = ns.Get("findFaction") })
@@ -152,12 +177,27 @@ end
 
 Find.SERVICES = SERVICES
 
+-- Nearest asked for while the database was loading: { service, profession }
+-- of the last click, which is answered when it is ready.
+local nearestAsked
+local function NearestWhenReady(ok)
+    local asked = nearestAsked
+    nearestAsked = nil
+    if not ok then
+        Status(L.DB_BROKEN)
+    elseif asked then
+        Find.GoToNearest(asked[1], asked[2])
+    end
+end
+
 -- The arrow to the closest mailbox, innkeeper, flight master, repair vendor,
--- bank or auction house for your faction. Returns the waypoint.
+-- bank or auction house for your faction. Returns the waypoint (nil while
+-- the database is still loading: the arrow is set when it is ready).
 function Find.GoToNearest(service, profession)
     if service == "profession" and not profession then
         return Find.ShowProfessionMenu(frame or UIParent)
     end
+    local asked = service
     local title
     if service == "class" then
         local class = ns.Trainers.PlayerClass()
@@ -172,7 +212,13 @@ function Find.GoToNearest(service, profession)
     elseif service == "trainer_riding" then
         title = L.SERVICE_RIDING_TRAINER
     end
-    local loaded, loadReason = DB.Load()
+    local waiting = nearestAsked ~= nil
+    local loaded, loadReason = Database(not waiting and NearestWhenReady or nil)
+    if loaded == nil then
+        nearestAsked = { asked, profession } -- the last click wins
+        return nil
+    end
+    nearestAsked = nil
     if not loaded then
         Status(L.DB_BROKEN)
         return nil
@@ -196,13 +242,17 @@ end
 
 function Find.ProfessionMenu(root, hasTitle)
     if not hasTitle then root:CreateTitle(L.SERVICE_PROFESSION_TRAINER) end
-    local loaded, reason = DB.Load()
-    if not loaded or reason == "missing" then
+    local loaded, reason = Database()
+    -- still loading: every profession can be chosen, and is answered when ready
+    local loading = loaded == nil
+    if loading then
+        root:CreateTitle(LoadingLine())
+    elseif not loaded or reason == "missing" then
         root:CreateTitle(L.DB_BROKEN)
         Status(L.DB_BROKEN)
     end
     for _, p in ipairs(ns.Trainers.professions) do
-        local available = loaded and #DB.TrainerEntries("trainer_profession_" .. p.key) > 0
+        local available = loading or (loaded and #DB.TrainerEntries("trainer_profession_" .. p.key) > 0)
         local text = L["PROFESSION_" .. p.key:upper()]
         if not available then text = text .. " (" .. L.TRAINER_UNAVAILABLE .. ")" end
         local item = root:CreateButton(text, available and ns.Safe(function() Find.GoToNearest("profession", p.key) end) or nil)
@@ -452,8 +502,34 @@ local function CurrentTab()
     return TABS[1]
 end
 
+-- A search asked for while the database was loading runs when it is ready.
+local RunSearch
+local searchWaits, readFailed = false, false
+local function SearchWhenReady(ok)
+    searchWaits = false
+    if frame and Window.IsShown() and Window.GetTab() == "find" then
+        readFailed = not ok -- say so, without asking for the database again
+        RunSearch()
+        readFailed = false
+    end
+end
+
 local function DoSearch()
-    local ok, why = DB.Load()
+    local ok, why
+    if readFailed then
+        ok = false
+    else
+        ok, why = Database(not searchWaits and SearchWhenReady or nil)
+    end
+    if ok == nil then
+        searchWaits = true
+        results, total = {}, 0
+        emptyText:SetText(loadingText)
+        emptyText:Show()
+        countText:SetText("")
+        RefreshRows()
+        return
+    end
     if not ok then
         results, total = {}, 0
         emptyText:SetText(L.DB_BROKEN)
@@ -504,9 +580,36 @@ local function DoSearch()
 end
 
 -- every search goes through here, so a problem is reported once, not on each key
-local function RunSearch()
+RunSearch = function()
     ns.Call(DoSearch)
 end
+
+-- The loading line follows the load, as long as nothing else was said since.
+ns.On("DB_LOADING", function()
+    if not (Window.frame and Window.IsShown()) then
+        return
+    end
+    local text = LoadingLine()
+    -- (an empty line too: another tab was opened meanwhile)
+    local shown = Window.frame.status and Window.frame.status:GetText()
+    if shown ~= text and (loadingText == nil or shown == loadingText or shown == nil or shown == "") then
+        Window.SetStatus(text, "info")
+    end
+    if text ~= loadingText then
+        if searchWaits and emptyText then
+            emptyText:SetText(text)
+        end
+        loadingText = text
+    end
+end)
+
+ns.On("DB_LOADED", function()
+    local shown = Window.frame and Window.frame.status and Window.frame.status:GetText()
+    if loadingText and shown == loadingText then
+        Window.SetStatus("")
+    end
+    loadingText = nil
+end)
 
 -- typing: search a moment after you stop, so it stays smooth
 local pendingSearch = false
@@ -611,7 +714,8 @@ local function Build(content)
             picker = Widgets.Picker(frame, 160, options, function() return selected end, function(i)
                 if not frame:IsVisible() or not Window.IsShown() then return end
                 selected = i
-                local loaded, reason = DB.Load()
+                local loaded, reason = Database()
+                if loaded == nil then return end -- loading: the line below the title says so
                 availability = loaded and #DB.TrainerEntries("trainer_profession_" .. ns.Trainers.professions[i].key) > 0
                 Status((not availability and (not loaded or reason == "missing")) and L.DB_BROKEN
                     or (options[i].text .. " - " .. (availability and L.TRAINER_AVAILABLE or L.TRAINER_UNAVAILABLE)), availability)
@@ -1034,7 +1138,13 @@ end
 -- straight there. Several with that name, or none: Find opens to choose.
 local EVERYTHING = { quest = true, npc = true, enemy = true, object = true, item = true, place = true }
 function Find.Way(text)
-    if DB.Load() then
+    local loaded = Database(function(ok)
+        if ok then Find.Way(text) else Find.Show(text) end
+    end)
+    if loaded == nil then
+        return nil -- answered once the database is ready
+    end
+    if loaded then
         local q = Geo.PrepareQuery(text)
         local exact = {}
         for _, e in ipairs(DB.Search(text, EVERYTHING, { faction = ns.Get("findFaction") }, 50)) do

@@ -260,6 +260,7 @@ L.RESULTS_FMT = "%d trouvé(s)"
 L.NO_RESULTS = "Aucun résultat. Essayez avec moins de lettres, l'onglet Tout, ou décochez Cette zone uniquement."
 L.NO_LOCATION = "Aucun emplacement connu pour l'instant."
 L.DB_BROKEN = "Impossible de charger la base de données de la recherche. Vérifiez que WaypointTracker_Data est activé dans la liste des AddOns, puis tapez /reload."
+L.DB_LOADING = "Chargement de la base de données de la recherche (%d%%)..."
 L.HELP_FIND = "/wp find [nom] - chercher des quêtes, PNJ, ennemis, entités et objets"
 L.BINDING_FIND = "Ouvrir ou fermer Rechercher"
 
