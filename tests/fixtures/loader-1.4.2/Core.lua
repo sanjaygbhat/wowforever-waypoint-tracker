@@ -1,0 +1,601 @@
+-- Core: saved settings, a tiny event/callback system and shared helpers.
+local ADDON_NAME, ns = ...
+local L = ns.L
+
+ns.name = ADDON_NAME
+ns.MEDIA = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\"
+
+local GetAddOnMetadata = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
+ns.version = (GetAddOnMetadata and GetAddOnMetadata(ADDON_NAME, "Version")) or "dev"
+
+-- ---------------------------------------------------------------------------
+-- Defaults. Simple things are on, extras are off.
+-- ---------------------------------------------------------------------------
+ns.defaults = {
+    -- arrow
+    arrowShown = true,
+    -- routes
+    routeSharing = false, -- opt-in beta: share routes and votes with other players of the addon
+    routeApply = "ask", -- "ask" | "replace" | "add"
+    routeThisZone = false,
+    routeLowRated = false, -- show routes most players voted down
+    arrowScale = 1.0,
+    arrowAlpha = 0.8, -- a little see-through, so it feels part of the world
+    arrowPos = nil, -- { point, relativePoint, x, y }; nil = over your character
+    -- the name / distance / time lines under the arrow
+    textScale = 1.0,
+    textAlpha = 0.9,
+    textSeparate = false, -- false: the text stays under the arrow and moves with it
+    textPos = nil, -- where the text goes when it moves on its own
+    colorMode = "distance", -- "distance" | "direction" | "single"
+    singleColor = { r = 1.0, g = 0.82, b = 0.0 },
+    pinColour = "gold", -- active waypoint pin on the world map and minimap (ns.PIN_COLOURS)
+    showTitle = true,
+    showDistance = true,
+    showETA = false,
+    fadeOnCourse = true,
+    hideInCombat = false,
+    hideOnTaxi = false,
+    -- arrival
+    arrivalDistance = 10,
+    autoClear = true,
+    arrivalSound = true,
+    autoNext = true,
+    -- maps
+    worldPins = true,
+    minimapPins = true,
+    minimapEdge = true,
+    worldCoords = true,
+    mapClick = true,
+    coordsBox = false,
+    coordsPos = nil,
+    coordsLayouts = nil,
+    -- general
+    autoClosest = false,
+    persist = true,
+    minimapButton = true,
+    minimapAngle = 200,
+    chatMessages = true,
+    sharePrefix = true, -- shared spots start with "[Waypoint Tracker]"
+    useMetres = false,
+    addonWaypoints = true,
+    blizzardPin = false,
+    followMapPins = true, -- the game's own map pin (and map pin links) move the arrow
+    followQuest = false, -- point at the quest you track when you have no waypoint
+    questClickTrack = true, -- plain tracker clicks and the hover icon take the arrow
+    corpseWaypoint = true, -- dying points the arrow at your body
+    -- Real routes (see Travel.lua): follow a way you can go, not the straight line
+    realRoutes = true,
+    travelPreference = "safer",
+    travelFlights = true,
+    travelBoats = true,
+    travelHearth = true,
+    travelMapLine = true,
+    travelTrails = true, -- write down where you walk and follow walked paths
+    travelShare = false, -- opt-in: share walked paths, crossings and boat times
+    -- write down NPCs, quests and objects met in Forever (see Learn.lua)
+    learn = true,
+    -- treasure hunt (see Treasure.lua): off until you turn it on
+    treasureHunt = false,
+    treasureChests = true,
+    treasureRares = true,
+    treasureOther = true,
+    treasureKnownSpots = false,
+    treasureKnownRares = false,
+    treasurePing = true,
+    treasureFocus = true,
+    -- Find tab
+    findTab = "all",
+    findFaction = true,
+    findThisZone = false,
+    -- window state
+    uiLastTab = "waypoints",
+    recorderPos = nil,
+    recorderLayouts = nil,
+    tipsShown = {},
+    routesHelpShown = false,
+    welcomeShown = false,
+    wayNoticeShown = false,
+}
+
+local function CopyTable(src)
+    if type(src) ~= "table" then
+        return src
+    end
+    local t = {}
+    for k, v in pairs(src) do
+        t[k] = CopyTable(v)
+    end
+    return t
+end
+ns.CopyTable = CopyTable
+
+-- ---------------------------------------------------------------------------
+-- Callbacks
+-- ---------------------------------------------------------------------------
+local callbacks = {}
+
+function ns.On(event, fn)
+    callbacks[event] = callbacks[event] or {}
+    table.insert(callbacks[event], fn)
+end
+
+-- Errors are reported once per unique message, so a bug can never flood the
+-- screen with popups (important for code that runs every frame). The report
+-- carries the stack where it happened, so bug reports can be acted on.
+local reported = {}
+function ns.ReportError(err)
+    err = tostring(err)
+    local message = err:match("^[^\n]*")
+    if reported[message] then
+        return
+    end
+    reported[message] = true
+    -- kept in the saved variables too (the last few), so a bug seen once in
+    -- the game can still be read and fixed later
+    if type(WaypointTrackerDB) == "table" then
+        local log = type(WaypointTrackerDB.errorLog) == "table" and WaypointTrackerDB.errorLog or {}
+        WaypointTrackerDB.errorLog = log
+        table.insert(log, {
+            when = time and time() or 0,
+            version = ns.version,
+            error = err:sub(1, 2000),
+        })
+        while #log > 20 do
+            table.remove(log, 1)
+        end
+    end
+    local handler = geterrorhandler and geterrorhandler()
+    if handler then
+        handler(err)
+    end
+end
+
+local function WithStack(err)
+    local stack = debugstack and debugstack(2)
+    return stack and (tostring(err) .. "\n" .. stack) or err
+end
+
+-- Calls fn(...) and reports an error (once) instead of breaking the UI.
+-- xpcall hands its function no arguments, so they wait in a record the
+-- function reads. Each depth of nested calls keeps one record and one
+-- function for good: a call makes no table and no closure (events, callbacks
+-- and every frame's updates all come through here).
+local callDepth, callRecords = 0, {}
+local function CallRecord(depth)
+    local r = { fn = false, n = 0 }
+    r.run = function()
+        return r.fn(unpack(r, 1, r.n))
+    end
+    callRecords[depth] = r
+    return r
+end
+
+function ns.Call(fn, ...)
+    local n = select("#", ...)
+    local ok, err
+    if n == 0 then
+        ok, err = xpcall(fn, WithStack)
+    else
+        local depth = callDepth + 1
+        callDepth = depth
+        local r = callRecords[depth] or CallRecord(depth)
+        r.fn, r.n = fn, n
+        if n <= 4 then
+            r[1], r[2], r[3], r[4] = ...
+        else
+            for i = 1, n do
+                r[i] = (select(i, ...))
+            end
+        end
+        ok, err = xpcall(r.run, WithStack)
+        -- nothing is kept alive by a finished call
+        r.fn = false
+        for i = 1, n do
+            r[i] = nil
+        end
+        callDepth = depth - 1
+    end
+    if not ok then
+        ns.ReportError(err)
+    end
+    return ok
+end
+
+function ns.Fire(event, ...)
+    local list = callbacks[event]
+    if not list then
+        return
+    end
+    for i = 1, #list do
+        ns.Call(list[i], ...)
+    end
+end
+
+-- Wrap a function so errors are reported (once) instead of breaking the UI.
+function ns.Safe(fn)
+    return function(...)
+        ns.Call(fn, ...)
+    end
+end
+
+-- ---------------------------------------------------------------------------
+-- Settings access
+-- ---------------------------------------------------------------------------
+function ns.Get(key)
+    local db = ns.settings
+    if db and db[key] ~= nil then
+        return db[key]
+    end
+    return ns.defaults[key]
+end
+
+function ns.Set(key, value)
+    if not ns.settings then
+        return
+    end
+    ns.settings[key] = value
+    ns.Fire("SETTING_CHANGED", key, value)
+end
+
+function ns.ResetSettings()
+    local settings = CopyTable(ns.defaults)
+    for key, value in pairs(ns.settings or {}) do
+        if type(key) == "string" and key ~= "windowPos" and
+            (key == "uiLastTab" or key == "minimapAngle" or key == "tipsShown" or key:match("Layouts$") or key:match("Pos$")) then
+            settings[key] = value
+        end
+    end
+    WaypointTrackerDB.settings = settings
+    ns.settings = settings
+    ns.Fire("SETTING_CHANGED", nil, nil)
+end
+
+-- ---------------------------------------------------------------------------
+-- Chat output
+-- ---------------------------------------------------------------------------
+local PREFIX = "|cff33ff99" .. L.ADDON_TITLE .. "|r: "
+
+function ns.Print(msg, force)
+    if not force and not ns.Get("chatMessages") then
+        return
+    end
+    DEFAULT_CHAT_FRAME:AddMessage(PREFIX .. tostring(msg))
+end
+
+-- ---------------------------------------------------------------------------
+-- Small helpers
+-- ---------------------------------------------------------------------------
+function ns.InCombat()
+    return InCombatLockdown and InCombatLockdown() or false
+end
+
+-- Returns v if it is a normal number we are allowed to do maths with.
+-- (Newer clients can hand addons "secret" values in some situations.)
+local issecretvalue = issecretvalue
+function ns.Num(v)
+    if issecretvalue and issecretvalue(v) then
+        return nil
+    end
+    if type(v) ~= "number" or v ~= v then
+        return nil
+    end
+    return v
+end
+
+-- x, y of a position the game hands back. Usually it has :GetXY(), but
+-- some (the map pin's, in WoW Forever) are plain { x = , y = } tables.
+function ns.XY(pos)
+    if type(pos) ~= "table" then
+        return nil, nil
+    end
+    if type(pos.GetXY) == "function" then
+        return pos:GetXY()
+    end
+    return pos.x, pos.y
+end
+
+-- Returns v unless it is one of those secret values (then nil).
+function ns.Plain(v)
+    if issecretvalue and issecretvalue(v) then
+        return nil
+    end
+    return v
+end
+
+-- A normal string, safe to compare, format or pass on to another API.
+function ns.Str(v)
+    if issecretvalue and issecretvalue(v) then
+        return nil
+    end
+    if type(v) ~= "string" then
+        return nil
+    end
+    return v
+end
+
+-- Text from outside the addon (imports, other addons) made safe to show:
+-- no colour codes, links, textures or control characters, and not too long.
+local function UTF8(s)
+    if not s:find("[\128-\255]") then return s end
+    local out, i = {}, 1
+    while i <= #s do
+        local a, b = s:byte(i, i + 1)
+        local n = a < 128 and 1 or (a >= 194 and a <= 223 and 2 or
+            (a >= 224 and a <= 239 and 3 or (a >= 240 and a <= 244 and 4 or nil)))
+        local valid = n ~= nil
+        for j = 1, (n or 1) - 1 do
+            local v = s:byte(i + j)
+            if not v or v < 128 or v > 191 then valid = false end
+        end
+        if n == 3 and b and ((a == 224 and b < 160) or (a == 237 and b >= 160)) then valid = false end
+        if n == 4 and b and ((a == 240 and b < 144) or (a == 244 and b >= 144)) then valid = false end
+        out[#out + 1] = valid and s:sub(i, i + n - 1) or "?"
+        i = i + (valid and n or 1)
+    end
+    return table.concat(out)
+end
+
+function ns.CleanText(s, maxLen)
+    if type(s) ~= "string" then
+        return nil
+    end
+    s = UTF8(s):gsub("[%c]", " ")
+    s = s:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|H.-|h(.-)|h", "%1"):gsub("|[TA].-|[ta]", "")
+    s = s:gsub("|", "")
+    maxLen = maxLen or 200
+    if #s > maxLen then
+        -- cut, and drop a character the cut may have split in half
+        local cut = maxLen
+        while cut > 0 do
+            local byte = s:byte(cut + 1)
+            if not byte or byte < 128 or byte > 191 then break end
+            cut = cut - 1
+        end
+        s = s:sub(1, cut)
+    end
+    s = ns.Trim(s)
+    return s ~= "" and s or nil
+end
+
+-- A whole number from 1 to 2^31 (ids, map ids, levels), or nil.
+function ns.Int(v)
+    v = tonumber(v)
+    if v and v == v and v >= 1 and v < 2147483648 and v % 1 == 0 then
+        return v
+    end
+end
+
+local POINTS = {
+    TOPLEFT = true, TOP = true, TOPRIGHT = true, LEFT = true, CENTER = true,
+    RIGHT = true, BOTTOMLEFT = true, BOTTOM = true, BOTTOMRIGHT = true,
+}
+-- A saved frame position { point, relPoint, x, y } checked before it goes
+-- to SetPoint. Returns point, relPoint, x, y, or nil if it's damaged.
+function ns.SavedPoint(pos)
+    if type(pos) ~= "table" or not POINTS[pos[1]] then
+        return nil
+    end
+    local rel = POINTS[pos[2]] and pos[2] or pos[1]
+    local x, y = ns.Num(tonumber(pos[3])) or 0, ns.Num(tonumber(pos[4])) or 0
+    if math.abs(x) > 10000 or math.abs(y) > 10000 then
+        return nil
+    end
+    return pos[1], rel, x, y
+end
+
+function ns.Clamp(v, lo, hi)
+    if v < lo then
+        return lo
+    elseif v > hi then
+        return hi
+    end
+    return v
+end
+
+function ns.Trim(s)
+    return (tostring(s or ""):gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+function ns.IsAddOnLoaded(name)
+    if C_AddOns and C_AddOns.IsAddOnLoaded then
+        return C_AddOns.IsAddOnLoaded(name)
+    elseif IsAddOnLoaded then
+        return IsAddOnLoaded(name)
+    end
+    return false
+end
+
+-- True when another arrow addon that owns /way and the shared waypoint API
+-- (TomTom) is installed and will load, or already has.
+function ns.IsOtherArrowAddonPresent()
+    if ns.IsAddOnLoaded("TomTom") then
+        return true
+    end
+    if C_AddOns and C_AddOns.GetAddOnEnableState then
+        local player = UnitName and ns.Str(UnitName("player"))
+        -- Skip this lookup until the player's name is available.
+        if not player then return false end
+        local ok, state = pcall(C_AddOns.GetAddOnEnableState, "TomTom", player)
+        state = ns.Num(state)
+        if ok and state and state > 0 then
+            local ok2, loadable = pcall(C_AddOns.IsAddOnLoadable, "TomTom")
+            loadable = ns.Plain(loadable)
+            if not ok2 or loadable ~= false then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+-- ---------------------------------------------------------------------------
+-- Startup
+-- ---------------------------------------------------------------------------
+local events = CreateFrame("Frame")
+ns.eventFrame = events
+local handlers = {}
+
+-- Returns false when this client doesn't know the event (the feature then
+-- just stays quiet instead of stopping the rest of the file from loading).
+function ns.RegisterEvent(event, fn)
+    if not handlers[event] then
+        if C_EventUtils and C_EventUtils.IsEventValid and not C_EventUtils.IsEventValid(event) then
+            return false
+        end
+        if not pcall(events.RegisterEvent, events, event) then
+            return false
+        end
+        handlers[event] = {}
+    end
+    table.insert(handlers[event], fn)
+    return true
+end
+
+events:SetScript("OnEvent", function(_, event, ...)
+    local list = handlers[event]
+    if not list then
+        return
+    end
+    for i = 1, #list do
+        ns.Call(list[i], ...)
+    end
+end)
+
+local function InitDatabase()
+    if type(WaypointTrackerDB) ~= "table" then
+        WaypointTrackerDB = {}
+    end
+    local db = WaypointTrackerDB
+    if type(db.settings) ~= "table" then
+        db.settings = {}
+    end
+    -- settings saved under their earlier names keep their value
+    for old, new in pairs({ tomtomCompat = "addonWaypoints", tomtomNoticeShown = "wayNoticeShown" }) do
+        if db.settings[old] ~= nil then
+            if db.settings[new] == nil then
+                db.settings[new] = db.settings[old]
+            end
+            db.settings[old] = nil
+        end
+    end
+    -- fill in anything new, drop values of the wrong type
+    for k, v in pairs(ns.defaults) do
+        local cur = db.settings[k]
+        if cur == nil then
+            db.settings[k] = CopyTable(v)
+        elseif v ~= nil and type(cur) ~= type(v) then
+            db.settings[k] = CopyTable(v)
+        end
+    end
+    -- 1 -> 2: new arrow look. Move it back over the character and use the
+    -- softer defaults, unless someone had already changed them.
+    if (db.version or 1) < 2 then
+        local st = db.settings
+        st.arrowPos = nil
+        if st.arrowAlpha == 1.0 then
+            st.arrowAlpha = ns.defaults.arrowAlpha
+        end
+        if st.fadeOnCourse == false then
+            st.fadeOnCourse = true
+        end
+        st.arrowLocked = nil
+    end
+    -- 2 -> 3: one route-start choice; Blizzard owns the window position.
+    if (db.version or 1) < 3 then
+        local st = db.settings
+        if st.routeAsk == false then
+            st.routeApply = (st.routeApply == "add") and "add" or "replace"
+        else
+            st.routeApply = "ask"
+        end
+        st.routeAsk = nil
+        st.showAdvanced = nil
+        st.windowPos = nil
+        st.coordsLocked = nil
+    end
+    -- Route preference keeps the saved enum: old Safer becomes safe with an
+    -- optional faster offer; old Fastest remains Always fastest. Per-trip
+    -- picker choices are discarded by the waypoint loader.
+    if db.settings.travelPreference ~= "fastest" and db.settings.travelPreference ~= "safer" then
+        db.settings.travelPreference = ns.defaults.travelPreference
+    end
+    -- 3 -> 4: route sharing was on by default in 1.2.0. Ask everyone to
+    -- opt into the beta once, including profiles that omitted the old default.
+    -- Settings are account-wide; character data has no settings override.
+    if (db.version or 1) < 4 then
+        db.settings.routeSharing = false
+    end
+    -- 4 -> 5: Real routes is a standard feature now, on by default. A saved
+    -- false can't tell the old default from a choice, so it is turned on
+    -- once for everyone; turning it off again afterwards is kept. The
+    -- opt-in notice it replaces is gone. Walked-path sharing stays opt-in:
+    -- it only ever ran with Real routes on, so it stays on only for players
+    -- who had Real routes on and hadn't turned sharing off.
+    if (db.version or 1) < 5 then
+        local st = db.settings
+        st.travelShare = st.realRoutes == true and st.travelShare ~= false
+        st.realRoutes = true
+        st.travelNoticeShown = nil
+    end
+    db.version = 5
+    ns.settings = db.settings
+
+    if type(WaypointTrackerCharDB) ~= "table" then
+        WaypointTrackerCharDB = {}
+    end
+    if type(WaypointTrackerCharDB.waypoints) ~= "table" then
+        WaypointTrackerCharDB.waypoints = {}
+    end
+    ns.charDB = WaypointTrackerCharDB
+end
+
+ns.RegisterEvent("ADDON_LOADED", function(name)
+    if name ~= ADDON_NAME then
+        return
+    end
+    InitDatabase()
+    ns.Fire("INIT")
+end)
+
+ns.RegisterEvent("PLAYER_LOGIN", function()
+    ns.Fire("LOGIN")
+end)
+
+ns.RegisterEvent("PLAYER_ENTERING_WORLD", function()
+    ns.Fire("ENTERING_WORLD")
+end)
+
+-- Key binding labels
+BINDING_HEADER_WAYPOINTTRACKER = L.ADDON_TITLE
+BINDING_NAME_WAYPOINTTRACKER_TOGGLE = L.BINDING_TOGGLE
+BINDING_NAME_WAYPOINTTRACKER_CLEAR = L.BINDING_CLEAR
+BINDING_NAME_WAYPOINTTRACKER_HERE = L.BINDING_HERE
+BINDING_NAME_WAYPOINTTRACKER_ARROW = L.BINDING_ARROW
+BINDING_NAME_WAYPOINTTRACKER_CLOSEST = L.BINDING_CLOSEST
+BINDING_NAME_WAYPOINTTRACKER_FIND = L.BINDING_FIND
+BINDING_NAME_WAYPOINTTRACKER_SHARE = L.BINDING_SHARE
+BINDING_NAME_WAYPOINTTRACKER_ROUTES = L.BINDING_ROUTES
+BINDING_NAME_WAYPOINTTRACKER_ROUTE_NEXT = L.BINDING_ROUTE_NEXT
+BINDING_NAME_WAYPOINTTRACKER_ROUTE_RECORD_ADD = L.BINDING_ROUTE_RECORD_ADD
+BINDING_NAME_WAYPOINTTRACKER_TREASURE = L.BINDING_TREASURE
+BINDING_NAME_WAYPOINTTRACKER_TRAVEL = L.BINDING_TRAVEL
+
+-- Colours offered for the active waypoint's pin on the world map and
+-- minimap. Other waypoints keep their light blue.
+ns.PIN_COLOURS = {
+    { key = "gold", label = "PIN_COLOUR_GOLD", rgb = { 1.0, 0.82, 0.0 } },
+    { key = "green", label = "PIN_COLOUR_GREEN", rgb = { 0.25, 1.0, 0.3 } },
+    { key = "pink", label = "PIN_COLOUR_PINK", rgb = { 1.0, 0.35, 0.8 } },
+    { key = "purple", label = "PIN_COLOUR_PURPLE", rgb = { 0.72, 0.45, 1.0 } },
+    { key = "red", label = "PIN_COLOUR_RED", rgb = { 1.0, 0.25, 0.2 } },
+    { key = "white", label = "PIN_COLOUR_WHITE", rgb = { 1.0, 1.0, 1.0 } },
+}
+
+function ns.PinColour()
+    local want = ns.Get and ns.Get("pinColour")
+    for _, c in ipairs(ns.PIN_COLOURS) do
+        if c.key == want then return c.rgb[1], c.rgb[2], c.rgb[3] end
+    end
+    return 1.0, 0.82, 0.0
+end

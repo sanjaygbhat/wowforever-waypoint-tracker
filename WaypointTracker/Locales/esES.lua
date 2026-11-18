@@ -261,6 +261,8 @@ L.RESULTS_FMT = "%d encontrados"
 L.NO_RESULTS = "No se encontró nada. Prueba con menos letras, la pestaña Todo o desmarca Solo esta zona."
 L.NO_LOCATION = "Aún no se conoce ningún lugar para esto."
 L.DB_BROKEN = "No se pudo cargar la base de datos de Buscar. Comprueba que WaypointTracker_Data esté activado en la lista de accesorios y luego escribe /reload."
+L.DB_LOADING = "Cargando la base de datos de Buscar (%d%%)..."
+L.WAY_SEARCH = "No hay una coincidencia única para «%s». Búscalo en la pestaña Buscar."
 L.HELP_FIND = "/wp find [nombre] - busca misiones, PNJ, enemigos, entidades y objetos"
 L.BINDING_FIND = "Abrir o cerrar Buscar"
 

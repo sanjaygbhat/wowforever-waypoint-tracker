@@ -340,6 +340,12 @@ function ns.CleanText(s, maxLen)
     if type(s) ~= "string" then
         return nil
     end
+    -- Plain text (no control or escape characters, nothing above ASCII,
+    -- short enough, no space at either end) comes out of every step below
+    -- as it went in: most names do, and the shipped stores have thousands.
+    if #s <= (maxLen or 200) and not s:find("[%c|\128-\255]") and not s:find("^%s") and not s:find("%s$") then
+        return s ~= "" and s or nil
+    end
     s = UTF8(s):gsub("[%c]", " ")
     s = s:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|H.-|h(.-)|h", "%1"):gsub("|[TA].-|[ta]", "")
     s = s:gsub("|", "")

@@ -31,6 +31,75 @@ DB.loaded = false
 -- ---------------------------------------------------------------------------
 -- Loading
 -- ---------------------------------------------------------------------------
+-- The database is some 34,000 entries read from text: over a second of
+-- work. DB.Load does it all at once, as it always did. DB.LoadAsync does
+-- the same steps a little each frame where the client can pause a Lua
+-- function (coroutines) and has a frame clock (debugprofilestop), so the
+-- game never stops for it. Every loop that reads rows calls Tick; while a
+-- slice of a spread-out load runs (`pace`), Tick pauses the load once the
+-- frame's share is used up. All at once, Tick does nothing.
+local SLICE_MS, SLICE_COMBAT_MS = 8, 2 -- a frame's share: out of combat (at most), in combat
+-- Out of combat a slice takes this much of what the rest of the last frame
+-- took, so a high frame rate stays high (at 144 frames a second about
+-- 3 ms, at 60 about 7), but never less than SLICE_MIN_MS.
+local SLICE_SHARE, SLICE_MIN_MS = 0.4, 3
+-- the same without a readable clock, counted in rows (about 100 a millisecond)
+local SLICE_UNITS, SLICE_COMBAT_UNITS = 800, 200
+local CLOCK_EVERY = 16 -- rows between two looks at the clock
+local pace -- { units, next, start, ms, max, all } while a slice runs
+
+-- The frame clock in milliseconds, or nil (no clock, or an unreadable answer).
+local function Clock()
+    return type(debugprofilestop) == "function" and ns.Num(debugprofilestop()) or nil
+end
+
+local function Tick(units)
+    local p = pace
+    if not p then
+        return
+    end
+    local n = p.units + (units or 1)
+    p.units = n
+    if n < p.next then
+        return
+    end
+    p.next = n + CLOCK_EVERY
+    local now = p.start and Clock()
+    local spent
+    if now then
+        spent = now - p.start >= p.ms
+    else
+        spent = n >= p.max
+    end
+    if spent then
+        coroutine.yield()
+    end
+end
+
+-- pairs for a loop that may pause: the keys there are now, in pairs' own
+-- order (your discoveries can gain entries between two slices, which plain
+-- pairs must never see happen). All at once it is pairs itself.
+local function Each(t)
+    if not pace then
+        return pairs(t)
+    end
+    local keys, n = {}, 0
+    for k in pairs(t) do
+        n = n + 1
+        keys[n] = k
+    end
+    local i = 0
+    return function()
+        while i < n do
+            i = i + 1
+            local v = t[keys[i]]
+            if v ~= nil then
+                return keys[i], v
+            end
+        end
+    end
+end
+
 -- Shipped rows split in one native pattern; discoveries keep the general parser.
 local fieldPatterns = {}
 for _, count in ipairs({ 3, 4, 5, 12 }) do
@@ -115,6 +184,81 @@ local function NumList(s)
 end
 DB.NumList = NumList
 
+-- Most quests and items have nobody in most of their lists (who starts it,
+-- what drops it...): tens of thousands of empty tables. They all hold this
+-- one list instead, which is never written: a list gets a table of its own
+-- when the first ID goes in (AddId, AddIds). Writing to it is an error.
+local NO_IDS = setmetatable({}, {
+    __newindex = function()
+        error("the shared empty ID list is read-only: give the entry a list of its own", 2)
+    end,
+})
+DB.NO_IDS = NO_IDS
+
+-- NumList for an entry's field: the shared empty list when there are none.
+local function IdList(s)
+    if not s or s == "" then
+        return NO_IDS
+    end
+    local out = NumList(s)
+    return out[1] and out or NO_IDS
+end
+
+-- Adds an ID to an entry's list once (to a list of its own).
+local function AddId(e, field, value)
+    local list = e[field]
+    for i = 1, #list do
+        if list[i] == value then
+            return
+        end
+    end
+    if list == NO_IDS then
+        e[field] = { value }
+    else
+        list[#list + 1] = value
+    end
+end
+
+-- Adds several IDs to an entry's list, each once, in their order. Long
+-- lists are checked through a set instead of read through for every ID.
+local function AddIds(e, field, ids)
+    local n = #ids
+    if n == 0 then
+        return
+    end
+    local list = e[field]
+    if list == NO_IDS then
+        list = {}
+        e[field] = list
+    end
+    if #list + n <= 8 then
+        for i = 1, n do
+            local value, have = ids[i], false
+            for k = 1, #list do
+                if list[k] == value then
+                    have = true
+                    break
+                end
+            end
+            if not have then
+                list[#list + 1] = value
+            end
+        end
+        return
+    end
+    local have = {}
+    for i = 1, #list do
+        have[list[i]] = true
+    end
+    for i = 1, n do
+        local value = ids[i]
+        if not have[value] then
+            have[value] = true
+            list[#list + 1] = value
+        end
+    end
+end
+
 local function NameTable(block, descriptions)
     local names = {}
     for line in Lines(block) do
@@ -123,6 +267,7 @@ local function NameTable(block, descriptions)
         if id then
             names[id] = descriptions and { name, more:match("^\t([^\t]*)") } or name
         end
+        Tick(0.5)
     end
     return names
 end
@@ -145,6 +290,7 @@ local function Parse(data)
                     local _, name, more = line:match("^([^\t]+)\t([^\t]*)(.*)$")
                     localized[id] = kind == "quests" and { name, more:match("^\t([^\t]*)") } or name
                 end
+                Tick(0.3)
             end
         end
         return localized
@@ -174,6 +320,7 @@ local function Parse(data)
             e.level, e.fac, e.rank, e.coords = f[2], f[3], f[4], f[5]
             DB.units[id] = e
         end
+        Tick()
     end
     for line in Lines(raw.objects) do
         local f = Split(line, 3)
@@ -188,6 +335,7 @@ local function Parse(data)
             e.gather = en and ns.Routes and ns.Routes.GatherKind(en) or nil
             DB.objects[id] = e
         end
+        Tick()
     end
     for line in Lines(raw.quests) do
         local f = Split(line, 12)
@@ -198,11 +346,12 @@ local function Parse(data)
             e.text = n[2]
             e.level, e.min = tonumber(f[2]), tonumber(f[3])
             e.race, e.class = tonumber(f[4]), tonumber(f[5])
-            e.startU, e.startO = NumList(f[6]), NumList(f[7])
-            e.endU, e.endO = NumList(f[8]), NumList(f[9])
-            e.objU, e.objO, e.objI = NumList(f[10]), NumList(f[11]), NumList(f[12])
+            e.startU, e.startO = IdList(f[6]), IdList(f[7])
+            e.endU, e.endO = IdList(f[8]), IdList(f[9])
+            e.objU, e.objO, e.objI = IdList(f[10]), IdList(f[11]), IdList(f[12])
             DB.quests[id] = e
         end
+        Tick(2)
     end
     for line in Lines(raw.items) do
         local f = Split(line, 4)
@@ -210,9 +359,10 @@ local function Parse(data)
         local n = id and itemNames[id]
         if n and n ~= "" then
             local e = entry("item", id, n)
-            e.dropU, e.dropO, e.soldBy = NumList(f[2]), NumList(f[3]), NumList(f[4])
+            e.dropU, e.dropO, e.soldBy = IdList(f[2]), IdList(f[3]), IdList(f[4])
             DB.items[id] = e
         end
+        Tick()
     end
     for line in Lines(raw.services) do
         local f = Split(line)
@@ -226,79 +376,325 @@ local function Parse(data)
                 e.svc = e.svc or {}
                 e.svc[f[1]] = true
             end
+            Tick(0.2)
         end
         DB.services[f[1]] = list
     end
 end
 
--- Returns true when the database is ready, or false plus a reason
--- ("missing" when the data addon isn't installed).
-function DB.Load()
-    if DB.loaded then
-        DB.MergeIfLearned()
-        return true
-    end
+-- Set by the loader once it has read the shipped stores: the next merge is
+-- their first, and takes them apart (Bake, further down).
+local bakeNext = false
+local Merge -- (re)adds the stores and your discoveries; further down
+
+-- The game reads the data addon's files in one go (there is no doing that
+-- a little at a time): asked for while nothing of it is here yet.
+local function ReadFiles()
     if not (WaypointTrackerData and WaypointTrackerData.raw) then
         local load = (C_AddOns and C_AddOns.LoadAddOn) or LoadAddOn
         if load then
             pcall(load, DATA_ADDON)
         end
     end
-    local shipped = WaypointTrackerData and WaypointTrackerData.raw
-    if not shipped and DB.ready then
+end
+
+-- The shipped rows are in the tables and the load has not finished: so
+-- only when a failure nothing protects ended a spread-out load half-way.
+-- The next try goes on from there (the game reads the data addon's files
+-- once a session: there is no asking for the rows again).
+local parsed = false
+
+-- Everything after the files, the same all at once and a little each frame.
+-- `call`: ns.Call, or its like for a step that may pause (Paused). `spread`:
+-- the database says it is ready only when all of it is (other code runs
+-- between the slices); all at once it says so where it always did.
+local function Build(call, spread)
+    local data = WaypointTrackerData
+    if data and data.raw then
+        if not call(Parse, data) then
+            return false, "broken"
+        end
+        parsed = true
+        -- the raw text isn't needed any more
+        data.raw = nil
+        for k in pairs(data) do
+            if type(k) == "string" and k:find("^names_") then
+                data[k] = nil
+            end
+        end
+    elseif not parsed and DB.ready then
         -- still no database folder: keep searching your own discoveries
         DB.MergeIfLearned()
         return true, "missing"
     end
-    if shipped then
-        if not ns.Call(Parse, WaypointTrackerData) then
-            return false, "broken"
-        end
-        -- the raw text isn't needed any more
-        WaypointTrackerData.raw = nil
-        for k in pairs(WaypointTrackerData) do
-            if k:find("^names_") then
-                WaypointTrackerData[k] = nil
+    local hasShipped = parsed
+    if data and data.clientItems then
+        call(DB.ParseClientItems, data)
+        data.clientItems, data.clientItemNames = nil, nil
+    end
+    if data and data.sources then
+        call(DB.ParseSources, data)
+        data.sources, data.sourceNames = nil, nil
+    end
+    if data and type(data.client) == "table" then
+        call(DB.ParseClient, data.client)
+        data.client = nil
+    end
+    if not spread then
+        DB.hasShipped = hasShipped
+        DB.ready = true
+        -- without the database folder, try loading it again next time
+        DB.loaded = hasShipped
+        parsed = false
+    end
+    -- Forever content: what the community shared (shipped with the data
+    -- addon) and what you discovered yourself. A shipped store is the same
+    -- format as discoveries; one that cannot be read is reported and left
+    -- out (its text is let go first: it is not tried again), and Find
+    -- works on with the rest.
+    if ns.Learn then
+        for _, source in ipairs({ "curated", "community" }) do
+            local field = source == "curated" and "curated" or "forever"
+            local text = data and data[field]
+            if type(text) == "string" then
+                data[field] = nil
+                local st = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
+                if call(ns.Learn.Import, text, st, true, Tick) then
+                    DB[source] = st
+                end
             end
         end
     end
-    if WaypointTrackerData and WaypointTrackerData.clientItems then
-        ns.Call(DB.ParseClientItems, WaypointTrackerData)
-        WaypointTrackerData.clientItems, WaypointTrackerData.clientItemNames = nil, nil
-    end
-    if WaypointTrackerData and WaypointTrackerData.sources then
-        ns.Call(DB.ParseSources, WaypointTrackerData)
-        WaypointTrackerData.sources, WaypointTrackerData.sourceNames = nil, nil
-    end
-    if WaypointTrackerData and type(WaypointTrackerData.client) == "table" then
-        ns.Call(DB.ParseClient, WaypointTrackerData.client)
-        WaypointTrackerData.client = nil
-    end
-    DB.hasShipped = shipped and true or false
-    DB.ready = true
-    -- without the database folder, try loading it again next time
-    DB.loaded = DB.hasShipped
-    -- Forever content: what the community shared (shipped with the data
-    -- addon) and what you discovered yourself
-    -- the curated WoW Forever database (same format as discoveries)
-    if WaypointTrackerData and type(WaypointTrackerData.curated) == "string" and ns.Learn then
-        local curated = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
-        ns.Learn.Import(WaypointTrackerData.curated, curated, true)
-        DB.curated = curated
-        WaypointTrackerData.curated = nil
-    end
-    if WaypointTrackerData and type(WaypointTrackerData.forever) == "string" and ns.Learn then
-        local community = { npcs = {}, objects = {}, quests = {}, mailboxes = {} }
-        ns.Learn.Import(WaypointTrackerData.forever, community, true)
-        DB.community = community
-        WaypointTrackerData.forever = nil
-    end
+    bakeNext = hasShipped
     -- learned data lives in SavedVariables: if it's damaged, Find still works
-    ns.Call(DB.MergeLearned, true)
-    if not shipped then
+    call(Merge, true)
+    if spread then
+        DB.hasShipped = hasShipped
+        DB.ready = true
+        DB.loaded = hasShipped
+        parsed = false
+    end
+    if not hasShipped then
         return true, "missing"
     end
     return true
+end
+
+-- ---------------------------------------------------------------------------
+-- A little each frame
+-- ---------------------------------------------------------------------------
+-- Is loading spread over frames? Where the client can pause a Lua function
+-- and has a frame clock. Without them it all happens at once, as before.
+-- Tests can choose (nil: decide from the client).
+local forceSliced
+local function Sliced()
+    local co = coroutine
+    if forceSliced == false or type(co) ~= "table" or type(co.create) ~= "function" or type(co.resume) ~= "function"
+        or type(co.yield) ~= "function" or type(co.status) ~= "function" then
+        return false
+    end
+    return forceSliced == true or type(debugprofilestop) == "function"
+end
+DB.Sliced = Sliced
+
+-- An error raised in a coroutine, with where it was raised when the client says.
+local function Traced(co, err)
+    local traceback = type(debug) == "table" and debug.traceback
+    if type(traceback) == "function" then
+        local ok, text = pcall(traceback, co, tostring(err))
+        if ok and type(text) == "string" then
+            return text
+        end
+    end
+    return err
+end
+
+-- ns.Call for a step of a spread-out load: the step runs in a coroutine of
+-- its own (a pause can't cross xpcall), which this one hands every pause
+-- on from. An error is reported once and the load goes on, as with ns.Call.
+local function Paused(fn, ...)
+    local co = coroutine.create(fn)
+    local ok, err = coroutine.resume(co, ...)
+    while ok and coroutine.status(co) ~= "dead" do
+        coroutine.yield()
+        ok, err = coroutine.resume(co)
+    end
+    if not ok then
+        ns.ReportError(Traced(co, err))
+    end
+    return ok
+end
+
+-- The load under way: { co, pace, waiting, share, stats, spent } (nil: none).
+-- A hidden frame's OnUpdate gives it a slice every frame.
+local job
+local building = false -- DB.Load is reading it all at once right now
+local driver = CreateFrame("Frame")
+driver:Hide()
+
+-- Rows a whole load reads, for the share done (DB.Loading): in English,
+-- and in the other languages (which also read the English names, for
+-- what theirs leave out). It only has to be about right: the share stops
+-- at 99% until the load has finished.
+local EXPECTED_UNITS, EXPECTED_UNITS_OTHER = 180000, 204000
+
+local function Finish(j, ok, why)
+    job = nil
+    driver:Hide()
+    j.stats.units = j.pace.all
+    DB.loadStats = j.stats -- { slices, units, most (rows in one slice) }: how the load went (tests, the profile)
+    for _, fn in ipairs(j.waiting) do
+        ns.Call(fn, ok, why)
+    end
+    ns.Fire("DB_LOADED", ok, why)
+    return ok, why
+end
+
+-- One slice. `atOnce`: the rest of the load, now (DB.Load while it runs).
+-- `elapsed`: the seconds the last frame took (OnUpdate's).
+-- Returns whether the load has finished, and then its answer.
+local function Slice(j, atOnce, elapsed)
+    local status = coroutine.status(j.co)
+    if status == "dead" then
+        return true, Finish(j, false, "broken")
+    elseif status ~= "suspended" then
+        return false -- asked for from inside the load itself: it is running
+    end
+    local p = j.pace
+    if atOnce then
+        pace = nil
+    else
+        local ms, max = SLICE_MS, SLICE_UNITS
+        if InCombatLockdown and ns.Plain(InCombatLockdown()) then
+            ms, max = SLICE_COMBAT_MS, SLICE_COMBAT_UNITS
+        else
+            -- what the rest of the last frame took: all of it but our own slice
+            local frame = ns.Num(elapsed)
+            if frame and frame > 0 then
+                ms = math.max(SLICE_MIN_MS, math.min(SLICE_MS, (frame * 1000 - (j.spent or 0)) * SLICE_SHARE))
+            end
+        end
+        p.units, p.next, p.start = 0, CLOCK_EVERY, Clock()
+        p.ms, p.max = ms, max
+        pace = p
+    end
+    local ok, a, b = coroutine.resume(j.co)
+    pace = nil
+    -- (with a clock that reads: without one a slice is a number of rows)
+    local now = not atOnce and p.start and Clock()
+    j.spent = now and now >= p.start and now - p.start or nil
+    p.all = p.all + p.units
+    if p.units > j.stats.most then
+        j.stats.most = p.units
+    end
+    p.units = 0
+    j.stats.slices = j.stats.slices + 1
+    if coroutine.status(j.co) ~= "dead" then
+        return false
+    end
+    if not ok then
+        -- a failure that nothing protects (every step is protected: so in
+        -- the loader's own lines): as a database that couldn't be read
+        ns.ReportError(Traced(j.co, a))
+        return true, Finish(j, false, "broken")
+    end
+    return true, Finish(j, a, b)
+end
+
+driver:SetScript("OnUpdate", ns.Safe(function(_, elapsed)
+    local j = job
+    if not j then
+        driver:Hide()
+        return
+    end
+    if not Slice(j, false, elapsed) then
+        local share = math.min(0.99, j.pace.all / j.expected)
+        if share > j.share then
+            j.share = share
+        end
+        ns.Fire("DB_LOADING", j.share)
+    end
+end))
+
+-- The share of a spread-out load that is done (0..1), or nil when none runs.
+function DB.Loading()
+    return job and job.share or nil
+end
+
+-- Returns true when the database is ready, or false plus a reason
+-- ("missing" when the data addon isn't installed; "loading" when asked
+-- from inside the load itself, which only a mistake would do). All of it
+-- now: also what is left of a load that was being spread over frames.
+function DB.Load()
+    if DB.loaded then
+        DB.MergeIfLearned()
+        return true
+    end
+    local j = job
+    if j then
+        if coroutine.status(j.co) ~= "suspended" then
+            return false, "loading"
+        end
+        local done, ok, why = Slice(j, true)
+        while not done do
+            done, ok, why = Slice(j, true)
+        end
+        return ok, why
+    end
+    if building then
+        return false, "loading"
+    end
+    ReadFiles()
+    building = true
+    local ran, ok, why = pcall(Build, ns.Call, false)
+    building = false
+    if not ran then
+        error(ok, 0)
+    end
+    return ok, why
+end
+
+-- The same, without stopping the game for it where loading can be spread
+-- over frames. Returns ok, reason when the database is ready now (also
+-- everywhere loading can't be spread out: then this is DB.Load). Otherwise
+-- returns nothing and calls fn(ok, reason) once it is ready; until then
+-- DB.Loading() says how far it is, DB_LOADING fires as it goes on and
+-- DB_LOADED when it has finished.
+function DB.LoadAsync(fn)
+    if DB.loaded or building or not Sliced() then
+        return DB.Load()
+    end
+    local started = false
+    if not job then
+        ReadFiles()
+        if not (WaypointTrackerData and WaypointTrackerData.raw) and not parsed and DB.ready then
+            -- still no database folder: nothing to spread out
+            return Build(ns.Call, false)
+        end
+        local locale = GetLocale and ns.Str(GetLocale())
+        job = {
+            co = coroutine.create(function()
+                return Build(Paused, true)
+            end),
+            pace = { units = 0, next = CLOCK_EVERY, all = 0 },
+            waiting = {}, share = 0, stats = { slices = 0, most = 0 },
+            expected = (locale == nil or locale == "enUS" or locale == "enGB") and EXPECTED_UNITS or EXPECTED_UNITS_OTHER,
+        }
+        started = true
+    end
+    -- (first: what the announcement below leads to may finish the load)
+    if fn then
+        job.waiting[#job.waiting + 1] = fn
+    end
+    if started then
+        driver:Show()
+        ns.Fire("DB_LOADING", 0)
+    end
+end
+
+-- tests: true/false forces loading spread over frames or all at once; nil decides from the client
+function DB._SetSliced(on)
+    forceSliced = on
 end
 
 -- ---------------------------------------------------------------------------
@@ -306,9 +702,10 @@ end
 -- towns and quest map markers. Positions are world positions; the game
 -- turns them into map positions.
 -- ---------------------------------------------------------------------------
-local function Lines(text, fn)
+local function Lines(text, fn, units)
     for line in (text or ""):gmatch("[^\n]+") do
         fn(Split(line))
+        Tick(units)
     end
 end
 
@@ -317,6 +714,7 @@ local function NameTable(text)
     for line in (text or ""):gmatch("[^\n]+") do
         local id, name = line:match("^(%-?%d+)\t([^\t]+)")
         if id then out[tonumber(id)] = name end
+        Tick(0.3)
     end
     return out
 end
@@ -390,7 +788,7 @@ function DB.ParseClientItems(data)
                     t.desc = f[3]
                 end
             end
-        end)
+        end, 2)
     end
     Lines(data.clientItems, function(f)
         local id = tonumber(f[1])
@@ -400,7 +798,7 @@ function DB.ParseClientItems(data)
         local t = texts[id] or {}
         local e = DB.items[id]
         if not e and t.name then
-            e = { kind = "item", id = id, name = t.name, key = Geo.Squash(t.name), dropU = {}, dropO = {}, soldBy = {}, learned = "game" }
+            e = { kind = "item", id = id, name = t.name, key = Geo.Squash(t.name), dropU = NO_IDS, dropO = NO_IDS, soldBy = NO_IDS, learned = "game" }
             DB.items[id] = e
         end
         if e then
@@ -408,16 +806,7 @@ function DB.ParseClientItems(data)
             e.ilvl, e.reqlevel, e.startsQuest = tonumber(f[5]), tonumber(f[6]), tonumber(f[7])
             e.desc = t.desc
         end
-    end)
-end
-
-local function AddUnique(list, value)
-    for _, have in ipairs(list) do
-        if have == value then
-            return
-        end
-    end
-    list[#list + 1] = value
+    end, 2)
 end
 
 -- Who sells, drops or holds every item (Sources.lua), with the names of the
@@ -441,22 +830,16 @@ function DB.ParseSources(data)
         end
         local e = DB.items[id]
         if not e and named[id] then
-            e = { kind = "item", id = id, name = named[id], key = Geo.Squash(named[id]), dropU = {}, dropO = {}, soldBy = {} }
+            e = { kind = "item", id = id, name = named[id], key = Geo.Squash(named[id]), dropU = NO_IDS, dropO = NO_IDS, soldBy = NO_IDS }
             DB.items[id] = e
         end
         if e then
-            e.dropU, e.dropO, e.soldBy = e.dropU or {}, e.dropO or {}, e.soldBy or {}
-            for _, u in ipairs(NumList(f[2])) do
-                AddUnique(e.dropU, u)
-            end
-            for _, o in ipairs(NumList(f[3])) do
-                AddUnique(e.dropO, o)
-            end
-            for _, u in ipairs(NumList(f[4])) do
-                AddUnique(e.soldBy, u)
-            end
+            e.dropU, e.dropO, e.soldBy = e.dropU or NO_IDS, e.dropO or NO_IDS, e.soldBy or NO_IDS
+            if f[2] and f[2] ~= "" then AddIds(e, "dropU", NumList(f[2])) end
+            if f[3] and f[3] ~= "" then AddIds(e, "dropO", NumList(f[3])) end
+            if f[4] and f[4] ~= "" then AddIds(e, "soldBy", NumList(f[4])) end
         end
-    end)
+    end, 3)
 end
 
 -- Quests that need this item.
@@ -489,6 +872,7 @@ local function Spots(store, out, curated)
                 if x and y then
                     out[#out + 1] = { m = tonumber(m), x = x, y = y, curated = curated }
                 end
+                Tick(0.5)
             end
         end
     end
@@ -513,6 +897,7 @@ local function NameIndex()
             if id > 0 and e.key and (not t[e.key] or (tbl ~= "items" and Richness(e) > Richness(t[e.key]))) then
                 t[e.key] = e
             end
+            Tick(0.3)
         end
         index[tbl] = t
     end
@@ -563,7 +948,10 @@ function DB.Snapshot(e, created)
         enemy = DB.IsEnemy(e), hostile = e.hostile, fac = e.fac, services = services, access = access }, e.kind, e.id)
 end
 
-local function MergeStore(st, source)
+-- `note` (the first merge of a shipped store, Bake below): collects the
+-- records that found no entry to add to (note.late) and the service rows
+-- whose faction is the player's own letter (note.byLetter).
+local function MergeStore(st, source, note)
     if type(st) ~= "table" then
         return
     end
@@ -596,12 +984,17 @@ local function MergeStore(st, source)
                 end
                 if e.kind == "npc" or e.kind == "object" then
                     DB.services[service] = DB.services[service] or {}
-                    table.insert(DB.services[service], { observedAccess = l.fac or (mine and (e.kind == "object" and "AH" or letter)) or "", id = e.kind == "object" and -e.id or e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or (e.kind == "object" and "" or letter))) })
+                    local row = { observedAccess = l.fac or (mine and (e.kind == "object" and "AH" or letter)) or "", id = e.kind == "object" and -e.id or e.id, fac = ns.Trainers.IsService(service) and (not l.hostile and l.fac or "") or (l.hostile and "" or (l.fac or (e.kind == "object" and "" or letter))) }
+                    table.insert(DB.services[service], row)
+                    if note and not ns.Trainers.IsService(service) and not l.hostile and not l.fac and e.kind ~= "object" then
+                        note.byLetter[row] = true
+                    end
                 end
             end
         end
     end
-    for id, l in pairs(T(st.npcs)) do
+    for id, l in Each(T(st.npcs)) do
+        Tick(2)
         local e = DB.units[id]
         local created = not e
         if not e and type(l) == "table" and (l.name or next(T(l.spots))) then
@@ -632,9 +1025,12 @@ local function MergeStore(st, source)
             Spots(l.spots, e.extra, source == "curated")
             e.points = nil
             Services(e, l)
+        elseif note then
+            note.late.npcs[id] = l
         end
     end
-    for id, l in pairs(T(st.objects)) do
+    for id, l in Each(T(st.objects)) do
+        Tick(2)
         local e = DB.objects[id]
         local created = not e
         if not e and type(l) == "table" and (l.name or next(T(l.spots))) then
@@ -656,12 +1052,15 @@ local function MergeStore(st, source)
             Spots(l.spots, e.extra, source == "curated")
             e.points = nil
             Services(e, l)
+        elseif note then
+            note.late.objects[id] = l
         end
     end
-    for id, l in pairs(st.quests or {}) do
+    for id, l in Each(st.quests or {}) do
+        Tick(2)
         local q = DB.quests[id]
         if not q and l.title then
-            q = { kind = "quest", id = id, name = l.title, key = Geo.Squash(l.title), startU = {}, startO = {}, endU = {}, endO = {}, objU = {}, objO = {}, objI = {} }
+            q = { kind = "quest", id = id, name = l.title, key = Geo.Squash(l.title), startU = NO_IDS, startO = NO_IDS, endU = NO_IDS, endO = NO_IDS, objU = NO_IDS, objO = NO_IDS, objI = NO_IDS }
             DB.quests[id] = q
         end
         if q then
@@ -686,7 +1085,7 @@ local function MergeStore(st, source)
                 -- an import only fills a step the database has nobody for
                 local empty = #(q[field .. "U"] or {}) + #(q[field .. "O"] or {}) == 0
                 if #us + #os > 0 and (not imported or empty) then
-                    q[field .. "U"], q[field .. "O"] = us, os
+                    q[field .. "U"], q[field .. "O"] = us[1] and us or NO_IDS, os[1] and os or NO_IDS
                 end
             end
             link(l.giver, "start")
@@ -695,17 +1094,20 @@ local function MergeStore(st, source)
                 q.area = { m = l.area[1], x = l.area[2], y = l.area[3] }
             end
             for kind, rid in table.concat(l.needs or {}, ","):gmatch("([IUO])(%d+)") do
-                AddUnique(kind == "I" and q.objI or kind == "U" and q.objU or q.objO, tonumber(rid))
+                AddId(q, kind == "I" and "objI" or kind == "U" and "objU" or "objO", tonumber(rid))
             end
             if l.fac and not q.race then
                 q.fac = l.fac
             end
+        elseif note then
+            note.late.quests[id] = l
         end
     end
-    for id, l in pairs(T(st.items)) do
+    for id, l in Each(T(st.items)) do
+        Tick()
         local e = DB.items[id]
         if not e and type(l) == "table" and l.name then
-            e = { kind = "item", id = id, name = l.name, key = Geo.Squash(l.name), dropU = {}, dropO = {}, soldBy = {} }
+            e = { kind = "item", id = id, name = l.name, key = Geo.Squash(l.name), dropU = NO_IDS, dropO = NO_IDS, soldBy = NO_IDS }
             DB.items[id] = e
         end
         if e then
@@ -719,20 +1121,23 @@ local function MergeStore(st, source)
                 local kind, rid = tostring(ref):match("^([UO])(%d+)$")
                 rid = tonumber(rid)
                 if rid then
-                    AddUnique(kind == "U" and e.dropU or e.dropO, rid)
+                    AddId(e, kind == "U" and "dropU" or "dropO", rid)
                 end
             end
             for ref in pairs(T(l.sold)) do
                 local rid = tonumber(tostring(ref):match("^U(%d+)$"))
                 if rid then
-                    AddUnique(e.soldBy, rid)
+                    AddId(e, "soldBy", rid)
                 end
             end
+        elseif note then
+            note.late.items[id] = l
         end
     end
     -- quest objectives the game listed, by name: link them to what they are
     local byName
-    for id, l in pairs(st.quests or {}) do
+    for id, l in Each(st.quests or {}) do
+        Tick(0.2)
         local q = DB.quests[id]
         if q and l.objs then
             byName = byName or NameIndex()
@@ -740,17 +1145,18 @@ local function MergeStore(st, source)
                 local kind, name = obj:match("^(%a+):(.+)$")
                 local key = name and Geo.Squash(name)
                 if kind == "item" and byName.items[key] then
-                    AddUnique(q.objI, byName.items[key].id)
+                    AddId(q, "objI", byName.items[key].id)
                 elseif kind == "monster" and byName.units[key] then
-                    AddUnique(q.objU, byName.units[key].id)
+                    AddId(q, "objU", byName.units[key].id)
                 elseif kind == "object" and byName.objects[key] then
-                    AddUnique(q.objO, byName.objects[key].id)
+                    AddId(q, "objO", byName.objects[key].id)
                 end
             end
         end
     end
     -- corrections: the wrong spot goes, the right one comes
-    for key, list in pairs(T(st.fixes)) do
+    for key, list in Each(T(st.fixes)) do
+        Tick()
         local kind, id = tostring(key):match("^([NO])(%d+)$")
         local e = kind and (kind == "N" and DB.units or DB.objects)[tonumber(id)]
         -- A roster-only identity may have no raw/observed entry yet. Keep its
@@ -785,11 +1191,346 @@ local function MergeStore(st, source)
     end
 end
 
--- (Re)adds discoveries. Safe to call again after learning more.
-function DB.MergeLearned(deferCompaction)
-    if not DB.ready then
-        return
+-- ---------------------------------------------------------------------------
+-- The shipped stores, kept as what a merge needs of them
+-- ---------------------------------------------------------------------------
+-- Every merge starts again from the shipped rows: it takes out what the
+-- last one added (spots, corrections, service rows, mailboxes) and adds the
+-- curated store, the community store and your discoveries, in that order,
+-- so yours win over the community's and the community's over the curated.
+-- The two shipped stores never change, and nearly everything they do is
+-- done for good by their first merge (names, levels, factions, links to
+-- items: all only added, or only set where nothing was). What a later
+-- merge still needs of each is kept here and the store itself let go:
+--   * per NPC/object: whether it said hostile or not, its spots, its
+--     corrections (all taken out, or written over, by every merge);
+--   * per quest: its level, who gives and takes it, its area and faction
+--     (which a merge writes whatever was there);
+--   * its service rows and mailboxes, in the order it added them.
+-- Two kinds of record stay whole, in a small store put in the shipped
+-- one's place (DB.curated, DB.community), which MergeStore reads on every
+-- merge as it read the whole store:
+--   * records that found nothing to add to (an NPC without a name or a
+--     spot that the database doesn't have yet), so they still join in once
+--     you have seen their NPC;
+--   * quests with objectives to match by name: that match depends on the
+--     names known at each merge.
+-- Records put into that store later, or a store put in its place, are
+-- merged the same way (tests do both); a record put in for an ID replaces
+-- what is kept here for that ID.
+-- The order of a merge is the store's own: its NPCs and objects (spots),
+-- its quests, the small store (MergeStore: with the objectives matched by
+-- name), then its corrections and mailboxes. Service rows the small store
+-- adds are put among the store's others, where the whole store had them.
+local baked = {} -- "curated"/"community" -> what Bake kept
+local NO_SPOTS = {} -- an NPC/object the store named without a spot (never written)
+
+local function Rows(v)
+    return type(v) == "table" and v or {}
+end
+
+-- Before a store's first merge: how many spots and corrections its
+-- entries have, and how many rows every service has.
+local function Count(st)
+    local counts = { extra = {}, fixes = {}, rows = {} }
+    local function Entry(e)
+        if e then
+            counts.extra[e], counts.fixes[e] = e.extra and #e.extra or 0, e.fixes and #e.fixes or 0
+        end
     end
+    for id in pairs(Rows(st.npcs)) do Entry(DB.units[id]) end
+    for id in pairs(Rows(st.objects)) do Entry(DB.objects[id]) end
+    for key in pairs(Rows(st.fixes)) do
+        local kind, id = tostring(key):match("^([NO])(%d+)$")
+        Entry(kind and (kind == "N" and DB.units or DB.objects)[tonumber(id)])
+    end
+    for service, list in pairs(DB.services) do
+        counts.rows[service] = #list
+    end
+    return counts
+end
+
+-- After the store's first merge. counts: Count's answer from before it.
+local function Bake(st, source, note, counts)
+    local late = note.late
+    for id, l in pairs(Rows(st.quests)) do
+        if type(l) == "table" and l.objs and next(l.objs) ~= nil then
+            late.quests[id] = l -- matched by name again at every merge
+        end
+    end
+    local b = {
+        proxy = { npcs = late.npcs, objects = late.objects, quests = late.quests, items = late.items,
+            mailboxes = {}, fixes = {} },
+        ents = {}, -- five a record: entry, hostile (0 unsaid, 1 yes, 2 no), spots, corrected spots, corrections
+        quests = {}, -- eight a record: quest, level, startU, startO, endU, endO, area, faction (false: unsaid)
+        rows = {}, -- service -> its rows, in order ({ mail = spot } for a mailbox)
+        byLetter = note.byLetter,
+    }
+    local ents, n, slot = b.ents, 0, {}
+    local function Entity(e)
+        local i = slot[e]
+        if not i then
+            i, n = n + 1, n + 5
+            slot[e] = i
+            ents[i], ents[i + 1], ents[i + 2], ents[i + 3], ents[i + 4] = e, 0, false, 0, 0
+        end
+        return i
+    end
+    for id, l in pairs(Rows(st.npcs)) do
+        Tick(0.3)
+        local e = late.npcs[id] == nil and DB.units[id]
+        if e then
+            local i = Entity(e)
+            if l.hostile ~= nil then
+                ents[i + 1] = l.hostile and 1 or 2
+            end
+            ents[i + 2] = NO_SPOTS
+        end
+    end
+    for id in pairs(Rows(st.objects)) do
+        local e = late.objects[id] == nil and DB.objects[id]
+        if e then
+            ents[Entity(e) + 2] = NO_SPOTS
+        end
+    end
+    -- corrections: how many, and how many with a right spot (the last of the entry's new spots)
+    for key, list in pairs(Rows(st.fixes)) do
+        local kind, id = tostring(key):match("^([NO])(%d+)$")
+        local e = kind and (kind == "N" and DB.units or DB.objects)[tonumber(id)]
+        if e then
+            local i = Entity(e)
+            for _, fix in ipairs(Rows(list)) do
+                ents[i + 4] = ents[i + 4] + 1
+                if fix.right then
+                    ents[i + 3] = ents[i + 3] + 1
+                end
+            end
+        end
+    end
+    for i = 1, n, 5 do
+        Tick(0.3)
+        local e = ents[i]
+        local extra, fixes = e.extra, e.fixes
+        local total, from = extra and #extra or 0, counts.extra[e] or 0
+        local right, fixed = ents[i + 3], false
+        local last = total - right -- of the store's own spots
+        if ents[i + 2] and last > from then
+            local spots = {}
+            for k = from + 1, last do
+                spots[#spots + 1] = extra[k]
+            end
+            ents[i + 2] = spots
+        end
+        if right > 0 then
+            fixed = {}
+            for k = last + 1, total do
+                fixed[#fixed + 1] = extra[k]
+            end
+        end
+        ents[i + 3] = fixed
+        local kept = false
+        if ents[i + 4] > 0 then
+            kept = {}
+            for k = (counts.fixes[e] or 0) + 1, #fixes do
+                kept[#kept + 1] = fixes[k]
+            end
+        end
+        ents[i + 4] = kept
+    end
+    local quests, qn = b.quests, 0
+    for id, l in pairs(Rows(st.quests)) do
+        Tick(0.3)
+        local q = late.quests[id] == nil and DB.quests[id]
+        if q then
+            local level = tonumber(l.level)
+            local giver = type(l.giver) == "string" and l.giver:find("[UO]%d") ~= nil
+            local ender = type(l.ender) == "string" and l.ender:find("[UO]%d") ~= nil
+            local fac = l.fac and not q.race and l.fac
+            if level or giver or ender or l.area or fac then
+                quests[qn + 1], quests[qn + 2] = q, level or false
+                quests[qn + 3], quests[qn + 4] = giver and q.startU or false, giver and q.startO or false
+                quests[qn + 5], quests[qn + 6] = ender and q.endU or false, ender and q.endO or false
+                quests[qn + 7], quests[qn + 8] = l.area and q.area or false, fac or false
+                qn = qn + 8
+            end
+        end
+    end
+    for service, list in pairs(DB.services) do
+        local from = counts.rows[service] or 0
+        if #list > from then
+            local rows = {}
+            for k = from + 1, #list do
+                local row = list[k]
+                rows[#rows + 1] = (row.entry and row.entry.id < 0) and { mail = row.entry.points[1] } or row
+            end
+            b.rows[service] = rows
+        end
+    end
+    -- Records that wait for their entry: once it is there, their service
+    -- rows go where the whole store would have put them, among its others.
+    -- For that, where each NPC and object came in the store's own order.
+    if next(late.npcs) ~= nil or next(late.objects) ~= nil then
+        local seq, at = {}, 0
+        for id in pairs(Rows(st.npcs)) do
+            at = at + 1
+            seq[id] = at
+        end
+        seq.npcs = at
+        for id in pairs(Rows(st.objects)) do
+            at = at + 1
+            seq[-id] = at
+        end
+        b.seq = seq
+    end
+    baked[source] = b
+    DB[source] = b.proxy
+end
+
+-- The service rows a store added in this merge (after the first `from[service]`
+-- of each list), put in the store's own order: `seq` as Bake kept it. Rows
+-- of records put into the store later come after its NPCs, or its objects.
+local function InStoreOrder(seq, from)
+    for service, list in pairs(DB.services) do
+        local first, last = (from[service] or 0) + 1, #list
+        local sorted, before = true, 0
+        local keys
+        for i = first, last do
+            local id = list[i].id
+            local key = id and (seq[id] or (id > 0 and seq.npcs + 0.5 or math.huge)) or math.huge
+            if key < before then
+                sorted = false
+            end
+            before = key
+            keys = keys or {}
+            keys[i - first + 1] = key
+        end
+        if not sorted then
+            local order = {}
+            for i = 1, last - first + 1 do
+                order[i] = i
+            end
+            table.sort(order, function(a, c)
+                if keys[a] ~= keys[c] then
+                    return keys[a] < keys[c]
+                end
+                return a < c
+            end)
+            local rows = {}
+            for i = 1, #order do
+                rows[i] = list[first + order[i] - 1]
+            end
+            for i = 1, #rows do
+                list[first + i - 1] = rows[i]
+            end
+        end
+    end
+end
+
+-- What Bake kept of a shipped store, added again as MergeStore added it:
+-- its NPCs, objects, quests and service rows (Replay), and after the small
+-- store's own merge its corrections and mailboxes (ReplayLast).
+local function Replay(b)
+    local proxy = b.proxy
+    local npcs, objects, quests = Rows(proxy.npcs), Rows(proxy.objects), Rows(proxy.quests)
+    local ents = b.ents
+    for i = 1, #ents, 5 do
+        local e = ents[i]
+        -- (a record put into the store for this ID stands in for the shipped one)
+        if (e.kind == "npc" and npcs or objects)[e.id] == nil then
+            local hostile, spots = ents[i + 1], ents[i + 2]
+            if hostile ~= 0 then
+                e.hostile = hostile == 1
+            end
+            if spots then
+                local extra = e.extra
+                if not extra then
+                    extra = {}
+                    e.extra = extra
+                end
+                for k = 1, #spots do
+                    extra[#extra + 1] = spots[k]
+                end
+                e.points = nil
+            end
+        end
+    end
+    local list = b.quests
+    for i = 1, #list, 8 do
+        local q = list[i]
+        if quests[q.id] == nil then
+            if list[i + 1] then q.level = list[i + 1] end
+            if list[i + 2] then q.startU, q.startO = list[i + 2], list[i + 3] end
+            if list[i + 4] then q.endU, q.endO = list[i + 4], list[i + 5] end
+            if list[i + 6] then q.area = list[i + 6] end
+            if list[i + 7] and not q.race then q.fac = list[i + 7] end
+        end
+    end
+    local letter, byLetter = MyLetter(), b.byLetter
+    for service, rows in pairs(b.rows) do
+        local into = DB.services[service]
+        if not into then
+            into = {}
+            DB.services[service] = into
+        end
+        for k = 1, #rows do
+            local row = rows[k]
+            local id = row.id
+            if not row.mail and not (id and ((id > 0 and npcs[id] ~= nil) or (id < 0 and objects[-id] ~= nil))) then
+                if byLetter[row] then
+                    row.fac = letter
+                end
+                into[#into + 1] = row
+            end
+        end
+    end
+end
+
+local function ReplayLast(b, source)
+    local fixes = Rows(b.proxy.fixes)
+    local ents = b.ents
+    for i = 1, #ents, 5 do
+        local e = ents[i]
+        local kept = ents[i + 4]
+        if kept and fixes[(e.kind == "npc" and "N" or "O") .. e.id] == nil then
+            local list = e.fixes
+            if not list then
+                list = {}
+                e.fixes = list
+            end
+            for k = 1, #kept do
+                list[#list + 1] = kept[k]
+            end
+            local fixed = ents[i + 3]
+            if fixed then
+                local extra = e.extra
+                if not extra then
+                    extra = {}
+                    e.extra = extra
+                end
+                for k = 1, #fixed do
+                    extra[#extra + 1] = fixed[k]
+                end
+            end
+            e.points = nil
+        end
+    end
+    for service, rows in pairs(b.rows) do
+        local into
+        for k = 1, #rows do
+            local row = rows[k]
+            if row.mail then
+                into = into or DB.services[service]
+                local e = { kind = "object", id = nextSpotID, name = L.SERVICE_MAILBOX, key = Geo.Squash(L.SERVICE_MAILBOX), fac = "", points = { row.mail }, learned = source }
+                DB.objects[nextSpotID] = e
+                into[#into + 1] = { entry = e, fac = "" }
+                nextSpotID = nextSpotID - 1
+            end
+        end
+    end
+end
+
+-- (Re)adds discoveries. Safe to call again after learning more.
+Merge = function(deferCompaction)
     -- drop what a previous merge added, then add everything again
     for _, tbl in ipairs({ DB.units, DB.objects }) do
         for id, e in pairs(tbl) do
@@ -799,6 +1540,7 @@ function DB.MergeLearned(deferCompaction)
             if id < 0 then
                 tbl[id] = nil
             end
+            Tick(0.1)
         end
     end
     for _, list in pairs(DB.services) do
@@ -817,15 +1559,45 @@ function DB.MergeLearned(deferCompaction)
     for id, title in pairs(titles or {}) do
         local q = DB.quests[id]
         if not q then
-            q = { kind = "quest", id = id, startU = {}, startO = {}, endU = {}, endO = {}, objU = {}, objO = {}, objI = {}, learned = "game" }
+            q = { kind = "quest", id = id, startU = NO_IDS, startO = NO_IDS, endU = NO_IDS, endO = NO_IDS, objU = NO_IDS, objO = NO_IDS, objI = NO_IDS, learned = "game" }
             DB.quests[id] = q
         end
         if q.learned == "game" and q.name ~= title then
             q.name, q.key, q.words = title, Geo.Squash(title), nil
         end
     end
-    MergeStore(DB.curated, "curated")
-    MergeStore(DB.community, "community")
+    local bake = bakeNext
+    bakeNext = false
+    if bake then
+        baked = {}
+    end
+    for _, source in ipairs({ "curated", "community" }) do
+        local st, b = DB[source], baked[source]
+        if bake and type(st) == "table" then
+            -- the store's first merge, whole; then only what is needed of it is kept
+            local counts = Count(st)
+            local note = { late = { npcs = {}, objects = {}, quests = {}, items = {} }, byLetter = {} }
+            MergeStore(st, source, note)
+            Bake(st, source, note, counts)
+        elseif b and st == b.proxy then
+            local from
+            if b.seq then
+                from = {}
+                for service, list in pairs(DB.services) do
+                    from[service] = #list
+                end
+            end
+            Replay(b)
+            MergeStore(st, source)
+            if from then
+                InStoreOrder(b.seq, from)
+            end
+            ReplayLast(b, source)
+        else
+            baked[source] = nil -- another store was put in its place
+            MergeStore(st, source)
+        end
+    end
     local learned = ns.Learn and ns.Learn.Store(true)
     MergeStore(learned, "you")
     -- keep only what adds to the database in your saved discoveries
@@ -837,7 +1609,15 @@ function DB.MergeLearned(deferCompaction)
         for i = (before[service] or 0) + 1, #list do
             list[i].learned = true
         end
-    end    DB.generation = DB.generation + 1
+    end
+    DB.generation = DB.generation + 1
+end
+
+function DB.MergeLearned(deferCompaction)
+    if not DB.ready then
+        return
+    end
+    Merge(deferCompaction)
 end
 
 -- Merging is a big job (tens of milliseconds), and learning happens all the

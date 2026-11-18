@@ -19,7 +19,9 @@
 -- Run from the repository root:
 --     lua5.1 tools/perf_profile.lua [--out FILE] [--compare FILE] [--verbose] [--quick]
 -- --out writes "name value" lines; --compare prints them beside an earlier
--- file; --quick leaves out the scenarios that load the database (40 MB).
+-- file; --quick leaves out the search and Treasure hunt scenarios (the
+-- database is loaded in both: its heap, and the longest step of its load in
+-- thousands of VM instructions, which do not depend on the machine).
 -- tests/run_perf_budget.lua runs the quick scenarios as a gate on the exact
 -- numbers (allocation and calls), never on times.
 package.path = "./tests/?.lua;" .. package.path
@@ -380,7 +382,7 @@ local function Circle(i)
     playerState.facing = a % (2 * math.pi)
 end
 
--- opts.quick: without the scenarios that load the database;
+-- opts.quick: without the search and Treasure hunt scenarios;
 -- opts.seconds: the CPU time allowed (an error after it)
 function P.Run(opts)
     opts = opts or {}
@@ -470,14 +472,7 @@ function P.Run(opts)
     useShipped = false
     Stand(37, 0.40, 0.30)
 
-    -- 10. Treasure hunt (beta) on, walking (it loads the database)
-    if not opts.quick then
-        ns.Set("treasureHunt", true)
-        Play("treasure_on", 20, Circle)
-        ns.Set("treasureHunt", false)
-    end
-
-    -- 11. event bursts
+    -- 10. event bursts
     M.units.mouseover = { guid = "Creature-0-1-0-0-4242-0000000001", name = "Perf Wolf", reaction = 2, level = 10 }
     M.units.target = M.units.mouseover
     M.units.nameplate1 = M.units.mouseover
@@ -493,18 +488,73 @@ function P.Run(opts)
     Burst("ev_item_info", "GET_ITEM_INFO_RECEIVED", 200, 6948, true)
     M.units = {}
 
+    -- 11. the database: loading it. A slice a frame where the loader can
+    -- (DB.LoadAsync), else all at once. Steps are counted in thousands of
+    -- VM instructions (a count hook on the main thread and on every
+    -- coroutine made meanwhile), which repeat exactly; times do not.
+    local before = Heap()
+    do
+        local kinstr = 0
+        local function Count() kinstr = kinstr + 1 end
+        local create = coroutine.create
+        coroutine.create = function(fn)
+            local co = create(fn)
+            debug.sethook(co, Count, "", 1000)
+            return co
+        end
+        debug.sethook(Count, "", 1000)
+        local DB = ns.DB
+        local done = false
+        local k0 = kinstr
+        t0 = clock()
+        local start = t0
+        if DB.LoadAsync then
+            done = DB.LoadAsync(function() done = true end) ~= nil
+        else
+            DB.Load()
+            done = true
+        end
+        local firstMs, firstK = (clock() - t0) * 1000, kinstr - k0
+        local times, longestMs, longestK, frames = {}, firstMs, firstK, 0
+        local sliceK = 0
+        while not done and frames < 100000 do
+            k0, t0 = kinstr, clock()
+            Frame()
+            local ms, k = (clock() - t0) * 1000, kinstr - k0
+            frames = frames + 1
+            times[frames] = ms
+            if ms > longestMs then longestMs = ms end
+            if k > sliceK then sliceK = k end
+        end
+        if sliceK > longestK then longestK = sliceK end
+        debug.sethook()
+        coroutine.create = create
+        table.sort(times)
+        Metric("database.load_ms", (clock() - start) * 1000)
+        Metric("database.first_call_ms", firstMs)
+        Metric("database.frames", frames)
+        Metric("database.frame_ms_median", times[math.max(1, math.ceil(frames / 2))] or 0)
+        Metric("database.frame_ms_p95", times[math.max(1, math.ceil(frames * 0.95))] or 0)
+        Metric("database.longest_frame_ms", longestMs)
+        Metric("database.first_call_kinstr", firstK)
+        Metric("database.longest_slice_kinstr", sliceK)
+        Metric("database.longest_step_kinstr", longestK)
+        Metric("database.slice_rows_max", DB.loadStats and DB.loadStats.most or 0)
+        Metric("database.heap_kb", Heap() - before)
+        -- merging again after something was learned (the next use of Find)
+        ns.Fire("LEARNED")
+        t0 = clock()
+        DB.Load()
+        Metric("database.remerge_ms", (clock() - t0) * 1000)
+    end
+
     if opts.quick then
         Play("idle_after_all", 20)
         Metric("final.heap_kb", Heap() - h0)
         return results, order
     end
 
-    -- 12. the database: loading it, and a search
-    local before = Heap()
-    t0 = clock()
-    ns.DB.Load()
-    Metric("database.load_ms", (clock() - t0) * 1000)
-    Metric("database.heap_kb", Heap() - before)
+    -- 12. a search
     t0 = clock()
     ns.Find.Show("wolf")
     for _ = 1, 60 do Frame() end
@@ -512,6 +562,14 @@ function P.Run(opts)
     Play("find_open", 10, Circle)
     Metric("find.heap_kb", Heap() - before)
     ns.Window.Hide()
+
+    -- 13. Treasure hunt (beta) on, walking
+    do
+        ns.Set("treasureHunt", true)
+        Play("treasure_on", 20, Circle)
+        ns.Set("treasureHunt", false)
+    end
+
     Play("idle_after_all", 20)
     Metric("final.heap_kb", Heap() - h0)
     return results, order

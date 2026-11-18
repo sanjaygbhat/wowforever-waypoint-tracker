@@ -260,6 +260,8 @@ L.RESULTS_FMT = "%d gefunden"
 L.NO_RESULTS = "Nichts gefunden. Versuch es mit weniger Buchstaben, dem Reiter „Alle“ oder ohne Haken bei „Nur diese Zone“."
 L.NO_LOCATION = "Dafür ist noch kein Ort bekannt."
 L.DB_BROKEN = "Die Suchdatenbank konnte nicht geladen werden. Prüfe, ob WaypointTracker_Data in der AddOn-Liste aktiviert ist, und gib dann /reload ein."
+L.DB_LOADING = "Die Suchdatenbank wird geladen (%d%%) ..."
+L.WAY_SEARCH = "Kein eindeutiger Treffer für „%s“. Such im Reiter „Suchen“ danach."
 L.HELP_FIND = "/wp find [Name] - Quests, NSCs, Gegner, Objekte und Gegenstände suchen"
 L.BINDING_FIND = "Suchen öffnen oder schließen"
 

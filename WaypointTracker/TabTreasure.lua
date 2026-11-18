@@ -184,7 +184,7 @@ Window.RegisterTab {
     key = "treasure", order = 4, title = L.TREASURE_TAB,
     build = Build,
     onShow = function()
-        if ns.Get("treasureHunt") and ns.DB and ns.DB.Load then ns.DB.Load() end
+        if ns.Get("treasureHunt") and ns.DB and ns.DB.LoadAsync then ns.DB.LoadAsync() end
         Tab.Refresh()
     end,
     onUpdate = Tab.Refresh,
