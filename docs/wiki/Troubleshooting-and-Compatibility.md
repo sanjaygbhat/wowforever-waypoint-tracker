@@ -19,13 +19,13 @@ While the Waypoints tab is open with no waypoint, a preview arrow lets you adjus
 
 ## Getting the most from Find
 
-Check that **WaypointTracker_Data** is installed and enabled. The database loads on demand when Find first opens. Pick **All** in the kind dropdown, clear the zone/faction filters and search part of the name. Forever quest names are learned from the game in the background during the first minutes of play.
+Check that **WaypointTracker_Data** is installed and enabled. The database loads on demand when Find first opens, in small slices over a few frames; progress shows below the window title, and a search you type meanwhile runs as soon as it is ready. Pick **All** in the kind dropdown, clear the zone/faction filters and search part of the name. Forever quest names are learned from the game in the background during the first minutes of play.
 
 Find combines shipped data with your local observations and shared discoveries. To correct a spot, select the result and use **Wrong Spot? Correct It**. Details are in [Discoveries & Privacy](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/wiki/Discoveries-Privacy-and-Contributing).
 
 ## Nearest only finds places I have been / says no location
 
-Make sure both folders, **WaypointTracker** and **WaypointTracker_Data**, are installed directly inside `Interface/AddOns`, and that **Waypoint Tracker (database)** is enabled in the character-selection **AddOns** list. Nearest uses the shipped database before you visit a place; your discoveries add to it. If the data addon cannot load, only your discoveries may be available. Install both folders from the same release and restart after first installing them. Updating from 1.4.0 to 1.4.1 needs only `/reload`; from an older version, fully restart the game.
+Make sure both folders, **WaypointTracker** and **WaypointTracker_Data**, are installed directly inside `Interface/AddOns`, and that **Waypoint Tracker (database)** is enabled in the character-selection **AddOns** list. Nearest uses the shipped database before you visit a place; your discoveries add to it. If the data addon cannot load, only your discoveries may be available. Install both folders from the same release and restart after first installing them. Updating from 1.4.1 to 1.5.0 needs only `/reload`; from an older version, fully restart the game.
 
 ## `/way` and other addons
 

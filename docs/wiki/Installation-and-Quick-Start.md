@@ -15,9 +15,9 @@ Interface/AddOns/WaypointTracker_Data/WaypointTracker_Data.toc
 ```
 
 3. Start or restart the game. In the character-selection **AddOns** list, enable **Waypoint Tracker** and **Waypoint Tracker (database)**.
-4. Type `/wp` in game. **Updating from 1.4.0 to 1.4.1 needs only `/reload`; from an older version, fully restart the game.**
+4. Type `/wp` in game. **Updating from 1.4.1 to 1.5.0 needs only `/reload`; from an older version, fully restart the game.**
 
-The data folder supplies the database. It loads when needed by Find, routes or Treasure hunt (beta). Keep both folders from the same release. Your personal settings and discoveries live separately in SavedVariables; keep those when updating.
+The data folder supplies the database. It loads when needed by Find, routes or Treasure hunt (beta), in small slices over a few frames so the game doesn't freeze, with progress below the window title. Keep both folders from the same release. Your personal settings and discoveries live separately in SavedVariables; keep those when updating.
 
 ## Install through WowUp
 
@@ -56,7 +56,7 @@ Open the **Find** tab or use `/wp find`; choose a kind from the dropdown. Search
 
 Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
 
-Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
+Nearest also covers mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, leaves internal client points out of the flight master list, and uses a one-time index so repeat lookups are quick.
 
 ## Treasure hunt (beta)
 

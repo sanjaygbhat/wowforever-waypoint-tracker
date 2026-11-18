@@ -18,7 +18,7 @@ The in-game addon list, folders and API identifiers stay `Waypoint Tracker` / `W
 Find any quest, NPC or item and a 3D arrow takes you there by the fastest route. One-click Nearest: mailbox, repair, flight master, class and profession trainers and more. /way and TomTom-compatible waypoints for WoW Forever.
 ```
 
-Lead with Find and the arrow by the fastest route (Real routes, on by default), then one-click Nearest for services and trainers. Keep the summary under 250 characters. Refresh the descriptions and their "New in" block with every feature release; keep Treasure hunt (beta) below the main features.
+Lead with Find and the arrow by the fastest route (Real routes, on by default), then one-click Nearest for services and trainers. Keep the summary under 250 characters. Refresh the descriptions and their "New in" block with every feature release; keep Treasure hunt (beta) below the main features, with its how-to-enable steps easy to find. For 1.5.0 the new points are: no freeze the first time you search, lighter on your game (about 17% less memory once loaded), and quest chains that follow step by step. They support the lead; they do not replace it.
 
 ## Categories
 

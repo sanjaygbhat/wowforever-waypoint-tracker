@@ -73,6 +73,7 @@ Open `/wp` or left-click the minimap button for one window with **Waypoints**, *
 - **Find anything by name:** quests, NPCs, enemies, objects and items, including WoW Forever's new content. Pick a result and follow the 3D arrow.
 - **Always by the fastest route.** The arrow follows the quickest way you can really travel, not a straight line: flight paths, boats, zeppelins, the tram, passes and gates, your hearthstone, Astral Recall, mage and druid teleports and engineering transporters, planned with your riding skill and travel forms. When a quicker way crosses dangerous ground it asks first, or pick **Always fastest** to take it every time. On by default.
 - **Nearest in one click:** services and trainers in Find or the minimap button's right-click **Nearest...** menu. Class Trainer picks your class; Profession Trainer offers 12 professions. Weapon Master and Riding Trainer have their own buttons.
+- **Quest chains step by step, light on your game:** ready-made quest chain routes keep to the step you're on. The database loads in small slices instead of freezing the game, and with nothing to show the addon does almost nothing.
 - **Set a waypoint your way:** a small window, `/way`, a quest or place name, the Find tab, or Ctrl + Right-click on the map.
 - **An arrow that tells you how close you are:** gold far away, green as you get there. It never catches mouse clicks, so right-click to attack always works.
 - **One window:** Waypoints, Find, Routes and Treasure (beta) tabs, with settings in Blizzard Settings and placement in Edit Mode.
@@ -81,6 +82,18 @@ Open `/wp` or left-click the minimap button for one window with **Waypoints**, *
 - **Treasure hunt (beta):** off by default; enable it in the Treasure (beta) tab for alerts, nearby and zone lists, and a saved find log.
 - **Works with your other addons:** quest guides and anything with a "Send to TomTom" button put their waypoints on this arrow.
 - **Built for WoW Forever:** interface 16001, the game's Edit Mode, and nine languages.
+
+---
+
+## 🆕 New in 1.5.0
+
+- **No freeze the first time you search:** the database now loads in small slices over a few frames, so your first use of Find, Nearest, Routes or Treasure (beta) no longer stops the game for about a second. Progress shows below the window title, and a search, Nearest click or `/way` you type meanwhile runs as soon as it is ready.
+- **Lighter on your game:** about 17% less memory once the database is loaded, and much less work every second. Walking to a waypoint or with the window open makes about 95% less garbage than 1.4.1; with nothing to show, the addon does almost nothing.
+- **Quest chains, step by step:** following a chain such as The Defias Brotherhood, the arrow stays on the step you're on instead of jumping to the nearest stop, and skips only the steps your quest log shows as done.
+- **Fixed:** "No player named ... is currently playing" messages while Route sharing & votes (beta) is on. Route lists now go to your guild and group only; votes are still shared more widely.
+- **Updating:** from 1.4.1, `/reload` is enough. From an older version, fully restart the game.
+
+Full history: [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -146,7 +159,7 @@ Use `/wp treasure status` to report what it sees. [Full guide](https://github.co
 2. Unzip it into your AddOns folder. You should get **two** folders: `...\Interface\AddOns\WaypointTracker\` and `...\Interface\AddOns\WaypointTracker_Data\` (the database for the Find tab).
    - Windows: `World of Warcraft\_forever_\Interface\AddOns\`
    - macOS: `World of Warcraft/_forever_/Interface/AddOns/`
-3. On first install, fully restart the game. Updating from 1.4.0 to 1.4.1 needs only `/reload`; from an older version, fully restart the game.
+3. On first install, fully restart the game. Updating from 1.4.1 to 1.5.0 needs only `/reload`; from an older version, fully restart the game.
 
 > [!TIP]
 > Downloading this repository as a zip also works: copy the inner `WaypointTracker` and `WaypointTracker_Data` folders into AddOns.
@@ -183,7 +196,7 @@ Open the **Find** tab (or type `/wp find`, or set a key binding):
 
 Find shows its double-click tip once per session below the title. The footer shows quest-name scan progress only while that scan runs.
 
-The database is a separate folder, `WaypointTracker_Data`. It loads when needed by Find, routes or Treasure hunt (beta).
+The database is a separate folder, `WaypointTracker_Data`. It loads when needed by Find, routes or Treasure hunt (beta), in small slices over a few frames (smaller still in combat) so the game doesn't freeze, with progress below the window title. A search, Nearest click or `/way` you type meanwhile runs as soon as it is ready.
 
 ### Nearest
 
@@ -209,7 +222,7 @@ Open the **Find** tab and click a **Nearest** button. Or right-click the minimap
 
 Nearest ships a complete trainer database: over 500 trainers across capitals, starting areas and towns of both factions. It covers all nine classes, all 12 professions (including Cooking, First Aid and Fishing), weapon masters and riding trainers, including Alliance shaman and Horde paladin trainers. Positions favour observations from WoW Forever. Your discoveries add to the shipped database, so you can find trainers before visiting them.
 
-Version 1.4.1 also adds more mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, removes internal client points from the flight master list, and makes repeated Nearest lookups faster with a one-time index.
+Nearest also covers mailboxes, merchants, innkeepers and meeting stones observed in WoW Forever, leaves internal client points out of the flight master list, and uses a one-time index so repeat lookups are quick.
 
 ### 🧾 Where the data comes from: the game always wins
 
@@ -287,6 +300,8 @@ Click a route to see its map on the right, with stop pins and lines in route ord
 Click the preview or one of its pins to open the same route on the normal world map, outside combat. The bar offers **Set This Route**, which starts following it, and **Back to Routes**, which returns to the selected route. With existing waypoints, Set asks whether to replace them or add the route, unless you already chose a preference in Settings. Browse away from the stops and **Show Them** takes you back. Closing the preview leaves the map open; closing the map ends the preview.
 
 You can also press **Start Route** or double-click a row to begin. While following it, use **Stop Route** and **Skip This Point**. **Share...** opens sharing choices; **More...** holds copying, editing and removal actions where available.
+
+Quest chain routes go step by step: the arrow stays on the step you're on, even after another waypoint ends or a `/reload`, and skips only the steps your quest log shows as done. **Skip This Point** moves on by hand. Loops and **Nearest next** routes still go to the closest stop.
 
 **Route sharing & votes (beta)** is off by default. Enable it in **Settings → Routes** or with **Enable (beta)** in the **Routes** tab to exchange shared route lists with other Waypoint Tracker players in your guild and group, and to share votes more widely through the addon channel. Updating from 1.2.0 turns it off once; later opt-ins are remembered. Local routes, following, text import/export and local votes work while it is off. Walked-path sharing for Real routes has a separate setting, off by default.
 
@@ -438,7 +453,13 @@ Yes. It's free and open source (MIT), with readable, unobfuscated code, no ads a
 <details>
 <summary><b>Does Waypoint Tracker work on WoW Forever?</b></summary>
 
-Yes, version 1.4.1 supports the live World of Warcraft: Forever client 1.60.1 (interface 16001).
+Yes, version 1.5.0 supports the live World of Warcraft: Forever client 1.60.1 (interface 16001).
+</details>
+
+<details>
+<summary><b>Will Waypoint Tracker slow my game down?</b></summary>
+
+It is built to stay light. With nothing to show it does almost nothing, and the database loads in small slices instead of freezing the game the first time you search. Version 1.5.0 uses about 17% less memory than 1.4.1 once the database is loaded, and walking to a waypoint makes about 95% less garbage.
 </details>
 
 <details>
