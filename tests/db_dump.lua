@@ -354,9 +354,11 @@ if mode == "sliced" or mode == "clocked" then
     assert(frames > 20, "the load was spread over frames (" .. frames .. ")")
     -- in every language the share says about how far the load is: near
     -- the end when it ends, and not held at its last value for long
-    assert(share > 0.9, "the share done is near the end when the load ends (" .. share .. ")")
+    local hint = ": when the shipped data has changed, set EXPECTED_UNITS and EXPECTED_UNITS_OTHER in Database.lua"
+        .. " to a little over the rows a load reads (tests/run_db_sliced.lua prints them)"
+    assert(share > 0.9, "the share done is near the end when the load ends (" .. share .. ")" .. hint)
     -- (this history's own records are a tenth more to read than is shipped)
-    assert(held <= frames * 0.1, "the share done does not wait at 99% (" .. held .. " of " .. frames .. " frames)")
+    assert(held <= frames * 0.1, "the share done does not wait at 99% (" .. held .. " of " .. frames .. " frames)" .. hint)
 else
     local ok, why = DB.Load()
     assert(ok == true and why == nil, "the database loaded: " .. tostring(why))
