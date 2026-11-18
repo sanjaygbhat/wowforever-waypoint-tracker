@@ -1168,7 +1168,9 @@ end
 Learn.Split = Split
 
 -- Adds shared discoveries to yours. Returns how many entries it read.
-function Learn.Import(text, st, quiet)
+-- `tick` (the database's loader, reading a shipped store): called after
+-- every line with about how much work it was, and may pause the import.
+function Learn.Import(text, st, quiet, tick)
     st = st or Learn.Store()
     if not st or type(text) ~= "string" or not text:find(EXPORT_TAG, 1, true) then
         return 0
@@ -1291,6 +1293,9 @@ function Learn.Import(text, st, quiet)
             if AddFixTo(st, f[2] == "N" and "npc" or "object", f[3], Spot(f[4]), Spot(f[5]), not quiet) then
                 n = n + 1
             end
+        end
+        if tick then
+            tick(2 + #line * 0.03)
         end
     end
     if not quiet then
