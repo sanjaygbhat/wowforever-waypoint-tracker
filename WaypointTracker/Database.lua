@@ -115,6 +115,81 @@ local function NumList(s)
 end
 DB.NumList = NumList
 
+-- Most quests and items have nobody in most of their lists (who starts it,
+-- what drops it...): tens of thousands of empty tables. They all hold this
+-- one list instead, which is never written: a list gets a table of its own
+-- when the first ID goes in (AddId, AddIds). Writing to it is an error.
+local NO_IDS = setmetatable({}, {
+    __newindex = function()
+        error("the shared empty ID list is read-only: give the entry a list of its own", 2)
+    end,
+})
+DB.NO_IDS = NO_IDS
+
+-- NumList for an entry's field: the shared empty list when there are none.
+local function IdList(s)
+    if not s or s == "" then
+        return NO_IDS
+    end
+    local out = NumList(s)
+    return out[1] and out or NO_IDS
+end
+
+-- Adds an ID to an entry's list once (to a list of its own).
+local function AddId(e, field, value)
+    local list = e[field]
+    for i = 1, #list do
+        if list[i] == value then
+            return
+        end
+    end
+    if list == NO_IDS then
+        e[field] = { value }
+    else
+        list[#list + 1] = value
+    end
+end
+
+-- Adds several IDs to an entry's list, each once, in their order. Long
+-- lists are checked through a set instead of read through for every ID.
+local function AddIds(e, field, ids)
+    local n = #ids
+    if n == 0 then
+        return
+    end
+    local list = e[field]
+    if list == NO_IDS then
+        list = {}
+        e[field] = list
+    end
+    if #list + n <= 8 then
+        for i = 1, n do
+            local value, have = ids[i], false
+            for k = 1, #list do
+                if list[k] == value then
+                    have = true
+                    break
+                end
+            end
+            if not have then
+                list[#list + 1] = value
+            end
+        end
+        return
+    end
+    local have = {}
+    for i = 1, #list do
+        have[list[i]] = true
+    end
+    for i = 1, n do
+        local value = ids[i]
+        if not have[value] then
+            have[value] = true
+            list[#list + 1] = value
+        end
+    end
+end
+
 local function NameTable(block, descriptions)
     local names = {}
     for line in Lines(block) do
@@ -198,9 +273,9 @@ local function Parse(data)
             e.text = n[2]
             e.level, e.min = tonumber(f[2]), tonumber(f[3])
             e.race, e.class = tonumber(f[4]), tonumber(f[5])
-            e.startU, e.startO = NumList(f[6]), NumList(f[7])
-            e.endU, e.endO = NumList(f[8]), NumList(f[9])
-            e.objU, e.objO, e.objI = NumList(f[10]), NumList(f[11]), NumList(f[12])
+            e.startU, e.startO = IdList(f[6]), IdList(f[7])
+            e.endU, e.endO = IdList(f[8]), IdList(f[9])
+            e.objU, e.objO, e.objI = IdList(f[10]), IdList(f[11]), IdList(f[12])
             DB.quests[id] = e
         end
     end
@@ -210,7 +285,7 @@ local function Parse(data)
         local n = id and itemNames[id]
         if n and n ~= "" then
             local e = entry("item", id, n)
-            e.dropU, e.dropO, e.soldBy = NumList(f[2]), NumList(f[3]), NumList(f[4])
+            e.dropU, e.dropO, e.soldBy = IdList(f[2]), IdList(f[3]), IdList(f[4])
             DB.items[id] = e
         end
     end
@@ -400,7 +475,7 @@ function DB.ParseClientItems(data)
         local t = texts[id] or {}
         local e = DB.items[id]
         if not e and t.name then
-            e = { kind = "item", id = id, name = t.name, key = Geo.Squash(t.name), dropU = {}, dropO = {}, soldBy = {}, learned = "game" }
+            e = { kind = "item", id = id, name = t.name, key = Geo.Squash(t.name), dropU = NO_IDS, dropO = NO_IDS, soldBy = NO_IDS, learned = "game" }
             DB.items[id] = e
         end
         if e then
@@ -409,15 +484,6 @@ function DB.ParseClientItems(data)
             e.desc = t.desc
         end
     end)
-end
-
-local function AddUnique(list, value)
-    for _, have in ipairs(list) do
-        if have == value then
-            return
-        end
-    end
-    list[#list + 1] = value
 end
 
 -- Who sells, drops or holds every item (Sources.lua), with the names of the
@@ -441,20 +507,14 @@ function DB.ParseSources(data)
         end
         local e = DB.items[id]
         if not e and named[id] then
-            e = { kind = "item", id = id, name = named[id], key = Geo.Squash(named[id]), dropU = {}, dropO = {}, soldBy = {} }
+            e = { kind = "item", id = id, name = named[id], key = Geo.Squash(named[id]), dropU = NO_IDS, dropO = NO_IDS, soldBy = NO_IDS }
             DB.items[id] = e
         end
         if e then
-            e.dropU, e.dropO, e.soldBy = e.dropU or {}, e.dropO or {}, e.soldBy or {}
-            for _, u in ipairs(NumList(f[2])) do
-                AddUnique(e.dropU, u)
-            end
-            for _, o in ipairs(NumList(f[3])) do
-                AddUnique(e.dropO, o)
-            end
-            for _, u in ipairs(NumList(f[4])) do
-                AddUnique(e.soldBy, u)
-            end
+            e.dropU, e.dropO, e.soldBy = e.dropU or NO_IDS, e.dropO or NO_IDS, e.soldBy or NO_IDS
+            if f[2] and f[2] ~= "" then AddIds(e, "dropU", NumList(f[2])) end
+            if f[3] and f[3] ~= "" then AddIds(e, "dropO", NumList(f[3])) end
+            if f[4] and f[4] ~= "" then AddIds(e, "soldBy", NumList(f[4])) end
         end
     end)
 end
@@ -661,7 +721,7 @@ local function MergeStore(st, source)
     for id, l in pairs(st.quests or {}) do
         local q = DB.quests[id]
         if not q and l.title then
-            q = { kind = "quest", id = id, name = l.title, key = Geo.Squash(l.title), startU = {}, startO = {}, endU = {}, endO = {}, objU = {}, objO = {}, objI = {} }
+            q = { kind = "quest", id = id, name = l.title, key = Geo.Squash(l.title), startU = NO_IDS, startO = NO_IDS, endU = NO_IDS, endO = NO_IDS, objU = NO_IDS, objO = NO_IDS, objI = NO_IDS }
             DB.quests[id] = q
         end
         if q then
@@ -686,7 +746,7 @@ local function MergeStore(st, source)
                 -- an import only fills a step the database has nobody for
                 local empty = #(q[field .. "U"] or {}) + #(q[field .. "O"] or {}) == 0
                 if #us + #os > 0 and (not imported or empty) then
-                    q[field .. "U"], q[field .. "O"] = us, os
+                    q[field .. "U"], q[field .. "O"] = us[1] and us or NO_IDS, os[1] and os or NO_IDS
                 end
             end
             link(l.giver, "start")
@@ -695,7 +755,7 @@ local function MergeStore(st, source)
                 q.area = { m = l.area[1], x = l.area[2], y = l.area[3] }
             end
             for kind, rid in table.concat(l.needs or {}, ","):gmatch("([IUO])(%d+)") do
-                AddUnique(kind == "I" and q.objI or kind == "U" and q.objU or q.objO, tonumber(rid))
+                AddId(q, kind == "I" and "objI" or kind == "U" and "objU" or "objO", tonumber(rid))
             end
             if l.fac and not q.race then
                 q.fac = l.fac
@@ -705,7 +765,7 @@ local function MergeStore(st, source)
     for id, l in pairs(T(st.items)) do
         local e = DB.items[id]
         if not e and type(l) == "table" and l.name then
-            e = { kind = "item", id = id, name = l.name, key = Geo.Squash(l.name), dropU = {}, dropO = {}, soldBy = {} }
+            e = { kind = "item", id = id, name = l.name, key = Geo.Squash(l.name), dropU = NO_IDS, dropO = NO_IDS, soldBy = NO_IDS }
             DB.items[id] = e
         end
         if e then
@@ -719,13 +779,13 @@ local function MergeStore(st, source)
                 local kind, rid = tostring(ref):match("^([UO])(%d+)$")
                 rid = tonumber(rid)
                 if rid then
-                    AddUnique(kind == "U" and e.dropU or e.dropO, rid)
+                    AddId(e, kind == "U" and "dropU" or "dropO", rid)
                 end
             end
             for ref in pairs(T(l.sold)) do
                 local rid = tonumber(tostring(ref):match("^U(%d+)$"))
                 if rid then
-                    AddUnique(e.soldBy, rid)
+                    AddId(e, "soldBy", rid)
                 end
             end
         end
@@ -740,11 +800,11 @@ local function MergeStore(st, source)
                 local kind, name = obj:match("^(%a+):(.+)$")
                 local key = name and Geo.Squash(name)
                 if kind == "item" and byName.items[key] then
-                    AddUnique(q.objI, byName.items[key].id)
+                    AddId(q, "objI", byName.items[key].id)
                 elseif kind == "monster" and byName.units[key] then
-                    AddUnique(q.objU, byName.units[key].id)
+                    AddId(q, "objU", byName.units[key].id)
                 elseif kind == "object" and byName.objects[key] then
-                    AddUnique(q.objO, byName.objects[key].id)
+                    AddId(q, "objO", byName.objects[key].id)
                 end
             end
         end
@@ -817,7 +877,7 @@ function DB.MergeLearned(deferCompaction)
     for id, title in pairs(titles or {}) do
         local q = DB.quests[id]
         if not q then
-            q = { kind = "quest", id = id, startU = {}, startO = {}, endU = {}, endO = {}, objU = {}, objO = {}, objI = {}, learned = "game" }
+            q = { kind = "quest", id = id, startU = NO_IDS, startO = NO_IDS, endU = NO_IDS, endO = NO_IDS, objU = NO_IDS, objO = NO_IDS, objI = NO_IDS, learned = "game" }
             DB.quests[id] = q
         end
         if q.learned == "game" and q.name ~= title then
