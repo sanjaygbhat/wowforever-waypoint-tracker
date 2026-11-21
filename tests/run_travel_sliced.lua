@@ -467,12 +467,12 @@ for _, sliced in ipairs({ false, true }) do
     local westfall = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
     local routed = Run(westfall)
     check(T.Current() ~= nil and (routed == nil or routed.title ~= L.TRAVEL_NO_PLAN), label .. ': (control) a placed waypoint is planned')
-    -- no position at all (the tram, a loading screen): nothing to search
-    -- from and nothing known that changes the route, so it is kept
-    local kept = T.Current()
+    -- no position while walking (a loading screen the route doesn't expect:
+    -- a summons, a portal off the route): the route is not kept, so the old
+    -- step is never steered from wherever you come out
     M.player.noPosition = true
     check(Run(westfall) == nil and T.Note() == 'noposition', label .. ': no player position gets the plain arrow, and says why')
-    check(kept and T.Current() == kept, label .. ': no player position keeps the route followed')
+    check(T.Current() == nil, label .. ': a loading screen the route does not expect drops it')
     M.player.noPosition = nil
     routed = Run(westfall)
     check(routed and routed.title == L.TRAVEL_HEAD_TO:format('Westfall'), label .. ': the position back: the route goes on (' .. tostring(routed and routed.title) .. ')')
@@ -2222,6 +2222,16 @@ for _, sliced in ipairs({ false, true }) do
         local s = Steer(w)
         check(s and s.title == L.TRAVEL_FLY:format(T.PlaceName(T.Data().nodes.TAXI_1)),
             label .. '(control) at the flight master: fly (' .. tostring(s and s.title) .. ')')
+        if landing == 'planned' then
+            -- the position gone a moment at a ride's step (a loading screen
+            -- as you take it): part of the route, so it is kept
+            local before = T.Current()
+            M.player.noPosition = true
+            for _ = 1, 10 do Steer(w, 0.25) end
+            check(before and T.Current() == before, label .. 'no position at the ride\'s step: the route is kept')
+            M.player.noPosition = nil
+            Steer(w); Settle(w)
+        end
         M.player.taxi = true
         for _ = 1, 20 do s = Steer(w, 0.5) end
         check(s and T.Riding(), label .. 'in the air')
@@ -2245,6 +2255,33 @@ for _, sliced in ipairs({ false, true }) do
             s = Steer(w)
             check(s and s.title == headTo, label .. 'landed elsewhere: planned from there (' .. tostring(s and s.title) .. ')')
         end
+    end
+    -- 200 yd short of the tram when the position goes (a summons, say): no
+    -- tram step, the route dropped; where you come out, planned from there
+    do
+        RideWorld(false, true)
+        T._SetSliced(sliced)
+        WP.ClearAll(true)
+        M.player.inst, M.player.wx, M.player.wy = 0, 9200, 2000
+        local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        local s = Steer(w)
+        local p = T.Current()
+        local into = p and p.target and p.target.node.id == 'TRAM_T'
+        check(into and s and s.title == T.StepText(p.path, p.index, 'Moonbrook'), label .. '200 yd from the tram: (control) going to it (' .. tostring(s and s.title) .. ')')
+        M.player.noPosition = true
+        local ride = 0
+        for _ = 1, 30 do
+            s = Steer(w, 0.1)
+            if s then ride = ride + 1 end
+        end
+        check(ride == 0 and T.Current() == nil, label .. '200 yd from the tram: no position is no tram ride (' .. ride .. ' frames with a step)')
+        M.player.noPosition = nil
+        M.player.wx, M.player.wy = -1000, -2400 -- summoned to Elwynn
+        Settle(w)
+        s = Steer(w)
+        check(s and s.title == headTo and not Has(T.Current().path, 'TRAM_T'), label .. 'summoned away: planned from where you are (' .. tostring(s and s.title) .. ')')
     end
     -- the tram: from its station, and from just short of it
     for _, short in ipairs({ 5, 45 }) do
