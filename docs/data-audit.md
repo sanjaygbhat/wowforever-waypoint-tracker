@@ -197,6 +197,12 @@ Permanent route gates include `run_thrall_travel.lua`, `check_taxi_transport.lua
 
 Quest 557 uses the complete verified control to Elemental Slave at Alterac 22.9, 59.5 as its curated Find target. The other genuine spawn coordinates remain in the immutable raw source database as references; they are not deleted. The permanent ground gate checks the actual Find selection as well as both planner preferences and coordinate representations.
 
+## Walled-city footprints (1.5.1)
+
+Real routes decides whether a point is inside or outside a walled city from the client's own terrain, not from the map ID the point was stored on. Every ADT terrain chunk (MCNK, 33.3 yd square) carries the AreaTable ID the client assigns to that ground (header offset 52). `tools/build_city_footprints.py --extract` reads those IDs, offline and read-only through `tools/verify_legs_casc.py`, over the full-map `UiMapAssignment.csv` rectangle of each city in TravelData.lua's `cities` block, and writes `tools/fixtures/travel/city-footprints.json`. The fixture records the client build (local WoW Forever client 1.60.1.71037, build key `0acab1e6aa41b46165d2ca66853b417b`), the WDT file IDs and every ADT's file ID and sha256; the manifest pins its sha256. `python3 tools/build_city_footprints.py` then writes `WaypointTracker/CityFootprints.lua` from the fixture and the pinned `AreaTable.csv` (a chunk is the city's when its area or a parent area is the city's UiMapAssignment `AreaID`); `--check` and `tests/check_city_footprints.py` fail if the shipped file differs. Nothing is hand-entered.
+
+Results: Stormwind 1346, Orgrimmar 546, Darnassus 498 and Thunder Bluff 284 city chunks. Ironforge and Undercity have none: they are world-model interiors, and the terrain over them is Dun Morogh and Tirisfal Glades, so no footprint is shipped for them. The planner (`Travel.lua`, `GoalPlace`) takes a point as inside when every chunk within one chunk (`footprintMargin`) is the city's, and as outside when none is; otherwise, and for Thunder Bluff and Undercity (inside and outside overlap in plan view), it keeps the earlier rule (`cityMaybe`). The area boundary is the client's area assignment, at chunk resolution: it marks where the client says the city is, not where its wall stands, and it was read from build 1.60.1.71037 while the other client tables here are pinned at 1.60.1.70338/70755.
+
 ## Teleport items and reagents (1.3.1)
 
 Evidence is the Forever client's own tables for build **1.60.1.70862**

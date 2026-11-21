@@ -65,6 +65,7 @@ RouteMap.lua
 RoutePreview.lua
 RoutesUI.lua
 TravelData.lua
+CityFootprints.lua
 TravelAbilities.lua
 Terrain.lua
 Travel.lua

@@ -194,43 +194,78 @@ local function Steer(wp)
 end
 
 -- ---------------------------------------------------------------------------
--- (1) The goal on the zone map inside the walled city you are in: which side
--- of the wall it is on is unknown. Out of the gate and back is not a route.
--- (No flight points found, as the cases were measured.)
+-- (1) Inside or outside a walled city, whichever map the point is on: the
+-- city footprints (CityFootprints.lua, the client's terrain area IDs, from
+-- tools/build_city_footprints.py). Inside: planned on the city's map;
+-- outside: on the zone beyond the gate; within a chunk of the edge, or a
+-- city the terrain doesn't carry (Ironforge), or Thunder Bluff and
+-- Undercity (excepted): as before (cityMaybe, the wall rule). (No flight
+-- points found, as the cases were measured.)
 -- ---------------------------------------------------------------------------
 T._SetSliced(false)
 KnowFlights("none")
 ns.Set("travelHearth", false)
+local RIDES = { taxi = true, ship = true, zeppelin = true, tram = true, portal = true, transition = true }
+local function Shape(path)
+    local gate, ride = false, false
+    for i = 2, #(path or {}) do
+        local how = path[i].via
+        if type(how) == "table" then
+            if how.method == "gate" then gate = true end
+            if RIDES[how.method] or how.kind then ride = true end
+        end
+    end
+    return gate, ride
+end
+local FP = ns.CityFootprints
+check(FP and FP[1453] and FP[1454] and FP[1457] and FP[1456] and not FP[1455] and not FP[1458],
+    "footprints: (control) Stormwind, Orgrimmar, Darnassus and Thunder Bluff have one; Ironforge and Undercity (inside world models) none")
+check(T.Thresholds.footprintMargin and math.abs(T.Thresholds.footprintMargin - FP.chunk) < 1e-9, "footprints: the edge margin is one terrain chunk")
 local CASES = {
-    -- label, faction, player map/x/y, goal map/x/y, expected: "direct" or "kept"
-    { "Darnassus bank -> Ainethil on the Teldrassil map (202 yd)", "Alliance", 1457, .40, .42, 1438, .2860, .5190, "direct" },
-    { "Darnassus bank -> the innkeeper on the Teldrassil map (343 yd)", "Alliance", 1457, .40, .42, 1438, .312, .502, "direct" },
-    { "just inside the Darnassus gate -> Ainethil on the Teldrassil map", "Alliance", 1457, .86, .36, 1438, .2860, .5190, "kept" },
-    { "Stormwind inn -> Herbalist Pomeroy in Elwynn", "Alliance", 1453, .604, .753, 1429, .400, .484, "kept" },
-    { "Stormwind Old Town -> Herbalist Pomeroy in Elwynn", "Alliance", 1453, .76, .60, 1429, .400, .484, "kept" },
-    { "Orgrimmar inn -> the Durotar coast", "Horde", 1454, .54, .686, 1411, .585, .102, "kept" },
-    { "Undercity inn -> Tirisfal (Undercity excepted)", "Horde", 1458, .668, .386, 1420, .520, .695, "kept" },
-    { "Ironforge inn -> Dun Morogh", "Alliance", 1455, .184, .514, 1426, .603, .360, "kept" },
-    { "Thunder Bluff inn -> the Mulgore ground below (Thunder Bluff excepted)", "Horde", 1456, .454, .634, 1412, .399, .425, "kept" },
-    { "Teldrassil outside the gate -> Ainethil on the Teldrassil map (not in the city)", "Alliance", 1438, .40, .50, 1438, .2860, .5190, "kept" },
+    -- label, faction, player map/x/y, goal map/x/y, the goal's side ("inside", "outside", nil: not decided), expected route:
+    -- "direct" (a plain walk), "gate" (through a gate, no ride), "kept" (as the search finds it, no rule)
+    { "Darnassus bank -> Ainethil on the Teldrassil map (202 yd)", "Alliance", 1457, .40, .42, 1438, .2860, .5190, "inside", "direct" },
+    { "Darnassus bank -> the innkeeper on the Teldrassil map (343 yd)", "Alliance", 1457, .40, .42, 1438, .312, .502, "inside", "direct" },
+    { "just inside the Darnassus gate -> Ainethil on the Teldrassil map", "Alliance", 1457, .86, .36, 1438, .2860, .5190, "inside", "direct" },
+    { "Teldrassil, outside the gate -> Ainethil on the Teldrassil map", "Alliance", 1438, .40, .50, 1438, .2860, .5190, "inside", "gate" },
+    { "Stormwind inn -> Herbalist Pomeroy in Elwynn", "Alliance", 1453, .604, .753, 1429, .400, .484, "outside", "gate" },
+    { "Stormwind Old Town -> Herbalist Pomeroy in Elwynn", "Alliance", 1453, .76, .60, 1429, .400, .484, "outside", "gate" },
+    { "Orgrimmar inn -> the Durotar coast", "Horde", 1454, .54, .686, 1411, .585, .102, "outside", "gate" },
+    { "Undercity inn -> Tirisfal (Undercity excepted)", "Horde", 1458, .668, .386, 1420, .520, .695, nil, "kept" },
+    { "Ironforge inn -> Dun Morogh (no footprint)", "Alliance", 1455, .184, .514, 1426, .603, .360, nil, "kept" },
+    { "Thunder Bluff inn -> the Mulgore ground below (Thunder Bluff excepted)", "Horde", 1456, .454, .634, 1412, .399, .425, nil, "kept" },
 }
+local CITY_OF = { [1438] = 1457, [1429] = 1453, [1411] = 1454, [1420] = 1458, [1426] = 1455, [1412] = 1456 }
 for _, case in ipairs(CASES) do
-    local label, fac, pm, px, py, gm, gx, gy, want = unpack(case)
+    local label, fac, pm, px, py, gm, gx, gy, side, want = unpack(case)
     faction = fac
     race = fac == "Horde" and "Orc" or "Human"
     local c = Context()
     local start, goal = Place(pm, px, py), Place(gm, gx, gy, true)
     check(start.area and goal.area, label .. ": (control) both ends are on the network")
-    -- the route as found (no rule), the candidates and the steering choice
+    local cityMap = CITY_OF[gm]
+    local cont, wx, wy = G.MapToWorld(gm, gx, gy)
+    local verdict = T._Footprint(cityMap, cont, wx, wy)
+    check(verdict == side, ("%s: the footprint says %s (%s)"):format(label, tostring(side), tostring(verdict)))
+    if side == "inside" then
+        check(goal.city == cityMap and goal.m == cityMap and goal.cityMaybe == nil, label .. ": planned on the city's map, inside its walls")
+    elseif side == "outside" then
+        check(goal.city == nil and goal.cityMaybe == nil and goal.m == gm, label .. ": planned outside the walls, no wall of unknown side")
+    else
+        check(goal.city == nil and goal.m == gm, label .. ": planned as before")
+    end
     local ctx = {}; for k, v in pairs(c) do ctx[k] = v end
     ctx.preference, ctx.measureDanger = "fastest", true
     local raw = T.Search(Place(pm, px, py), Place(gm, gx, gy, true), ctx)
     local routes = T.Routes(start, goal, c, "fastest")
     local fastest, safer = routes[1], routes[2]
-    check(raw and (#raw > 2 or want == "kept"), label .. ": (control) the search alone goes by the network (" .. Ids(raw) .. ")")
+    local gate, ride = Shape(fastest and fastest.path)
     if want == "direct" then
         check(fastest and #fastest.path == 2 and fastest.path[2].via == "walk" and safer and #safer.path == 2,
             label .. ": walk straight there, both candidates (" .. Ids(fastest and fastest.path) .. ")")
+    elseif want == "gate" then
+        check(fastest and #fastest.path > 2 and gate and not ride and Ids(fastest.path) == Ids(raw),
+            label .. ": through the gate (" .. Ids(fastest and fastest.path) .. ")")
     else
         check(fastest and Ids(fastest.path) == Ids(raw), label .. ": the route stands as found (" .. Ids(fastest and fastest.path) .. ")")
     end
@@ -262,29 +297,22 @@ for _, b in ipairs({ "Nowhere", "Darnassus" }) do
         check(s == nil and p and #p.path == 2,
             ("Darnassus (%.2f, %.2f; hearth %s): a trainer on the Teldrassil map's copy is a straight walk, no \"Leave Darnassus\" (%s)"):format(
                 at[1], at[2], b, tostring(s and s.title)))
+        check(w.m == 1438, "Darnassus: the waypoint itself is not changed")
     end
 end
 bind = "Nowhere"
 ns.Set("travelHearth", false)
 
--- From the inn to just outside the city, every flight point known: a walk
--- out through the gate and on, never a flight (the certain-only first
--- search pass once ruled out the gates whose traversal is unmeasured, and
--- a 10-minute flight won) and never a straight arrow through the wall (the
--- goal is a short gate walk away: taken as outside, not of unknown side).
+-- Per city with a footprint (Stormwind, Orgrimmar, Darnassus): a point deep
+-- inside, on the zone map, is planned inside (from the inn: no gate, no
+-- ride; from outside: in through the gate); the same point on the city's
+-- own map gives the same place; a point on the city's map but outside the
+-- footprint is planned outside; a point on the footprint's edge (within a
+-- chunk) stays undecided: cityMaybe, the wall rule. Every flight point
+-- known. Ironforge has no footprint: its points are planned as before.
 KnowFlights("all")
-local RIDES = { taxi = true, ship = true, zeppelin = true, tram = true, portal = true, transition = true }
-local function Shape(path)
-    local gate, ride = false, false
-    for i = 2, #(path or {}) do
-        local how = path[i].via
-        if type(how) == "table" then
-            if how.method == "gate" then gate = true end
-            if RIDES[how.method] or how.kind then ride = true end
-        end
-    end
-    return gate, ride
-end
+local EDGE = 32 * 1600 / 3
+local function ChunkCentre(fp, gx, gy) return EDGE - (gy + .5) * FP.chunk, EDGE - (gx + .5) * FP.chunk end
 local EXITS = {
     -- city, faction, race, the inn on the city map, the gate (inner > outer), the city's centre node
     { "Orgrimmar", "Horde", "Orc", 1454, .54, .686, "ENTRANCE_C1454_517_858", "ENTRANCE_C1411_455_119", "CITY_ORGRIMMAR" },
@@ -292,29 +320,122 @@ local EXITS = {
     { "Ironforge", "Alliance", "Dwarf", 1455, .184, .514, "ENTRANCE_C1455_152_857", "ENTRANCE_IRONFORGE_DUN_MOROGH_APPROACH", "CITY_IRONFORGE" },
     { "Darnassus", "Alliance", "NightElf", 1457, .40, .42, "ENTRANCE_C1457_885_358", "ENTRANCE_C1438_357_544", "CITY_DARNASSUS" },
 }
-local function Outside(outer, centre, yards)
+local function Outward(outer, centre, yards)
     local cont, ox, oy = T.Pos(outer)
     local _, cx, cy = T.Pos(centre)
     local dx, dy = ox - cx, oy - cy
     local len = math.sqrt(dx * dx + dy * dy)
-    local x, y = G.WorldToMap(cont, ox + dx / len * yards, oy + dy / len * yards, outer.m)
-    return x, y
+    return cont, ox + dx / len * yards, oy + dy / len * yards
 end
 for _, exit in ipairs(EXITS) do
     local name, fac, rc, cm, cx, cy, innerId, outerId, centreId = unpack(exit)
     faction, race = fac, rc
     local c = Context()
-    local outer = d.nodes[outerId]
+    local outer, centre = d.nodes[outerId], d.nodes[centreId]
+    local fp = FP[cm]
     check(d.nodes[innerId] and outer and d.nodes[innerId].city == cm and outer.city == nil,
         name .. ": (control) the gate leads from the city map to the ground outside")
-    local gx, gy = Outside(outer, d.nodes[centreId], 60)
-    local goal = T._GoalPlace({ m = outer.m, x = gx, y = gy })
+    local zone = outer.m
+    -- deep inside, on the zone map
+    local ccont, cwx, cwy = T.Pos(centre)
+    local ix, iy = G.WorldToMap(ccont, cwx, cwy, zone)
+    local inside = T._GoalPlace({ m = zone, x = ix, y = iy })
+    if fp then
+        check(T._Footprint(cm, ccont, cwx, cwy) == "inside" and inside.city == cm and inside.m == cm,
+            ("%s: the city's centre, on the zone map (%d %.3f, %.3f), is planned inside"):format(name, zone, ix, iy))
+        local own = T._GoalPlace({ m = cm, x = centre.x, y = centre.y })
+        check(own.city == cm and own.area == inside.area and math.abs(own.x - inside.x) < 1e-3 and math.abs(own.y - inside.y) < 1e-3,
+            name .. ": the same point on the city's own map is the same place")
+        for _, preference in ipairs({ "fastest", "safer" }) do
+            local _, fromInn = T.Routes(Place(cm, cx, cy), T._GoalPlace({ m = zone, x = ix, y = iy }), c, preference)
+            local gate, ride = Shape(fromInn and fromInn.path)
+            check(fromInn and not gate and not ride, ("%s inn -> its centre on the zone map (%s): a walk inside the city (%s)"):format(
+                name, preference, Ids(fromInn and fromInn.path)))
+            local ocont, owx, owy = Outward(outer, centre, 150)
+            local sx, sy = G.WorldToMap(ocont, owx, owy, zone)
+            local _, fromOut = T.Routes(Place(zone, sx, sy), T._GoalPlace({ m = zone, x = ix, y = iy }), c, preference)
+            gate, ride = Shape(fromOut and fromOut.path)
+            if cm ~= 1454 then
+                check(fromOut and gate and not ride, ("%s: from 150 yd outside the gate to its centre on the zone map (%s): in through the gate (%s)"):format(
+                    name, preference, Ids(fromOut and fromOut.path)))
+            else
+                -- Orgrimmar's inbound gate (an unmeasured traversal) waits for
+                -- the uncertain retry, which never runs while a certain way
+                -- exists: with flight points known the way in is a flight to
+                -- its flight master. Pricing it like the outbound gate changes
+                -- the protected Thrall route (run_thrall_travel). Open item.
+                check(fromOut ~= nil, ("%s: from 150 yd outside the gate to its centre on the zone map (%s): a route (%s)"):format(
+                    name, preference, Ids(fromOut and fromOut.path)))
+            end
+        end
+        -- on the city's map, outside the footprint: the zone beyond the gate
+        local far
+        for r = 1, #fp.rows do
+            local row = fp.rows[r]
+            for i = 1, #row do
+                local gx, gy = fp.gx + i - 1, fp.gy + r - 1
+                local wx, wy = ChunkCentre(fp, gx, gy)
+                if not far and T._Footprint(cm, fp.cont, wx, wy) == "outside" then
+                    local x, y = G.WorldToMap(fp.cont, wx, wy, cm)
+                    local zx, zy = G.WorldToMap(fp.cont, wx, wy, zone)
+                    if zx and zx >= 0 and zx <= 1 and zy >= 0 and zy <= 1 and T.AreaAt(zone, zx, zy) == outer.area
+                        and T.AreaAt(cm, x, y) == outer.area then far = { x, y, zx, zy } end
+                end
+            end
+        end
+        check(far ~= nil, name .. ": (control) a point on the city's map outside its footprint, over the zone around it")
+        if far then
+            local g = T._GoalPlace({ m = cm, x = far[1], y = far[2] })
+            check(g.city == nil and g.m == zone and math.abs(g.x - far[3]) < 1e-6 and math.abs(g.y - far[4]) < 1e-6,
+                ("%s: a point on the city's map (%.3f, %.3f) outside its footprint is planned outside, on map %d"):format(name, far[1], far[2], zone))
+        end
+        -- the edge band: a chunk border between the city and the ground around it
+        local edge
+        for r = 1, #fp.rows do
+            local row = fp.rows[r]
+            local i = row:find("oc", 1, true)
+            if not edge and i and r > 2 and r < #fp.rows - 1 then
+                local gx, gy = fp.gx + i, fp.gy + r - 1 -- the city chunk; its west edge is the border
+                local wx = EDGE - (gy + .5) * FP.chunk
+                local wy = EDGE - gx * FP.chunk
+                local zx, zy = G.WorldToMap(fp.cont, wx, wy, zone)
+                if zx and zx >= 0 and zx <= 1 and zy >= 0 and zy <= 1 and T.AreaAt(zone, zx, zy) == outer.area then
+                    edge = { wx, wy, zx, zy }
+                end
+            end
+        end
+        check(edge ~= nil, name .. ": (control) a point on the footprint's edge, over the zone map")
+        if edge then
+            local g = T._GoalPlace({ m = zone, x = edge[3], y = edge[4] })
+            check(T._Footprint(cm, fp.cont, edge[1], edge[2]) == nil and g.city == nil and g.cityMaybe == cm,
+                ("%s: on the footprint's edge (%d %.3f, %.3f) it stays undecided: cityMaybe, the wall rule"):format(name, zone, edge[3], edge[4]))
+            for _, preference in ipairs({ "fastest", "safer" }) do
+                local _, chosen = T.Routes(Place(cm, cx, cy), T._GoalPlace({ m = zone, x = edge[3], y = edge[4] }), c, preference)
+                local steer = T._Preferred(Place(cm, cx, cy), T._GoalPlace({ m = zone, x = edge[3], y = edge[4] }), c, preference)
+                check(chosen and steer and Ids(chosen.path) == Ids(steer.path),
+                    ("%s inn -> the footprint's edge (%s): Travel.Routes and the steering search agree"):format(name, preference))
+            end
+        end
+    else
+        check(T._Footprint(cm, ccont, cwx, cwy) == nil and inside.city == nil and inside.m == zone,
+            name .. ": no footprint: a point inside its rectangle on the zone map is planned as before")
+    end
+    -- just outside the gate (60 yd), flight points known: a gate walk, never
+    -- a flight or a straight arrow through the wall
+    local ocont, owx, owy = Outward(outer, centre, 60)
+    local gx, gy = G.WorldToMap(ocont, owx, owy, zone)
+    local goal = T._GoalPlace({ m = zone, x = gx, y = gy })
     local start = Place(cm, cx, cy)
     check(start.city == cm and goal.area == outer.area and goal.city == nil,
-        ("%s: (control) the inn is in the city, the goal 60 yd outside the gate (map %d %.3f, %.3f)"):format(name, outer.m, gx, gy))
+        ("%s: (control) the inn is in the city, the goal 60 yd outside the gate (map %d %.3f, %.3f)"):format(name, zone, gx, gy))
+    if fp then
+        local verdict = T._Footprint(cm, ocont, owx, owy)
+        check(verdict ~= "inside" and goal.cityMaybe == nil,
+            name .. ": 60 yd outside the gate: never inside, no wall of unknown side (" .. tostring(verdict) .. ")")
+    end
     for _, preference in ipairs({ "fastest", "safer" }) do
-        local _, chosen = T.Routes(Place(cm, cx, cy), T._GoalPlace({ m = outer.m, x = gx, y = gy }), c, preference)
-        local steer = T._Preferred(Place(cm, cx, cy), T._GoalPlace({ m = outer.m, x = gx, y = gy }), c, preference)
+        local _, chosen = T.Routes(Place(cm, cx, cy), T._GoalPlace({ m = zone, x = gx, y = gy }), c, preference)
+        local steer = T._Preferred(Place(cm, cx, cy), T._GoalPlace({ m = zone, x = gx, y = gy }), c, preference)
         local gate, ride = Shape(chosen and chosen.path)
         check(chosen and #chosen.path > 2 and gate and not ride,
             ("%s inn -> just outside, flight points known (%s): a walk out through the gate (%s)"):format(name, preference, Ids(chosen and chosen.path)))
@@ -324,7 +445,7 @@ for _, exit in ipairs(EXITS) do
     -- steered, all at once: "Leave <city>", the arrow led to the gate
     WP.ClearAll(true)
     PlaceOnMap(cm, cx, cy)
-    local w = WP.Add(outer.m, gx, gy, { title = "Just outside " .. name, silent = true })
+    local w = WP.Add(zone, gx, gy, { title = "Just outside " .. name, silent = true })
     WP.SetActive(w, true)
     local s = Steer(w)
     local p = T.Current()
@@ -332,14 +453,11 @@ for _, exit in ipairs(EXITS) do
     check(s and s.title == L.TRAVEL_LEAVE:format(name) and p and gate and not ride,
         ("%s inn -> just outside, steered: %q (%s)"):format(name, L.TRAVEL_LEAVE:format(name), tostring(s and s.title)))
 end
--- The reported shape: the Orgrimmar inn to the Durotar coast, 644 yd, the
--- coast inside Orgrimmar's map rectangle (maybe inside: cityMaybe). With
+-- The reported shape: the Orgrimmar inn to the Durotar coast, 644 yd. With
 -- every flight point known: the gate walk, about 150 s, never the flight.
 faction, race = "Horde", "Orc"
 do
     local c = Context()
-    local goal = T._GoalPlace({ m = 1411, x = .585, y = .102 })
-    check(goal.cityMaybe == 1454, "Orgrimmar -> Durotar coast: (control) the coast lies in Orgrimmar's rectangle")
     for _, preference in ipairs({ "fastest", "safer" }) do
         local _, chosen = T.Routes(Place(1454, .54, .686), T._GoalPlace({ m = 1411, x = .585, y = .102 }), c, preference)
         local gate, ride = Shape(chosen and chosen.path)
@@ -347,27 +465,31 @@ do
             ("Orgrimmar inn -> Durotar coast, flight points known (%s): the gate walk, %s s, not a flight or a straight arrow (%s)"):format(
                 preference, tostring(chosen and math.floor(chosen.total)), Ids(chosen and chosen.path)))
     end
-    -- The wall rule itself: a goal a short gate walk away is outside, never
-    -- of unknown side. Handed the old 656 s flight route, it keeps it (no
-    -- straight arrow through Orgrimmar's wall); for Darnassus' Ainethil (the
-    -- gate 515 yd off, then back in) it still walks straight.
+    -- The wall rule itself (a goal of unknown side, cityMaybe): a goal a
+    -- short gate walk away is outside, never of unknown side. Handed the old
+    -- 656 s flight route, it keeps it (no straight arrow through Orgrimmar's
+    -- wall); for Darnassus' Ainethil (the gate 515 yd off, then back in) it
+    -- walks straight.
     local ctx = {}; for k, v in pairs(c) do ctx[k] = v end
     ctx.preference, ctx.measureDanger = "fastest", true
     local start = Place(1454, .54, .686)
+    local coast = Place(1411, .585, .102)
+    coast.goal, coast.player, coast.cityMaybe = true, nil, 1454
     local flight = { preference = "fastest", total = 656, risk = 0, terrainPenalty = 0, path = {
         { node = start, at = 0 }, { node = d.nodes.TAXI_23, via = "walk", at = 28 },
         { node = d.nodes.TAXI_25, via = { method = "taxi", from = d.nodes.TAXI_23, to = d.nodes.TAXI_25 }, at = 144 },
-        { node = goal, via = "walk", at = 656 } } }
-    check(T._Unsure(start, goal, ctx, flight) == flight,
+        { node = coast, via = "walk", at = 656 } } }
+    check(T._Unsure(start, coast, ctx, flight) == flight,
         "wall rule: the Durotar coast is a short walk out of Orgrimmar's gate: a flight there is never turned into a straight arrow")
     faction, race = "Alliance", "NightElf"
     local dc = Context()
     local dctx = {}; for k, v in pairs(dc) do dctx[k] = v end
     dctx.preference, dctx.measureDanger = "fastest", true
-    local bank, ainethil = Place(1457, .40, .42), T._GoalPlace({ m = 1438, x = .2860, y = .5190 })
-    local p, t, r, g = T.Search(Place(1457, .40, .42), T._GoalPlace({ m = 1438, x = .2860, y = .5190 }), dctx)
+    local function Ainethil() local g = Place(1438, .2860, .5190); g.goal, g.player, g.cityMaybe = true, nil, 1457; return g end
+    local bank, ainethil = Place(1457, .40, .42), Ainethil()
+    local p, t, r, g = T.Search(Place(1457, .40, .42), Ainethil(), dctx)
     local out = T._Unsure(bank, ainethil, dctx, { path = p, total = t, risk = r, terrainPenalty = g, preference = "fastest" })
-    check(p and #p > 2 and out and #out.path == 2, "wall rule: (control) Darnassus bank -> Ainethil, the gate far off: still the straight walk")
+    check(p and #p > 2 and out and #out.path == 2, "wall rule: Darnassus bank -> Ainethil of unknown side, the gate far off: the straight walk")
 end
 
 -- ---------------------------------------------------------------------------
