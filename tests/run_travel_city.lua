@@ -678,6 +678,21 @@ do
         "the straight walk over an area's edge: the plain arrow, noted as only a straight line (" .. tostring(why) .. ")")
     s = Steer(over)
     check(s == nil and T.Note() == "unsure", "and still after the re-plan (the route re-anchored keeps the mark)")
+    -- walked over the edge into the goal's area: an ordinary walk now, the
+    -- mark (and the note) gone with its reason
+    local gx, gy = x + ux * 60 / g.w, y + uy * 60 / g.h
+    PlaceOnMap(m, x + ux * 45 / g.w, y + uy * 45 / g.h)
+    check(T._PlayerPlace().area == T._GoalPlace(over).area, "(control) now in the goal's area")
+    s = Steer(over)
+    check(s == nil and T.Note() == nil and T.Current() and not T.Current().unsure,
+        "over the edge into the goal's area: an ordinary walk, no note (" .. tostring(T.Note()) .. ")")
+    PlaceOnMap(m, x, y)
+    -- the wall case: inside the city the goal may be in, it holds; out of it, not
+    local inIF = { area = 9, city = 1455, cont = 0, wx = 0, wy = 0 }
+    local outIF = { area = 9, cont = 0, wx = 0, wy = 0 }
+    local maybe = { area = 9, cityMaybe = 1455, cont = 0, wx = 10, wy = 0, goal = true }
+    check(T.UnsureHolds(inIF, maybe) == true and T.UnsureHolds(outIF, maybe) == false,
+        "the wall case holds inside the city, not once out of its gate")
     local inside = WP.Add(m, x - ux * 20 / g.w, y - uy * 20 / g.h, { title = "Same area", silent = true })
     WP.SetActive(inside, true)
     s = Steer(inside)
@@ -743,9 +758,29 @@ for _, sliced in ipairs({ false, true }) do
     end
     local p0 = T.Current()
     check(Casting(s) and p0 and type(p0.path[p0.index].via) == "table" and p0.path[p0.index].via.kind == "teleport", ("mage trip (%s): in Southshore the route begins %q (%s)"):format(mode, castText, tostring(s and s.title)))
-    -- the cast: a loading screen, then the Mage Quarter
+    -- a loading screen at the cast step with no cast (a summons, say): not
+    -- part of the route, so it is dropped (no "cast" lingering after it).
+    -- Another spell cast just before, or an unreadable cast, is no evidence.
+    M.FireEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "Cast-3-0-0-0-133-0", 133)
+    M.FireEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "Cast-3-0-0-0-0-0", "3561")
+    M.FireEvent("UNIT_SPELLCAST_SUCCEEDED", "party1", "Cast-3-0-0-0-3561-0", 3561)
+    M.player.noPosition = true
+    for _ = 1, 10 do M.now = M.now + 1 / 30; T.Steer(w) end
+    check(T.Current() == nil, ("mage trip (%s): a loading screen at the cast step without the cast drops the route"):format(mode))
+    M.player.noPosition = nil
+    for _ = 1, 600 do
+        M.now = M.now + 1 / 60
+        s = T.Steer(w)
+        if T.Current() and s and s.title == castText then break end
+    end
+    check(Casting(s), ("mage trip (%s): (control) back in Southshore, the route begins %q again"):format(mode, castText))
+    -- the cast (UNIT_SPELLCAST_SUCCEEDED, as the game sends it): a loading
+    -- screen, then the Mage Quarter
+    M.now = M.now + 10
+    M.FireEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "Cast-3-0-0-0-3561-0", 3561)
     M.player.noPosition = true
     for _ = 1, 30 do M.now = M.now + 1 / 30; T.Steer(w) end
+    check(T.Current() ~= nil, ("mage trip (%s): the cast's loading screen keeps the route"):format(mode))
     PlaceOnMap(1453, .4884, .8807, 1453)
     M.player.noPosition = nil
     bags[17031] = 4

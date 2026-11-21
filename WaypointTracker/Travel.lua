@@ -1318,6 +1318,16 @@ do
         return false
     end
 
+    -- Does what made a straight walk Unsure still hold from `start` (a
+    -- route re-anchored where you are, Reprice): in the walled city the goal
+    -- may be inside, in the same area; or a short hop over an area's edge.
+    -- Not once you have walked out of the city or over the edge.
+    function Travel.UnsureHolds(start, goal)
+        if start.city and goal.cityMaybe == start.city and start.area == goal.area then return true end
+        local straight = Dist(start, goal)
+        return straight ~= nil and straight <= SHORT_HOP and start.area ~= goal.area
+    end
+
     -- One rule for Travel.Routes and Preferred (they must stay the same decision).
     function Unsure(start, goal, c, route)
         if not route then return nil end
@@ -1785,10 +1795,13 @@ local Steering = {
     taxiLanded = 150, boatLanded = 600, -- yards: off at a ride's end (FinishRide)
     planningNote = 1, -- seconds: a route awaited this long is "planning" (Plain)
     gapStation = 60, -- yards: from a tram's or portal's stop as the position went (IntoRide)
+    castWindow = 10, -- seconds: a cast that succeeded this long before a gap began (Cast)
+    gapDebounce = 1, -- seconds: at most one re-plan this often for the position coming back (Seen)
 }
 Travel.Thresholds.boardUnmeasured, Travel.Thresholds.taxiLanded = Steering.boardUnmeasured, Steering.taxiLanded
 Travel.Thresholds.boatLanded, Travel.Thresholds.planningNote = Steering.boatLanded, Steering.planningNote
 Travel.Thresholds.gapStation = Steering.gapStation
+Travel.Thresholds.castWindow, Travel.Thresholds.gapDebounce = Steering.castWindow, Steering.gapDebounce
 
 -- A vessel's stop on its client path (Parse: vehicleStop) is where it rests,
 -- not where anyone stands to board: the nearest ground can be further off
@@ -2017,7 +2030,7 @@ local function Reprice(p, here, c, index, shortcut)
     end
     return { wp = p.wp, path = path, total = elapsed, risk = risk, here = here,
         built = GetTime(), c = c, preference = p.preference, index = 2, target = path[2], followed = true,
-        unsure = p.unsure and #path == 2 or nil }
+        unsure = p.unsure and #path == 2 and Travel.UnsureHolds(here, path[2].node) or nil }
 end
 
 -- A chosen itinerary constrains the onward actions, not an obsolete walking
@@ -2878,19 +2891,46 @@ function Steering.IntoRide(path, i)
     return at ~= nil and at <= Steering.gapStation
 end
 
+-- Was the jump step `how` (a hearthstone, teleport or item) really used?
+-- The player's last successful cast (UNIT_SPELLCAST_SUCCEEDED, below:
+-- Steering.cast), within castWindow seconds: the step's spell, or the
+-- hearthstone item's own spell; for an item whose spell the data doesn't
+-- name, a cast just then. A client without the event: as before (yes).
+function Steering.Cast(how)
+    local S = Steering
+    if not S.castEvents then return true end
+    local c = S.cast
+    if not (c and GetTime() - c.t <= S.castWindow) then return false end
+    if how.spell then return c.spell == how.spell end
+    if how.item then
+        for _, h in ipairs(data and data.abilities and data.abilities.hearths or {}) do
+            if h.item == how.item then return c.spell == h.spell end
+        end
+    end
+    return true
+end
+
 -- Where the player was last seen (Steering.last), and whether the gap in
 -- the position that has begun is part of the route (Steering.gap): decided
--- as it begins, from the step then. Expected: a ride under way, a ride or
--- jump step (at its stop, or about to cast), or the walk into the tram or
--- a portal from beside its stop. Anything else (a summons, a portal off the
--- route, out of a dungeon) is not. When the position comes back, a re-plan
--- is due at once.
-function Steering.Seen(here)
+-- as it begins, from the step then. Expected: a ride that has started
+-- (riding); a jump step whose spell or item was just cast (Cast); a tram
+-- or portal step, or the walk into one, from beside its stop (the gap is
+-- how those rides start). A dock or flight master's step alone is not, nor
+-- is anything else (a summons, an unplanned hearthstone, a portal off the
+-- route, out of a dungeon): the route is dropped at once, as before.
+-- When the position comes back with a route, or one still awaited, a
+-- re-plan is due at once (at most each gapDebounce seconds: a position that
+-- flickers doesn't re-plan every frame).
+function Steering.Seen(here, wp)
     local S = Steering
     if here then
-        -- the position back after a gap: plan from here now (a route kept
-        -- over it is re-anchored; one dropped is searched for at once)
-        if S.gap ~= nil then Travel.Invalidate() end
+        if S.gap ~= nil and (plan or (wp and not noRoute and not S.unplaced)) then
+            local now = GetTime()
+            if not S.gapReplan or now - S.gapReplan >= S.gapDebounce then
+                S.gapReplan = now
+                Travel.Invalidate()
+            end
+        end
         local last = S.last or {}
         S.last, S.gap = last, nil
         last.cont, last.wx, last.wy = here.cont, here.wx, here.wy
@@ -2900,8 +2940,22 @@ function Steering.Seen(here)
     local p = plan
     local e = p and p.path[p.index]
     local how = e and e.via
-    S.gap = riding ~= nil or (type(how) == "table" and (how.kind ~= nil or TRANSPORT[how.method] == true))
-        or (p ~= nil and S.IntoRide(p.path, p.index))
+    local gap = riding ~= nil
+    if not gap and type(how) == "table" then
+        if how.kind then
+            gap = S.Cast(how)
+        elseif S.gapRides[how.method] then
+            local from = p.path[p.index - 1]
+            local at = S.last and from and Dist(S.last, from.node)
+            gap = at ~= nil and at <= S.gapStation
+        end
+    end
+    if not gap and p then gap = S.IntoRide(p.path, p.index) end
+    S.gap = gap and true or false
+    if not S.gap and p then
+        plan, noRoute, job, replanQueued = nil, false, nil, false
+        ns.Fire("TRAVEL_PLANNED", nil)
+    end
 end
 
 -- The tram gives no position aboard. Without one: the step to show (the
@@ -2939,7 +2993,7 @@ function Travel.Steer(wp, shared)
     Travel.Offer(wp)
     local now = GetTime()
     local here = PlaceNow() -- read only, until a re-plan keeps it (Kept)
-    Steering.Seen(here)
+    Steering.Seen(here, wp)
     if here then
         Sample(here)
         NoteSpeed()
@@ -3188,6 +3242,13 @@ ns.RegisterEvent("TAXIMAP_OPENED", function()
         Travel.ReadFlightMap()
         Travel.Refresh()
     end
+end)
+
+-- The player's casts, for Steering.Cast: was a jump step really used?
+Steering.castEvents = ns.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", function(unit, _, spellID)
+    if ns.Str(unit) ~= "player" then return end
+    local spell = ns.Num(spellID)
+    if spell then Steering.cast = { spell = spell, t = GetTime() } end
 end)
 
 ns.RegisterEvent("HEARTHSTONE_BOUND", function()

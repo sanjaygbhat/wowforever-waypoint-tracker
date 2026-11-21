@@ -2223,18 +2223,29 @@ for _, sliced in ipairs({ false, true }) do
         check(s and s.title == L.TRAVEL_FLY:format(T.PlaceName(T.Data().nodes.TAXI_1)),
             label .. '(control) at the flight master: fly (' .. tostring(s and s.title) .. ')')
         if landing == 'planned' then
-            -- the position gone a moment at a ride's step (a loading screen
-            -- as you take it): part of the route, so it is kept
-            local before = T.Current()
+            -- the position gone at the flight master's step, no flight taken
+            -- (a summons, say): not part of the route, so it is dropped
             M.player.noPosition = true
             for _ = 1, 10 do Steer(w, 0.25) end
-            check(before and T.Current() == before, label .. 'no position at the ride\'s step: the route is kept')
+            check(T.Current() == nil, label .. 'no position at the flight master, no flight taken: the route is dropped')
             M.player.noPosition = nil
             Steer(w); Settle(w)
+            s = Steer(w)
+            check(s and s.title == L.TRAVEL_FLY:format(T.PlaceName(T.Data().nodes.TAXI_1)),
+                label .. 'the position back there: fly, planned again (' .. tostring(s and s.title) .. ')')
         end
         M.player.taxi = true
         for _ = 1, 20 do s = Steer(w, 0.5) end
         check(s and T.Riding(), label .. 'in the air')
+        if landing == 'planned' then
+            -- once the flight has started, a gap is part of it: kept
+            local before = T.Current()
+            M.player.noPosition = true
+            for _ = 1, 10 do Steer(w, 0.25) end
+            check(before and T.Current() == before, label .. 'no position on the flight: the route is kept')
+            M.player.noPosition = nil
+            s = Steer(w)
+        end
         M.player.taxi = nil
         if landing == 'planned' then
             M.player.wx, M.player.wy = -997, -1500
@@ -2318,6 +2329,39 @@ for _, sliced in ipairs({ false, true }) do
         end
         check(plain == 0 and other == 0, label .. short .. ' yd: out at the far end the route goes on at once (' .. plain .. ' plain, ' .. other .. ' other)')
     end
+end
+-- The position coming back re-plans at once only with a route, or one still
+-- awaited, and at most once a second however it flickers
+do
+    RideWorld(true, false)
+    T._SetSliced(false)
+    WP.ClearAll(true)
+    M.player.inst, M.player.wx, M.player.wy = 0, -1000, -2400
+    local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+    WP.SetActive(w, true)
+    Steer(w); Settle(w)
+    local invalidate, calls = T.Invalidate, 0
+    T.Invalidate = function(...) calls = calls + 1; return invalidate(...) end
+    for f = 1, 60 do
+        M.player.noPosition = f % 2 == 1 or nil
+        Steer(w)
+    end
+    M.player.noPosition = nil
+    check(calls >= 1 and calls <= 2, 'a position flickering on and off for a second re-plans at most once a second (' .. calls .. ')')
+    -- a waypoint the network can't place: nothing to plan, no re-plan for it
+    WP.ClearAll(true)
+    local off = WP.Add(7777, 0.5, 0.5, { title = 'Unmapped zone' })
+    WP.SetActive(off, true)
+    for _ = 1, 5 do Steer(off, 0.5) end
+    check(T.Note() == 'goal-offnet', '(control) the waypoint is off the network')
+    calls = 0
+    for f = 1, 6 do
+        M.player.noPosition = f % 2 == 1 or nil
+        Steer(off, 1.1)
+    end
+    M.player.noPosition = nil
+    check(calls == 0, 'no route and none awaited: the position coming back re-plans nothing (' .. calls .. ')')
+    T.Invalidate = invalidate
 end
 -- "planning": only after a second without a route (a slow first search),
 -- then on the arrow and in the log; nothing once the route has come

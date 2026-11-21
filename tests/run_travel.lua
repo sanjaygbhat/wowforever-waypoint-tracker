@@ -597,13 +597,35 @@ local arrowLines = {}
 for _, o in ipairs(M.frames) do
     if o._kind == "FontString" and o._parent == ns.Arrow.textFrame then arrowLines[#arrowLines + 1] = o end
 end
-local etaLine = arrowLines[3]
-check(#arrowLines == 3, "the arrow has its three text lines (" .. #arrowLines .. ")")
+local etaLine, noteLine = arrowLines[3], ns.Arrow.noteText
+check(#arrowLines == 4 and arrowLines[4] == noteLine, "the arrow has its three text lines and the note's (" .. #arrowLines .. ")")
+-- the note's line: the text frame's width, two lines at most (wrapped, the
+-- rest truncated), inside the frame, so it never runs past it or its Edit
+-- Mode box; the frame stays click-through
+local tf = ns.Arrow.textFrame
+check(noteLine:GetWidth() == tf:GetWidth() and noteLine:CanWordWrap() and noteLine:GetHeight() >= 20 and noteLine:GetHeight() <= 26
+    and tf:GetHeight() >= 40 + noteLine:GetHeight() and not tf:IsMouseEnabled(),
+    "the note's line fits the text frame: its width, two lines tall, inside the frame")
+-- every note, in every locale, fits two lines of the frame's width (a
+-- generous 40 characters a line at this size; CJK and Hangul count double)
+for _, loc in ipairs({ "enUS", "deDE", "esES", "frFR", "ptBR", "ruRU", "zhCN", "zhTW", "koKR" }) do
+    local strings = {}
+    local chunk = assert(loadfile("WaypointTracker/Locales/" .. loc .. ".lua"))
+    setfenv(chunk, setmetatable({ GetLocale = function() return loc end }, { __index = _G }))
+    chunk("WaypointTracker", { L = strings, NewLocale = function() return strings end })
+    check(loc == "enUS" or strings.TRAVEL_NOTE_GOAL_OFFNET, loc .. ": its notes are read for the length check")
+    for _, key in ipairs({ "TRAVEL_NOTE_PLANNING", "TRAVEL_NOTE_OFFNET", "TRAVEL_NOTE_GOAL_OFFNET", "TRAVEL_NOTE_STRAIGHT" }) do
+        local text, width = strings[key] or ns.L[key], 0
+        for ch in text:gmatch("[%z\1-\127\194-\244][\128-\191]*") do width = width + (#ch >= 3 and 2 or 1) end
+        if width > 80 then check(false, ("%s %s fits two lines of the note (%d)"):format(loc, key, width)) end
+    end
+end
 local function Shown(wp)
     WP.SetActive(wp, true)
     M.Tick(2.5, 0.1)
-    return etaLine and etaLine:GetText()
+    return etaLine and etaLine:GetText(), noteLine:GetText()
 end
+local function Note(wp) return select(2, Shown(wp)) end
 local function LastPlain()
     local entries = WaypointTrackerDB.travelLog
     for k = #entries, 1, -1 do
@@ -620,7 +642,8 @@ MoveTo(-1000, -2400)
 local goldshire = WP.Add(37, 0.7, 0.6, { title = "Goldshire" })
 WP.SetActive(goldshire, true)
 check(Steer(goldshire) == nil and Travel.Note() == nil, "same area: the plain arrow and no note")
-check(Shown(goldshire) == "", "same area: the arrow's third line stays empty")
+local eta3, note3 = Shown(goldshire)
+check(eta3 == "" and note3 == "", "same area: the arrow's third line and its note stay empty")
 
 -- the waypoint on a zone the network doesn't cover: not on the network
 local pinned = WP.Add(7777, 0.5, 0.5, { title = "Unmapped zone" })
@@ -629,7 +652,8 @@ s = Steer(pinned)
 local why, text = Travel.Note()
 check(s == nil and why == "goal-offnet" and text == L.TRAVEL_NOTE_GOAL_OFFNET,
     "a waypoint the network can't place: the plain arrow says so (" .. tostring(why) .. ")")
-check(Shown(pinned) == L.TRAVEL_NOTE_GOAL_OFFNET, "on the arrow's third line, with the ETA line off")
+eta3, note3 = Shown(pinned)
+check(eta3 == "" and note3 == L.TRAVEL_NOTE_GOAL_OFFNET, "on the note's line, with the ETA line off")
 local entry = LastPlain()
 check(entry and entry.plain == "goal-offnet" and entry.here and entry.route and not entry.target,
     "and in the travel log")
@@ -640,14 +664,15 @@ WP.SetActive(goldshire, true)
 s = Steer(goldshire)
 why, text = Travel.Note()
 check(s == nil and why == "offnet" and text == L.TRAVEL_NOTE_OFFNET, "where you are isn't on the network: said (" .. tostring(why) .. ")")
-check(Shown(goldshire) == L.TRAVEL_NOTE_OFFNET, "on the arrow's third line")
+check(Note(goldshire) == L.TRAVEL_NOTE_OFFNET, "on the note's line")
 check(LastPlain() and LastPlain().plain == "offnet", "and in the travel log")
 
 -- a waypoint on another continent the network has no area for: the note
 -- replaces the map name under "On another continent"
 MoveTo(-1000, -2400)
 local elsewhere = WP.Add(1411, 0.5, 0.5, { title = "Unmapped zone" })
-check(Shown(elsewhere) == ns.Geo.GetMapName(1411) .. " · " .. L.TRAVEL_NOTE_GOAL_OFFNET
+eta3, note3 = Shown(elsewhere)
+check(eta3 == ns.Geo.GetMapName(1411) and note3 == L.TRAVEL_NOTE_GOAL_OFFNET
     and arrowLines[2]:GetText() == L.ANOTHER_CONTINENT,
     "another continent: the reason after the zone's name, which stays (" .. tostring(etaLine:GetText()) .. ")")
 
@@ -658,7 +683,8 @@ M.player.noPosition = true
 s = Steer(goldshire)
 check(s == nil and Travel.Note() == "noposition", "no position: the reason is kept")
 check(LastPlain() and LastPlain().plain == "noposition" and LastPlain().here == "no position", "and logged")
-check(Shown(goldshire) == "" and arrowLines[2]:GetText() == L.CANT_TRACK_HERE, "the arrow says it can't track, nothing more")
+eta3, note3 = Shown(goldshire)
+check(eta3 == "" and note3 == "" and arrowLines[2]:GetText() == L.CANT_TRACK_HERE, "the arrow says it can't track, nothing more")
 M.player.noPosition = nil
 ns.Set("realRoutes", false)
 check(Steer(goldshire) == nil and Travel.Note() == nil, "Real routes off: no note")
@@ -671,10 +697,11 @@ MoveTo(-1000, -2400) -- 2059 yd from the crossing
 s = Steer(westfall)
 check(s and s.title == L.TRAVEL_HEAD_TO:format("Westfall") and s.note == nil,
     "a long ordinary walk is not labelled (" .. tostring(s and s.note) .. ")")
-check(Shown(westfall) == "", "its third line stays as the ETA setting says (" .. tostring(etaLine:GetText()) .. ")")
+eta3, note3 = Shown(westfall)
+check(eta3 == "" and note3 == "", "its third line stays as the ETA setting says, no note (" .. tostring(etaLine:GetText()) .. ")")
 ns.Set("showETA", true)
-local total = Shown(westfall)
-check(total and total ~= "" and not total:find(L.TRAVEL_NOTE_STRAIGHT, 1, true), "with the ETA on: the total, no label (" .. tostring(total) .. ")")
+local total, totalNote = Shown(westfall)
+check(total and total ~= "" and totalNote == "", "with the ETA on: the total, no label (" .. tostring(total) .. ")")
 ns.Set("showETA", false)
 MoveTo(-1850, -700) -- 180 yd from it
 s = Steer(westfall)
@@ -704,12 +731,16 @@ WP.SetActive(durotar, true)
 s = Settle(durotar, -1700, -2630)
 check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar") and s.note == L.TRAVEL_NOTE_STRAIGHT,
     "the walk to an unmeasured stop is labelled (" .. tostring(s and s.note) .. ")")
--- the label is added to the third line: the waypoint and the total stay
-check(Shown(durotar) == L.TRAVEL_NOTE_STRAIGHT, "with the ETA off: the label alone on the third line")
+-- the label is on its own line: the waypoint and the total stay whole
+eta3, note3 = Shown(durotar)
+local _, under = noteLine:GetPoint()
+check(eta3 == "" and note3 == L.TRAVEL_NOTE_STRAIGHT and under == arrowLines[2],
+    "with the ETA off: the label on its own line, under the distance")
 ns.Set("showETA", true)
-local line3 = Shown(durotar)
-check(line3 and line3:find("Razor Hill", 1, true) and line3:sub(-#L.TRAVEL_NOTE_STRAIGHT) == L.TRAVEL_NOTE_STRAIGHT
-    and #line3 > #L.TRAVEL_NOTE_STRAIGHT + 3, "with the ETA on: the waypoint and the total, then the label (" .. tostring(line3) .. ")")
+local line3, label = Shown(durotar)
+_, under = noteLine:GetPoint()
+check(line3 and line3:find("Razor Hill", 1, true) and not line3:find(L.TRAVEL_NOTE_STRAIGHT, 1, true) and label == L.TRAVEL_NOTE_STRAIGHT
+    and under == etaLine, "with the ETA on: the waypoint and the total whole, the label under them (" .. tostring(line3) .. ")")
 ns.Set("showETA", false)
 s = Settle(durotar, -1760, -2770)
 check(s and s.pin and s.title == L.TRAVEL_BOAT:format("Durotar") and s.note == nil,
