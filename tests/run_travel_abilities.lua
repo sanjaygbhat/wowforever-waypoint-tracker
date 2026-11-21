@@ -953,6 +953,106 @@ check(changed(planned) == true, "(control) turned on again: the hearthstone on c
 itemCD[6948] = nil
 Clear()
 
+-- ---------------------------------------------------------------------------
+-- A jump never lands where you already are, and must earn its cost: the
+-- hearthstone 120 s, a class teleport 45 s, a teleport item 120 s saved
+-- (a reluctance in the search's score, never in the ETA).
+-- ---------------------------------------------------------------------------
+local TH = Travel.Thresholds
+check(TH.jumpNear == 400 and TH.hearthGain == 120 and TH.teleportGain == 45 and TH.itemGain == 120,
+    "jump thresholds: 400 yd is where you are; gains 120 s (hearthstone), 45 s (teleport), 120 s (item)")
+-- Each mage city teleport, cast from inside its own city: never planned,
+-- 250 yd from the landing node and 600 yd from it (where it would save
+-- over a minute); from the other continent it still is.
+local CITY_TELEPORTS = { [3561] = true, [3562] = true, [3565] = true, [3563] = true, [3566] = true, [3567] = true }
+local farAway = { [0] = Place("INN_7733"), [1] = Place("INN_6807") } -- Gadgetzan, Booty Bay
+local seenTeleports = 0
+bags[RUNE] = 5
+for _, t in ipairs(d.teleports) do
+    if CITY_TELEPORTS[t.spell] then
+        seenTeleports = seenTeleports + 1
+        local city, name = t.node.city, t.node.id
+        faction = d.cities[city]
+        known[t.spell] = true
+        c = Context()
+        check(Jump(c, "teleport", "spell", t.spell) and city, name .. ": (control) the teleport is a jump, into walled city " .. tostring(city))
+        local goal = Place(name, -20)
+        for _, yards in ipairs({ 250, 600 }) do
+            local inside = Place(name, yards)
+            check(inside.city == city, name .. ": (control) the start is in the city")
+            path = Travel.Search(inside, goal, c)
+            check(path and not Uses(path, "teleport"), ("%s: standing in the city %d yd from the landing, the teleport there is never planned"):format(name, yards))
+        end
+        path = Travel.Search(farAway[t.node.cont0], goal, c)
+        check(Uses(path, "teleport", "spell", t.spell), name .. ": from the other continent the teleport is still planned")
+        known[t.spell] = nil
+    end
+end
+check(seenTeleports == 6, "all six mage city teleports were checked (" .. seenTeleports .. ")")
+faction = "Alliance"
+bags[RUNE] = nil
+-- The hearthstone 150 and 300 yd from its inn, in the inn's area: not used
+-- (it would save seconds); from the other continent: used.
+bags[6948] = 1
+c = Context()
+local hearth = Jump(c, "hearth")
+check(hearth and hearth.node == town.inn, "hearthstone: (control) bound at the test inn, ready")
+local byInn = Place(town.inn.id, -10)
+for _, yards in ipairs({ 150, 300 }) do
+    path = Travel.Search(Place(town.inn.id, yards), byInn, c)
+    check(path and not Uses(path, "hearth"), ("hearthstone: %d yd from its inn, in its area, it is not used"):format(yards))
+end
+path = Travel.Search(farAway[town.inn.cont0], byInn, c)
+check(Uses(path, "hearth"), "hearthstone: from the other continent it is used")
+bags[6948] = nil
+-- The gain boundary, on a made-up network: one area on map 37, the landing
+-- node (an inn, a leaving place only) far from the start, the goal on it.
+-- Saving one second less than the jump's gain: walk; one second more: jump.
+-- Both in the fastest search and in the safer one (labels compared on four
+-- dimensions there). The ETA is the jump's own time, without the reluctance.
+do
+    local shippedData = ns.TravelData
+    local function Pt(x) local cont, wx, wy = ns.Geo.MapToWorld(37, x, .5); return cont, wx, wy end
+    local function Network(landingX)
+        local cont, wx, wy = Pt(landingX)
+        ns.TravelData = { areas = { "one" }, indoor = {}, maps = "37\t1", regions = "",
+            nodes = table.concat({ "LAND", "inn", 1, cont, wx, wy, 37, landingX * 100, 50 }, "\t"),
+            links = "", cities = "", towns = "", levels = "", factors = "" }
+        Travel._Reset()
+        return Travel.Data()
+    end
+    local function At(x, goal)
+        local cont, wx, wy = Pt(x)
+        return { area = 1, cont = cont, wx = wx, wy = wy, m = 37, x = x, y = .5, player = not goal or nil, goal = goal or nil }
+    end
+    local startX = .1
+    for _, case in ipairs({ { kind = "hearth", gain = 120 }, { kind = "teleport", gain = 45 }, { kind = "item", gain = 120 } }) do
+        for _, saved in ipairs({ case.gain - 1, case.gain + 1 }) do
+            -- walking takes 20 s (the jump) + saved: yards = seconds * 7 / 1.15
+            local landingX = startX + (20 + saved) * 7 / 1.15 / 3000
+            local net = Network(landingX)
+            local jumpCtx = Context()
+            jumpCtx.run, jumpCtx.ground = 7, 7
+            jumpCtx.jumps = { { kind = case.kind, node = net.nodes.LAND, cost = 20, item = 6948, spell = 3561, name = "Test" } }
+            for _, preference in ipairs({ "fastest", "safer" }) do
+                jumpCtx.preference = preference
+                local p, t = Travel.Search(At(startX), At(landingX, true), jumpCtx)
+                local jumped = Uses(p, case.kind) ~= nil
+                local label = ("gain boundary (%s, %s): a jump saving %d s"):format(case.kind, preference, saved)
+                if saved < case.gain then
+                    check(p and not jumped and math.abs(t - (20 + saved)) < 1e-3, label .. " is not used (" .. tostring(t) .. " s walking)")
+                else
+                    check(p and jumped and math.abs(t - 20) < 1e-3, label .. " is used, and its ETA is the jump's 20 s (" .. tostring(t) .. ")")
+                end
+            end
+        end
+    end
+    ns.TravelData = shippedData
+    Travel._Reset()
+    d = Travel.Data()
+end
+Clear()
+
 check(#M.errors == 0, "no reported Lua errors: " .. tostring(M.errors[1]))
 print(("Travel abilities: %d passed, %d failed"):format(passed, failed))
 os.exit((failed == 0 and #M.errors == 0) and 0 or 1)

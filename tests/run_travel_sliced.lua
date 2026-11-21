@@ -49,11 +49,23 @@ local function upvalue(fn, name)
     end
 end
 
+-- Every function this file puts into an upvalue stays reachable from here
+-- for the whole run. Lua 5.1's lua_setupvalue puts its write barrier on the
+-- closure, not on the (shared, closed) upvalue: when a collection has
+-- already marked that upvalue through another function, a new value only
+-- the upvalue refers to is never marked, is swept, and is then called
+-- (the interpreter dies with no FAIL line). Pinned here, it is always marked.
+local pinned = {}
+local function setupvalue(fn, i, v)
+    pinned[#pinned + 1] = v
+    return debug.setupvalue(fn, i, v)
+end
+
 -- Node expansions: every turn of Search's main loop pops its heap once.
 do
     local pop, i = upvalue(T.Search, 'Pop')
     assert(pop, 'Search pops its heap')
-    debug.setupvalue(T.Search, i, function(h) pops = pops + 1; return pop(h) end)
+    setupvalue(T.Search, i, function(h) pops = pops + 1; return pop(h) end)
 end
 -- Every search (also a retry over uncertain terrain) starts with
 -- Terrain.Refresh, and records Travel.lastExpanded when it ends.
@@ -81,7 +93,7 @@ local jobStarted, finishes = setmetatable({}, { __mode = 'k' }), {}
 do
     local pump, i = upvalue(T.Steer, 'Pump')
     assert(pump, 'Steer resumes jobs through Pump')
-    debug.setupvalue(T.Steer, i, function(...)
+    setupvalue(T.Steer, i, function(...)
         local j = upvalue(T.Steer, 'job')
         frame.pumped = j
         if j and not jobStarted[j] then jobStarted[j] = M.now end
@@ -89,7 +101,7 @@ do
     end)
     local finish, k = upvalue(pump, 'Finish')
     assert(finish, 'Pump answers through Finish')
-    debug.setupvalue(pump, k, function(j, ...)
+    setupvalue(pump, k, function(j, ...)
         finishes[#finishes + 1] = { j = j, at = M.now, started = jobStarted[j] }
         holding = false
         return finish(j, ...)
@@ -435,7 +447,16 @@ for _, sliced in ipairs({ false, true }) do
     local cont, wx, wy = G.MapToWorld(37, 0.3, 0.3)
     local cx, cy = G.WorldToMap(cont, wx, wy, 13)
     local onCont = WP.Add(13, cx, cy, { title = 'Continent pin' })
-    check(Run(onCont) == nil and T.Current() == nil, label .. ': a waypoint on a continent map gets the plain arrow')
+    -- planned as the zone point under it (Elwynn: a plain walk from here)
+    local onContSteer = Run(onCont)
+    local contPlan = T.Current()
+    check(onContSteer == nil and contPlan and #contPlan.path == 2 and contPlan.path[2].node.m == 37
+        and onCont.m == 13, label .. ': a waypoint on a continent map is planned as the zone point there (the waypoint unchanged)')
+    -- a continent-map point with no zone of the network under it: no plan
+    WP.ClearAll(true)
+    local ox, oy = G.WorldToMap(0, -6000, 3000, 13)
+    local offZone = WP.Add(13, ox, oy, { title = 'Continent pin, no zone' })
+    check(Run(offZone) == nil and T.Current() == nil, label .. ': a continent-map point over no network zone gets the plain arrow')
     WP.ClearAll(true)
     local c2, w2x, w2y = G.MapToWorld(1411, 0.5, 0.5)
     M.player.inst, M.player.wx, M.player.wy = 1, w2x + 50, w2y + 50
@@ -658,7 +679,7 @@ do
             if not n then break end
             if type(v) == 'function' then
                 if swap[v] then
-                    debug.setupvalue(fn, i, swap[v]); wrapped = wrapped + 1
+                    setupvalue(fn, i, swap[v]); wrapped = wrapped + 1
                 elseif not seen[v] then
                     walk(v)
                 end
@@ -1555,7 +1576,7 @@ do
     for name, cost in pairs({ CanWalk = 3.8, Dist = 0.2, Pop = 1, Danger = 6 }) do
         local fn, i = upvalue(T.Search, name)
         saved[name] = { fn, i }
-        debug.setupvalue(T.Search, i, function(...) Add(cost); return fn(...) end)
+        setupvalue(T.Search, i, function(...) Add(cost); return fn(...) end)
     end
     local record, refresh, decide = ns.Terrain.Record, ns.Terrain.Refresh, ns.Terrain.Decide
     ns.Terrain.Record = function(...) Add(0.5); return record(...) end
@@ -1570,7 +1591,7 @@ do
         return work * UNIT
     end
     local pump, pk = upvalue(T.Steer, 'Pump')
-    debug.setupvalue(T.Steer, pk, function(...)
+    setupvalue(T.Steer, pk, function(...)
         local j = Job()
         co, sinceRead, inSlice = j and j.co, 0, 0
         local urgent = j and j.urgent
@@ -1609,8 +1630,8 @@ do
     check(over == 0, ('work per slice: every slice within its budget and 0.4 ms (%d over; worst background %.2f ms, urgent %.2f ms)'):format(over, worstBg, worstUrgent))
     check(worstGap * UNIT <= 0.4, ('work per slice: at most 0.4 ms of work between two clock readings (%.2f ms)'):format(worstGap * UNIT))
     check(setupAfterWork == 0, 'work per slice: a search\'s set-up never follows other work in its slice (' .. setupAfterWork .. ' times)')
-    debug.setupvalue(T.Steer, pk, pump)
-    for _, v in pairs(saved) do debug.setupvalue(T.Search, v[2], v[1]) end
+    setupvalue(T.Steer, pk, pump)
+    for _, v in pairs(saved) do setupvalue(T.Search, v[2], v[1]) end
     ns.Terrain.Record, ns.Terrain.Refresh, ns.Terrain.Decide = record, refresh, decide
     debugprofilestop = clockFn
 end
@@ -1630,7 +1651,7 @@ for _, mode in ipairs({ 'back', 'stopped' }) do
     end
     local pump, pk = upvalue(T.Steer, 'Pump')
     local worst, whole, n = 0, 0, 0
-    debug.setupvalue(T.Steer, pk, function(...) fresh = true; return pump(...) end)
+    setupvalue(T.Steer, pk, function(...) fresh = true; return pump(...) end)
     local w = Begin(thrall)
     for _ = 1, 60 * 20 do
         Steer(w)
@@ -1639,7 +1660,7 @@ for _, mode in ipairs({ 'back', 'stopped' }) do
         if frame.whole then whole = whole + 1 end
         Walk(7 / 60)
     end
-    debug.setupvalue(T.Steer, pk, pump)
+    setupvalue(T.Steer, pk, pump)
     debugprofilestop = clockFn
     print(('  clock %s: worst %d node expansions in a slice, %d frames with a whole search'):format(mode, worst, whole))
     check(whole == 0, 'clock ' .. mode .. ': no frame holds a whole search (' .. whole .. ')')
@@ -1667,7 +1688,7 @@ do
     local pump, pk = upvalue(T.Steer, 'Pump')
     local real = upvalue(pump, 'pump') -- (the counters at the top wrap it)
     local slices, capped, worst, worstField = 0, 0, -math.huge, -math.huge
-    debug.setupvalue(T.Steer, pk, function(...)
+    setupvalue(T.Steer, pk, function(...)
         local r = pump(...)
         local work, cap = upvalue(real, 'sliceWork'), upvalue(real, 'sliceWorkMax')
         slices = slices + 1
@@ -1710,7 +1731,7 @@ do
     for _ = 1, 60 * 15 do Steer(w) end
     worstField = worst
     worst = math.max(trip, worstField)
-    debug.setupvalue(T.Steer, pk, pump)
+    setupvalue(T.Steer, pk, pump)
     debugprofilestop = clockFn
     print(('  frozen clock: %d slices, %d ended by the work cap; worst over the cap %.3f units on the trip, %.3f in the field'):format(
         slices, capped, trip, worstField))
@@ -1961,6 +1982,72 @@ do
     M.player.wx, M.player.wy = ix, iy + 5 -- landed (a loading screen later)
     s = Steer(w)
     check(T._PlayerPlace().area == 3 and s == nil, 'hearth: standing where it landed, never "use your hearthstone" again: the normal arrow (' .. tostring(s and s.title) .. ')')
+    -- Landed by place, not by yards from the modelled landing node: the
+    -- hearthstone's inn is in a walled city (map 84, area 4), and the
+    -- player lands 250 yd from it, still in that city (where a spell
+    -- really puts you is not measured). The step moves on at once, and no
+    -- new search casts it again (never a jump into the city you are in):
+    -- planning sliced and all at once.
+    local savedItem, savedBind, savedBest = C_Item, GetBindLocation, C_Map.GetBestMapForUnit
+    C_Item = {}
+    for k, v in pairs(savedItem or {}) do C_Item[k] = v end
+    C_Item.GetItemCount = function(id) return id == 6948 and 1 or 0 end
+    C_Item.GetItemCooldown = function() return 0, 0, 1 end
+    C_Item.IsEquippedItem = function() return false end
+    C_Item.IsUsableItem = function() return true, false end
+    C_Item.GetItemNameByID = function(id) return 'Item ' .. id end
+    GetBindLocation = function() return 'Walled Test Town' end
+    local inCity = M.maps[84]
+    C_Map.GetBestMapForUnit = function()
+        local x, y = (inCity.left - M.player.wy) / inCity.w, (inCity.top - M.player.wx) / inCity.h
+        if M.player.inst == inCity.cont and x >= 0 and x <= 1 and y >= 0 and y <= 1 then return 84 end
+        return 37
+    end
+    local function CityRow(id, kind, x, y)
+        local c, px, py = mapToWorld(84, x, y)
+        return table.concat({ id, kind, 4, c, px, py, 84, x * 100, y * 100, 84 }, '\t')
+    end
+    for _, sliced in ipairs({ true, false }) do
+        local mode = sliced and 'sliced' or 'all at once'
+        ns.TravelData = { areas = { 'one', 'two', 'three', 'walled' }, indoor = {}, maps = '37\t1\n84\t4', regions = '',
+            nodes = table.concat({ row('A', 1, .1), CityRow('CITYINN', 'inn', .5, .3) }, '\n'),
+            links = '', cities = '84\tAlliance', towns = 'walled_test_town\t4\tCITYINN\tAlliance', levels = '', factors = '' }
+        Network()
+        ns.Set('travelHearth', true)
+        ns.TravelAbilities._Reset()
+        T._SetSliced(sliced)
+        local cityInn = T.Data().nodes.CITYINN
+        T.Know().bind = { m = 84, x = .5, y = .3, name = 'Walled Test Town' }
+        At(.3, .5)
+        w = WP.Add(84, .5, .32, { title = 'By the city inn' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        p = T.Current()
+        local cast = p and p.target and type(p.target.via) == 'table' and p.target.via.kind == 'hearth'
+        s = Steer(w)
+        check(cast and s and s.title == T.StepText(p.path, p.index, WP.ShortName(w)) and s.pin,
+            'hearth into a walled city (' .. mode .. '): (control) before casting, the arrow says to use the hearthstone (' .. tostring(s and s.title) .. ')')
+        -- a loading screen later: in the city, 250 yd from the modelled inn
+        local c, ix, iy = mapToWorld(84, .5, .3 + 250 / inCity.h)
+        M.player.inst, M.player.wx, M.player.wy = c, ix, iy
+        local here = T._PlayerPlace()
+        check(here.city == 84 and math.abs(T.Dist(here, cityInn) - 250) < 1,
+            'hearth into a walled city (' .. mode .. '): (control) landed in the city, 250 yd from the inn')
+        local again, frames = 0, 0
+        for f = 1, 120 do
+            s = Steer(w, f == 1 and 1 or nil)
+            frames = frames + 1
+            local now = T.Current()
+            if s and now and now.target and type(now.target.via) == 'table' and now.target.via.kind then again = again + 1 end
+        end
+        check(again == 0, ('hearth into a walled city (%s): landed 250 yd from the inn, no frame says to use the hearthstone again (%d of %d)'):format(mode, again, frames))
+        check(s == nil and T.Current() and #T.Current().path == 2,
+            'hearth into a walled city (' .. mode .. '): what remains is a plain walk to the waypoint (the normal arrow)')
+    end
+    C_Item, GetBindLocation, C_Map.GetBestMapForUnit = savedItem, savedBind, savedBest
+    ns.Set('travelHearth', false)
+    ns.TravelAbilities._Reset()
+    T._SetSliced(true)
 end
 STEP = 0.05
 

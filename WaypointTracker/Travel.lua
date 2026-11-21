@@ -365,48 +365,88 @@ end
 
 local NO_REGIONS = {} -- a map without regions of its own (never written)
 
--- The area a map position is in: a part of a map that is its own area, the
--- map's area, or (for a cave or a small map) the area of a map above it.
--- Also returns the walled city's map when the position is inside one.
--- An optional registered node ID supplies captured indoor WMO context at
--- that exact anchor, without assigning a guessed footprint to nearby points.
--- Player/waypoint coordinates alone still use the surface map classification.
--- `live`: a position that keeps changing (the player's, or one worked out
--- from it), kept out of Geo's cache of fixed points (Geo.TranslateToMap).
-function Travel.AreaAt(m, x, y, nodeID, live)
-    local d = Data()
-    if not d or not m then
-        return nil
-    end
-    local node = nodeID and d.nodes[nodeID]
-    if node and node.indoorOverride and node.m == m and node.x == x and node.y == y then
-        return node.area, node.city
-    end
-    local city
-    for _ = 1, 6 do
-        if d.cities[m] then
-            city = city or m
+do
+    local Climb -- AreaAt up a map's chain of parents (below)
+
+    -- The network's map for the same ground as map `m` (Geo.SameMap: the game
+    -- has a few IDs twice, e.g. Zephras Isle is both 2521 and 2665), for a map
+    -- whose own chain of parents ends without an area. Remembered per map ID
+    -- (false: none), with the network it was worked out for.
+    local function SameGround(d, m)
+        local known = d.sameGround
+        if not known then
+            known = {}
+            d.sameGround = known
         end
-        for _, r in ipairs(d.regions[m] or NO_REGIONS) do
-            local dx, dy = x - r.x, y - r.y
-            if dx * dx + dy * dy <= r.r * r.r then
-                return r.area, city
+        local same = known[m]
+        if same == nil then
+            same = false
+            for id in pairs(d.mapArea) do
+                if id ~= m and (not same or id < same) and Geo.SameMap(id, m) then same = id end
             end
+            known[m] = same
         end
-        local area = d.mapArea[m]
+        return same or nil
+    end
+
+    -- The area a map position is in: a part of a map that is its own area, the
+    -- map's area, or (for a cave or a small map) the area of a map above it.
+    -- Also returns the walled city's map when the position is inside one.
+    -- An optional registered node ID supplies captured indoor WMO context at
+    -- that exact anchor, without assigning a guessed footprint to nearby points.
+    -- Player/waypoint coordinates alone still use the surface map classification.
+    -- `live`: a position that keeps changing (the player's, or one worked out
+    -- from it), kept out of Geo's cache of fixed points (Geo.TranslateToMap).
+    -- A map whose parents lead to no area is read as the network's map for the
+    -- same ground, if there is one (SameGround).
+    function Travel.AreaAt(m, x, y, nodeID, live)
+        local d = Data()
+        if not d or not m then
+            return nil
+        end
+        local node = nodeID and d.nodes[nodeID]
+        if node and node.indoorOverride and node.m == m and node.x == x and node.y == y then
+            return node.area, node.city
+        end
+        local area, city = Climb(d, m, x, y, live)
         if area then
             return area, city
         end
-        local info = Geo.GetMapInfo(m)
-        local parent = info and info.parentMapID
-        if not parent or parent == 0 or (info.mapType or 3) < 3 then
-            return nil
+        local same = SameGround(d, m)
+        if same then
+            return Climb(d, same, x, y, live)
         end
-        local px, py = Geo.TranslateToMap(m, x, y, parent, live)
-        if not px then
-            return nil
+        return nil
+    end
+
+    -- AreaAt up the map's chain of parents: the area, and the walled city
+    function Climb(d, m, x, y, live)
+        local city
+        for _ = 1, 6 do
+            if d.cities[m] then
+                city = city or m
+            end
+            for _, r in ipairs(d.regions[m] or NO_REGIONS) do
+                local dx, dy = x - r.x, y - r.y
+                if dx * dx + dy * dy <= r.r * r.r then
+                    return r.area, city
+                end
+            end
+            local area = d.mapArea[m]
+            if area then
+                return area, city
+            end
+            local info = Geo.GetMapInfo(m)
+            local parent = info and info.parentMapID
+            if not parent or parent == 0 or (info.mapType or 3) < 3 then
+                return nil
+            end
+            local px, py = Geo.TranslateToMap(m, x, y, parent, live)
+            if not px then
+                return nil
+            end
+            m, x, y = parent, px, py
         end
-        m, x, y = parent, px, py
     end
 end
 
@@ -839,6 +879,33 @@ local function Pop(h)
     return top
 end
 
+-- The hearthstone, class teleports and teleport items ("jumps"). A jump never
+-- takes you to where you already are: into the walled city you stand in, or
+-- (outside the walls) to a landing in your own area within Jumps.near yards
+-- (the radius BindNode matches an inn by). And a jump must earn its cost (a
+-- long cooldown, a reagent): Jumps.gain seconds it must save over the best
+-- way without it. That is a reluctance in a jump edge's score, never in its
+-- elapsed seconds (the ETA), as danger is.
+local Jumps = {
+    near = 400, -- yards
+    gain = { hearth = 120, teleport = 45, item = 120 }, -- seconds, by the jump's kind
+}
+Travel.Thresholds.jumpNear = Jumps.near
+Travel.Thresholds.hearthGain = Jumps.gain.hearth
+Travel.Thresholds.teleportGain = Jumps.gain.teleport
+Travel.Thresholds.itemGain = Jumps.gain.item
+
+-- the jump `j` lands where `start` already is
+function Jumps.Here(start, j)
+    local n = j.node
+    if n.city and n.city == start.city then return true end
+    if n.area == start.area and n.city == start.city then
+        local dd = Dist(start, n)
+        if dd and dd <= Jumps.near then return true end
+    end
+    return false
+end
+
 -- The quickest way from `start` to `goal` (both { area, city, cont, wx, wy }
 -- places). Returns the list of stops { node, via, at } or nil.
 local function Search(start, goal, c, allowUncertain)
@@ -933,6 +1000,9 @@ local function Search(start, goal, c, allowUncertain)
     end
     local first = State(start)
     local penalties = { [first] = 0 }
+    -- the jumps' reluctance (Jumps.gain) so far: a preference, never elapsed
+    -- time; nor terrain penalty, which KeepFollowed compares
+    local reluctances = { [first] = 0 }
     local best, elapsed, risks, via, prev, done = { [first] = 0 }, { [first] = 0 }, { [first] = 0 }, {}, {}, {}, {}
     -- Timetable waits depend on arrival time, not time plus danger. Preserve
     -- nondominated arrival/risk labels so a safer arrival catching the same
@@ -974,19 +1044,23 @@ local function Search(start, goal, c, allowUncertain)
             end
         end
         local risk = walking and (c.preference == "safer" or c.measureDanger) and Danger(u.node, node, c, cost) or 0
-        local g = best[u] + cost + surcharge + (c.preference == "safer" and risk or 0)
+        local reluctance = type(how) == "table" and how.kind and Jumps.gain[how.kind] or 0
+        local g = best[u] + cost + surcharge + reluctance + (c.preference == "safer" and risk or 0)
         local v
         if frontiers then
             mode = mode or "ground"
             local modes = frontiers[node] or {}; frontiers[node] = modes
             local labels = modes[mode] or {}; modes[mode] = labels
             local arrival, exposure, geometry = elapsed[u] + cost, risks[u] + risk, penalties[u] + surcharge
+            local unwilling = reluctances[u] + reluctance -- a fourth dimension: a jump label must not discard a walking one
             for _, label in ipairs(labels) do
                 if not label.discarded and elapsed[label] <= arrival + 1e-6
-                    and risks[label] <= exposure + 1e-6 and penalties[label] <= geometry + 1e-6 then return end
+                    and risks[label] <= exposure + 1e-6 and penalties[label] <= geometry + 1e-6
+                    and reluctances[label] <= unwilling + 1e-6 then return end
             end
             for _, label in ipairs(labels) do
-                if arrival <= elapsed[label] + 1e-6 and exposure <= risks[label] + 1e-6 and geometry <= penalties[label] + 1e-6 then
+                if arrival <= elapsed[label] + 1e-6 and exposure <= risks[label] + 1e-6 and geometry <= penalties[label] + 1e-6
+                    and unwilling <= reluctances[label] + 1e-6 then
                     label.discarded = true
                 end
             end
@@ -999,6 +1073,7 @@ local function Search(start, goal, c, allowUncertain)
             and math.abs(g - best[v]) <= 1e-6 and risks[u] + risk < risks[v] - 1e-6) then
             best[v], via[v], prev[v] = g, how, u
             elapsed[v], risks[v], penalties[v] = elapsed[u] + cost, risks[u] + risk, penalties[u] + surcharge
+            reluctances[v] = reluctances[u] + reluctance
             Push(heap, g, v)
         end
     end
@@ -1084,10 +1159,11 @@ local function Search(start, goal, c, allowUncertain)
                     and (not n.fac or n.fac == c.faction) and not Hostile(n.city, c) then
                     Relax(u, n, TAXI_UNLOCK, { kind = "discover" }, "unlocked")
                 end
-                -- the hearthstone and teleports, from where you stand
+                -- the hearthstone and teleports, from where you stand (never
+                -- to where you already are: Jumps.Here)
                 if u == first then
                     for _, j in ipairs(c.jumps) do
-                        Relax(u, j.node, j.cost, j)
+                        if not Jumps.Here(start, j) then Relax(u, j.node, j.cost, j) end
                     end
                 end
             end
@@ -1133,6 +1209,87 @@ local function Search(start, goal, c, allowUncertain)
 end
 Travel.Search = Search
 
+-- Where the network is unsure of an edge, a found route can be a long
+-- detour around a line it only estimates. Then the route found gives way to
+-- the plain walk straight there (the arrow Real routes off would show),
+-- which certifies nothing: it is never taken through a known barrier
+-- (CanWalk).
+-- - A wall of unknown side: the goal lies on a zone map inside the
+--   rectangle of the walled city you are in (GoalPlace's cityMaybe), and
+--   the route uses a ride or a jump, or walks more than WALL_FACTOR times
+--   the straight line and WALL_SLACK yards.
+-- - A short hop over a sub-area's edge (a circle on a zone map): start and
+--   goal within SHORT_HOP yards, in different areas, the route more than
+--   HOP_FACTOR times the straight line and HOP_SLACK yards, and it leaves
+--   your area on foot (walk or gate). Routes leaving by lift, boat, portal
+--   or tram are kept: those separations are real.
+local Unsure
+do
+    local WALL_FACTOR, WALL_SLACK = 2, 60 -- yards
+    local SHORT_HOP, HOP_FACTOR, HOP_SLACK = 120, 3, 150 -- yards
+    Travel.Thresholds.wallFactor = WALL_FACTOR
+    Travel.Thresholds.wallSlack = WALL_SLACK
+    Travel.Thresholds.shortHop = SHORT_HOP
+    Travel.Thresholds.hopFactor = HOP_FACTOR
+    Travel.Thresholds.hopSlack = HOP_SLACK
+
+    -- yards walked along a path; nil when any leg is not on foot
+    local function GroundLength(path)
+        local total = 0
+        for i = 2, #path do
+            local how = path[i].via
+            if not (how == "walk" or (type(how) == "table" and WALKING[how.method])) then return nil end
+            total = total + (Dist(path[i - 1].node, path[i].node) or 0)
+        end
+        return total
+    end
+
+    -- yards between a path's stops, whatever the leg (huge across a continent)
+    local function PathLength(path)
+        local total = 0
+        for i = 2, #path do
+            local dd = Dist(path[i - 1].node, path[i].node)
+            if not dd then return huge end
+            total = total + dd
+        end
+        return total
+    end
+
+    -- the leg that first leaves the start's area (or city) is a walk or a gate
+    local function LeavesOnFoot(path, start)
+        for i = 2, #path do
+            local n = path[i].node
+            if n.area ~= start.area or n.city ~= start.city then
+                local how = path[i].via
+                return how == "walk" or (type(how) == "table" and (how.method == "walk" or how.method == "gate"))
+            end
+        end
+        return false
+    end
+
+    -- One rule for Travel.Routes and Preferred (they must stay the same decision).
+    function Unsure(start, goal, c, route)
+        if not route then return nil end
+        local straight = Dist(start, goal)
+        if not straight then return route end
+        local unsure = false
+        if start.city and goal.cityMaybe == start.city and start.area == goal.area then
+            local walked = GroundLength(route.path)
+            unsure = not walked or walked > WALL_FACTOR * straight + WALL_SLACK
+        elseif straight <= SHORT_HOP and start.area ~= goal.area then
+            unsure = PathLength(route.path) > HOP_FACTOR * straight + HOP_SLACK and LeavesOnFoot(route.path, start)
+        end
+        if not unsure or not CanWalk(start, goal) then return route end
+        local seconds = WalkCost(start, goal, c)
+        if not seconds then return route end
+        local risk = (c.preference == "safer" or c.measureDanger) and Danger(start, goal, c, seconds) or 0
+        return { path = { { node = start, at = 0, risk = 0, terrainPenalty = 0 },
+                { node = goal, via = "walk", at = seconds, risk = risk, terrainPenalty = 0 } },
+            total = seconds, risk = risk, terrainPenalty = 0, preference = route.preference }
+    end
+end
+Travel._Unsure = Unsure -- tests
+
 -- Pure candidate planning: no active-plan state or hysteresis. The safe
 -- candidate always comes from the danger-aware search, with no detour cap.
 function Travel.Routes(start, goal, c, preference)
@@ -1140,11 +1297,11 @@ function Travel.Routes(start, goal, c, preference)
     ctx.preference, ctx.measureDanger = "fastest", true
     local fp, ft, fr, fg = Search(start, goal, ctx)
     if not fp then return {} end
-    local fastest = { path = fp, total = ft, risk = fr, terrainPenalty = fg, preference = "fastest" }
+    local fastest = Unsure(start, goal, ctx, { path = fp, total = ft, risk = fr, terrainPenalty = fg, preference = "fastest" })
     ctx.preference = "safer"
     local sp, st, sr, sg = Search(start, goal, ctx)
     if not sp then return { fastest }, fastest end
-    local safer = { path = sp, total = st, risk = sr, terrainPenalty = sg, preference = "safer" }
+    local safer = Unsure(start, goal, ctx, { path = sp, total = st, risk = sr, terrainPenalty = sg, preference = "safer" })
     return { fastest, safer }, preference == "fastest" and fastest or safer
 end
 
@@ -1164,7 +1321,7 @@ local function Preferred(start, goal, c, preference, tick, both)
         searched = true
         ctx.preference = "fastest"
         local p, t, r, g = Search(from, goal, ctx)
-        if p then fastest = { path = p, total = t, risk = r, terrainPenalty = g, preference = "fastest" } end
+        if p then fastest = Unsure(from, goal, ctx, { path = p, total = t, risk = r, terrainPenalty = g, preference = "fastest" }) end
     end
     -- Travel.Routes' order: the fastest search first, on the start as given
     if preference == "fastest" or both then
@@ -1180,7 +1337,7 @@ local function Preferred(start, goal, c, preference, tick, both)
         end
         ctx.preference = "safer"
         local p, t, r, g = Search(start, goal, ctx)
-        if p then safer = { path = p, total = t, risk = r, terrainPenalty = g, preference = "safer" } end
+        if p then safer = Unsure(start, goal, ctx, { path = p, total = t, risk = r, terrainPenalty = g, preference = "safer" }) end
         if not safer and not searched then
             local from = {}; for k, v in pairs(pristine) do from[k] = v end
             Fastest(from)
@@ -1433,14 +1590,50 @@ local function Fresh(p)
         m = p.m, x = p.x, y = p.y, player = true } or nil
 end
 
-local function GoalPlace(wp)
-    local cont, wx, wy = Geo.MapToWorld(wp.m, wp.x, wp.y)
-    if not cont then
-        return nil
+-- Walled cities whose inside and outside overlap in plan view (a mesa, a
+-- city under its ruins): a point on the zone map inside their rectangle is
+-- not taken as maybe inside (Unsure); their routes stand as planned.
+local GoalPlace
+do
+    local WALL_OVERLAPS = { [1456] = true, [1458] = true } -- Thunder Bluff, Undercity
+
+    -- The waypoint as a place. A point on a continent map is read as the zone
+    -- point there (Geo.NormalizeToZone; the waypoint itself is not changed). A
+    -- point with no city that lies inside the rectangle of a walled city of the
+    -- same area may be on either side of its wall: `cityMaybe` is that city.
+    function GoalPlace(wp)
+        local cont, wx, wy = Geo.MapToWorld(wp.m, wp.x, wp.y)
+        if not cont then
+            return nil
+        end
+        local m, x, y = wp.m, wp.x, wp.y
+        local area, city = Travel.AreaAt(m, x, y)
+        if not area then
+            local info = Geo.GetMapInfo(m)
+            if info and (info.mapType or 3) < 3 then
+                local zm, zx, zy = Geo.NormalizeToZone(m, x, y)
+                if zm ~= m then
+                    local za, zc = Travel.AreaAt(zm, zx, zy)
+                    if za then m, x, y, area, city = zm, zx, zy, za, zc end
+                end
+            end
+        end
+        local maybe
+        if area and not city and data then
+            for cityMap in pairs(data.cities) do
+                if not WALL_OVERLAPS[cityMap] and Geo.MapToWorld(cityMap, 0, 0) == cont then
+                    local cx, cy = Geo.WorldToMap(cont, wx, wy, cityMap)
+                    if cx and cx >= 0 and cx <= 1 and cy >= 0 and cy <= 1
+                        and (not maybe or cityMap < maybe) and Travel.AreaAt(cityMap, cx, cy) == area then
+                        maybe = cityMap
+                    end
+                end
+            end
+        end
+        return { area = area, city = city, cityMaybe = maybe, cont = cont, wx = wx, wy = wy, m = m, x = x, y = y, goal = true }
     end
-    local area, city = Travel.AreaAt(wp.m, wp.x, wp.y)
-    return { area = area, city = city, cont = cont, wx = wx, wy = wy, m = wp.m, x = wp.x, y = wp.y, goal = true }
 end
+Travel._GoalPlace = GoalPlace -- tests
 
 local function PlainWalk(how)
     return how == "walk" or (type(how) == "table" and how.method == "walk")
@@ -1496,8 +1689,11 @@ end
 --   is in, and nearer the step after it than the crossing is. On to that
 --   step when you can walk there from here (the same area, nothing in
 --   between), else the plain arrow.
--- - a hearthstone, teleport or item: you stand where it lands (in its area,
---   within BOARD_NEAR), away from where it was to be cast. On to the next step.
+-- - a hearthstone, teleport or item: you stand where it lands, by place,
+--   not by yards from the modelled landing node (where a spell really puts
+--   you is not measured): in the landing's walled city, or (no city) in its
+--   area within Jumps.near; and away from where it was to be cast. On to the
+--   next step.
 local function Beyond(p, i, here)
     local path, start = p.path, p.here
     local e, nextE = path[i], path[i + 1]
@@ -1506,9 +1702,15 @@ local function Beyond(p, i, here)
     if type(how) == "table" and how.kind then
         if how.kind == "discover" or i <= 1 then return nil end
         local landing, from = e.node, path[i - 1].node
-        local at, left = Dist(here, landing), Dist(here, from)
-        if landing.area == here.area and landing.city == here.city and at and at <= BOARD_NEAR
-            and (not left or left > BOARD_NEAR) then
+        local left = Dist(here, from)
+        local there
+        if landing.city then
+            there = here.city == landing.city
+        else
+            local at = Dist(here, landing)
+            there = landing.area == here.area and not here.city and at and at <= Jumps.near
+        end
+        if there and (not left or left > BOARD_NEAR) then
             return i < #path and i + 1 or false
         end
         return nil
