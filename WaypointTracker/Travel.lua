@@ -1022,7 +1022,15 @@ local function Search(start, goal, c, allowUncertain)
             local ok, uncertainty
             ok, uncertainty, proof, observation = ns.Terrain.Decide(u.node, node,
                 type(how) == "table" and how.groundPolyline and "polyline" or type(how) == "table")
-            if not ok or (uncertainty >= 1 and not allowUncertain) then return end
+            -- The gate out of the walled city you start in is an explicit link
+            -- (the city's own entrance): an unmeasured traversal there is
+            -- priced by its surcharge, not left for the uncertain retry, which
+            -- never runs while any certain way exists (a 10-minute flight beat
+            -- a 2-minute walk out of Orgrimmar's gate). A refuted verdict (2)
+            -- still waits for the retry.
+            local gate = type(how) == "table" and how.method == "gate" and uncertainty < 2
+                and start.city ~= nil and u.node.city == start.city and node.city ~= start.city
+            if not ok or (uncertainty >= 1 and not allowUncertain and not gate) then return end
             surcharge = uncertainty > 0 and uncertainty * (3 * cost + 120) or 0
             if proof then
                 local link = type(how) == "table" and how or {method="walk",from=u.node,to=node}
@@ -1267,6 +1275,34 @@ do
         return false
     end
 
+    -- A walk out through one of the city's gates reaches the goal within
+    -- `limit` yards (to the gate, through it, on to the goal on foot): the
+    -- goal is taken as outside the wall, a gate walk away, not of unknown side.
+    local function OutByGate(start, goal, limit)
+        local gates = data.cityGates
+        if not gates or data.cityGatesShape ~= dataShape then -- (links players add later count too)
+            gates = {}
+            for _, links in pairs(data.out) do
+                for _, l in ipairs(links) do
+                    if l.method == "gate" and l.from.city and l.to.city ~= l.from.city then
+                        local list = gates[l.from.city] or {}
+                        gates[l.from.city] = list
+                        list[#list + 1] = l
+                    end
+                end
+            end
+            data.cityGates, data.cityGatesShape = gates, dataShape
+        end
+        for _, l in ipairs(gates[start.city] or {}) do
+            local inner, outer = l.from, l.to
+            if outer.area == goal.area and outer.city == goal.city then
+                local a, b, e = Dist(start, inner), Dist(inner, outer), Dist(outer, goal)
+                if a and b and e and a + b + e <= limit and CanWalk(outer, goal) then return true end
+            end
+        end
+        return false
+    end
+
     -- One rule for Travel.Routes and Preferred (they must stay the same decision).
     function Unsure(start, goal, c, route)
         if not route then return nil end
@@ -1274,8 +1310,9 @@ do
         if not straight then return route end
         local unsure = false
         if start.city and goal.cityMaybe == start.city and start.area == goal.area then
+            local limit = WALL_FACTOR * straight + WALL_SLACK
             local walked = GroundLength(route.path)
-            unsure = not walked or walked > WALL_FACTOR * straight + WALL_SLACK
+            unsure = (not walked or walked > limit) and not OutByGate(start, goal, limit)
         elseif straight <= SHORT_HOP and start.area ~= goal.area then
             unsure = PathLength(route.path) > HOP_FACTOR * straight + HOP_SLACK and LeavesOnFoot(route.path, start)
         end

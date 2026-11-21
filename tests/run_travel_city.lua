@@ -267,6 +267,109 @@ end
 bind = "Nowhere"
 ns.Set("travelHearth", false)
 
+-- From the inn to just outside the city, every flight point known: a walk
+-- out through the gate and on, never a flight (the certain-only first
+-- search pass once ruled out the gates whose traversal is unmeasured, and
+-- a 10-minute flight won) and never a straight arrow through the wall (the
+-- goal is a short gate walk away: taken as outside, not of unknown side).
+KnowFlights("all")
+local RIDES = { taxi = true, ship = true, zeppelin = true, tram = true, portal = true, transition = true }
+local function Shape(path)
+    local gate, ride = false, false
+    for i = 2, #(path or {}) do
+        local how = path[i].via
+        if type(how) == "table" then
+            if how.method == "gate" then gate = true end
+            if RIDES[how.method] or how.kind then ride = true end
+        end
+    end
+    return gate, ride
+end
+local EXITS = {
+    -- city, faction, race, the inn on the city map, the gate (inner > outer), the city's centre node
+    { "Orgrimmar", "Horde", "Orc", 1454, .54, .686, "ENTRANCE_C1454_517_858", "ENTRANCE_C1411_455_119", "CITY_ORGRIMMAR" },
+    { "Stormwind City", "Alliance", "Human", 1453, .604, .753, "ENTRANCE_C1453_741_922", "ENTRANCE_C1429_318_488", "CITY_STORMWIND" },
+    { "Ironforge", "Alliance", "Dwarf", 1455, .184, .514, "ENTRANCE_C1455_152_857", "ENTRANCE_IRONFORGE_DUN_MOROGH_APPROACH", "CITY_IRONFORGE" },
+    { "Darnassus", "Alliance", "NightElf", 1457, .40, .42, "ENTRANCE_C1457_885_358", "ENTRANCE_C1438_357_544", "CITY_DARNASSUS" },
+}
+local function Outside(outer, centre, yards)
+    local cont, ox, oy = T.Pos(outer)
+    local _, cx, cy = T.Pos(centre)
+    local dx, dy = ox - cx, oy - cy
+    local len = math.sqrt(dx * dx + dy * dy)
+    local x, y = G.WorldToMap(cont, ox + dx / len * yards, oy + dy / len * yards, outer.m)
+    return x, y
+end
+for _, exit in ipairs(EXITS) do
+    local name, fac, rc, cm, cx, cy, innerId, outerId, centreId = unpack(exit)
+    faction, race = fac, rc
+    local c = Context()
+    local outer = d.nodes[outerId]
+    check(d.nodes[innerId] and outer and d.nodes[innerId].city == cm and outer.city == nil,
+        name .. ": (control) the gate leads from the city map to the ground outside")
+    local gx, gy = Outside(outer, d.nodes[centreId], 60)
+    local goal = T._GoalPlace({ m = outer.m, x = gx, y = gy })
+    local start = Place(cm, cx, cy)
+    check(start.city == cm and goal.area == outer.area and goal.city == nil,
+        ("%s: (control) the inn is in the city, the goal 60 yd outside the gate (map %d %.3f, %.3f)"):format(name, outer.m, gx, gy))
+    for _, preference in ipairs({ "fastest", "safer" }) do
+        local _, chosen = T.Routes(Place(cm, cx, cy), T._GoalPlace({ m = outer.m, x = gx, y = gy }), c, preference)
+        local steer = T._Preferred(Place(cm, cx, cy), T._GoalPlace({ m = outer.m, x = gx, y = gy }), c, preference)
+        local gate, ride = Shape(chosen and chosen.path)
+        check(chosen and #chosen.path > 2 and gate and not ride,
+            ("%s inn -> just outside, flight points known (%s): a walk out through the gate (%s)"):format(name, preference, Ids(chosen and chosen.path)))
+        check(steer and chosen and Ids(steer.path) == Ids(chosen.path),
+            ("%s inn -> just outside (%s): Travel.Routes and the steering search agree"):format(name, preference))
+    end
+    -- steered, all at once: "Leave <city>", the arrow led to the gate
+    WP.ClearAll(true)
+    PlaceOnMap(cm, cx, cy)
+    local w = WP.Add(outer.m, gx, gy, { title = "Just outside " .. name, silent = true })
+    WP.SetActive(w, true)
+    local s = Steer(w)
+    local p = T.Current()
+    local gate, ride = Shape(p and p.path)
+    check(s and s.title == L.TRAVEL_LEAVE:format(name) and p and gate and not ride,
+        ("%s inn -> just outside, steered: %q (%s)"):format(name, L.TRAVEL_LEAVE:format(name), tostring(s and s.title)))
+end
+-- The reported shape: the Orgrimmar inn to the Durotar coast, 644 yd, the
+-- coast inside Orgrimmar's map rectangle (maybe inside: cityMaybe). With
+-- every flight point known: the gate walk, about 150 s, never the flight.
+faction, race = "Horde", "Orc"
+do
+    local c = Context()
+    local goal = T._GoalPlace({ m = 1411, x = .585, y = .102 })
+    check(goal.cityMaybe == 1454, "Orgrimmar -> Durotar coast: (control) the coast lies in Orgrimmar's rectangle")
+    for _, preference in ipairs({ "fastest", "safer" }) do
+        local _, chosen = T.Routes(Place(1454, .54, .686), T._GoalPlace({ m = 1411, x = .585, y = .102 }), c, preference)
+        local gate, ride = Shape(chosen and chosen.path)
+        check(chosen and #chosen.path > 2 and gate and not ride and chosen.total < 200,
+            ("Orgrimmar inn -> Durotar coast, flight points known (%s): the gate walk, %s s, not a flight or a straight arrow (%s)"):format(
+                preference, tostring(chosen and math.floor(chosen.total)), Ids(chosen and chosen.path)))
+    end
+    -- The wall rule itself: a goal a short gate walk away is outside, never
+    -- of unknown side. Handed the old 656 s flight route, it keeps it (no
+    -- straight arrow through Orgrimmar's wall); for Darnassus' Ainethil (the
+    -- gate 515 yd off, then back in) it still walks straight.
+    local ctx = {}; for k, v in pairs(c) do ctx[k] = v end
+    ctx.preference, ctx.measureDanger = "fastest", true
+    local start = Place(1454, .54, .686)
+    local flight = { preference = "fastest", total = 656, risk = 0, terrainPenalty = 0, path = {
+        { node = start, at = 0 }, { node = d.nodes.TAXI_23, via = "walk", at = 28 },
+        { node = d.nodes.TAXI_25, via = { method = "taxi", from = d.nodes.TAXI_23, to = d.nodes.TAXI_25 }, at = 144 },
+        { node = goal, via = "walk", at = 656 } } }
+    check(T._Unsure(start, goal, ctx, flight) == flight,
+        "wall rule: the Durotar coast is a short walk out of Orgrimmar's gate: a flight there is never turned into a straight arrow")
+    faction, race = "Alliance", "NightElf"
+    local dc = Context()
+    local dctx = {}; for k, v in pairs(dc) do dctx[k] = v end
+    dctx.preference, dctx.measureDanger = "fastest", true
+    local bank, ainethil = Place(1457, .40, .42), T._GoalPlace({ m = 1438, x = .2860, y = .5190 })
+    local p, t, r, g = T.Search(Place(1457, .40, .42), T._GoalPlace({ m = 1438, x = .2860, y = .5190 }), dctx)
+    local out = T._Unsure(bank, ainethil, dctx, { path = p, total = t, risk = r, terrainPenalty = g, preference = "fastest" })
+    check(p and #p > 2 and out and #out.path == 2, "wall rule: (control) Darnassus bank -> Ainethil, the gate far off: still the straight walk")
+end
+
 -- ---------------------------------------------------------------------------
 -- (2) A waypoint on a continent map: the zone point there. Goldshire to
 -- Darkshire: the pin on the Eastern Kingdoms map plans as the one on Duskwood.
