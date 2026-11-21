@@ -1787,7 +1787,9 @@ local function CityMaps()
     return cityMaps
 end
 
+local keepCityTwins -- tests: DB._KeepCityTwins
 local function DropCityTwins(pts, classic)
+    if keepCityTwins then return pts end
     local cities = CityMaps()
     if not classic or not cities then return pts end
     local onCity
@@ -1815,6 +1817,11 @@ local function DropCityTwins(pts, classic)
         if not twin then kept[#kept + 1] = p end
     end
     return kept
+end
+
+-- tests: true keeps the zone-map twins (entries' cached points are not cleared)
+function DB._KeepCityTwins(on)
+    keepCityTwins = on and true or nil
 end
 
 function DB.Points(e)
@@ -2610,9 +2617,10 @@ function DB.ItemSources(item)
     return out
 end
 
--- Closest spawn of any of the given NPCs/objects: returns entry, point, dist.
+-- Spawns by straight-line distance. `keep`: also collect the `keep` closest
+-- spawns, nearest first, into the list `into` ({ e, p, d }; d squared).
 local nearestWorld = setmetatable({}, { __mode = "k" })
-function DB.NearestOf(entries, opts)
+local function Nearest(entries, opts, keep, into)
     local bestE, bestP, bestD, fallbackE, fallbackP
     local players = {}
     local letter, races = MyFaction()
@@ -2639,6 +2647,15 @@ function DB.NearestOf(entries, opts)
                         local dx, dy = w[5] - player[1], w[6] - player[2]
                         local d = dx * dx + dy * dy
                         if not bestD or d < bestD then bestE, bestP, bestD = e, p, d end
+                        if keep and (#into < keep or d < into[#into].d) then
+                            -- a short list kept in order: insert, drop the farthest
+                            local i = #into < keep and #into + 1 or #into
+                            while i > 1 and into[i - 1].d > d do
+                                into[i] = into[i - 1]
+                                i = i - 1
+                            end
+                            into[i] = { e = e, p = p, d = d }
+                        end
                     end
                 end
                 if not fallbackE then fallbackE, fallbackP = e, p end
@@ -2649,6 +2666,20 @@ function DB.NearestOf(entries, opts)
         return bestE, bestP, math.sqrt(bestD)
     end
     return fallbackE, fallbackP
+end
+
+-- Closest spawn of any of the given NPCs/objects: returns entry, point, dist.
+function DB.NearestOf(entries, opts)
+    return Nearest(entries, opts)
+end
+
+-- The `count` closest spawns, nearest first, as { e = entry, p = point,
+-- d = yards } (for ranking by travel time); then what DB.NearestOf returns.
+function DB.NearestCandidates(entries, opts, count)
+    local list = {}
+    local e, p, d = Nearest(entries, opts, count, list)
+    for _, c in ipairs(list) do c.d = math.sqrt(c.d) end
+    return list, e, p, d
 end
 
 -- Is this quest in your log / done?
