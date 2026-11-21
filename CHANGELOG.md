@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.5.1
+
+- **Trainers and services in your own city are walked to directly.** A city NPC was listed twice, on the city map and on the zone map around it, and Nearest could pick the zone-map copy: from the Darnassus bank the route said "Leave Darnassus" and the arrow pointed the wrong way. Duplicate copies of city trainers and services are now merged, and a target inside the city you're in is a straight walk.
+- **The route moves on as soon as you land.** After you cast a teleport or your hearthstone, the next step shows when you arrive instead of staying on "Cast Teleport: Stormwind".
+- **Jumps only when they're worth it.** Your hearthstone, Astral Recall and teleport items are used only when they save at least 2 minutes, class teleports when they save at least 45 seconds, and never into the place you're already in.
+- **Through the city gates.** Routes out of and into Orgrimmar, Thunder Bluff, Undercity and Darnassus walk through the gate instead of flying round.
+- Whether a waypoint is inside or outside Stormwind, Orgrimmar or Darnassus now comes from the game's own terrain areas, not from which map it was placed on.
+- A short walk across the edge of an area no longer turns into a long detour, and a waypoint placed on a continent map now gets a route.
+- **Nearest picks the one you'll reach first.** When the closest spawn is behind a wall or across a barrier, Nearest compares it with the nearest one you can walk straight to and picks the quicker trip.
+- **The arrow says why.** When it can't follow a route, its third line says why, such as "Finding a route..." or "No route data here: straight line". A straight walk to an unmeasured boat stop or passage is marked "Straight line: no mapped path here", after the destination and time rather than in place of them.
+- **Boats, flights and the tram:** at the Riverglades and Steamwheedle boat stops the step switches to "Take the boat" from further away. The route no longer blinks out after a flight or boat ride, and stays on through the Deeprun Tram.
+- **Updating from 1.5.0: fully restart the game.** This version adds a new file, so `/reload` is not enough.
+- New regression tests cover city trainers and services, routes out of and into walled cities, inside or outside a city, when jumps are used and what happens after landing, short walks over area edges, continent-map waypoints, Nearest behind walls, the arrow's notes, boat stops, and following through flights, boats and the tram.
+
 ## 1.5.0
 
 - **No more freeze the first time you use Find, Routes, Treasure (beta) or Nearest.** The database used to load in one go and stop the game for about a second. It now loads in small slices over a few frames (smaller still in combat), with progress shown below the window title. A search, Nearest click or `/way` typed while it loads runs as soon as it is ready. Once loaded, the database uses about 17% less memory (40 MB down to 33.5 MB in our measurements).

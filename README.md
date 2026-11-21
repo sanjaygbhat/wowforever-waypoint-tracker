@@ -85,13 +85,14 @@ Open `/wp` or left-click the minimap button for one window with **Waypoints**, *
 
 ---
 
-## 🆕 New in 1.5.0
+## 🆕 New in 1.5.1
 
-- **No freeze the first time you search:** the database now loads in small slices over a few frames, so your first use of Find, Nearest, Routes or Treasure (beta) no longer stops the game for about a second. Progress shows below the window title, and a search, Nearest click or `/way` you type meanwhile runs as soon as it is ready.
-- **Lighter on your game:** about 17% less memory once the database is loaded, and much less work every second. Walking to a waypoint or with the window open makes about 95% less garbage than 1.4.1; with nothing to show, the addon does almost nothing.
-- **Quest chains, step by step:** following a chain such as The Defias Brotherhood, the arrow stays on the step you're on instead of jumping to the nearest stop, and skips only the steps your quest log shows as done.
-- **Fixed:** "No player named ... is currently playing" messages while Route sharing & votes (beta) is on. Route lists now go to your guild and group only; votes are still shared more widely.
-- **Updating:** from 1.4.1, `/reload` is enough. From an older version, fully restart the game.
+- **Your own city, walked to directly:** a trainer or service inside the city you're in is a straight walk. It used to say "Leave Darnassus" and point the arrow the wrong way. Duplicate copies of city trainers and services are merged.
+- **Through the city gates:** routes into and out of Orgrimmar, Thunder Bluff, Undercity and Darnassus walk through the gate instead of flying round.
+- **Jumps that are worth it:** after a teleport or hearthstone the route moves on as soon as you land. Your hearthstone, Astral Recall and teleport items are used only when they save at least 2 minutes, class teleports at least 45 seconds, and never into the place you're already in.
+- **Nearest picks the one you'll reach first** when the closest spawn is behind a wall or barrier.
+- **The arrow says why:** when it can't follow a route, its third line says why. The route stays on after flights and boats and through the Deeprun Tram.
+- **Updating from 1.5.0: fully restart the game.** A new file was added, so `/reload` is not enough.
 
 Full history: [CHANGELOG.md](CHANGELOG.md).
 
@@ -159,7 +160,7 @@ Use `/wp treasure status` to report what it sees. [Full guide](https://github.co
 2. Unzip it into your AddOns folder. You should get **two** folders: `...\Interface\AddOns\WaypointTracker\` and `...\Interface\AddOns\WaypointTracker_Data\` (the database for the Find tab).
    - Windows: `World of Warcraft\_forever_\Interface\AddOns\`
    - macOS: `World of Warcraft/_forever_/Interface/AddOns/`
-3. On first install, fully restart the game. Updating from 1.4.1 to 1.5.0 needs only `/reload`; from an older version, fully restart the game.
+3. On first install, fully restart the game. Updating from 1.5.0 to 1.5.1 also needs a full game restart: a new file was added, so `/reload` is not enough.
 
 > [!TIP]
 > Downloading this repository as a zip also works: copy the inner `WaypointTracker` and `WaypointTracker_Data` folders into AddOns.
@@ -311,6 +312,8 @@ The arrow guides you through passes and gates and onto flight paths, boats, zepp
 
 **Safe or fastest, your choice.** The default **Safe route** preference is danger-aware. When a quicker, riskier route saves at least 15 seconds and 5% of the trip, the arrow offers it for ten seconds and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take the quickest route every time without asking.
 
+**Cities and jumps.** A trainer or service inside the city you're in is a straight walk, and routes into and out of walled cities go through the gate. Your hearthstone, Astral Recall and teleport items are used only when they save at least 2 minutes, class teleports at least 45 seconds, and never into the place you're already in; the route moves on as soon as you land. When the arrow can't follow a route, its third line says why.
+
 It checks the travel abilities you have and their cooldowns. Open a flight master's map to learn your available flights. Distance appears under the arrow. For time to arrive too, turn on **Settings → Arrow → Show time to arrive** (off by default). As you move, it re-plans and works the route out a little at a time in the background, so the game stays smooth while you follow the current route.
 
 Turn Real routes off in **Settings → Routes** for a straight arrow.
@@ -453,7 +456,7 @@ Yes. It's free and open source (MIT), with readable, unobfuscated code, no ads a
 <details>
 <summary><b>Does Waypoint Tracker work on WoW Forever?</b></summary>
 
-Yes, version 1.5.0 supports the live World of Warcraft: Forever client 1.60.1 (interface 16001).
+Yes, version 1.5.1 supports the live World of Warcraft: Forever client 1.60.1 (interface 16001).
 </details>
 
 <details>
