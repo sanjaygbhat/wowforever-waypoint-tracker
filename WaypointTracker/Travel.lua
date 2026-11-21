@@ -2893,18 +2893,19 @@ end
 
 -- Was the jump step `how` (a hearthstone, teleport or item) really used?
 -- The player's last successful cast (UNIT_SPELLCAST_SUCCEEDED, below:
--- Steering.cast), within castWindow seconds: the step's spell, or the
+-- Steering.castSpell at Steering.castAt), within castWindow seconds: the step's spell, or the
 -- hearthstone item's own spell; for an item whose spell the data doesn't
 -- name, a cast just then. A client without the event: as before (yes).
 function Steering.Cast(how)
     local S = Steering
     if not S.castEvents then return true end
-    local c = S.cast
-    if not (c and GetTime() - c.t <= S.castWindow) then return false end
-    if how.spell then return c.spell == how.spell end
-    if how.item then
-        for _, h in ipairs(data and data.abilities and data.abilities.hearths or {}) do
-            if h.item == how.item then return c.spell == h.spell end
+    local spell, at = S.castSpell, S.castAt
+    if not (spell and at and GetTime() - at <= S.castWindow) then return false end
+    if how.spell then return spell == how.spell end
+    local hearths = how.item and data and data.abilities and data.abilities.hearths
+    if hearths then
+        for _, h in ipairs(hearths) do
+            if h.item == how.item then return spell == h.spell end
         end
     end
     return true
@@ -3245,11 +3246,26 @@ ns.RegisterEvent("TAXIMAP_OPENED", function()
 end)
 
 -- The player's casts, for Steering.Cast: was a jump step really used?
-Steering.castEvents = ns.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", function(unit, _, spellID)
-    if ns.Str(unit) ~= "player" then return end
+-- It comes for every cast of every unit in range: nothing is allocated, and
+-- nothing is done unless it is the player's and the route followed still
+-- has a jump step ahead (a hearthstone, teleport or item); two plain numbers.
+function Steering.OnCast(unit, _, spellID)
+    if ns.Str(unit) ~= "player" then return end -- (sanitized before it is compared)
+    local p = plan
+    if not p then return end
+    local path, pending = p.path, false
+    for i = p.index or 2, #path do
+        local how = path[i].via
+        if type(how) == "table" and how.kind and how.kind ~= "discover" then
+            pending = true
+            break
+        end
+    end
+    if not pending then return end
     local spell = ns.Num(spellID)
-    if spell then Steering.cast = { spell = spell, t = GetTime() } end
-end)
+    if spell then Steering.castSpell, Steering.castAt = spell, GetTime() end
+end
+Steering.castEvents = ns.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Steering.OnCast)
 
 ns.RegisterEvent("HEARTHSTONE_BOUND", function()
     local m, x, y = Geo.GetPlayerMapPosition()
