@@ -177,6 +177,12 @@ local function Parse()
             end
         end
     end)
+    -- a vessel's stop on its client path: where it rests, not a pier anyone
+    -- measured (Target's boarding radius; the arrow says the leg is a bare line)
+    Rows(T.transportEvidence, function(f)
+        local n = d.nodes[f[1]]
+        if n and (f[3] or ""):find("vehicle-stop-verified", 1, true) then n.vehicleStop = true end
+    end)
     Rows(T.regions, function(f)
         local m = tonumber(f[1])
         d.regions[m] = d.regions[m] or {}
@@ -1458,6 +1464,27 @@ local function Approach(here, to)
     return here.area == to.area and here.city == to.city and CanWalk(here, to)
 end
 
+-- Following a route (boarding, landing, the tram, the plain arrow's reason)
+-- keeps its numbers, state and helpers in this one table: this file's main
+-- chunk is close to Lua 5.1's limit of 200 locals, and Steer to its limit
+-- of 60 upvalues. Its numbers are copied to Travel.Thresholds.
+local Steering = {
+    boardUnmeasured = 60, -- yards: at a vessel's unmeasured stop (BoardNear)
+    taxiLanded = 150, boatLanded = 600, -- yards: off at a ride's end (FinishRide)
+    planningNote = 1, -- seconds: a route awaited this long is "planning" (Plain)
+    straightLong = 600, -- yards: a bare straight walk this long says so (BareLine)
+}
+Travel.Thresholds.boardUnmeasured, Travel.Thresholds.taxiLanded = Steering.boardUnmeasured, Steering.taxiLanded
+Travel.Thresholds.boatLanded, Travel.Thresholds.planningNote = Steering.boatLanded, Steering.planningNote
+Travel.Thresholds.straightLong = Steering.straightLong
+
+-- A vessel's stop on its client path (Parse: vehicleStop) is where it rests,
+-- not where anyone stands to board: the nearest ground can be further off
+-- than BOARD_NEAR, so there a wider radius counts as being at the dock.
+function Steering.BoardNear(n)
+    return n.vehicleStop and Steering.boardUnmeasured or BOARD_NEAR
+end
+
 -- the stop the arrow points at: the first one not already behind you
 local function Target(path, here, index)
     local i = index or 2
@@ -1471,7 +1498,7 @@ local function Target(path, here, index)
         -- action/entrance must actually reach it again before advancing.
         if not reached[e.node] or not OptionalStop(e, nextE) or not Approach(here, nextE.node) then
             local near = (e.node.terrainOnly or type(e.via) == "table" and e.via.terrain) and 3
-                or (type(nextE.via) == "table" and TRANSPORT[nextE.via.method]) and BOARD_NEAR or NEAR
+                or (type(nextE.via) == "table" and TRANSPORT[nextE.via.method]) and Steering.BoardNear(e.node) or NEAR
             local dd = Dist(here, e.node)
             if not dd or dd > near then
                 break
@@ -1626,7 +1653,7 @@ local function Reprice(p, here, c, index, shortcut)
     if not firstWalk then
         local from = p.path[index - 1].node
         local dd = Dist(here, from)
-        if not dd or dd > BOARD_NEAR or from.area ~= here.area or from.city ~= here.city
+        if not dd or dd > Steering.BoardNear(from) or from.area ~= here.area or from.city ~= here.city
             or not CanWalk(here, from) then return nil end
         elapsed = WalkCost(here, from, c)
         if not elapsed then return nil end
@@ -1758,16 +1785,31 @@ local function Adopt(wp, c, preference, candidate, now, sliced, old)
     return new
 end
 
+-- Why the last re-plan could not place the trip on the network (Plan,
+-- Replan: Steering.unplaced): "offnet" (where you are), "goal-offnet" (the
+-- waypoint), or nil. Travel.Note says it while the arrow points straight.
+function Steering.Unplaced(here, goal)
+    if not (here and here.area) then return "offnet" end
+    if not (goal and goal.area) then return "goal-offnet" end
+end
+
 -- Plan now, all at once (when planning can't be spread over frames).
 -- Returns the plan; or nil, true when both ends are on the network and
 -- there's no way; or nil when the player or the waypoint can't be placed.
+-- With no position at all (the tram, a loading screen) the plan followed
+-- stays as it was: nothing is known that could change it.
 local function Plan(wp)
     local d = Data()
     if not d then
+        Steering.unplaced = "offnet"
         return nil
     end
     local here = Fresh(PlayerPlace())
+    if not here and plan and plan.wp == wp then
+        return plan
+    end
     local goal = GoalPlace(wp)
+    Steering.unplaced = here and Steering.Unplaced(here, goal) or nil
     if not (here and goal and here.area and goal.area) then
         return nil
     end
@@ -1975,12 +2017,22 @@ function Travel.Riding()
     return riding
 end
 
-local function FinishRide(destination)
-    if plan and plan.followed and plan.wp.travelChosen and destination then
-        for i = plan.index, #plan.path - 1 do
-            if plan.path[i].node == destination then
-                plan.index, plan.target = i + 1, plan.path[i + 1]
-                return -- retain the chosen onward itinerary after disembarking
+-- Off at the ride's end: when that end is in the route (and you are there:
+-- within `near` yards; a chosen itinerary is kept wherever), the route goes
+-- on at the step after it, so the arrow never blinks to the plain one while
+-- the search from where you landed runs (Travel.Invalidate follows, and
+-- KeepFollowed decides whether its answer replaces this one). Else no plan.
+-- A flight lands you beside its flight master (Steering.taxiLanded); a boat
+-- is left within 600 yd of its far dock (UpdateRiding: Steering.boatLanded).
+local function FinishRide(destination, here, near)
+    if plan and plan.followed and destination then
+        local at = here and Dist(here, destination)
+        if plan.wp.travelChosen or (at and at <= near) then
+            for i = plan.index, #plan.path - 1 do
+                if plan.path[i].node == destination then
+                    plan.index, plan.target = i + 1, plan.path[i + 1]
+                    return -- retain the onward itinerary after disembarking
+                end
             end
         end
     end
@@ -2004,7 +2056,7 @@ local function UpdateRiding(here)
         end
         return true
     elseif riding and riding.method == "taxi" then
-        FinishRide(riding.to)
+        FinishRide(riding.to, here, Steering.taxiLanded)
         riding = nil
         Travel.Invalidate()
         return false
@@ -2054,7 +2106,7 @@ local function UpdateRiding(here)
         if riding.link then
             ns.Fire("TRAVEL_ARRIVED", riding.link.key, GetTime())
         end
-        FinishRide(riding.to)
+        FinishRide(riding.to, here, Steering.boatLanded)
         riding = nil
         Travel.Invalidate()
         return false
@@ -2072,23 +2124,28 @@ end
 -- A short record of what the arrow was told to do (in the saved variables,
 -- the last 60 changes), so a wrong turn reported from the game can be
 -- traced afterwards.
+-- `why`, with no target and no step: the arrow went plain (Travel.Note's
+-- reason); `here` is then nil when there's no position.
 local lastLog
-local function Log(here, target, s)
+local function Log(here, target, s, why)
     if type(WaypointTrackerDB) ~= "table" then
         return
     end
     local now = GetTime()
     -- the same step as last time (compared field by field: this runs every frame)
-    local trail = s.trail ~= nil
-    if lastLog and lastLog.id == target.id and lastLog.area == here.area and lastLog.trail == trail
+    local trail = s ~= nil and s.trail ~= nil
+    local id, area = target and target.id, here and here.area
+    if not target then id = "plain:" .. tostring(why) end
+    if lastLog and lastLog.id == id and lastLog.area == area and lastLog.trail == trail
         and now - lastLog.t < 15 then
         return
     end
-    lastLog = { id = target.id, area = here.area, trail = trail, t = now }
+    lastLog = { id = id, area = area, trail = trail, t = now }
     local log = type(WaypointTrackerDB.travelLog) == "table" and WaypointTrackerDB.travelLog or {}
     WaypointTrackerDB.travelLog = log
     local d = data or {}
-    local tc, tx, ty = Pos(target)
+    local tc, tx, ty
+    if target then tc, tx, ty = Pos(target) end
     local facing = GetPlayerFacing and ns.Num(GetPlayerFacing())
     local route = {}
     for i, e in ipairs(plan and plan.path or {}) do
@@ -2096,13 +2153,14 @@ local function Log(here, target, s)
     end
     table.insert(log, {
         when = time and time() or 0,
-        step = s.title,
-        here = ("%s %.4f %.4f | %s %.1f %.1f | %s %s"):format(tostring(here.m), here.x or 0, here.y or 0,
+        step = s and s.title,
+        plain = why,
+        here = here and ("%s %.4f %.4f | %s %.1f %.1f | %s %s"):format(tostring(here.m), here.x or 0, here.y or 0,
             tostring(here.cont), here.wx or 0, here.wy or 0, tostring(d.areas and d.areas[here.area] or here.area),
-            tostring(here.city or "")),
-        target = ("%s | %s %.1f %.1f"):format(tostring(target.id), tostring(tc), tx or 0, ty or 0),
-        bearing = s.bearing and floor(math.deg(s.bearing) + 0.5),
-        trail = s.trail and true or nil,
+            tostring(here.city or "")) or "no position",
+        target = target and ("%s | %s %.1f %.1f"):format(tostring(target.id), tostring(tc), tx or 0, ty or 0) or nil,
+        bearing = s and s.bearing and floor(math.deg(s.bearing) + 0.5),
+        trail = s and s.trail and true or nil,
         facing = facing and floor(math.deg(facing) + 0.5),
         route = table.concat(route, " "),
     })
@@ -2240,7 +2298,14 @@ local function Replan(wp, here, now, urgent)
     end
     lastPlanTime, planGeneration, planWp = now, generation, wp
     seenM, seenX, seenY = wp.m, wp.x, wp.y
+    if not here then
+        -- no position at all (the tram, a loading screen): nothing to search
+        -- from, and nothing known that changes the route followed; keep it
+        Steering.unplaced = nil
+        return
+    end
     local goal = GoalPlace(wp)
+    Steering.unplaced = Steering.Unplaced(here, goal)
     if not (here and goal and here.area and goal.area) then
         -- not on the network: no plan, so the arrow points the plain way
         local had = plan
@@ -2407,10 +2472,92 @@ local function Result(shared)
     local s = steerResult
     s.total, s.step, s.steps, s.sub, s.title, s.dist, s.pin = nil, nil, nil, nil, nil, nil, nil
     s.wait, s.aim, s.progress, s.deviation, s.bearing, s.trail = nil, nil, nil, nil, nil, nil
+    s.note = nil
     return s
 end
 
+-- Why the arrow points straight, when Steer says so (nil): Travel.Note().
+-- Nothing for a walk inside one area (that is the normal arrow);
+-- "planning" once a route has been awaited for over Steering.planningNote
+-- seconds; "offnet" when where you are isn't on the network, "goal-offnet"
+-- when the waypoint isn't; "noposition" when the game gives no position
+-- (the arrow says it can't track). Each is written to the travel log.
+-- State: note (the reason), awaiting/awaitWp (since when, and for which
+-- waypoint, the arrow has waited plain for a route), waited (that, as this
+-- Steer call began).
+Steering.noteText = { planning = "TRAVEL_NOTE_PLANNING", offnet = "TRAVEL_NOTE_OFFNET",
+    ["goal-offnet"] = "TRAVEL_NOTE_GOAL_OFFNET", noposition = "TRAVEL_NOTE_OFFNET" }
+function Travel.Note()
+    local why = Steering.note
+    local key = why and Steering.noteText[why]
+    return why, key and L[key] or nil
+end
+
+-- A Steer call begins: no reason yet; the wait goes on only for the same waypoint.
+function Steering.Begin(wp)
+    local S = Steering
+    S.waited = S.awaitWp == wp and S.awaiting or nil
+    S.note, S.awaiting, S.awaitWp = nil, nil, wp
+end
+
+-- Steer's answer for the plain arrow: nil, with the reason noted and logged.
+-- "route": no plan and no "no route" either; the reason is then the place
+-- the last re-plan couldn't put on the network, or the wait for a search.
+function Steering.Plain(why, here, now)
+    local S = Steering
+    if why == "route" then
+        why = not here and "noposition" or S.unplaced or "planning"
+    end
+    if why == "planning" then
+        S.awaiting = S.waited or now
+        if now - S.awaiting <= S.planningNote then return nil end -- most searches answer sooner
+    end
+    S.note = why
+    Log(here, nil, nil, why)
+    return nil
+end
+
+-- A walking step along a bare straight line: inferred inside one area (no
+-- explicit link, no surveyed terrain, no walked path steering it), to a
+-- vessel's unmeasured stop or over Steering.straightLong yards. The arrow says so.
+function Steering.BareLine(path, i, s)
+    local e, previous = path[i], path[i - 1]
+    if e.via ~= "walk" or s.trail or e.node.terrainOnly or e.node.corridor or not previous then return false end
+    if e.node.vehicleStop then return true end
+    local leg, long = Dist(previous.node, e.node), Steering.straightLong
+    return (leg and leg > long) or (s.dist and s.dist > long) or false
+end
+Travel._BareLine = Steering.BareLine -- tests
+
+-- The tram gives no position aboard. Without one: the step to show (the
+-- ride's, also when you went in from the station before the step said
+-- "ride"), or nil. With one again: out at the far end (as close as off a
+-- flight), the route goes on at the step after it while the search from
+-- here runs.
+function Steering.Tram(p, here)
+    local index, path = p.index, p.path
+    local e, nextE = path[index], path[index + 1]
+    local ride = e and type(e.via) == "table" and e.via.method == "tram"
+    if not here then
+        if not ride and e and PlainWalk(e.via) and nextE and type(nextE.via) == "table" and nextE.via.method == "tram" then
+            return index + 1
+        end
+        return ride and index or nil
+    end
+    -- (the step may still be the walk into it, as without a position)
+    if not ride and e and PlainWalk(e.via) and nextE and type(nextE.via) == "table" and nextE.via.method == "tram" then
+        index, e, nextE, ride = index + 1, nextE, path[index + 2], true
+    end
+    if ride and index < #path then
+        local at = Dist(here, e.node)
+        if at and at <= Steering.taxiLanded and here.area == e.node.area and here.city == e.node.city then
+            p.index, p.target = index + 1, nextE
+        end
+    end
+end
+
 function Travel.Steer(wp, shared)
+    Steering.Begin(wp)
     if not wp or not Travel.Enabled() then
         plan, noRoute, job, replanQueued, held = nil, false, nil, false, nil
         return nil
@@ -2517,21 +2664,21 @@ function Travel.Steer(wp, shared)
         ns.Fire("TRAVEL_PLANNED", plan)
     end
     if plan and not here then
-        -- no position: on the tram, or in a dungeon on the way
-        local t = plan.target
-        local how = t and type(t.via) == "table" and t.via
-        if how and how.method == "tram" then
+        -- no position: on the tram (the re-plans keep the route meanwhile),
+        -- or in a dungeon on the way
+        local index = Steering.Tram(plan, nil)
+        if index then
             local s = Result(shared)
-            s.title, s.sub = StepText(plan.path, plan.index, WP.ShortName(wp)), WP.ShortName(wp)
+            s.title, s.sub = StepText(plan.path, index, WP.ShortName(wp)), WP.ShortName(wp)
             return s
         end
-        return nil
+        return Steering.Plain("noposition", nil, now)
     end
     if not plan then
         if not noRoute then
             -- the player or the waypoint isn't on the network (or the first
-            -- route is still being worked out): the plain arrow
-            return nil
+            -- route is still being worked out): the plain arrow, and why
+            return Steering.Plain("route", here, now)
         end
         -- No reachable graph route: do not replace it with a straight arrow
         -- through a known barrier or an unavailable transport connection.
@@ -2544,6 +2691,7 @@ function Travel.Steer(wp, shared)
     if #path == 2 and path[2].via == "walk" then
         return nil
     end
+    Steering.Tram(plan, here) -- the position back after the tram, at its far end
     local i = Target(path, here, plan.index)
     plan.index, plan.target = i, path[i]
     local progress, aim
@@ -2552,7 +2700,7 @@ function Travel.Steer(wp, shared)
     local over
     if Sliced() then over = Beyond(plan, i, here) end
     if over == false then
-        return nil
+        return Steering.Plain("planning", here, now) -- a crossing taken: the search from beyond it answers soon
     elseif over then
         i = over
         if i == #path and path[i].via == "walk" then
@@ -2574,7 +2722,8 @@ function Travel.Steer(wp, shared)
     else
         -- every field the result can get, sized once (nil until set)
         s = { total = plan.total, step = i - 1, steps = #path - 1, sub = WP.ShortName(wp), title = nil,
-            dist = nil, pin = nil, wait = nil, aim = nil, progress = nil, deviation = nil, bearing = nil, trail = nil }
+            dist = nil, pin = nil, wait = nil, aim = nil, progress = nil, deviation = nil, bearing = nil, trail = nil,
+            note = nil }
     end
     s.title = SteerText(path, i, WP.ShortName(wp))
     if type(how) == "table" and (how.kind or TRANSPORT[how.method]) then
@@ -2616,6 +2765,9 @@ function Travel.Steer(wp, shared)
             s.trail = bearing
             s.bearing = bearing
         end
+    end
+    if Steering.BareLine(path, i, s) then
+        s.note = L.TRAVEL_NOTE_STRAIGHT -- the arrow claims no more than a straight line
     end
     Log(here, target, s)
     return s
