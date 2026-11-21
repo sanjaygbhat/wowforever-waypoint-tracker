@@ -261,7 +261,7 @@ class Services(unittest.TestCase):
             self.assertGreaterEqual(r['distance'],0)
 
     def test_minimum_identity_and_spawn_coverage(self):
-        # Spawns are distinct points. Since 1.5.1 a service NPC's classic
+        # Spawns are distinct points. Since 1.5.1 a city NPC's classic
         # zone-map twin of its city-map point (each other's nearest, within
         # 12 yd) is one spot, not two (tests/run_city_points.lua). Each
         # lowered floor drops by exactly the twins removed on its binding
