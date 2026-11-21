@@ -195,6 +195,17 @@ check(leg and path[leg + 1] and type(path[leg + 1].via) == "table" and path[leg 
 path = Travel.Search(Place("TAXI_7"), Place("DOCK_SOUTHSHORE"), Ctx({ flights = false }))
 leg = WalkTo(path, "DOCK_MENETHIL")
 check(leg and LegLabel(path, leg) == false, "Menethil: the walk to an ordinary dock is not")
+-- a walking link the data flags unmeasured (an indoor passage) is labelled
+local indoor
+for _, l in ipairs(d.out.BORDER_BURNING_STEPPES_TO_BLACKROCK_MOUNTAIN or {}) do
+    if l.to.id == "BORDER_BLACKROCK_MOUNTAIN_TO_BURNING_STEPPES" then indoor = l end
+end
+check(indoor and indoor.confidence == "unmeasured-indoor" and Travel._BareLine({ { node = indoor.from }, { node = indoor.to, via = indoor } }, 2, {}) == true,
+    "Blackrock Mountain: the unmeasured indoor passage is labelled")
+-- Travel.GoalArea: where a waypoint is, as the planner places it (no search)
+local ga, gc = Travel.GoalArea(d.nodes.TAXI_2.m, d.nodes.TAXI_2.x, d.nodes.TAXI_2.y)
+check(ga == d.nodes.TAXI_2.area and gc == d.nodes.TAXI_2.city, "GoalArea: Stormwind's flight master is in its area and city")
+check(Travel.GoalArea(nil, 0.5, 0.5) == nil and Travel.GoalArea(1414, 0 / 0, 0.5) == nil, "GoalArea: nothing for an unusable point")
 
 -- ---------------------------------------------------------------------------
 -- A made-up world on the mock's maps
@@ -636,8 +647,9 @@ check(LastPlain() and LastPlain().plain == "offnet", "and in the travel log")
 -- replaces the map name under "On another continent"
 MoveTo(-1000, -2400)
 local elsewhere = WP.Add(1411, 0.5, 0.5, { title = "Unmapped zone" })
-check(Shown(elsewhere) == L.TRAVEL_NOTE_GOAL_OFFNET and arrowLines[2]:GetText() == L.ANOTHER_CONTINENT,
-    "another continent: the reason under it (" .. tostring(etaLine:GetText()) .. ")")
+check(Shown(elsewhere) == ns.Geo.GetMapName(1411) .. " · " .. L.TRAVEL_NOTE_GOAL_OFFNET
+    and arrowLines[2]:GetText() == L.ANOTHER_CONTINENT,
+    "another continent: the reason after the zone's name, which stays (" .. tostring(etaLine:GetText()) .. ")")
 
 -- no position at all: the arrow says it can't track; the reason is logged
 WP.SetActive(goldshire, true)
@@ -652,17 +664,21 @@ ns.Set("realRoutes", false)
 check(Steer(goldshire) == nil and Travel.Note() == nil, "Real routes off: no note")
 ns.Set("realRoutes", true)
 
--- a leg the route only knows as a straight line: over 600 yd inside one
--- area, inferred (no link, no surveyed ground, no walked path)
+-- an ordinary walk inside an area is a straight line too, however long:
+-- no label (it would be on almost every walk), the ETA line as it was
 WP.SetActive(westfall, true)
 MoveTo(-1000, -2400) -- 2059 yd from the crossing
 s = Steer(westfall)
-check(s and s.title == L.TRAVEL_HEAD_TO:format("Westfall") and s.note == L.TRAVEL_NOTE_STRAIGHT,
-    "a long inferred walk is labelled a straight line (" .. tostring(s and s.note) .. ")")
-check(Shown(westfall) == L.TRAVEL_NOTE_STRAIGHT, "on the arrow's third line (" .. tostring(etaLine:GetText()) .. " / " .. tostring(arrowLines[1]:GetText()) .. ")")
+check(s and s.title == L.TRAVEL_HEAD_TO:format("Westfall") and s.note == nil,
+    "a long ordinary walk is not labelled (" .. tostring(s and s.note) .. ")")
+check(Shown(westfall) == "", "its third line stays as the ETA setting says (" .. tostring(etaLine:GetText()) .. ")")
+ns.Set("showETA", true)
+local total = Shown(westfall)
+check(total and total ~= "" and not total:find(L.TRAVEL_NOTE_STRAIGHT, 1, true), "with the ETA on: the total, no label (" .. tostring(total) .. ")")
+ns.Set("showETA", false)
 MoveTo(-1850, -700) -- 180 yd from it
 s = Steer(westfall)
-check(s and s.title == L.TRAVEL_HEAD_TO:format("Westfall") and s.note == nil, "a short one is not")
+check(s and s.title == L.TRAVEL_HEAD_TO:format("Westfall") and s.note == nil, "a short one is not either")
 
 -- the walk to an ordinary dock (200 yd): no label; at 50 yd still on the way
 local function Settle(wp, wx, wy)
@@ -688,6 +704,13 @@ WP.SetActive(durotar, true)
 s = Settle(durotar, -1700, -2630)
 check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar") and s.note == L.TRAVEL_NOTE_STRAIGHT,
     "the walk to an unmeasured stop is labelled (" .. tostring(s and s.note) .. ")")
+-- the label is added to the third line: the waypoint and the total stay
+check(Shown(durotar) == L.TRAVEL_NOTE_STRAIGHT, "with the ETA off: the label alone on the third line")
+ns.Set("showETA", true)
+local line3 = Shown(durotar)
+check(line3 and line3:find("Razor Hill", 1, true) and line3:sub(-#L.TRAVEL_NOTE_STRAIGHT) == L.TRAVEL_NOTE_STRAIGHT
+    and #line3 > #L.TRAVEL_NOTE_STRAIGHT + 3, "with the ETA on: the waypoint and the total, then the label (" .. tostring(line3) .. ")")
+ns.Set("showETA", false)
 s = Settle(durotar, -1760, -2770)
 check(s and s.pin and s.title == L.TRAVEL_BOAT:format("Durotar") and s.note == nil,
     "50 yd from an unmeasured stop: take the boat (" .. tostring(s and s.title) .. ")")
@@ -698,8 +721,12 @@ check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar"), "70 yd from it: still
 local A = { m = 37, x = 0.5, y = 0.5, cont = 0, wx = -1000, wy = -1500 }
 local B = { m = 37, x = 0.5, y = 0.85, cont = 0, wx = -1000, wy = -2200, id = "B" }
 local Bare = Travel._BareLine
-check(Bare({ { node = A }, { node = B, via = "walk" } }, 2, { dist = 700 }) == true, "BareLine: a 700-yd inferred walk")
+check(Bare({ { node = A }, { node = B, via = "walk" } }, 2, { dist = 700 }) == false, "BareLine: not a 700-yd ordinary walk")
 check(Bare({ { node = A }, { node = B, via = { method = "walk" } } }, 2, { dist = 700 }) == false, "BareLine: not along an explicit link")
+check(Bare({ { node = A }, { node = B, via = { method = "gate", confidence = "unmeasured-traversal" } } }, 2, { dist = 80 }) == true,
+    "BareLine: a walking link the data flags unmeasured")
+check(Bare({ { node = A }, { node = B, via = { method = "walk", confidence = "unmeasured-indoor" } } }, 2, { dist = 80, trail = 1 }) == false,
+    "BareLine: not even that along a walked path")
 check(Bare({ { node = A }, { node = B, via = { method = "walk", terrain = true } } }, 2, { dist = 700 }) == false, "BareLine: not over surveyed ground")
 check(Bare({ { node = A }, { node = B, via = "walk" } }, 2, { dist = 700, trail = 1 }) == false, "BareLine: not along a walked path")
 MadeUp(false)

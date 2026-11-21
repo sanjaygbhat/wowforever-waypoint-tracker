@@ -380,12 +380,24 @@ local function SetLine(fs, text)
     end
 end
 
--- `note`: why Real routes points straight (Travel.Note), shown on the
--- third line whatever the ETA setting, in place of the ETA
+-- A line with Real routes' note added after it (the note alone when the
+-- line is empty): the same string while neither changes (asked every frame).
+local notedLine, notedNote, notedText
+local function WithNote(line, note)
+    if not note then return line end
+    if line == nil or line == "" then return note end
+    if line ~= notedLine or note ~= notedNote then
+        notedLine, notedNote, notedText = line, note, line .. " · " .. note
+    end
+    return notedText
+end
+
+-- `note`: why Real routes points straight (Travel.Note), added to the
+-- third line whatever the ETA setting; it never replaces the ETA
 local function SetTexts(t, d, e, note)
     SetLine(title, ns.Get("showTitle") and t or "")
     SetLine(distText, ns.Get("showDistance") and d or "")
-    SetLine(etaText, note or (ns.Get("showETA") and e or ""))
+    SetLine(etaText, WithNote(ns.Get("showETA") and e or "", note))
 end
 
 local shownR, shownG, shownB
@@ -611,8 +623,8 @@ local function Update(dt)
         SetFade(1, dt)
         SetLine(title, steer.title or name) -- always shown: it says what to do next
         SetLine(distText, ns.Get("showDistance") and distLine or "")
-        -- a leg the route only knows as a straight line says so in place of the total
-        SetLine(etaText, steer.note or (ns.Get("showETA") and etaLine or ""))
+        -- a leg the data calls unmeasured says so after the total (never instead of it)
+        SetLine(etaText, WithNote(ns.Get("showETA") and etaLine or "", steer.note))
         return
     end
     -- the plain arrow while Real routes is on: why it points straight
@@ -652,7 +664,7 @@ local function Update(dt)
     if bearing == "continent" then
         SetLine(title, ns.Get("showTitle") and name or "")
         SetLine(distText, ns.Get("showDistance") and L.ANOTHER_CONTINENT or "")
-        SetLine(etaText, note or Geo.GetMapName(wp.m))
+        SetLine(etaText, WithNote(Geo.GetMapName(wp.m), note))
     else
         SetTexts(name, L.CANT_TRACK_HERE, "")
     end

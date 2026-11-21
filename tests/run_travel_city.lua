@@ -254,6 +254,10 @@ for _, case in ipairs(CASES) do
     else
         check(goal.city == nil and goal.m == gm, label .. ": planned as before")
     end
+    -- Travel.GoalArea (Find's check) places the point exactly as the planner does
+    local ga, gcity, gmaybe = T.GoalArea(gm, gx, gy)
+    check(ga == goal.area and gcity == goal.city and gmaybe == goal.cityMaybe,
+        ("%s: GoalArea agrees with the planner (%s %s %s)"):format(label, tostring(ga), tostring(gcity), tostring(gmaybe)))
     local ctx = {}; for k, v in pairs(c) do ctx[k] = v end
     ctx.preference, ctx.measureDanger = "fastest", true
     local raw = T.Search(Place(pm, px, py), Place(gm, gx, gy, true), ctx)
@@ -638,6 +642,8 @@ for _, hop in ipairs(HOPS) do
             if want == "direct" and yards <= 120 then
                 check(routes[1] and #routes[1].path == 2 and routes[2] and #routes[2].path == 2,
                     tag .. ": walk straight there (" .. Ids(routes[1] and routes[1].path) .. ")")
+                check(routes[1] and routes[1].unsure and routes[2] and routes[2].unsure,
+                    tag .. ": marked as only a straight line (unsure)")
             else
                 check(routes[1] and Ids(routes[1].path) == Ids(raw), tag .. ": the route stands (" .. Ids(routes[1] and routes[1].path) .. ")")
             end
@@ -651,6 +657,32 @@ for _, hop in ipairs(HOPS) do
             end
         end
     end
+end
+
+-- Steered: the straight walk over the edge (Unsure) says it is only a
+-- straight line on the arrow; an ordinary walk inside one area says nothing.
+do
+    local m, x, y = 1426, .610, .350 -- the Ironforge approach
+    local r, g = Region(m, x, y)
+    local ux, uy = (x - r.x) * g.w, (y - r.y) * g.h
+    local len = math.sqrt(ux * ux + uy * uy)
+    ux, uy = ux / len, uy / len
+    T._SetSliced(false)
+    WP.ClearAll(true)
+    PlaceOnMap(m, x, y)
+    local over = WP.Add(m, x + ux * 60 / g.w, y + uy * 60 / g.h, { title = "Over the edge", silent = true })
+    WP.SetActive(over, true)
+    local s = Steer(over)
+    local why, text = T.Note()
+    check(s == nil and T.Current() and T.Current().unsure and why == "unsure" and text == L.TRAVEL_NOTE_STRAIGHT,
+        "the straight walk over an area's edge: the plain arrow, noted as only a straight line (" .. tostring(why) .. ")")
+    s = Steer(over)
+    check(s == nil and T.Note() == "unsure", "and still after the re-plan (the route re-anchored keeps the mark)")
+    local inside = WP.Add(m, x - ux * 20 / g.w, y - uy * 20 / g.h, { title = "Same area", silent = true })
+    WP.SetActive(inside, true)
+    s = Steer(inside)
+    check(s == nil and T.Note() == nil and not (T.Current() and T.Current().unsure), "an ordinary walk inside one area: no note")
+    WP.ClearAll(true)
 end
 
 -- ---------------------------------------------------------------------------
