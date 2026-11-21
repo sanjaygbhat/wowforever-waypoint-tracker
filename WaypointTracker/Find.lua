@@ -173,9 +173,72 @@ local function Database(again, quiet)
     return ok, why
 end
 
+-- Nearest by the way there, not as the crow flies. With Real routes on,
+-- the closest spawns in a straight line are looked at (NEAREST_PLANNED, and
+-- any more within NEAREST_RATIO of the closest; NEAREST_MAX in all). One you
+-- can walk straight to (the planner's own test: the same area and city as
+-- you, and Travel.CanWalk) is as quick as its distance allows, so nothing
+-- farther beats it. When the closest is such a spawn it wins with nothing
+-- planned, as before. When it is not (behind a wall, across a river) and a
+-- walkable one is among them, both are planned the way the arrow plans them
+-- (Travel.Choices) and the quicker trip wins. A plan that has to leave your
+-- area can take most of a second (the arrow spreads its own over frames),
+-- so one such plan is made per click, for the closest. Straight-line
+-- distance decides when Real routes is off, the planner has no data, you
+-- can't be placed, none of them is walkable, or a plan fails.
+local NEAREST_PLANNED, NEAREST_RATIO, NEAREST_MAX = 5, 1.5, 8
+local function Quickest(entries, opts)
+    local Travel = ns.Travel
+    if not (Travel and Travel.Enabled and Travel.Choices and Travel.AreaAt and Travel.CanWalk and Travel.Enabled()) then
+        return DB.NearestOf(entries, opts)
+    end
+    local e, p, d = DB.NearestOf(entries, opts)
+    if not d then return e, p, d end
+    local m, x, y = Geo.GetPlayerMapPosition()
+    local cont, wx, wy = Geo.MapToWorldLive(m, x, y)
+    if not cont then return e, p, d end
+    local area, city = Travel.AreaAt(m, x, y, nil, true)
+    if not area then return e, p, d end
+    -- (a walk check may note things on both ends: new tables each time)
+    local function Walkable(point)
+        local gc, gx, gy = Geo.MapToWorld(point.m, point.x, point.y)
+        local ga, gcity = Travel.AreaAt(point.m, point.x, point.y)
+        if not gc or ga ~= area or gcity ~= city then return false end
+        return Travel.CanWalk({ area = area, city = city, cont = cont, wx = wx, wy = wy, m = m, x = x, y = y, player = true },
+            { area = ga, city = gcity, cont = gc, wx = gx, wy = gy, m = point.m, x = point.x, y = point.y, goal = true }) and true or false
+    end
+    if Walkable(p) then return e, p, d end
+    -- the closest is not walkable: the others, in order
+    local list = DB.NearestCandidates(entries, opts, NEAREST_MAX)
+    local first = list[1]
+    if not first or first.p ~= p then return e, p, d end
+    local walk
+    for i = 2, #list do
+        local c = list[i]
+        if i > NEAREST_PLANNED and c.d > first.d * NEAREST_RATIO then break end
+        if Walkable(c.p) then walk = i; break end
+    end
+    if not walk then return e, p, d end
+    local route
+    local function Plan(point)
+        route = nil
+        local _, chosen = Travel.Choices({ m = point.m, x = point.x, y = point.y })
+        route = chosen
+    end
+    local function Total(c)
+        return ns.Call(Plan, c.p) and route and ns.Num(route.total)
+    end
+    local across = Total(first)
+    local walkable = across and Total(list[walk])
+    if not walkable or across <= walkable then return e, p, d end
+    local c = list[walk]
+    return c.e, c.p, c.d
+end
+Find._Quickest = Quickest -- tests
+
 -- Sends the arrow to the nearest spawn of any of `entries`.
 local function WaypointToNearest(entries, title, measured)
-    local e, p, distance = DB.NearestOf(entries, { faction = ns.Get("findFaction") })
+    local e, p, distance = Quickest(entries, { faction = ns.Get("findFaction") })
     if measured and e and not distance then return nil, "position" end
     if not e then
         return nil

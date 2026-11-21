@@ -39,6 +39,23 @@ def check_flight_inventory(test, text):
         test.assertEqual(set(ids),expected,loc+' complete flight names')
         test.assertEqual(len(ids),len(expected),loc+' unique flight names')
 
+# The classic source lists a city spawn under the walled city and again under
+# its parent zone. Nearest keeps the city-map copy (DB.Points, 1.5.1): a
+# zone-map spawn is still present when it lies inside a walled city map and
+# the same object has a point on that city map within 150 yd. Independent
+# rectangle arithmetic, as above.
+WALLED_CITY_MAPS=(1453,1454,1455,1456,1457,1458)
+def city_twin(maps,m,x,y,actual):
+    if m['mapID'] in WALLED_CITY_MAPS:return False
+    wx,wy=m['top']-y*m['h'],m['left']-x*m['w']
+    for q in actual:
+        c=maps.get(q['m'])
+        if q['m'] not in WALLED_CITY_MAPS or not c or c['cont']!=m['cont']:continue
+        cx,cy=(c['left']-wy)/c['w'],(c['top']-wx)/c['h']
+        qx,qy=c['top']-q['y']*c['h'],c['left']-q['x']*c['w']
+        if 0<=cx<=1 and 0<=cy<=1 and math.hypot(qx-wx,qy-wy)<=150:return True
+    return False
+
 # No reviewed mailbox/stone spawn removals. Any future exception must name
 # the literal source spawn and document the replacement/evidence here.
 OBJECT_SPAWN_REMOVALS = {}
@@ -73,7 +90,8 @@ def check_object_spawn_inventory(test, data):
                         test.assertTrue(OBJECT_SPAWN_REMOVALS[key]);continue
                     actual=[q for e in data['entries'] if e['faction']==side and e['service']==service
                             and e['kind']=='object' and e['id']==abs(int(rid)) for q in e['points']]
-                    test.assertTrue(any(q['m']==m['mapID'] and abs(q['x']-x)<1e-9 and abs(q['y']-y)<1e-9 for q in actual),
+                    test.assertTrue(any(q['m']==m['mapID'] and abs(q['x']-x)<1e-9 and abs(q['y']-y)<1e-9 for q in actual)
+                                    or city_twin(maps,m,x,y,actual),
                                     (key,'missing production service spawn',m['mapID'],x,y))
     test.assertLessEqual(set(OBJECT_SPAWN_REMOVALS),expected,'stale reviewed removal')
 
@@ -243,15 +261,21 @@ class Services(unittest.TestCase):
             self.assertGreaterEqual(r['distance'],0)
 
     def test_minimum_identity_and_spawn_coverage(self):
+        # Spawns are distinct points. Since 1.5.1 a classic zone-map twin of
+        # a city-map point is one spot, not two (tests/run_city_points.lua).
+        # Each lowered floor drops by exactly the twins removed on its binding
+        # side: banker 20-3 (Alliance 20->17), stable master 28-1 (Alliance
+        # 28->27), battlemaster to Horde's 93-25=68 (Alliance 109-24=85).
         minimum={'mailbox':(85,150),'innkeeper':(28,29),'flight':(73,75),
-                 'repair':(178,200),'vendor':(529,609),'banker':(17,20),
-                 'auctioneer':(17,20),'stablemaster':(25,28),'spirithealer':(2,115),
-                 'battlemaster':(12,90),'meetingstone':(20,35)}
+                 'repair':(178,200),'vendor':(529,609),'banker':(17,17),
+                 'auctioneer':(17,20),'stablemaster':(25,27),'spirithealer':(2,115),
+                 'battlemaster':(12,68),'meetingstone':(20,35)}
         for key,s in self.data['summary'].items():
             if key.startswith('auctioneer/'):
                 # Exact reviewed inventories replace a lower bound inflated by
-                # the factionless Quickcoin viewer fallback (rv4-3).
-                expected=(16,19) if key.endswith('/Alliance') else (20,22)
+                # the factionless Quickcoin viewer fallback (rv4-3). Alliance: 16
+                # spots since 1.5.1 (three Darnassus zone-map twins collapsed).
+                expected=(16,16) if key.endswith('/Alliance') else (20,22)
                 self.assertEqual((s['identities'],s['spawns']),expected,key)
                 continue
             ids,spawns=minimum[key.split('/')[0]]

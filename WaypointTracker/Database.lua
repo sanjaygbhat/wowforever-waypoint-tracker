@@ -1761,6 +1761,69 @@ end
 -- spawns: one sighting doesn't mean the others are gone).
 local MOVED_NPC_SPOTS = 2
 local NEAR_KNOWN = 0.02 -- 2% of the map: the same place
+
+-- The classic source lists a city NPC twice: on the walled city's map and on
+-- its parent zone's map, a few yards apart. Real routes reads "inside the
+-- wall" off a waypoint's map, so the zone-map copy sends you out of the gate.
+-- That copy goes when the same entry has a point on the city map close by
+-- and the copy lies inside the city map. Only classic-derived points go:
+-- curated, corrected and observed spots are kept. Shipped data (1.5.1), each
+-- copy to its nearest city point: 147 of 163 within 10 yd (a zone map's
+-- 0.001 step is about 5 yd); 15 at 10-69 yd and Kyrai, a patrolling vendor,
+-- at 129 yd, all NPCs listed once on each map. No classic copy inside a city
+-- map lies farther than 129 yd from its entry's city points.
+local CITY_TWIN_YARDS = 150
+local cityMaps
+local function CityMaps()
+    if cityMaps then return cityMaps end
+    local T = ns.TravelData
+    if not T then return nil end
+    -- the walled city maps: the keys of the travel data's cities block only
+    cityMaps = {}
+    for line in (T.cities or ""):gmatch("[^\n]+") do
+        local m = tonumber(line:match("^%s*(%d+)"))
+        if m then cityMaps[m] = true end
+    end
+    return cityMaps
+end
+
+local keepCityTwins -- tests: DB._KeepCityTwins
+local function DropCityTwins(pts, classic)
+    if keepCityTwins then return pts end
+    local cities = CityMaps()
+    if not classic or not cities then return pts end
+    local onCity
+    for _, p in ipairs(pts) do
+        if cities[p.m] then
+            onCity = onCity or {}
+            onCity[#onCity + 1] = p
+        end
+    end
+    if not onCity then return pts end
+    local kept, limit = {}, CITY_TWIN_YARDS * CITY_TWIN_YARDS
+    for _, p in ipairs(pts) do
+        local twin = false
+        if classic[p] and not cities[p.m] and not p.curated and not p.fixed then
+            -- (a map the API cannot place keeps its point)
+            local c, wx, wy = Geo.MapToWorld(p.m, p.x, p.y, p)
+            for _, q in ipairs(c and onCity or EMPTY) do
+                local qc, qx, qy = Geo.MapToWorld(q.m, q.x, q.y, q)
+                if qc == c and (qx - wx) ^ 2 + (qy - wy) ^ 2 <= limit and Geo.TranslateToMap(p.m, p.x, p.y, q.m) then
+                    twin = true
+                    break
+                end
+            end
+        end
+        if not twin then kept[#kept + 1] = p end
+    end
+    return kept
+end
+
+-- tests: true keeps the zone-map twins (entries' cached points are not cleared)
+function DB._KeepCityTwins(on)
+    keepCityTwins = on and true or nil
+end
+
 function DB.Points(e)
     if not e then
         return {}
@@ -1769,7 +1832,7 @@ function DB.Points(e)
         return e.points
     end
     if e.classicCoords ~= e.coords then e.classic = nil end
-    local pts, curated, seen = {}, {}, {}
+    local pts, curated, seen, classic = {}, {}, {}, nil
     for _, w in ipairs(e.world or {}) do
         local x, y = Geo.WorldToMap(w[1], w[3], w[4], w[2] ~= 0 and w[2] or nil)
         local m = w[2] ~= 0 and w[2] or select(3, Geo.WorldToMap(w[1], w[3], w[4]))
@@ -1789,6 +1852,8 @@ function DB.Points(e)
         if not curated[m] and not (seen[m] and #list <= MOVED_NPC_SPOTS) then
             for _, p in ipairs(list) do
                 pts[#pts + 1] = p
+                classic = classic or {}
+                classic[p] = true
             end
         end
     end
@@ -1810,6 +1875,7 @@ function DB.Points(e)
         end
         pts = kept
     end
+    if classic then pts = DropCityTwins(pts, classic) end
     e.points = pts
     return pts
 end
@@ -2551,9 +2617,10 @@ function DB.ItemSources(item)
     return out
 end
 
--- Closest spawn of any of the given NPCs/objects: returns entry, point, dist.
+-- Spawns by straight-line distance. `keep`: also collect the `keep` closest
+-- spawns, nearest first, into the list `into` ({ e, p, d }; d squared).
 local nearestWorld = setmetatable({}, { __mode = "k" })
-function DB.NearestOf(entries, opts)
+local function Nearest(entries, opts, keep, into)
     local bestE, bestP, bestD, fallbackE, fallbackP
     local players = {}
     local letter, races = MyFaction()
@@ -2580,6 +2647,15 @@ function DB.NearestOf(entries, opts)
                         local dx, dy = w[5] - player[1], w[6] - player[2]
                         local d = dx * dx + dy * dy
                         if not bestD or d < bestD then bestE, bestP, bestD = e, p, d end
+                        if keep and (#into < keep or d < into[#into].d) then
+                            -- a short list kept in order: insert, drop the farthest
+                            local i = #into < keep and #into + 1 or #into
+                            while i > 1 and into[i - 1].d > d do
+                                into[i] = into[i - 1]
+                                i = i - 1
+                            end
+                            into[i] = { e = e, p = p, d = d }
+                        end
                     end
                 end
                 if not fallbackE then fallbackE, fallbackP = e, p end
@@ -2590,6 +2666,20 @@ function DB.NearestOf(entries, opts)
         return bestE, bestP, math.sqrt(bestD)
     end
     return fallbackE, fallbackP
+end
+
+-- Closest spawn of any of the given NPCs/objects: returns entry, point, dist.
+function DB.NearestOf(entries, opts)
+    return Nearest(entries, opts)
+end
+
+-- The `count` closest spawns, nearest first, as { e = entry, p = point,
+-- d = yards } (for ranking by travel time); then what DB.NearestOf returns.
+function DB.NearestCandidates(entries, opts, count)
+    local list = {}
+    local e, p, d = Nearest(entries, opts, count, list)
+    for _, c in ipairs(list) do c.d = math.sqrt(c.d) end
+    return list, e, p, d
 end
 
 -- Is this quest in your log / done?
