@@ -262,9 +262,10 @@ class Services(unittest.TestCase):
 
     def test_minimum_identity_and_spawn_coverage(self):
         # Spawns are distinct points. Since 1.5.1 a classic zone-map twin of
-        # a city-map point is one spot, not two (tests/run_city_points.lua):
-        # bankers, stable masters and battlemasters in the capitals were
-        # counted twice before.
+        # a city-map point is one spot, not two (tests/run_city_points.lua).
+        # Each lowered floor drops by exactly the twins removed on its binding
+        # side: banker 20-3 (Alliance 20->17), stable master 28-1 (Alliance
+        # 28->27), battlemaster to Horde's 93-25=68 (Alliance 109-24=85).
         minimum={'mailbox':(85,150),'innkeeper':(28,29),'flight':(73,75),
                  'repair':(178,200),'vendor':(529,609),'banker':(17,17),
                  'auctioneer':(17,20),'stablemaster':(25,27),'spirithealer':(2,115),

@@ -118,12 +118,17 @@ local function Yards(a, b)
     return math.sqrt((ax - bx) ^ 2 + (ay - by) ^ 2)
 end
 -- A zone-map point inside a city rectangle within 150 yd of a city-map point
--- of the same entry: the twin WP-1 removes.
+-- of the same entry: the twin WP-1 removes. Returns the nearest such point.
 local function Twin(pts, p)
     if CITY[p.m] then return nil end
+    local best, bestD
     for _, q in ipairs(pts) do
-        if CITY[q.m] and Inside(p, q.m) and Yards(p, q) <= 150 then return q end
+        if CITY[q.m] and Inside(p, q.m) then
+            local d = Yards(p, q)
+            if d <= 150 and (not bestD or d < bestD) then best, bestD = q, d end
+        end
     end
+    return best
 end
 -- Kept by rule: curated, corrected and observed (personal, imported or
 -- shared-discovery) spots are never dropped; only classic-derived twins go.

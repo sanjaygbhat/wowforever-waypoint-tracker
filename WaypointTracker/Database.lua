@@ -1767,8 +1767,11 @@ local NEAR_KNOWN = 0.02 -- 2% of the map: the same place
 -- wall" off a waypoint's map, so the zone-map copy sends you out of the gate.
 -- That copy goes when the same entry has a point on the city map close by
 -- and the copy lies inside the city map. Only classic-derived points go:
--- curated, corrected and observed spots are kept. The worst real twin offset
--- is 129 yd (a patrolling vendor); the rest are under 62 yd.
+-- curated, corrected and observed spots are kept. Shipped data (1.5.1), each
+-- copy to its nearest city point: 147 of 163 within 10 yd (a zone map's
+-- 0.001 step is about 5 yd); 15 at 10-69 yd and Kyrai, a patrolling vendor,
+-- at 129 yd, all NPCs listed once on each map. No classic copy inside a city
+-- map lies farther than 129 yd from its entry's city points.
 local CITY_TWIN_YARDS = 150
 local cityMaps
 local function CityMaps()
