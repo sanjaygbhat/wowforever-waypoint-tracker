@@ -161,6 +161,34 @@ for s in pairs(ns.Trainers.services) do trainerServices[#trainerServices + 1] = 
 for s in pairs(ns.Trainers.additionalServices or {}) do trainerServices[#trainerServices + 1] = s end
 table.sort(trainerServices)
 local entries, cityEntries, dropped, wrong, seenBase = 0, 0, 0, 0, {}
+-- Exactly the classic zone-map twins of `e` go when the rule covers it, and
+-- nothing at all goes when it doesn't.
+local function Compare(e, covered, label)
+    if seenBase[e] or not e.coords then return end
+    seenBase[e] = true
+    e.points = nil; DB._KeepCityTwins(true)
+    local all = DB.Points(e)
+    e.points = nil; DB._KeepCityTwins(nil)
+    -- (points from world positions are new tables each time: match by spot)
+    local kept, keptSet, classic = DB.Points(e), {}, {}
+    local function Key(p) return p.m .. ':' .. p.x .. ':' .. p.y end
+    for _, p in ipairs(kept) do keptSet[Key(p)] = (keptSet[Key(p)] or 0) + 1 end
+    for _, p in ipairs(all) do if not Observed(e, p) then classic[p] = true end end
+    for _, p in ipairs(all) do
+        local q, d
+        if covered then q, d = Twin(all, p, classic) end
+        if q then dropped = dropped + 1 end
+        local left = (keptSet[Key(p)] or 0) > 0
+        if left then keptSet[Key(p)] = keptSet[Key(p)] - 1 end
+        if (q ~= nil) == left then
+            wrong = wrong + 1
+            if wrong <= 10 then
+                print(('  %s: %s %s (%s) %d:%.4f,%.4f%s'):format(q and 'twin kept' or 'dropped, not a twin', label,
+                    tostring(e.name), tostring(e.id), p.m, p.x, p.y, q and (', %.0f yd from %d:%.4f,%.4f'):format(d, q.m, q.x, q.y) or ''))
+            end
+        end
+    end
+end
 for _, side in ipairs({ 'Alliance', 'Horde' }) do
     faction = side
     local lists = {}
@@ -172,37 +200,21 @@ for _, side in ipairs({ 'Alliance', 'Horde' }) do
             -- the database entry whose points the collapse works on
             local e = (listed.kind == 'object' and DB.objects or DB.units)[listed.id] or listed
             for _, p in ipairs(DB.Points(listed)) do if CITY[p.m] then cityEntries = cityEntries + 1; break end end
-            if not seenBase[e] and e.coords then
-                seenBase[e] = true
-                e.points = nil; DB._KeepCityTwins(true)
-                local all = DB.Points(e)
-                e.points = nil; DB._KeepCityTwins(nil)
-                -- (points from world positions are new tables each time: match by spot)
-                local kept, keptSet, classic = DB.Points(e), {}, {}
-                local function Key(p) return p.m .. ':' .. p.x .. ':' .. p.y end
-                for _, p in ipairs(kept) do keptSet[Key(p)] = (keptSet[Key(p)] or 0) + 1 end
-                for _, p in ipairs(all) do if not Observed(e, p) then classic[p] = true end end
-                for _, p in ipairs(all) do
-                    local q, d = Twin(all, p, classic)
-                    if q then dropped = dropped + 1 end
-                    local left = (keptSet[Key(p)] or 0) > 0
-                    if left then keptSet[Key(p)] = keptSet[Key(p)] - 1 end
-                    if (q ~= nil) == left then
-                        wrong = wrong + 1
-                        if wrong <= 10 then
-                            print(('  %s: %s %s (%s) %d:%.4f,%.4f%s'):format(q and 'twin kept' or 'dropped, not a twin', pair[1],
-                                tostring(e.name), tostring(e.id), p.m, p.x, p.y, q and (', %.0f yd from %d:%.4f,%.4f'):format(d, q.m, q.x, q.y) or ''))
-                        end
-                    end
-                end
-            end
+            Compare(e, true, pair[1])
         end
     end
 end
 faction = 'Alliance'
-print(('Invariant: %d entries, %d with a city-map point, %d twins dropped, %d points wrong'):format(
-    entries, cityEntries, dropped, wrong))
-check(entries > 500 and cityEntries > 100 and dropped > 150, 'the invariant saw the service and trainer entries and their twins')
+-- every other NPC: covered unless it is an enemy; other objects: never
+local npcs = 0
+for _, e in pairs(DB.units) do
+    if not seenBase[e] then npcs = npcs + 1 end
+    Compare(e, not DB.IsEnemy(e), 'npc')
+end
+for _, e in pairs(DB.objects) do Compare(e, false, 'object') end
+print(('Invariant: %d service/trainer entries (%d with a city-map point), %d other NPCs, %d twins dropped, %d points wrong'):format(
+    entries, cityEntries, npcs, dropped, wrong))
+check(entries > 500 and cityEntries > 100 and npcs > 5000 and dropped > 400, 'the invariant saw every entry and the twins')
 check(wrong == 0, 'exactly the classic zone-map twins within 12 yd go (each other\'s nearest), and nothing else')
 
 -- 2. The Darnassus twins named in the report: city point kept, Teldrassil copy gone.
@@ -227,9 +239,9 @@ for _, id in ipairs({ 14860, 6491 }) do -- Flik (Mulgore), a Mulgore spirit heal
     check(e and Maps(e)[1412], 'Mulgore point kept: ' .. id)
 end
 
--- 3b. Creatures, herbs and guards keep every spawn: separate spawns near a
--- city are real (1.5.1 review: Lake Frenzy, Worg, Prairie Wolf Alpha's
--- nearest went from 12 yd to 188 yd, Cursed Darkhound, Orgrimmar Grunt).
+-- 3b. Enemies keep every spawn: one inside a city map's rectangle is out
+-- beyond the walls (1.5.1 review: Lake Frenzy, Worg, Prairie Wolf Alpha's
+-- nearest went from 12 yd to 188 yd, Cursed Darkhound).
 local function Unchanged(e)
     e.points = nil
     DB._KeepCityTwins(true)
@@ -239,7 +251,7 @@ local function Unchanged(e)
     return all, #DB.Points(e)
 end
 for _, c in ipairs({ { 6033, 'Lake Frenzy' }, { 1765, 'Worg' }, { 2960, 'Prairie Wolf Alpha' },
-    { 1548, 'Cursed Darkhound' }, { 3296, 'Orgrimmar Grunt' } }) do
+    { 1548, 'Cursed Darkhound' } }) do
     local e = DB.units[c[1]]
     local all, kept = Unchanged(e or {})
     check(e and all > 0 and kept == all, ('%s keeps every spawn (%d of %d)'):format(c[2], kept, all))
@@ -250,6 +262,11 @@ local _, _, wolf = DB.NearestOf({ DB.units[2960] })
 check(wolf and wolf < 20, ('Prairie Wolf Alpha is still %s yd away'):format(wolf and ('%.0f'):format(wolf) or '?'))
 PlaceOnMap(1457, 0.40, 0.42)
 M.Tick(0.2)
+-- a city guard: only its zone-map twins go (each within 12 yd of its city spot)
+do
+    local all, kept = Unchanged(DB.units[3296])
+    check(kept < all and all - kept <= 3, ('Orgrimmar Grunt loses only its twins (%d of %d kept)'):format(kept, all))
+end
 -- and the service and trainer collapse is unchanged for these
 for _, id in ipairs({ 4160, 11041, 11042 }) do
     local all, kept = Unchanged(DB.units[id])
@@ -266,7 +283,11 @@ end
 local twin = Pts({ kind = 'npc', id = -1, coords = '141:286,519;1657:549,240' })
 check(#twin == 1 and twin[1].m == 1457, 'classic twin collapses to the city point')
 local creature = Pts({ kind = 'npc', id = -12, svc = false, coords = '141:286,519;1657:549,240' })
-check(#creature == 2, 'not a service or trainer: the twin is kept')
+check(#creature == 2, 'an enemy (no faction): the twin is kept')
+local resident = Pts({ kind = 'npc', id = -14, svc = false, fac = 'A', coords = '141:286,519;1657:549,240' })
+check(#resident == 1 and resident[1].m == 1457, 'a friendly NPC with no service: the twin goes too')
+local object = Pts({ kind = 'object', id = -15, svc = false, coords = '141:286,519;1657:549,240' })
+check(#object == 2, 'an object with no service: the twin is kept')
 local two = Pts({ kind = 'npc', id = -13, coords = '141:286,519,287,518;1657:549,240' })
 check(#two == 2, 'two zone-map copies by one city point: only the nearer one goes')
 local cityOnly = Pts({ kind = 'npc', id = -2, coords = '1657:549,240' })
@@ -332,6 +353,47 @@ for _, s in ipairs(spots) do
         check(plan and plan.path and #plan.path == 2, 'a two-stop plan from ' .. s[3])
     end
 end
+
+-- 6. Thunder Bluff and Undercity have no usable terrain footprint: there a
+-- zone-map copy of a city NPC sent you out of the gate to someone standing
+-- beside you (1.5.1 review: Cairne Bloodhoof's Mulgore copy 8 yd from his
+-- Thunder Bluff spot, Bethor Iceshard's Tirisfal copy 2 yd away). Find
+-- must give a walk inside the city, with no "Leave".
+faction = 'Horde'
+local unitRace = UnitRace
+for _, c in ipairs({ { 3057, 'Cairne Bloodhoof', 1456, 'Tauren' }, { 1498, 'Bethor Iceshard', 1458, 'Scourge' } }) do
+    function UnitRace() return c[4], c[4] end
+    local e = DB.units[c[1]]
+    local pts, city, zone = e and DB.Points(e) or {}, nil, 0
+    for _, p in ipairs(pts) do
+        if p.m == c[3] then city = p elseif Inside(p, c[3]) then zone = zone + 1 end
+    end
+    check(city and zone == 0, c[2] .. ': one point inside the city, on its map')
+    if city then
+        WP.ClearAll(true)
+        PlaceOnMap(c[3], city.x + 0.01, city.y) -- a few yards away, inside
+        M.Tick(0.2)
+        Find.Activate(e)
+        local wp = WP.GetActive()
+        check(wp and wp.m == c[3], c[2] .. ': Find sets the city-map point (got ' .. tostring(wp and wp.m) .. ')')
+        if wp then
+            M.Tick(3)
+            local steer = Travel.Steer(wp)
+            local plan = Travel.Current()
+            local goal = plan and plan.path and plan.path[#plan.path].node
+            local here = Travel._PlayerPlace()
+            check(steer == nil, c[2] .. ': no detour (' .. tostring(steer and steer.title) .. ')')
+            check(plan and #plan.path == 2 and goal and here and goal.area == here.area and goal.city == here.city,
+                c[2] .. ': a walk inside the city (same area and city)')
+            local leave = false
+            for _, line in ipairs(Travel.Describe()) do if line:find('Leave', 1, true) then leave = true end end
+            check(not leave, c[2] .. ': no "Leave" step')
+        end
+    end
+end
+UnitRace = unitRace
+faction = 'Alliance'
+WP.ClearAll(true)
 
 print(('run_city_points: %d passed, %d failed'):format(passed, failed))
 if failed > 0 then os.exit(1) end

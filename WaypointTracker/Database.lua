@@ -1762,19 +1762,19 @@ end
 local MOVED_NPC_SPOTS = 2
 local NEAR_KNOWN = 0.02 -- 2% of the map: the same place
 
--- The classic source lists a city service NPC twice: on the walled city's
--- map and on its parent zone's map, a few yards apart. The zone-map copy
--- goes, for service and trainer NPCs/objects only (what Nearest offers),
--- when it and a city-map point of the same entry are each other's nearest
--- (one spawn listed twice, not two spawns), lie within CITY_TWIN_YARDS and
--- the copy lies inside the city map. Only classic-derived points go:
--- curated, corrected and observed spots are kept. Creatures, herbs and
--- guards keep every spawn: their separate spawns near a city are real.
--- (The planner places a point inside or outside a city by the client's
--- terrain, so a twin that is left does not send anyone out of the gate.)
--- Shipped data (1.5.1), such pairs: 203 within 6 yd (a zone map's 0.001
--- step is about 5 yd), 220 within 12 yd; the next is 14.7 yd, then a tail
--- up to 129 yd that is left alone.
+-- The classic source lists a city NPC twice: on the walled city's map and
+-- on its parent zone's map, a few yards apart. The zone-map copy goes (for
+-- NPCs that aren't enemies, and services: TwinRule) when it and a city-map point
+-- of the same entry are each other's nearest (one spawn listed twice, not
+-- two spawns), lie within CITY_TWIN_YARDS and the copy lies inside the city
+-- map. Only classic-derived points go: curated, corrected and observed
+-- spots are kept. Where the planner can't tell inside from outside by the
+-- city's terrain (Thunder Bluff, Undercity), a zone-map copy would send you
+-- out of the gate to someone standing beside you. Shipped data (1.5.1),
+-- such pairs: 365 within 3 yd, 408 within 6 (a zone map's 0.001 step is
+-- about 5 yd), 432 within 12, from 320 entries; among service NPCs the
+-- next is 14.7 yd, then a tail up to 129 yd that is left alone. A separate
+-- spawn dropped by mistake is within 12 yd of one that is kept.
 local CITY_TWIN_YARDS = 12
 local cityMaps
 local function CityMaps()
@@ -1790,10 +1790,18 @@ local function CityMaps()
     return cityMaps
 end
 
--- a mailbox, innkeeper, flight master, vendor... or a trainer
-local function ServiceRole(e)
-    if e.svc and next(e.svc) then return true end
+-- Whose twins go: every NPC that is not an enemy, and every service or
+-- trainer (mailboxes and meeting stones too). An enemy inside a city map's
+-- rectangle is out beyond the walls (Lake Frenzy in Silverpine, Cursed
+-- Darkhounds in Tirisfal, also listed on the Undercity map): its city-map
+-- copy is the misleading one, so both are kept. Other objects of one kind
+-- stand within a few yards of each other in the cities (lamps, festival
+-- gifts: 41% of city-map object spawns have another of their kind within
+-- 12 yd), so a zone-map one may be a separate object.
+local function TwinRule(e)
     local kind, id = e.kind, e.id
+    if kind == "npc" and not DB.IsEnemy(e) then return true end
+    if e.svc and next(e.svc) then return true end
     if type(id) ~= "number" or (kind ~= "npc" and kind ~= "object") then return false end
     if kind == "npc" and ns.Trainers.Index(DB.generation).members[id] then return true end
     return #ServiceRows(nil, kind, id) > 0
@@ -1811,7 +1819,7 @@ local function DropCityTwins(e, pts, classic)
             onCity[#onCity + 1] = p
         end
     end
-    if not onCity or not ServiceRole(e) then return pts end
+    if not onCity or not TwinRule(e) then return pts end
     -- each classic zone-map point inside a city map: its nearest city point
     local zone = {}
     for _, p in ipairs(pts) do
