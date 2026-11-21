@@ -42,7 +42,7 @@ def check_flight_inventory(test, text):
 # The classic source lists a city spawn under the walled city and again under
 # its parent zone. Nearest keeps the city-map copy (DB.Points, 1.5.1): a
 # zone-map spawn is still present when it lies inside a walled city map and
-# the same object has a point on that city map within 150 yd. Independent
+# the same object has a point on that city map within 12 yd. Independent
 # rectangle arithmetic, as above.
 WALLED_CITY_MAPS=(1453,1454,1455,1456,1457,1458)
 def city_twin(maps,m,x,y,actual):
@@ -53,7 +53,7 @@ def city_twin(maps,m,x,y,actual):
         if q['m'] not in WALLED_CITY_MAPS or not c or c['cont']!=m['cont']:continue
         cx,cy=(c['left']-wy)/c['w'],(c['top']-wx)/c['h']
         qx,qy=c['top']-q['y']*c['h'],c['left']-q['x']*c['w']
-        if 0<=cx<=1 and 0<=cy<=1 and math.hypot(qx-wx,qy-wy)<=150:return True
+        if 0<=cx<=1 and 0<=cy<=1 and math.hypot(qx-wx,qy-wy)<=12:return True
     return False
 
 # No reviewed mailbox/stone spawn removals. Any future exception must name
@@ -261,11 +261,12 @@ class Services(unittest.TestCase):
             self.assertGreaterEqual(r['distance'],0)
 
     def test_minimum_identity_and_spawn_coverage(self):
-        # Spawns are distinct points. Since 1.5.1 a classic zone-map twin of
-        # a city-map point is one spot, not two (tests/run_city_points.lua).
-        # Each lowered floor drops by exactly the twins removed on its binding
+        # Spawns are distinct points. Since 1.5.1 a service NPC's classic
+        # zone-map twin of its city-map point (each other's nearest, within
+        # 12 yd) is one spot, not two (tests/run_city_points.lua). Each
+        # lowered floor drops by exactly the twins removed on its binding
         # side: banker 20-3 (Alliance 20->17), stable master 28-1 (Alliance
-        # 28->27), battlemaster to Horde's 93-25=68 (Alliance 109-24=85).
+        # 28->27), battlemaster 90-22 (Horde 93->71; Alliance 109->88).
         minimum={'mailbox':(85,150),'innkeeper':(28,29),'flight':(73,75),
                  'repair':(178,200),'vendor':(529,609),'banker':(17,17),
                  'auctioneer':(17,20),'stablemaster':(25,27),'spirithealer':(2,115),

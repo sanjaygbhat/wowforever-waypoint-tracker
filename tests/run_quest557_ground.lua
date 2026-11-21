@@ -7,6 +7,10 @@ local ns=M.LoadAddon('WaypointTracker','WaypointTracker')
 M.FireEvent('ADDON_LOADED','WaypointTracker');M.FireEvent('PLAYER_LOGIN')
 assert(ns.DB.Load())
 local T=ns.Travel
+-- The actual Find selection needs the quest in the log (its objective is the
+-- step a click leads to) and a player map the client would report.
+M.quests[#M.quests+1]={id=557,title='Bracers of Binding'}
+C_Map.GetBestMapForUnit=function() return 1424 end
 local c={faction='Horde',level=30,run=7,ground=7,flightFactor=1,flights=false,boats=false,jumps={}}
 local function place(m,x,y)
     local cont,wx,wy=ns.Geo.MapToWorld(m,x,y)
@@ -20,6 +24,17 @@ local function run()
     local selected,point=ns.DB.NearestOf(ns.DB.QuestTargets(ns.DB.quests[557],'objective'))
     assert(selected and selected.id==2359 and point.m==1416 and math.abs(point.x-.229)<1e-9
         and math.abs(point.y-.595)<1e-9,'Find selects the verified reachable quest objective')
+    -- Find's click on the quest (WaypointFor), as the player makes it
+    ns.WP.ClearAll(true)
+    ns.Find.Activate(ns.DB.quests[557])
+    local wp=ns.WP.GetActive()
+    assert(wp and wp.m==1416 and math.abs(wp.x-.229)<1e-9 and math.abs(wp.y-.595)<1e-9,
+        'the Find click on quest 557 sets the verified reachable objective')
+    -- the Nearest buttons' travel-time ranking keeps the verified spot too
+    local qe,qp=ns.Find._Quickest(ns.DB.QuestTargets(ns.DB.quests[557],'objective'))
+    assert(qe and qe.id==2359 and qp.m==1416 and math.abs(qp.x-.229)<1e-9 and math.abs(qp.y-.595)<1e-9,
+        'travel-time ranking never gives up the verified objective')
+    ns.WP.ClearAll(true)
     local found=false
     for _,entry in ipairs(ns.DB.QuestTargets(ns.DB.quests[557],'objective'))do
         if entry.id==2359 then
