@@ -1021,5 +1021,9 @@
     "sha256": "d366a2e0253304dcab15417e69345f5567db67af6b259890ef004c132fc9ea11",
     "source": "https://github.com/shagu/pfQuest/tree/104f35678ca39ab1fb78b655f815cc7016f5e0c8/db (meta, units, objects and enUS names; literal service roster/spawn audit)",
     "license": "MIT"
+  },
+  "travel/city-footprints.json": {
+    "sha256": "ce47040ef5fbcaab42606b74e9be83d8fbf9ae8aeb2bb506c165424bf67c3814",
+    "source": "Local WoW Forever client 1.60.1.71037 (wowf, build key 0acab1e6aa41b46165d2ca66853b417b), ADT MCNK terrain area IDs over the walled-city UiMapAssignment rectangles, read offline via tools/build_city_footprints.py --extract"
   }
 }

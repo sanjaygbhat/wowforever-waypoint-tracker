@@ -175,6 +175,38 @@ for _, pair in ipairs({
         "boats preserve the nearby ground route: " .. pair[1] .. " > " .. pair[2])
 end
 
+-- The walk to a vessel's unmeasured client stop (Riverglades' Powderfuse
+-- Port) is labelled a bare straight line; the walk to an ordinary dock is not
+check(d.nodes.DOCK_POWDERFUSE_CLIENT_STOP.vehicleStop and d.nodes.DOCK_STEAMWHEEDLE_CLIENT_STOP.vehicleStop
+    and not d.nodes.DOCK_MENETHIL.vehicleStop and not d.nodes.DOCK_POWDERFUSE.vehicleStop,
+    "only the two vehicle-stop-verified client stops are marked")
+local function WalkTo(route, id)
+    for k, e in ipairs(route or {}) do
+        if e.node.id == id and e.via == "walk" then return k end
+    end
+end
+local function LegLabel(route, k)
+    return Travel._BareLine(route, k, { dist = Travel.Dist(route[k - 1].node, route[k].node) })
+end
+path = Travel.Search(Place("TAXI_3275"), Place("DOCK_STEAMWHEEDLE"), Ctx({ flights = false }))
+local leg = WalkTo(path, "DOCK_POWDERFUSE_CLIENT_STOP")
+check(leg and path[leg + 1] and type(path[leg + 1].via) == "table" and path[leg + 1].via.method == "ship"
+    and LegLabel(path, leg) == true, "Powderfuse: the walk to the boat's client stop is labelled a straight line")
+path = Travel.Search(Place("TAXI_7"), Place("DOCK_SOUTHSHORE"), Ctx({ flights = false }))
+leg = WalkTo(path, "DOCK_MENETHIL")
+check(leg and LegLabel(path, leg) == false, "Menethil: the walk to an ordinary dock is not")
+-- a walking link the data flags unmeasured (an indoor passage) is labelled
+local indoor
+for _, l in ipairs(d.out.BORDER_BURNING_STEPPES_TO_BLACKROCK_MOUNTAIN or {}) do
+    if l.to.id == "BORDER_BLACKROCK_MOUNTAIN_TO_BURNING_STEPPES" then indoor = l end
+end
+check(indoor and indoor.confidence == "unmeasured-indoor" and Travel._BareLine({ { node = indoor.from }, { node = indoor.to, via = indoor } }, 2, {}) == true,
+    "Blackrock Mountain: the unmeasured indoor passage is labelled")
+-- Travel.GoalArea: where a waypoint is, as the planner places it (no search)
+local ga, gc = Travel.GoalArea(d.nodes.TAXI_2.m, d.nodes.TAXI_2.x, d.nodes.TAXI_2.y)
+check(ga == d.nodes.TAXI_2.area and gc == d.nodes.TAXI_2.city, "GoalArea: Stormwind's flight master is in its area and city")
+check(Travel.GoalArea(nil, 0.5, 0.5) == nil and Travel.GoalArea(1414, 0 / 0, 0.5) == nil, "GoalArea: nothing for an unusable point")
+
 -- ---------------------------------------------------------------------------
 -- A made-up world on the mock's maps
 -- ---------------------------------------------------------------------------
@@ -541,6 +573,195 @@ check(WaypointTrackerDB.errorLog and WaypointTrackerDB.errorLog[#WaypointTracker
 for _ = #M.errors, before + 1, -1 do
     table.remove(M.errors)
 end
+
+-- ---------------------------------------------------------------------------
+-- Why the arrow points straight (Travel.Note), on the arrow's third line and
+-- in the travel log; and a leg the route only knows as a straight line
+-- ---------------------------------------------------------------------------
+-- the made-up world again (without the crossings walked and shared above);
+-- `stop`: DOCK_E is a vessel's unmeasured client stop
+ns.Set("travelShare", false)
+wipe(Trails.Store().crossings)
+local function MadeUp(stop)
+    local t = {}
+    for k, v in pairs(ns.TravelData) do t[k] = v end
+    t.transportEvidence = stop and "DOCK_E\tCORRECTED\tvehicle-stop-verified,access-unmeasured" or ""
+    ns.TravelData = t
+    Travel._Reset()
+    wipe(know.flights)
+end
+MadeUp(false)
+ns.Set("realRoutes", true); ns.Set("travelHearth", false); ns.Set("travelTrails", false)
+ns.Set("travelFlights", true); ns.Set("travelBoats", true)
+local arrowLines = {}
+for _, o in ipairs(M.frames) do
+    if o._kind == "FontString" and o._parent == ns.Arrow.textFrame then arrowLines[#arrowLines + 1] = o end
+end
+local etaLine, noteLine = arrowLines[3], ns.Arrow.noteText
+check(#arrowLines == 4 and arrowLines[4] == noteLine, "the arrow has its three text lines and the note's (" .. #arrowLines .. ")")
+-- the note's line: the text frame's width, two lines at most (wrapped, the
+-- rest truncated), inside the frame, so it never runs past it or its Edit
+-- Mode box; the frame stays click-through
+local tf = ns.Arrow.textFrame
+check(noteLine:GetWidth() == tf:GetWidth() and noteLine:CanWordWrap() and noteLine:GetHeight() >= 20 and noteLine:GetHeight() <= 26
+    and tf:GetHeight() >= 40 + noteLine:GetHeight() and not tf:IsMouseEnabled(),
+    "the note's line fits the text frame: its width, two lines tall, inside the frame")
+-- every note, in every locale, fits two lines of the frame's width (a
+-- generous 40 characters a line at this size; CJK and Hangul count double)
+for _, loc in ipairs({ "enUS", "deDE", "esES", "frFR", "ptBR", "ruRU", "zhCN", "zhTW", "koKR" }) do
+    local strings = {}
+    local chunk = assert(loadfile("WaypointTracker/Locales/" .. loc .. ".lua"))
+    setfenv(chunk, setmetatable({ GetLocale = function() return loc end }, { __index = _G }))
+    chunk("WaypointTracker", { L = strings, NewLocale = function() return strings end })
+    check(loc == "enUS" or strings.TRAVEL_NOTE_GOAL_OFFNET, loc .. ": its notes are read for the length check")
+    for _, key in ipairs({ "TRAVEL_NOTE_PLANNING", "TRAVEL_NOTE_OFFNET", "TRAVEL_NOTE_GOAL_OFFNET", "TRAVEL_NOTE_STRAIGHT" }) do
+        local text, width = strings[key] or ns.L[key], 0
+        for ch in text:gmatch("[%z\1-\127\194-\244][\128-\191]*") do width = width + (#ch >= 3 and 2 or 1) end
+        if width > 80 then check(false, ("%s %s fits two lines of the note (%d)"):format(loc, key, width)) end
+    end
+end
+local function Shown(wp)
+    WP.SetActive(wp, true)
+    M.Tick(2.5, 0.1)
+    return etaLine and etaLine:GetText(), noteLine:GetText()
+end
+local function Note(wp) return select(2, Shown(wp)) end
+local function LastPlain()
+    local entries = WaypointTrackerDB.travelLog
+    for k = #entries, 1, -1 do
+        if entries[k].plain then return entries[k] end
+    end
+end
+check(ns.Get("showETA") == false, "(control) the ETA line is off by default")
+WP.ClearAll(true)
+westfall = WP.Add(52, 0.9, 0.5, { title = "Moonbrook" })
+durotar = WP.Add(1, 0.5, 0.5, { title = "Razor Hill" })
+
+-- a walk inside one area: the normal arrow, nothing to say
+MoveTo(-1000, -2400)
+local goldshire = WP.Add(37, 0.7, 0.6, { title = "Goldshire" })
+WP.SetActive(goldshire, true)
+check(Steer(goldshire) == nil and Travel.Note() == nil, "same area: the plain arrow and no note")
+local eta3, note3 = Shown(goldshire)
+check(eta3 == "" and note3 == "", "same area: the arrow's third line and its note stay empty")
+
+-- the waypoint on a zone the network doesn't cover: not on the network
+local pinned = WP.Add(7777, 0.5, 0.5, { title = "Unmapped zone" })
+WP.SetActive(pinned, true)
+s = Steer(pinned)
+local why, text = Travel.Note()
+check(s == nil and why == "goal-offnet" and text == L.TRAVEL_NOTE_GOAL_OFFNET,
+    "a waypoint the network can't place: the plain arrow says so (" .. tostring(why) .. ")")
+eta3, note3 = Shown(pinned)
+check(eta3 == "" and note3 == L.TRAVEL_NOTE_GOAL_OFFNET, "on the note's line, with the ETA line off")
+local entry = LastPlain()
+check(entry and entry.plain == "goal-offnet" and entry.here and entry.route and not entry.target,
+    "and in the travel log")
+
+-- the player where the network has no area (on the continent map only)
+MoveTo(5000, -1000)
+WP.SetActive(goldshire, true)
+s = Steer(goldshire)
+why, text = Travel.Note()
+check(s == nil and why == "offnet" and text == L.TRAVEL_NOTE_OFFNET, "where you are isn't on the network: said (" .. tostring(why) .. ")")
+check(Note(goldshire) == L.TRAVEL_NOTE_OFFNET, "on the note's line")
+check(LastPlain() and LastPlain().plain == "offnet", "and in the travel log")
+
+-- a waypoint on another continent the network has no area for: the note
+-- replaces the map name under "On another continent"
+MoveTo(-1000, -2400)
+local elsewhere = WP.Add(1411, 0.5, 0.5, { title = "Unmapped zone" })
+eta3, note3 = Shown(elsewhere)
+check(eta3 == ns.Geo.GetMapName(1411) and note3 == L.TRAVEL_NOTE_GOAL_OFFNET
+    and arrowLines[2]:GetText() == L.ANOTHER_CONTINENT,
+    "another continent: the reason after the zone's name, which stays (" .. tostring(etaLine:GetText()) .. ")")
+
+-- no position at all: the arrow says it can't track; the reason is logged
+WP.SetActive(goldshire, true)
+Steer(goldshire)
+M.player.noPosition = true
+s = Steer(goldshire)
+check(s == nil and Travel.Note() == "noposition", "no position: the reason is kept")
+check(LastPlain() and LastPlain().plain == "noposition" and LastPlain().here == "no position", "and logged")
+eta3, note3 = Shown(goldshire)
+check(eta3 == "" and note3 == "" and arrowLines[2]:GetText() == L.CANT_TRACK_HERE, "the arrow says it can't track, nothing more")
+M.player.noPosition = nil
+ns.Set("realRoutes", false)
+check(Steer(goldshire) == nil and Travel.Note() == nil, "Real routes off: no note")
+ns.Set("realRoutes", true)
+
+-- an ordinary walk inside an area is a straight line too, however long:
+-- no label (it would be on almost every walk), the ETA line as it was
+WP.SetActive(westfall, true)
+MoveTo(-1000, -2400) -- 2059 yd from the crossing
+s = Steer(westfall)
+check(s and s.title == L.TRAVEL_HEAD_TO:format("Westfall") and s.note == nil,
+    "a long ordinary walk is not labelled (" .. tostring(s and s.note) .. ")")
+eta3, note3 = Shown(westfall)
+check(eta3 == "" and note3 == "", "its third line stays as the ETA setting says, no note (" .. tostring(etaLine:GetText()) .. ")")
+ns.Set("showETA", true)
+local total, totalNote = Shown(westfall)
+check(total and total ~= "" and totalNote == "", "with the ETA on: the total, no label (" .. tostring(total) .. ")")
+ns.Set("showETA", false)
+MoveTo(-1850, -700) -- 180 yd from it
+s = Steer(westfall)
+check(s and s.title == L.TRAVEL_HEAD_TO:format("Westfall") and s.note == nil, "a short one is not either")
+
+-- the walk to an ordinary dock (200 yd): no label; at 50 yd still on the way
+local function Settle(wp, wx, wy)
+    MoveTo(wx, wy)
+    M.now = M.now + 30 -- not a boat's drift
+    for _ = 1, 9 do M.now = M.now + 0.3; Travel.Steer(wp) end
+    return Steer(wp)
+end
+WP.SetActive(durotar, true)
+s = Settle(durotar, -1700, -2630)
+check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar") and s.note == nil, "the walk to an ordinary dock is not labelled")
+s = Settle(durotar, -1760, -2770)
+check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar"), "50 yd from an ordinary dock: still going to it (" .. tostring(s and s.title) .. ")")
+
+-- a vessel's unmeasured client stop: the leg says it is a bare line, and
+-- 60 yd counts as there (the nearest ground may be that far off)
+MadeUp(true)
+check(Travel.Data().nodes.DOCK_E.vehicleStop == true and Travel.Thresholds.boardUnmeasured == 60,
+    "vehicle-stop-verified stops are read from the transport evidence")
+WP.ClearAll(true)
+durotar = WP.Add(1, 0.5, 0.5, { title = "Razor Hill" })
+WP.SetActive(durotar, true)
+s = Settle(durotar, -1700, -2630)
+check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar") and s.note == L.TRAVEL_NOTE_STRAIGHT,
+    "the walk to an unmeasured stop is labelled (" .. tostring(s and s.note) .. ")")
+-- the label is on its own line: the waypoint and the total stay whole
+eta3, note3 = Shown(durotar)
+local _, under = noteLine:GetPoint()
+check(eta3 == "" and note3 == L.TRAVEL_NOTE_STRAIGHT and under == arrowLines[2],
+    "with the ETA off: the label on its own line, under the distance")
+ns.Set("showETA", true)
+local line3, label = Shown(durotar)
+_, under = noteLine:GetPoint()
+check(line3 and line3:find("Razor Hill", 1, true) and not line3:find(L.TRAVEL_NOTE_STRAIGHT, 1, true) and label == L.TRAVEL_NOTE_STRAIGHT
+    and under == etaLine, "with the ETA on: the waypoint and the total whole, the label under them (" .. tostring(line3) .. ")")
+ns.Set("showETA", false)
+s = Settle(durotar, -1760, -2770)
+check(s and s.pin and s.title == L.TRAVEL_BOAT:format("Durotar") and s.note == nil,
+    "50 yd from an unmeasured stop: take the boat (" .. tostring(s and s.title) .. ")")
+s = Settle(durotar, -1730, -2770)
+check(s and s.title == L.TRAVEL_TO_BOAT:format("Durotar"), "70 yd from it: still going to it")
+
+-- BareLine on its own: an explicit link, a surveyed or walked leg are never labelled
+local A = { m = 37, x = 0.5, y = 0.5, cont = 0, wx = -1000, wy = -1500 }
+local B = { m = 37, x = 0.5, y = 0.85, cont = 0, wx = -1000, wy = -2200, id = "B" }
+local Bare = Travel._BareLine
+check(Bare({ { node = A }, { node = B, via = "walk" } }, 2, { dist = 700 }) == false, "BareLine: not a 700-yd ordinary walk")
+check(Bare({ { node = A }, { node = B, via = { method = "walk" } } }, 2, { dist = 700 }) == false, "BareLine: not along an explicit link")
+check(Bare({ { node = A }, { node = B, via = { method = "gate", confidence = "unmeasured-traversal" } } }, 2, { dist = 80 }) == true,
+    "BareLine: a walking link the data flags unmeasured")
+check(Bare({ { node = A }, { node = B, via = { method = "walk", confidence = "unmeasured-indoor" } } }, 2, { dist = 80, trail = 1 }) == false,
+    "BareLine: not even that along a walked path")
+check(Bare({ { node = A }, { node = B, via = { method = "walk", terrain = true } } }, 2, { dist = 700 }) == false, "BareLine: not over surveyed ground")
+check(Bare({ { node = A }, { node = B, via = "walk" } }, 2, { dist = 700, trail = 1 }) == false, "BareLine: not along a walked path")
+MadeUp(false)
+WP.ClearAll(true)
 
 check(#M.errors == 0, "no Lua errors: " .. tostring(M.errors[1]))
 print(("%d passed, %d failed"):format(passed, failed))

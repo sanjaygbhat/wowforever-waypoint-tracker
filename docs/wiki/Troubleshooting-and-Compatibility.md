@@ -25,7 +25,7 @@ Find combines shipped data with your local observations and shared discoveries. 
 
 ## Nearest only finds places I have been / says no location
 
-Make sure both folders, **WaypointTracker** and **WaypointTracker_Data**, are installed directly inside `Interface/AddOns`, and that **Waypoint Tracker (database)** is enabled in the character-selection **AddOns** list. Nearest uses the shipped database before you visit a place; your discoveries add to it. If the data addon cannot load, only your discoveries may be available. Install both folders from the same release and restart after first installing them. Updating from 1.4.1 to 1.5.0 needs only `/reload`; from an older version, fully restart the game.
+Make sure both folders, **WaypointTracker** and **WaypointTracker_Data**, are installed directly inside `Interface/AddOns`, and that **Waypoint Tracker (database)** is enabled in the character-selection **AddOns** list. Nearest uses the shipped database before you visit a place; your discoveries add to it. If the data addon cannot load, only your discoveries may be available. Install both folders from the same release and restart after first installing them. Updating from 1.5.0 to 1.5.1 also needs a full game restart: a new file was added, so `/reload` is not enough.
 
 ## `/way` and other addons
 

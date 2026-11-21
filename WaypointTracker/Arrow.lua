@@ -66,7 +66,11 @@ end
 -- "Move the text separately" lets it go anywhere. Both are click-through;
 -- the mouse is only on while you move them.
 -- ---------------------------------------------------------------------------
-local TEXT_W, TEXT_H = 220, 40
+-- TEXT_H: the three lines (name, distance, time) and Real routes' note
+-- under them, at most NOTE_H tall (two lines), so the text frame (and its
+-- Edit Mode box) holds all of it.
+local TEXT_W, NOTE_H = 220, 24
+local TEXT_H = 40 + NOTE_H
 
 local function NewFrame(name, w, h)
     local f = CreateFrame("Frame", name, UIParent)
@@ -119,6 +123,16 @@ local distText = Text(11, 1, 1, 1)
 distText:SetPoint("TOP", title, "BOTTOM", 0, -1)
 local etaText = Text(10, 0.8, 0.8, 0.8)
 etaText:SetPoint("TOP", distText, "BOTTOM", 0, -1)
+-- Real routes' note (why the arrow points straight; a leg the data calls
+-- unmeasured): a line of its own under the last line shown, never in place
+-- of the name, the distance or the time. The frame's width and at most two
+-- lines (NOTE_H, wrapped, the rest truncated): it never runs past the frame.
+local noteText = Text(10, 1, 0.82, 0.45)
+noteText:SetWidth(TEXT_W)
+noteText:SetHeight(NOTE_H)
+noteText:SetWordWrap(true)
+noteText:SetJustifyV("TOP")
+noteText:SetPoint("TOP", etaText, "BOTTOM", 0, -1)
 
 -- Move mode: a soft highlight around each part so you can see what you drag.
 local moveParts = {}
@@ -380,10 +394,27 @@ local function SetLine(fs, text)
     end
 end
 
-local function SetTexts(t, d, e)
+-- The third line, and Real routes' note under the last line that shows
+-- (re-anchored only when that changes; asked every frame).
+local noteUnder
+local function SetEta(text, note)
+    SetLine(etaText, text or "")
+    SetLine(noteText, note or "")
+    local under = note and ((text and text ~= "" and etaText) or ((shownText[distText] or "") ~= "" and distText) or title) or etaText
+    if under ~= noteUnder then
+        noteUnder = under
+        noteText:ClearAllPoints()
+        noteText:SetPoint("TOP", under, "BOTTOM", 0, -1)
+    end
+end
+Arrow.noteText = noteText -- tests
+
+-- `note`: why Real routes points straight (Travel.Note), on its own line
+-- whatever the ETA setting; it never replaces the ETA
+local function SetTexts(t, d, e, note)
     SetLine(title, ns.Get("showTitle") and t or "")
     SetLine(distText, ns.Get("showDistance") and d or "")
-    SetLine(etaText, ns.Get("showETA") and e or "")
+    SetEta(ns.Get("showETA") and e or "", note)
 end
 
 local shownR, shownG, shownB
@@ -519,7 +550,7 @@ local function Update(dt)
         arrived:SetPoint("CENTER", frame, "CENTER", 0, sin(now * 5) * 3)
         SetLine(title, ns.Get("showTitle") and (wp and wp.arrivedAt and WP.ShortName(wp) or arrivedName or "") or "")
         SetLine(distText, L.ARRIVED) -- even with the distance hidden
-        SetLine(etaText, "")
+        SetEta("")
         SetFade(1, dt)
         return
     end
@@ -534,7 +565,7 @@ local function Update(dt)
         SetArrowColour(Arrow.DistanceColour((sin(now * 0.8) + 1) / 2))
         SetLine(title, L.ADDON_TITLE)
         SetLine(distText, Arrow.moving and L.MOVING_HINT or "")
-        SetLine(etaText, "")
+        SetEta("")
         SetFade(1, dt)
         return
     end
@@ -586,7 +617,7 @@ local function Update(dt)
         SetFade(1, dt)
         SetLine(title, ns.Get("showTitle") and name or "")
         SetLine(distText, L.YOU_ARE_HERE) -- even with the distance hidden
-        SetLine(etaText, "")
+        SetEta("")
         return
     end
     -- Real routes: the way there, one step at a time, not the straight line
@@ -609,9 +640,13 @@ local function Update(dt)
         SetFade(1, dt)
         SetLine(title, steer.title or name) -- always shown: it says what to do next
         SetLine(distText, ns.Get("showDistance") and distLine or "")
-        SetLine(etaText, ns.Get("showETA") and etaLine or "")
+        -- a leg the data calls unmeasured says so on its own line (never instead of the total)
+        SetEta(ns.Get("showETA") and etaLine or "", steer.note)
         return
     end
+    -- the plain arrow while Real routes is on: why it points straight
+    local _, note
+    if ns.Travel and ns.Travel.Note then _, note = ns.Travel.Note() end
     if dist and bearing then
         local facing = Geo.GetFacing()
         if facing then
@@ -635,7 +670,7 @@ local function Update(dt)
             if speed and speed > 0.5 then
                 eta = EtaLine(dist / speed)
             end
-            SetTexts(name, Geo.FormatDistance(dist), eta)
+            SetTexts(name, Geo.FormatDistance(dist), eta, note)
             return
         end
     end
@@ -646,7 +681,7 @@ local function Update(dt)
     if bearing == "continent" then
         SetLine(title, ns.Get("showTitle") and name or "")
         SetLine(distText, ns.Get("showDistance") and L.ANOTHER_CONTINENT or "")
-        SetLine(etaText, Geo.GetMapName(wp.m))
+        SetEta(Geo.GetMapName(wp.m), note)
     else
         SetTexts(name, L.CANT_TRACK_HERE, "")
     end

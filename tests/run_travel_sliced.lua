@@ -49,11 +49,23 @@ local function upvalue(fn, name)
     end
 end
 
+-- Every function this file puts into an upvalue stays reachable from here
+-- for the whole run. Lua 5.1's lua_setupvalue puts its write barrier on the
+-- closure, not on the (shared, closed) upvalue: when a collection has
+-- already marked that upvalue through another function, a new value only
+-- the upvalue refers to is never marked, is swept, and is then called
+-- (the interpreter dies with no FAIL line). Pinned here, it is always marked.
+local pinned = {}
+local function setupvalue(fn, i, v)
+    pinned[#pinned + 1] = v
+    return debug.setupvalue(fn, i, v)
+end
+
 -- Node expansions: every turn of Search's main loop pops its heap once.
 do
     local pop, i = upvalue(T.Search, 'Pop')
     assert(pop, 'Search pops its heap')
-    debug.setupvalue(T.Search, i, function(h) pops = pops + 1; return pop(h) end)
+    setupvalue(T.Search, i, function(h) pops = pops + 1; return pop(h) end)
 end
 -- Every search (also a retry over uncertain terrain) starts with
 -- Terrain.Refresh, and records Travel.lastExpanded when it ends.
@@ -81,7 +93,7 @@ local jobStarted, finishes = setmetatable({}, { __mode = 'k' }), {}
 do
     local pump, i = upvalue(T.Steer, 'Pump')
     assert(pump, 'Steer resumes jobs through Pump')
-    debug.setupvalue(T.Steer, i, function(...)
+    setupvalue(T.Steer, i, function(...)
         local j = upvalue(T.Steer, 'job')
         frame.pumped = j
         if j and not jobStarted[j] then jobStarted[j] = M.now end
@@ -89,7 +101,7 @@ do
     end)
     local finish, k = upvalue(pump, 'Finish')
     assert(finish, 'Pump answers through Finish')
-    debug.setupvalue(pump, k, function(j, ...)
+    setupvalue(pump, k, function(j, ...)
         finishes[#finishes + 1] = { j = j, at = M.now, started = jobStarted[j] }
         holding = false
         return finish(j, ...)
@@ -435,7 +447,16 @@ for _, sliced in ipairs({ false, true }) do
     local cont, wx, wy = G.MapToWorld(37, 0.3, 0.3)
     local cx, cy = G.WorldToMap(cont, wx, wy, 13)
     local onCont = WP.Add(13, cx, cy, { title = 'Continent pin' })
-    check(Run(onCont) == nil and T.Current() == nil, label .. ': a waypoint on a continent map gets the plain arrow')
+    -- planned as the zone point under it (Elwynn: a plain walk from here)
+    local onContSteer = Run(onCont)
+    local contPlan = T.Current()
+    check(onContSteer == nil and contPlan and #contPlan.path == 2 and contPlan.path[2].node.m == 37
+        and onCont.m == 13, label .. ': a waypoint on a continent map is planned as the zone point there (the waypoint unchanged)')
+    -- a continent-map point with no zone of the network under it: no plan
+    WP.ClearAll(true)
+    local ox, oy = G.WorldToMap(0, -6000, 3000, 13)
+    local offZone = WP.Add(13, ox, oy, { title = 'Continent pin, no zone' })
+    check(Run(offZone) == nil and T.Current() == nil, label .. ': a continent-map point over no network zone gets the plain arrow')
     WP.ClearAll(true)
     local c2, w2x, w2y = G.MapToWorld(1411, 0.5, 0.5)
     M.player.inst, M.player.wx, M.player.wy = 1, w2x + 50, w2y + 50
@@ -446,9 +467,23 @@ for _, sliced in ipairs({ false, true }) do
     local westfall = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
     local routed = Run(westfall)
     check(T.Current() ~= nil and (routed == nil or routed.title ~= L.TRAVEL_NO_PLAN), label .. ': (control) a placed waypoint is planned')
+    -- no position while walking (a loading screen the route doesn't expect:
+    -- a summons, a portal off the route): the route is not kept, so the old
+    -- step is never steered from wherever you come out
     M.player.noPosition = true
-    check(Run(westfall) == nil and T.Current() == nil, label .. ': no player position gets the plain arrow and holds no plan')
+    check(Run(westfall) == nil and T.Note() == 'noposition', label .. ': no player position gets the plain arrow, and says why')
+    check(T.Current() == nil, label .. ': a loading screen the route does not expect drops it')
     M.player.noPosition = nil
+    routed = Run(westfall)
+    check(routed and routed.title == L.TRAVEL_HEAD_TO:format('Westfall'), label .. ': the position back: the route goes on (' .. tostring(routed and routed.title) .. ')')
+    -- a waypoint on a zone the network doesn't cover, or a player where it has no area: the reason
+    WP.ClearAll(true)
+    local unzoned = WP.Add(7777, 0.5, 0.5, { title = 'Unmapped zone' })
+    check(Run(unzoned) == nil and T.Note() == 'goal-offnet', label .. ': a waypoint off the network: the plain arrow says so (' .. tostring(T.Note()) .. ')')
+    M.player.inst, M.player.wx, M.player.wy = 0, 5000, -1000 -- on the continent map only
+    westfall = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+    check(Run(westfall) == nil and T.Note() == 'offnet', label .. ': a player off the network: the plain arrow says so (' .. tostring(T.Note()) .. ')')
+    M.player.inst, M.player.wx, M.player.wy = 0, -1000, -2400
 end
 
 -- ---------------------------------------------------------------------------
@@ -658,7 +693,7 @@ do
             if not n then break end
             if type(v) == 'function' then
                 if swap[v] then
-                    debug.setupvalue(fn, i, swap[v]); wrapped = wrapped + 1
+                    setupvalue(fn, i, swap[v]); wrapped = wrapped + 1
                 elseif not seen[v] then
                     walk(v)
                 end
@@ -708,9 +743,25 @@ local function PerTrigger(st, label)
 end
 -- the shipped network: long multi-stop routes (their re-anchor often fails:
 -- a route with a surveyed-terrain leg ahead is searched again, as before)
+-- (The cross-continent trip starts on the Hillsbrad road, 1076 yd of
+-- walking before Tarren Mill's flight master: following is measured while
+-- walking, and the route to Thrall from beside the flight master begins
+-- with a 228 yd walk. Every flight point known, the route there once flew
+-- round by Booty Bay or sailed to Auberdine, avoiding the city gates whose
+-- traversal is unmeasured; it is the Thrall route now: Tarren Mill,
+-- Undercity, the zeppelin, Orgrimmar's gate.)
+local function FirstWalk(p)
+    local yards, prev = 0, p and p.path[1].node
+    for i = 2, #(p and p.path or {}) do
+        local e, how = p.path[i], p.path[i].via
+        if not (how == 'walk' or (type(how) == 'table' and (how.method == 'walk' or how.method == 'gate' or how.method == 'lift'))) then break end
+        yards, prev = yards + (T.Dist(prev, e.node) or 0), e.node
+    end
+    return yards
+end
 local walks = {
     { name = 'cross-zone walk', from = { 1424, .615, .209 }, to = { 1416, .231, .604 }, flights = false },
-    { name = 'cross-continent trip', from = { 1424, .5552, .2685 }, to = { 1454, .32, .378 }, flights = true },
+    { name = 'cross-continent trip', from = { 1424, .40, .30 }, to = { 1454, .32, .378 }, flights = true },
 }
 for _, sc in ipairs(walks) do
     for _, speed in ipairs({ 7, 14 }) do
@@ -724,6 +775,8 @@ for _, sc in ipairs(walks) do
         while not T.Current() and n < 600 do Steer(wp); n = n + 1 end
         Settle(wp)
         local label = ('%s at %d yd/s'):format(sc.name, speed)
+        check(not sc.flights or FirstWalk(T.Current()) >= speed * 60, label .. ': (control) the route begins with a walk of over a minute ('
+            .. math.floor(FirstWalk(T.Current())) .. ' yd)')
         local st = Follow(wp, speed)
         PerTrigger(st, label)
         check(st.yards >= speed * 60 * 0.5 and T.Current() and T.Current().wp == wp, label .. ': still following the route')
@@ -1555,7 +1608,7 @@ do
     for name, cost in pairs({ CanWalk = 3.8, Dist = 0.2, Pop = 1, Danger = 6 }) do
         local fn, i = upvalue(T.Search, name)
         saved[name] = { fn, i }
-        debug.setupvalue(T.Search, i, function(...) Add(cost); return fn(...) end)
+        setupvalue(T.Search, i, function(...) Add(cost); return fn(...) end)
     end
     local record, refresh, decide = ns.Terrain.Record, ns.Terrain.Refresh, ns.Terrain.Decide
     ns.Terrain.Record = function(...) Add(0.5); return record(...) end
@@ -1570,7 +1623,7 @@ do
         return work * UNIT
     end
     local pump, pk = upvalue(T.Steer, 'Pump')
-    debug.setupvalue(T.Steer, pk, function(...)
+    setupvalue(T.Steer, pk, function(...)
         local j = Job()
         co, sinceRead, inSlice = j and j.co, 0, 0
         local urgent = j and j.urgent
@@ -1609,8 +1662,8 @@ do
     check(over == 0, ('work per slice: every slice within its budget and 0.4 ms (%d over; worst background %.2f ms, urgent %.2f ms)'):format(over, worstBg, worstUrgent))
     check(worstGap * UNIT <= 0.4, ('work per slice: at most 0.4 ms of work between two clock readings (%.2f ms)'):format(worstGap * UNIT))
     check(setupAfterWork == 0, 'work per slice: a search\'s set-up never follows other work in its slice (' .. setupAfterWork .. ' times)')
-    debug.setupvalue(T.Steer, pk, pump)
-    for _, v in pairs(saved) do debug.setupvalue(T.Search, v[2], v[1]) end
+    setupvalue(T.Steer, pk, pump)
+    for _, v in pairs(saved) do setupvalue(T.Search, v[2], v[1]) end
     ns.Terrain.Record, ns.Terrain.Refresh, ns.Terrain.Decide = record, refresh, decide
     debugprofilestop = clockFn
 end
@@ -1630,7 +1683,7 @@ for _, mode in ipairs({ 'back', 'stopped' }) do
     end
     local pump, pk = upvalue(T.Steer, 'Pump')
     local worst, whole, n = 0, 0, 0
-    debug.setupvalue(T.Steer, pk, function(...) fresh = true; return pump(...) end)
+    setupvalue(T.Steer, pk, function(...) fresh = true; return pump(...) end)
     local w = Begin(thrall)
     for _ = 1, 60 * 20 do
         Steer(w)
@@ -1639,7 +1692,7 @@ for _, mode in ipairs({ 'back', 'stopped' }) do
         if frame.whole then whole = whole + 1 end
         Walk(7 / 60)
     end
-    debug.setupvalue(T.Steer, pk, pump)
+    setupvalue(T.Steer, pk, pump)
     debugprofilestop = clockFn
     print(('  clock %s: worst %d node expansions in a slice, %d frames with a whole search'):format(mode, worst, whole))
     check(whole == 0, 'clock ' .. mode .. ': no frame holds a whole search (' .. whole .. ')')
@@ -1667,7 +1720,7 @@ do
     local pump, pk = upvalue(T.Steer, 'Pump')
     local real = upvalue(pump, 'pump') -- (the counters at the top wrap it)
     local slices, capped, worst, worstField = 0, 0, -math.huge, -math.huge
-    debug.setupvalue(T.Steer, pk, function(...)
+    setupvalue(T.Steer, pk, function(...)
         local r = pump(...)
         local work, cap = upvalue(real, 'sliceWork'), upvalue(real, 'sliceWorkMax')
         slices = slices + 1
@@ -1710,7 +1763,7 @@ do
     for _ = 1, 60 * 15 do Steer(w) end
     worstField = worst
     worst = math.max(trip, worstField)
-    debug.setupvalue(T.Steer, pk, pump)
+    setupvalue(T.Steer, pk, pump)
     debugprofilestop = clockFn
     print(('  frozen clock: %d slices, %d ended by the work cap; worst over the cap %.3f units on the trip, %.3f in the field'):format(
         slices, capped, trip, worstField))
@@ -1840,10 +1893,14 @@ end
 -- not resumed for over a second in the same area goes on, urgently, and the
 -- search from where the player is follows it at once)
 -- ---------------------------------------------------------------------------
+-- (from the Hillsbrad road, as in (j): walking on for the whole minute)
+local thrallRoad = { from = { 1424, .40, .30 }, to = thrall.to }
 for _, shown in ipairs({ 0.4, 0.2 }) do
-    local w = Begin(thrall)
+    local w = Begin(thrallRoad)
     local n = 0
     while not (T.Current() and not Job()) and n < 6000 do Steer(w); n = n + 1 end
+    check(FirstWalk(T.Current()) >= 7 * 60, ('shown %.1f s at a time: (control) the route begins with a walk of over a minute (%d yd)'):format(
+        shown, FirstWalk(T.Current())))
     local f0, follow, resumed = #finishes, 0, 0
     local t0 = M.now
     while M.now - t0 < 60 do
@@ -1961,6 +2018,72 @@ do
     M.player.wx, M.player.wy = ix, iy + 5 -- landed (a loading screen later)
     s = Steer(w)
     check(T._PlayerPlace().area == 3 and s == nil, 'hearth: standing where it landed, never "use your hearthstone" again: the normal arrow (' .. tostring(s and s.title) .. ')')
+    -- Landed by place, not by yards from the modelled landing node: the
+    -- hearthstone's inn is in a walled city (map 84, area 4), and the
+    -- player lands 250 yd from it, still in that city (where a spell
+    -- really puts you is not measured). The step moves on at once, and no
+    -- new search casts it again (never a jump into the city you are in):
+    -- planning sliced and all at once.
+    local savedItem, savedBind, savedBest = C_Item, GetBindLocation, C_Map.GetBestMapForUnit
+    C_Item = {}
+    for k, v in pairs(savedItem or {}) do C_Item[k] = v end
+    C_Item.GetItemCount = function(id) return id == 6948 and 1 or 0 end
+    C_Item.GetItemCooldown = function() return 0, 0, 1 end
+    C_Item.IsEquippedItem = function() return false end
+    C_Item.IsUsableItem = function() return true, false end
+    C_Item.GetItemNameByID = function(id) return 'Item ' .. id end
+    GetBindLocation = function() return 'Walled Test Town' end
+    local inCity = M.maps[84]
+    C_Map.GetBestMapForUnit = function()
+        local x, y = (inCity.left - M.player.wy) / inCity.w, (inCity.top - M.player.wx) / inCity.h
+        if M.player.inst == inCity.cont and x >= 0 and x <= 1 and y >= 0 and y <= 1 then return 84 end
+        return 37
+    end
+    local function CityRow(id, kind, x, y)
+        local c, px, py = mapToWorld(84, x, y)
+        return table.concat({ id, kind, 4, c, px, py, 84, x * 100, y * 100, 84 }, '\t')
+    end
+    for _, sliced in ipairs({ true, false }) do
+        local mode = sliced and 'sliced' or 'all at once'
+        ns.TravelData = { areas = { 'one', 'two', 'three', 'walled' }, indoor = {}, maps = '37\t1\n84\t4', regions = '',
+            nodes = table.concat({ row('A', 1, .1), CityRow('CITYINN', 'inn', .5, .3) }, '\n'),
+            links = '', cities = '84\tAlliance', towns = 'walled_test_town\t4\tCITYINN\tAlliance', levels = '', factors = '' }
+        Network()
+        ns.Set('travelHearth', true)
+        ns.TravelAbilities._Reset()
+        T._SetSliced(sliced)
+        local cityInn = T.Data().nodes.CITYINN
+        T.Know().bind = { m = 84, x = .5, y = .3, name = 'Walled Test Town' }
+        At(.3, .5)
+        w = WP.Add(84, .5, .32, { title = 'By the city inn' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        p = T.Current()
+        local cast = p and p.target and type(p.target.via) == 'table' and p.target.via.kind == 'hearth'
+        s = Steer(w)
+        check(cast and s and s.title == T.StepText(p.path, p.index, WP.ShortName(w)) and s.pin,
+            'hearth into a walled city (' .. mode .. '): (control) before casting, the arrow says to use the hearthstone (' .. tostring(s and s.title) .. ')')
+        -- a loading screen later: in the city, 250 yd from the modelled inn
+        local c, ix, iy = mapToWorld(84, .5, .3 + 250 / inCity.h)
+        M.player.inst, M.player.wx, M.player.wy = c, ix, iy
+        local here = T._PlayerPlace()
+        check(here.city == 84 and math.abs(T.Dist(here, cityInn) - 250) < 1,
+            'hearth into a walled city (' .. mode .. '): (control) landed in the city, 250 yd from the inn')
+        local again, frames = 0, 0
+        for f = 1, 120 do
+            s = Steer(w, f == 1 and 1 or nil)
+            frames = frames + 1
+            local now = T.Current()
+            if s and now and now.target and type(now.target.via) == 'table' and now.target.via.kind then again = again + 1 end
+        end
+        check(again == 0, ('hearth into a walled city (%s): landed 250 yd from the inn, no frame says to use the hearthstone again (%d of %d)'):format(mode, again, frames))
+        check(s == nil and T.Current() and #T.Current().path == 2,
+            'hearth into a walled city (' .. mode .. '): what remains is a plain walk to the waypoint (the normal arrow)')
+    end
+    C_Item, GetBindLocation, C_Map.GetBestMapForUnit = savedItem, savedBind, savedBest
+    ns.Set('travelHearth', false)
+    ns.TravelAbilities._Reset()
+    T._SetSliced(true)
 end
 STEP = 0.05
 
@@ -2048,6 +2171,232 @@ do
     check(quiet > 0 and storm == quiet, ('hearth event: an event storm with nothing changed adds no search (%d / %d)'):format(storm, quiet))
     C_Item, GetBindLocation = savedItem, savedBind
     ns.Set('travelHearth', false)
+end
+
+-- ---------------------------------------------------------------------------
+-- (ac) Following, and saying so. After a flight lands, no frame goes plain
+-- while the route held contains the landing (and one landed elsewhere is
+-- not kept). On the tram (no position) its step stays for the whole ride,
+-- also when you went in before the step said "ride"; out at the far end the
+-- route goes on at once. Travel.Note says "planning" only after a second
+-- without a route, and logs it.
+-- ---------------------------------------------------------------------------
+C_Map.GetBestMapForUnit = mockBestMap
+local rideWorld = {
+    areas = { 'ek.elwynn', 'ek.westfall', 'ek.tirisfal' }, indoor = {},
+    nodes = table.concat({
+        'B_EW\tborder\t1\t0\t-2000\t-600\t37\t20\t100\t\t\t\t',
+        'B_WE\tborder\t2\t0\t-2000\t-600\t52\t44\t0\t\t\t\t',
+        'TAXI_1\ttaxi\t1\t0\t-1000\t-1500\t37\t50\t50\t\t\t1\t',
+        'TAXI_2\ttaxi\t3\t0\t10000\t1000\t18\t50\t57.142857\t\t\t2\t',
+        'TRAM_T\ttram\t3\t0\t9000\t2000\t18\t25\t85.714286\t\t\t\t',
+        'TRAM_E\ttram\t1\t0\t-500\t-1000\t37\t33.333333\t25\t\t\t\t',
+    }, '\n'),
+    links = table.concat({
+        'B_EW\tB_WE\twalk\t0\t\t\t\t\t\t\t',
+        'TAXI_2\tTAXI_1\ttaxi\t120\t\t\t1\t\t\t\t',
+        'TRAM_T\tTRAM_E\ttram\t60\t30\t2\t\t\t\t\t',
+    }, '\n'),
+    maps = '37\t1\n52\t2\n18\t3', regions = '', cities = '', towns = '', teleports = '', factors = '', levels = '',
+}
+local function RideWorld(flights, boats)
+    ns.TravelData = rideWorld
+    T._Reset(); T.Data()
+    T.Know().flights[1], T.Know().flights[2] = true, true
+    ns.Set('travelFlights', flights); ns.Set('travelBoats', boats); ns.Set('travelPreference', 'safer')
+    ns.Set('travelHearth', false); ns.Set('travelTrails', false)
+    M.player.noPosition, M.player.taxi = nil, nil
+end
+local headTo = L.TRAVEL_HEAD_TO:format('Westfall')
+for _, sliced in ipairs({ false, true }) do
+    local label = (sliced and 'sliced' or 'at once') .. ': '
+    -- a flight, landing where the route said
+    for _, landing in ipairs({ 'planned', 'elsewhere' }) do
+        RideWorld(true, false)
+        T._SetSliced(sliced)
+        WP.ClearAll(true)
+        M.player.inst, M.player.wx, M.player.wy = 0, 10003, 1000 -- at the Tirisfal flight master
+        local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        local s = Steer(w)
+        check(s and s.title == L.TRAVEL_FLY:format(T.PlaceName(T.Data().nodes.TAXI_1)),
+            label .. '(control) at the flight master: fly (' .. tostring(s and s.title) .. ')')
+        if landing == 'planned' then
+            -- the position gone at the flight master's step, no flight taken
+            -- (a summons, say): not part of the route, so it is dropped
+            M.player.noPosition = true
+            for _ = 1, 10 do Steer(w, 0.25) end
+            check(T.Current() == nil, label .. 'no position at the flight master, no flight taken: the route is dropped')
+            M.player.noPosition = nil
+            Steer(w); Settle(w)
+            s = Steer(w)
+            check(s and s.title == L.TRAVEL_FLY:format(T.PlaceName(T.Data().nodes.TAXI_1)),
+                label .. 'the position back there: fly, planned again (' .. tostring(s and s.title) .. ')')
+        end
+        M.player.taxi = true
+        for _ = 1, 20 do s = Steer(w, 0.5) end
+        check(s and T.Riding(), label .. 'in the air')
+        if landing == 'planned' then
+            -- once the flight has started, a gap is part of it: kept
+            local before = T.Current()
+            M.player.noPosition = true
+            for _ = 1, 10 do Steer(w, 0.25) end
+            check(before and T.Current() == before, label .. 'no position on the flight: the route is kept')
+            M.player.noPosition = nil
+            s = Steer(w)
+        end
+        M.player.taxi = nil
+        if landing == 'planned' then
+            M.player.wx, M.player.wy = -997, -1500
+            local plain, wrong, frames = 0, 0, 0
+            for _ = 1, 120 do
+                s = Steer(w)
+                frames = frames + 1
+                if s == nil then plain = plain + 1 elseif s.title ~= headTo then wrong = wrong + 1 end
+            end
+            check(plain == 0 and wrong == 0 and T.Note() == nil,
+                label .. 'landed: no frame goes plain or shows another step while the route goes on (' .. plain .. ' plain, ' .. wrong .. ' other of ' .. frames .. ')')
+        else
+            M.player.wx, M.player.wy = -1000, -2400 -- 900 yd from where the route said
+            s = Steer(w)
+            local p = T.Current()
+            check(not (p and Has(p.path, 'TAXI_2')), label .. 'landed elsewhere: the old route is not kept')
+            Settle(w)
+            s = Steer(w)
+            check(s and s.title == headTo, label .. 'landed elsewhere: planned from there (' .. tostring(s and s.title) .. ')')
+        end
+    end
+    -- 200 yd short of the tram when the position goes (a summons, say): no
+    -- tram step, the route dropped; where you come out, planned from there
+    do
+        RideWorld(false, true)
+        T._SetSliced(sliced)
+        WP.ClearAll(true)
+        M.player.inst, M.player.wx, M.player.wy = 0, 9200, 2000
+        local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        local s = Steer(w)
+        local p = T.Current()
+        local into = p and p.target and p.target.node.id == 'TRAM_T'
+        check(into and s and s.title == T.StepText(p.path, p.index, 'Moonbrook'), label .. '200 yd from the tram: (control) going to it (' .. tostring(s and s.title) .. ')')
+        M.player.noPosition = true
+        local ride = 0
+        for _ = 1, 30 do
+            s = Steer(w, 0.1)
+            if s then ride = ride + 1 end
+        end
+        check(ride == 0 and T.Current() == nil, label .. '200 yd from the tram: no position is no tram ride (' .. ride .. ' frames with a step)')
+        M.player.noPosition = nil
+        M.player.wx, M.player.wy = -1000, -2400 -- summoned to Elwynn
+        Settle(w)
+        s = Steer(w)
+        check(s and s.title == headTo and not Has(T.Current().path, 'TRAM_T'), label .. 'summoned away: planned from where you are (' .. tostring(s and s.title) .. ')')
+    end
+    -- the tram: from its station, and from just short of it
+    for _, short in ipairs({ 5, 45 }) do
+        RideWorld(false, true)
+        T._SetSliced(sliced)
+        WP.ClearAll(true)
+        M.player.inst, M.player.wx, M.player.wy = 0, 9000 + short, 2000
+        local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        local s = Steer(w)
+        local p = T.Current()
+        local tram
+        for k, e in ipairs(p and p.path or {}) do
+            if type(e.via) == 'table' and e.via.method == 'tram' then tram = k end
+        end
+        local ride = tram and T.StepText(p.path, tram, 'Moonbrook')
+        local at = short == 5 and ride or (tram and T.StepText(p.path, tram - 1, 'Moonbrook'))
+        check(tram and s and s.title == at, label .. short .. ' yd from the tram: (control) ' .. tostring(s and s.title))
+        M.player.noPosition = true
+        local wrong = 0
+        for _ = 1, 100 do
+            s = Steer(w, 0.1)
+            if not (s and s.title == ride) then wrong = wrong + 1 end
+        end
+        check(wrong == 0 and T.Current() == p, label .. short .. ' yd: aboard (no position) for 10 s the tram step stays (' .. wrong .. ' frames not)')
+        M.player.noPosition = nil
+        M.player.wx, M.player.wy = -495, -1000 -- out at the far end
+        M.FireEvent('ZONE_CHANGED_NEW_AREA')
+        local plain, other = 0, 0
+        for _ = 1, 120 do
+            s = Steer(w)
+            if s == nil then plain = plain + 1 elseif s.title ~= headTo then other = other + 1 end
+        end
+        check(plain == 0 and other == 0, label .. short .. ' yd: out at the far end the route goes on at once (' .. plain .. ' plain, ' .. other .. ' other)')
+    end
+end
+-- The position coming back re-plans at once only with a route, or one still
+-- awaited, and at most once a second however it flickers
+do
+    RideWorld(true, false)
+    T._SetSliced(false)
+    WP.ClearAll(true)
+    M.player.inst, M.player.wx, M.player.wy = 0, -1000, -2400
+    local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+    WP.SetActive(w, true)
+    Steer(w); Settle(w)
+    local invalidate, calls = T.Invalidate, 0
+    T.Invalidate = function(...) calls = calls + 1; return invalidate(...) end
+    for f = 1, 60 do
+        M.player.noPosition = f % 2 == 1 or nil
+        Steer(w)
+    end
+    M.player.noPosition = nil
+    check(calls >= 1 and calls <= 2, 'a position flickering on and off for a second re-plans at most once a second (' .. calls .. ')')
+    -- a waypoint the network can't place: nothing to plan, no re-plan for it
+    WP.ClearAll(true)
+    local off = WP.Add(7777, 0.5, 0.5, { title = 'Unmapped zone' })
+    WP.SetActive(off, true)
+    for _ = 1, 5 do Steer(off, 0.5) end
+    check(T.Note() == 'goal-offnet', '(control) the waypoint is off the network')
+    calls = 0
+    for f = 1, 6 do
+        M.player.noPosition = f % 2 == 1 or nil
+        Steer(off, 1.1)
+    end
+    M.player.noPosition = nil
+    check(calls == 0, 'no route and none awaited: the position coming back re-plans nothing (' .. calls .. ')')
+    T.Invalidate = invalidate
+end
+-- "planning": only after a second without a route (a slow first search),
+-- then on the arrow and in the log; nothing once the route has come
+do
+    UseShipped()
+    ns.Set('travelFlights', true); ns.Set('travelBoats', true); ns.Set('travelPreference', 'safer'); ns.Set('travelHearth', false)
+    T._SetSliced(true)
+    STEP = 1 -- four node expansions an urgent slice: the first route takes many frames
+    WP.ClearAll(true)
+    Stand(thrall.from[1], thrall.from[2], thrall.from[3])
+    local w = WP.Add(thrall.to[1], thrall.to[2], thrall.to[3], { title = 'Slow first route' })
+    WP.SetActive(w, true)
+    local first, early, late, wrong = nil, 0, 0, 0
+    for _ = 1, 3000 do
+        local s = Steer(w, 0.1)
+        if T.Current() then break end
+        first = first or M.now
+        local why, waited = T.Note(), M.now - first
+        if waited < 1 - 1e-3 then -- (the frame at the second itself is either, by rounding)
+            early = early + 1
+            if why ~= nil or s ~= nil then wrong = wrong + 1 end
+        elseif waited > 1 + 1e-3 then
+            late = late + 1
+            if why ~= 'planning' or s ~= nil then wrong = wrong + 1 end
+        end
+    end
+    check(early >= 5 and late >= 5 and wrong == 0, ('planning: no note for the first second, then "planning" (%d early, %d late, %d wrong)'):format(early, late, wrong))
+    local log = WaypointTrackerDB.travelLog
+    local logged = false
+    for k = #log, 1, -1 do if log[k].plain == 'planning' then logged = true; break end end
+    check(logged, 'planning: the wait is in the travel log')
+    local s = Steer(w)
+    check(T.Current() and s and T.Note() == nil, 'planning: the route has come, no note')
+    check(L.TRAVEL_NOTE_PLANNING and L.TRAVEL_NOTE_PLANNING ~= '', 'planning: the text exists')
+    STEP = 0.05
 end
 
 check(#M.errors == 1, 'no other errors: ' .. tostring(M.errors[2] or M.errors[1]))

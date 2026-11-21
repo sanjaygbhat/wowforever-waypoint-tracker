@@ -35,6 +35,20 @@ local q = ns.DB.quests[557]
 check(q.name == "Bracers of Binding" and q.objI[1] == 3715 and q.endU[1] == 2437, "quest and turn-in identity")
 local source, p = ns.DB.NearestOf(ns.DB.QuestTargets(q, "objective"))
 check(source.id == 2359 and p.m == 1416 and p.x == .229 and p.y == .595, "verified reachable objective spawn from Tarren Mill")
+-- The actual Find selection: the quest in the log, the player on the map
+-- the client reports (Hillsbrad), Find's click on the quest (WaypointFor).
+M.quests[#M.quests + 1] = { id = 557, title = "Bracers of Binding" }
+local bestMap = C_Map.GetBestMapForUnit
+C_Map.GetBestMapForUnit = function() return 1424 end
+ns.WP.ClearAll(true)
+ns.Find.Activate(q)
+local wp = ns.WP.GetActive()
+check(wp and wp.m == 1416 and wp.x == .229 and wp.y == .595, "the Find click on quest 557 sets the verified objective from Tarren Mill")
+local quick, qp = ns.Find._Quickest(ns.DB.QuestTargets(q, "objective"))
+check(quick and quick.id == 2359 and qp.m == 1416 and qp.x == .229 and qp.y == .595, "travel-time ranking keeps the verified objective from Tarren Mill")
+ns.WP.ClearAll(true)
+table.remove(M.quests)
+C_Map.GetBestMapForUnit = bestMap
 local goal = place(p.m, p.x, p.y)
 local barriers = d.barriers
 check(#barriers == 15, "the fifteen verdict-backed local barriers parse")

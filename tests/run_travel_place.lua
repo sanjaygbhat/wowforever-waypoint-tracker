@@ -240,6 +240,34 @@ for _, sliced in ipairs({ true, false }) do
     check(#Holders() == 0, label .. "and still nothing holds the live place")
 end
 
+-- A map ID the network doesn't know, for ground it knows by another ID:
+-- WoW Forever's Zephras Isle is both 2521 (on the network) and 2665. With
+-- the client calling the player's map 2665, the place is in 2521's area;
+-- the answer is remembered per map ID (Geo.SameMap is not asked again).
+do
+    local z = M.maps[2521]
+    M.maps[2665] = { mapID = 2665, name = z.name, mapType = 3, parentMapID = 0, cont = z.cont,
+        top = z.top, left = z.left, w = z.w, h = z.h }
+    local zephras = T.AreaAt(2521, .5, .5)
+    check(zephras ~= nil and G.SameMap(2521, 2665), "Zephras: (control) map 2521 has an area, and 2665 is the same ground")
+    local same, asked = G.SameMap, 0
+    G.SameMap = function(...) asked = asked + 1; return same(...) end
+    check(T.AreaAt(2665, .5, .5) == zephras, "Zephras: a point on map 2665 is in 2521's area")
+    local first = asked
+    check(T.AreaAt(2665, .3, .6) == T.AreaAt(2521, .3, .6) and asked == first,
+        "Zephras: remembered per map ID (" .. (asked - first) .. " more SameMap questions)")
+    G.SameMap = same
+    check(T.AreaAt(7777, .5, .5) == nil, "a map that is no network map's ground still has no area")
+    local best = C_Map.GetBestMapForUnit
+    C_Map.GetBestMapForUnit = function() return 2665 end
+    player.inst, player.wx, player.wy = z.cont, z.top - .5 * z.h, z.left - .5 * z.w
+    M.now = M.now + 1
+    local m = G.GetPlayerMapPosition()
+    local place = T._PlayerPlace()
+    check(m == 2665 and place and place.area == zephras, "Zephras: best map 2665, the player's place is in 2521's area")
+    C_Map.GetBestMapForUnit = best
+end
+
 check(#M.errors == 0, "no Lua errors: " .. tostring(M.errors[1]))
 print(("Travel place: %d passed, %d failed"):format(passed, failed))
 if failed > 0 then os.exit(1) end

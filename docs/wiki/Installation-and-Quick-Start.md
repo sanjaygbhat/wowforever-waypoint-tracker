@@ -15,7 +15,7 @@ Interface/AddOns/WaypointTracker_Data/WaypointTracker_Data.toc
 ```
 
 3. Start or restart the game. In the character-selection **AddOns** list, enable **Waypoint Tracker** and **Waypoint Tracker (database)**.
-4. Type `/wp` in game. **Updating from 1.4.1 to 1.5.0 needs only `/reload`; from an older version, fully restart the game.**
+4. Type `/wp` in game. **Updating from 1.5.0 to 1.5.1 also needs a full game restart: a new file was added, so `/reload` is not enough.**
 
 The data folder supplies the database. It loads when needed by Find, routes or Treasure hunt (beta), in small slices over a few frames so the game doesn't freeze, with progress below the window title. Keep both folders from the same release. Your personal settings and discoveries live separately in SavedVariables; keep those when updating.
 

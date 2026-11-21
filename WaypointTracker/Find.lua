@@ -173,9 +173,90 @@ local function Database(again, quiet)
     return ok, why
 end
 
+-- Nearest service or trainer by the way there, not as the crow flies (the
+-- Nearest buttons only: quests, items and Find's own entries keep the
+-- straight-line choice, which data audits such as quest 557's pin down).
+-- With Real routes on, the closest spawn in a straight line is checked with
+-- the planner's own test for walking straight there (the same area and city
+-- as you, where the planner would put the point, and Travel.CanWalk). If it
+-- is walkable it wins with nothing planned, as before: nothing farther is
+-- quicker than walking to a closer spawn. If not (behind a wall, across a
+-- river), the first walkable spawn among the closest (NEAREST_PLANNED, and
+-- any more within NEAREST_RATIO of the closest; NEAREST_MAX in all) is the
+-- alternative. The closest is planned the way the arrow plans it
+-- (Travel.Choices); a plan that leaves your area can take a long frame.
+-- When that plan is itself a direct walk, it wins without another plan (a
+-- farther direct walk in the same area is slower); otherwise the walkable
+-- spawn, a direct walk and a quick plan, is planned too, and the quicker
+-- trip wins. A curated, verified or corrected spot is never given up for a
+-- less certain one. Straight-line distance decides when Real routes is off,
+-- the planner has no data, you can't be placed, none of them is walkable,
+-- or a plan fails.
+local NEAREST_PLANNED, NEAREST_RATIO, NEAREST_MAX = 5, 1.5, 8
+local function Confidence(point)
+    return (point.curated or point.fixed) and 2 or 1
+end
+local function Quickest(entries, opts)
+    local Travel = ns.Travel
+    if not (Travel and Travel.Enabled and Travel.Choices and Travel.AreaAt and Travel.CanWalk and Travel.Enabled()) then
+        return DB.NearestOf(entries, opts)
+    end
+    local e, p, d = DB.NearestOf(entries, opts)
+    if not d then return e, p, d end
+    local m, x, y = Geo.GetPlayerMapPosition()
+    local cont, wx, wy = Geo.MapToWorldLive(m, x, y)
+    if not cont then return e, p, d end
+    local area, city = Travel.AreaAt(m, x, y, nil, true)
+    if not area then return e, p, d end
+    -- where the planner puts a point (Travel.GoalArea: by the city's terrain
+    -- footprint), else its map's area
+    local GoalArea = Travel.GoalArea or Travel.AreaAt
+    -- (a walk check may note things on both ends: new tables each time)
+    local function Walkable(point)
+        local gc, gx, gy = Geo.MapToWorld(point.m, point.x, point.y)
+        local ga, gcity = GoalArea(point.m, point.x, point.y)
+        if not gc or not ga or ga ~= area or gcity ~= city then return false end
+        return Travel.CanWalk({ area = area, city = city, cont = cont, wx = wx, wy = wy, m = m, x = x, y = y, player = true },
+            { area = ga, city = gcity, cont = gc, wx = gx, wy = gy, m = point.m, x = point.x, y = point.y, goal = true }) and true or false
+    end
+    if Walkable(p) then return e, p, d end
+    -- the closest is not walkable: the others, in order
+    local list = DB.NearestCandidates(entries, opts, NEAREST_MAX)
+    local first = list[1]
+    if not first or first.p ~= p then return e, p, d end
+    local walk
+    for i = 2, #list do
+        local c = list[i]
+        if i > NEAREST_PLANNED and c.d > first.d * NEAREST_RATIO then break end
+        if Confidence(c.p) >= Confidence(p) and Walkable(c.p) then walk = c; break end
+    end
+    if not walk then return e, p, d end
+    local route
+    local function Plan(point)
+        route = nil
+        local _, chosen = Travel.Choices({ m = point.m, x = point.x, y = point.y })
+        route = chosen
+    end
+    local function Total(c)
+        return ns.Call(Plan, c.p) and route and ns.Num(route.total)
+    end
+    local across = Total(first)
+    if not across then return e, p, d end
+    -- the closest is a direct walk after all (the planner placed it): it wins
+    local leg = route.path and #route.path == 2 and route.path[2].via
+    if leg == "walk" or (type(leg) == "table" and leg.method == "walk") then return e, p, d end
+    local walkable = Total(walk)
+    if not walkable or across <= walkable then return e, p, d end
+    return walk.e, walk.p, walk.d
+end
+Find._Quickest = Quickest -- tests
+
 -- Sends the arrow to the nearest spawn of any of `entries`.
-local function WaypointToNearest(entries, title, measured)
-    local e, p, distance = DB.NearestOf(entries, { faction = ns.Get("findFaction") })
+-- `byTravel`: a Nearest button (Quickest); else the closest in a straight line.
+local function WaypointToNearest(entries, title, measured, byTravel)
+    local opts = { faction = ns.Get("findFaction") }
+    local e, p, distance
+    if byTravel then e, p, distance = Quickest(entries, opts) else e, p, distance = DB.NearestOf(entries, opts) end
     if measured and e and not distance then return nil, "position" end
     if not e then
         return nil
@@ -185,8 +266,8 @@ local function WaypointToNearest(entries, title, measured)
     return wp
 end
 
-local function GoToNearest(entries, title)
-    local wp, reason = WaypointToNearest(entries, title, true)
+local function GoToNearest(entries, title, byTravel)
+    local wp, reason = WaypointToNearest(entries, title, true, byTravel)
     if wp then
         Status(L.ADDED:format(WP.Describe(wp)), true)
     else
@@ -253,7 +334,7 @@ function Find.GoToNearest(service, profession)
     end
     if title then
         local entries = DB.TrainerEntries(service)
-        local wp, reason = WaypointToNearest(entries, title, true)
+        local wp, reason = WaypointToNearest(entries, title, true, true)
         if wp then
             local message = L.ADDED:format(WP.Describe(wp))
             if profession then message = L.TRAINER_KNOWN_ADDED:format(message) end
@@ -265,7 +346,7 @@ function Find.GoToNearest(service, profession)
     end
     local entries = DB.ServiceEntries(service)
     if #entries == 0 and loadReason == "missing" then Status(L.DB_BROKEN); return end
-    return GoToNearest(entries)
+    return GoToNearest(entries, nil, true)
 end
 
 function Find.ProfessionMenu(root, hasTitle)
