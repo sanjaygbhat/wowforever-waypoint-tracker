@@ -467,9 +467,23 @@ for _, sliced in ipairs({ false, true }) do
     local westfall = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
     local routed = Run(westfall)
     check(T.Current() ~= nil and (routed == nil or routed.title ~= L.TRAVEL_NO_PLAN), label .. ': (control) a placed waypoint is planned')
+    -- no position at all (the tram, a loading screen): nothing to search
+    -- from and nothing known that changes the route, so it is kept
+    local kept = T.Current()
     M.player.noPosition = true
-    check(Run(westfall) == nil and T.Current() == nil, label .. ': no player position gets the plain arrow and holds no plan')
+    check(Run(westfall) == nil and T.Note() == 'noposition', label .. ': no player position gets the plain arrow, and says why')
+    check(kept and T.Current() == kept, label .. ': no player position keeps the route followed')
     M.player.noPosition = nil
+    routed = Run(westfall)
+    check(routed and routed.title == L.TRAVEL_HEAD_TO:format('Westfall'), label .. ': the position back: the route goes on (' .. tostring(routed and routed.title) .. ')')
+    -- a waypoint on a zone the network doesn't cover, or a player where it has no area: the reason
+    WP.ClearAll(true)
+    local unzoned = WP.Add(7777, 0.5, 0.5, { title = 'Unmapped zone' })
+    check(Run(unzoned) == nil and T.Note() == 'goal-offnet', label .. ': a waypoint off the network: the plain arrow says so (' .. tostring(T.Note()) .. ')')
+    M.player.inst, M.player.wx, M.player.wy = 0, 5000, -1000 -- on the continent map only
+    westfall = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+    check(Run(westfall) == nil and T.Note() == 'offnet', label .. ': a player off the network: the plain arrow says so (' .. tostring(T.Note()) .. ')')
+    M.player.inst, M.player.wx, M.player.wy = 0, -1000, -2400
 end
 
 -- ---------------------------------------------------------------------------
@@ -2135,6 +2149,151 @@ do
     check(quiet > 0 and storm == quiet, ('hearth event: an event storm with nothing changed adds no search (%d / %d)'):format(storm, quiet))
     C_Item, GetBindLocation = savedItem, savedBind
     ns.Set('travelHearth', false)
+end
+
+-- ---------------------------------------------------------------------------
+-- (ac) Following, and saying so. After a flight lands, no frame goes plain
+-- while the route held contains the landing (and one landed elsewhere is
+-- not kept). On the tram (no position) its step stays for the whole ride,
+-- also when you went in before the step said "ride"; out at the far end the
+-- route goes on at once. Travel.Note says "planning" only after a second
+-- without a route, and logs it.
+-- ---------------------------------------------------------------------------
+C_Map.GetBestMapForUnit = mockBestMap
+local rideWorld = {
+    areas = { 'ek.elwynn', 'ek.westfall', 'ek.tirisfal' }, indoor = {},
+    nodes = table.concat({
+        'B_EW\tborder\t1\t0\t-2000\t-600\t37\t20\t100\t\t\t\t',
+        'B_WE\tborder\t2\t0\t-2000\t-600\t52\t44\t0\t\t\t\t',
+        'TAXI_1\ttaxi\t1\t0\t-1000\t-1500\t37\t50\t50\t\t\t1\t',
+        'TAXI_2\ttaxi\t3\t0\t10000\t1000\t18\t50\t57.142857\t\t\t2\t',
+        'TRAM_T\ttram\t3\t0\t9000\t2000\t18\t25\t85.714286\t\t\t\t',
+        'TRAM_E\ttram\t1\t0\t-500\t-1000\t37\t33.333333\t25\t\t\t\t',
+    }, '\n'),
+    links = table.concat({
+        'B_EW\tB_WE\twalk\t0\t\t\t\t\t\t\t',
+        'TAXI_2\tTAXI_1\ttaxi\t120\t\t\t1\t\t\t\t',
+        'TRAM_T\tTRAM_E\ttram\t60\t30\t2\t\t\t\t\t',
+    }, '\n'),
+    maps = '37\t1\n52\t2\n18\t3', regions = '', cities = '', towns = '', teleports = '', factors = '', levels = '',
+}
+local function RideWorld(flights, boats)
+    ns.TravelData = rideWorld
+    T._Reset(); T.Data()
+    T.Know().flights[1], T.Know().flights[2] = true, true
+    ns.Set('travelFlights', flights); ns.Set('travelBoats', boats); ns.Set('travelPreference', 'safer')
+    ns.Set('travelHearth', false); ns.Set('travelTrails', false)
+    M.player.noPosition, M.player.taxi = nil, nil
+end
+local headTo = L.TRAVEL_HEAD_TO:format('Westfall')
+for _, sliced in ipairs({ false, true }) do
+    local label = (sliced and 'sliced' or 'at once') .. ': '
+    -- a flight, landing where the route said
+    for _, landing in ipairs({ 'planned', 'elsewhere' }) do
+        RideWorld(true, false)
+        T._SetSliced(sliced)
+        WP.ClearAll(true)
+        M.player.inst, M.player.wx, M.player.wy = 0, 10003, 1000 -- at the Tirisfal flight master
+        local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        local s = Steer(w)
+        check(s and s.title == L.TRAVEL_FLY:format(T.PlaceName(T.Data().nodes.TAXI_1)),
+            label .. '(control) at the flight master: fly (' .. tostring(s and s.title) .. ')')
+        M.player.taxi = true
+        for _ = 1, 20 do s = Steer(w, 0.5) end
+        check(s and T.Riding(), label .. 'in the air')
+        M.player.taxi = nil
+        if landing == 'planned' then
+            M.player.wx, M.player.wy = -997, -1500
+            local plain, wrong, frames = 0, 0, 0
+            for _ = 1, 120 do
+                s = Steer(w)
+                frames = frames + 1
+                if s == nil then plain = plain + 1 elseif s.title ~= headTo then wrong = wrong + 1 end
+            end
+            check(plain == 0 and wrong == 0 and T.Note() == nil,
+                label .. 'landed: no frame goes plain or shows another step while the route goes on (' .. plain .. ' plain, ' .. wrong .. ' other of ' .. frames .. ')')
+        else
+            M.player.wx, M.player.wy = -1000, -2400 -- 900 yd from where the route said
+            s = Steer(w)
+            local p = T.Current()
+            check(not (p and Has(p.path, 'TAXI_2')), label .. 'landed elsewhere: the old route is not kept')
+            Settle(w)
+            s = Steer(w)
+            check(s and s.title == headTo, label .. 'landed elsewhere: planned from there (' .. tostring(s and s.title) .. ')')
+        end
+    end
+    -- the tram: from its station, and from just short of it
+    for _, short in ipairs({ 5, 45 }) do
+        RideWorld(false, true)
+        T._SetSliced(sliced)
+        WP.ClearAll(true)
+        M.player.inst, M.player.wx, M.player.wy = 0, 9000 + short, 2000
+        local w = WP.Add(52, 0.9, 0.5, { title = 'Moonbrook' })
+        WP.SetActive(w, true)
+        Steer(w); Settle(w)
+        local s = Steer(w)
+        local p = T.Current()
+        local tram
+        for k, e in ipairs(p and p.path or {}) do
+            if type(e.via) == 'table' and e.via.method == 'tram' then tram = k end
+        end
+        local ride = tram and T.StepText(p.path, tram, 'Moonbrook')
+        local at = short == 5 and ride or (tram and T.StepText(p.path, tram - 1, 'Moonbrook'))
+        check(tram and s and s.title == at, label .. short .. ' yd from the tram: (control) ' .. tostring(s and s.title))
+        M.player.noPosition = true
+        local wrong = 0
+        for _ = 1, 100 do
+            s = Steer(w, 0.1)
+            if not (s and s.title == ride) then wrong = wrong + 1 end
+        end
+        check(wrong == 0 and T.Current() == p, label .. short .. ' yd: aboard (no position) for 10 s the tram step stays (' .. wrong .. ' frames not)')
+        M.player.noPosition = nil
+        M.player.wx, M.player.wy = -495, -1000 -- out at the far end
+        M.FireEvent('ZONE_CHANGED_NEW_AREA')
+        local plain, other = 0, 0
+        for _ = 1, 120 do
+            s = Steer(w)
+            if s == nil then plain = plain + 1 elseif s.title ~= headTo then other = other + 1 end
+        end
+        check(plain == 0 and other == 0, label .. short .. ' yd: out at the far end the route goes on at once (' .. plain .. ' plain, ' .. other .. ' other)')
+    end
+end
+-- "planning": only after a second without a route (a slow first search),
+-- then on the arrow and in the log; nothing once the route has come
+do
+    UseShipped()
+    ns.Set('travelFlights', true); ns.Set('travelBoats', true); ns.Set('travelPreference', 'safer'); ns.Set('travelHearth', false)
+    T._SetSliced(true)
+    STEP = 1 -- four node expansions an urgent slice: the first route takes many frames
+    WP.ClearAll(true)
+    Stand(thrall.from[1], thrall.from[2], thrall.from[3])
+    local w = WP.Add(thrall.to[1], thrall.to[2], thrall.to[3], { title = 'Slow first route' })
+    WP.SetActive(w, true)
+    local first, early, late, wrong = nil, 0, 0, 0
+    for _ = 1, 3000 do
+        local s = Steer(w, 0.1)
+        if T.Current() then break end
+        first = first or M.now
+        local why, waited = T.Note(), M.now - first
+        if waited < 1 - 1e-3 then -- (the frame at the second itself is either, by rounding)
+            early = early + 1
+            if why ~= nil or s ~= nil then wrong = wrong + 1 end
+        elseif waited > 1 + 1e-3 then
+            late = late + 1
+            if why ~= 'planning' or s ~= nil then wrong = wrong + 1 end
+        end
+    end
+    check(early >= 5 and late >= 5 and wrong == 0, ('planning: no note for the first second, then "planning" (%d early, %d late, %d wrong)'):format(early, late, wrong))
+    local log = WaypointTrackerDB.travelLog
+    local logged = false
+    for k = #log, 1, -1 do if log[k].plain == 'planning' then logged = true; break end end
+    check(logged, 'planning: the wait is in the travel log')
+    local s = Steer(w)
+    check(T.Current() and s and T.Note() == nil, 'planning: the route has come, no note')
+    check(L.TRAVEL_NOTE_PLANNING and L.TRAVEL_NOTE_PLANNING ~= '', 'planning: the text exists')
+    STEP = 0.05
 end
 
 check(#M.errors == 1, 'no other errors: ' .. tostring(M.errors[2] or M.errors[1]))

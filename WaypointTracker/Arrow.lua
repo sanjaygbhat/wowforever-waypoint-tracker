@@ -380,10 +380,12 @@ local function SetLine(fs, text)
     end
 end
 
-local function SetTexts(t, d, e)
+-- `note`: why Real routes points straight (Travel.Note), shown on the
+-- third line whatever the ETA setting, in place of the ETA
+local function SetTexts(t, d, e, note)
     SetLine(title, ns.Get("showTitle") and t or "")
     SetLine(distText, ns.Get("showDistance") and d or "")
-    SetLine(etaText, ns.Get("showETA") and e or "")
+    SetLine(etaText, note or (ns.Get("showETA") and e or ""))
 end
 
 local shownR, shownG, shownB
@@ -609,9 +611,13 @@ local function Update(dt)
         SetFade(1, dt)
         SetLine(title, steer.title or name) -- always shown: it says what to do next
         SetLine(distText, ns.Get("showDistance") and distLine or "")
-        SetLine(etaText, ns.Get("showETA") and etaLine or "")
+        -- a leg the route only knows as a straight line says so in place of the total
+        SetLine(etaText, steer.note or (ns.Get("showETA") and etaLine or ""))
         return
     end
+    -- the plain arrow while Real routes is on: why it points straight
+    local _, note
+    if ns.Travel and ns.Travel.Note then _, note = ns.Travel.Note() end
     if dist and bearing then
         local facing = Geo.GetFacing()
         if facing then
@@ -635,7 +641,7 @@ local function Update(dt)
             if speed and speed > 0.5 then
                 eta = EtaLine(dist / speed)
             end
-            SetTexts(name, Geo.FormatDistance(dist), eta)
+            SetTexts(name, Geo.FormatDistance(dist), eta, note)
             return
         end
     end
@@ -646,7 +652,7 @@ local function Update(dt)
     if bearing == "continent" then
         SetLine(title, ns.Get("showTitle") and name or "")
         SetLine(distText, ns.Get("showDistance") and L.ANOTHER_CONTINENT or "")
-        SetLine(etaText, Geo.GetMapName(wp.m))
+        SetLine(etaText, note or Geo.GetMapName(wp.m))
     else
         SetTexts(name, L.CANT_TRACK_HERE, "")
     end
