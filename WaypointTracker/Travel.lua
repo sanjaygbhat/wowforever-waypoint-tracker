@@ -1028,15 +1028,17 @@ local function Search(start, goal, c, allowUncertain)
             local ok, uncertainty
             ok, uncertainty, proof, observation = ns.Terrain.Decide(u.node, node,
                 type(how) == "table" and how.groundPolyline and "polyline" or type(how) == "table")
-            -- The gate out of the walled city you start in is an explicit link
-            -- (the city's own entrance): an unmeasured traversal there is
-            -- priced by its surcharge, not left for the uncertain retry, which
-            -- never runs while any certain way exists (a 10-minute flight beat
-            -- a 2-minute walk out of Orgrimmar's gate). A refuted verdict (2)
-            -- still waits for the retry. (Not the gate into a goal's city: that
-            -- changes the Thrall route, run_thrall_travel.)
+            -- A city gate is an explicit link (a city's own entrance): an
+            -- unmeasured traversal there is priced by its surcharge, not left
+            -- for the uncertain retry, which never runs while any certain way
+            -- exists (a 10-minute flight beat a 2-minute walk out of
+            -- Orgrimmar's gate; from outside it, the way in was a flight round
+            -- by the Barrens). Every gate, not only those of the trip's own
+            -- cities: pricing some and excluding the rest makes the first pass
+            -- detour round the excluded ones (into Orgrimmar to Thrall, it flew
+            -- to the Sepulcher rather than into Undercity: 958 s, not 775 s).
+            -- A refuted verdict (2) still waits for the retry.
             local gate = type(how) == "table" and how.method == "gate" and uncertainty < 2
-                and start.city ~= nil and u.node.city == start.city and node.city ~= start.city
             if not ok or (uncertainty >= 1 and not allowUncertain and not gate) then return end
             surcharge = uncertainty > 0 and uncertainty * (3 * cost + 120) or 0
             if proof then

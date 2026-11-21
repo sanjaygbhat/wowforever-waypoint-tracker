@@ -355,18 +355,8 @@ for _, exit in ipairs(EXITS) do
             local sx, sy = G.WorldToMap(ocont, owx, owy, zone)
             local _, fromOut = T.Routes(Place(zone, sx, sy), T._GoalPlace({ m = zone, x = ix, y = iy }), c, preference)
             gate, ride = Shape(fromOut and fromOut.path)
-            if cm ~= 1454 then
-                check(fromOut and gate and not ride, ("%s: from 150 yd outside the gate to its centre on the zone map (%s): in through the gate (%s)"):format(
-                    name, preference, Ids(fromOut and fromOut.path)))
-            else
-                -- Orgrimmar's inbound gate (an unmeasured traversal) waits for
-                -- the uncertain retry, which never runs while a certain way
-                -- exists: with flight points known the way in is a flight to
-                -- its flight master. Pricing it like the outbound gate changes
-                -- the protected Thrall route (run_thrall_travel). Open item.
-                check(fromOut ~= nil, ("%s: from 150 yd outside the gate to its centre on the zone map (%s): a route (%s)"):format(
-                    name, preference, Ids(fromOut and fromOut.path)))
-            end
+            check(fromOut and gate and not ride, ("%s: from 150 yd outside the gate to its centre on the zone map (%s): in through the gate (%s)"):format(
+                name, preference, Ids(fromOut and fromOut.path)))
         end
         -- on the city's map, outside the footprint: the zone beyond the gate
         local far
@@ -453,6 +443,56 @@ for _, exit in ipairs(EXITS) do
     check(s and s.title == L.TRAVEL_LEAVE:format(name) and p and gate and not ride,
         ("%s inn -> just outside, steered: %q (%s)"):format(name, L.TRAVEL_LEAVE:format(name), tostring(s and s.title)))
 end
+-- Into every walled city, through each of its gates, every flight point
+-- known: from 150 and 600 yd outside the gate to the city's centre (on its
+-- own map) the way is in through a gate, never a flight or any other ride.
+-- (The gates of Orgrimmar, Darnassus, Thunder Bluff, Undercity and its
+-- sewers have an unmeasured traversal; they were left to the uncertain
+-- retry, and from outside Orgrimmar the way in was a flight round by the
+-- Barrens to its flight master.)
+do
+    local centres = {}
+    for _, n in pairs(d.nodes) do
+        if n.kind == "settlement" and n.city and d.cities[n.city] then centres[n.city] = n end
+    end
+    local gates = 0
+    for cityMap, owner in pairs(d.cities) do
+        faction = owner
+        race = owner == "Horde" and "Orc" or "Human"
+        local c = Context()
+        local centre = centres[cityMap]
+        check(centre ~= nil, "inbound: (control) city " .. cityMap .. " has a centre node")
+        for _, l in ipairs(T.CityGates(cityMap)) do
+            gates = gates + 1
+            local inner, outer = l.from, l.to
+            for _, yards in ipairs({ 150, 600 }) do
+                local cont, wx, wy = Outward(outer, inner, yards)
+                local sx, sy = G.WorldToMap(cont, wx, wy, outer.m)
+                local start = Place(outer.m, sx, sy)
+                local tag = ("inbound %s > %s, %d yd outside (city %d)"):format(outer.id, inner.id, yards, cityMap)
+                check(start.area and start.city == nil, tag .. ": (control) the start is on the network, outside the city")
+                for _, preference in ipairs({ "fastest", "safer" }) do
+                    local _, chosen = T.Routes(Place(outer.m, sx, sy), T._GoalPlace({ m = cityMap, x = centre.x, y = centre.y }), c, preference)
+                    local steer = T._Preferred(Place(outer.m, sx, sy), T._GoalPlace({ m = cityMap, x = centre.x, y = centre.y }), c, preference)
+                    local enters, ride = false, false
+                    for i = 2, #(chosen and chosen.path or {}) do
+                        local e, how = chosen.path[i], chosen.path[i].via
+                        if type(how) == "table" then
+                            if how.method == "gate" and e.node.city == cityMap then enters = true end
+                            if RIDES[how.method] or how.kind then ride = true end
+                        end
+                    end
+                    check(chosen and enters and not ride,
+                        ("%s (%s): in through a gate, no flight or ride (%s)"):format(tag, preference, Ids(chosen and chosen.path)))
+                    check(chosen and steer and Ids(chosen.path) == Ids(steer.path),
+                        ("%s (%s): Travel.Routes and the steering search agree"):format(tag, preference))
+                end
+            end
+        end
+    end
+    check(gates >= 7, "inbound: (control) every city gate was tried (" .. gates .. ")")
+end
+
 -- The reported shape: the Orgrimmar inn to the Durotar coast, 644 yd. With
 -- every flight point known: the gate walk, about 150 s, never the flight.
 faction, race = "Horde", "Orc"

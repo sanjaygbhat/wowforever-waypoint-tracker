@@ -743,9 +743,25 @@ local function PerTrigger(st, label)
 end
 -- the shipped network: long multi-stop routes (their re-anchor often fails:
 -- a route with a surveyed-terrain leg ahead is searched again, as before)
+-- (The cross-continent trip starts on the Hillsbrad road, 1076 yd of
+-- walking before Tarren Mill's flight master: following is measured while
+-- walking, and the route to Thrall from beside the flight master begins
+-- with a 228 yd walk. Every flight point known, the route there once flew
+-- round by Booty Bay or sailed to Auberdine, avoiding the city gates whose
+-- traversal is unmeasured; it is the Thrall route now: Tarren Mill,
+-- Undercity, the zeppelin, Orgrimmar's gate.)
+local function FirstWalk(p)
+    local yards, prev = 0, p and p.path[1].node
+    for i = 2, #(p and p.path or {}) do
+        local e, how = p.path[i], p.path[i].via
+        if not (how == 'walk' or (type(how) == 'table' and (how.method == 'walk' or how.method == 'gate' or how.method == 'lift'))) then break end
+        yards, prev = yards + (T.Dist(prev, e.node) or 0), e.node
+    end
+    return yards
+end
 local walks = {
     { name = 'cross-zone walk', from = { 1424, .615, .209 }, to = { 1416, .231, .604 }, flights = false },
-    { name = 'cross-continent trip', from = { 1424, .5552, .2685 }, to = { 1454, .32, .378 }, flights = true },
+    { name = 'cross-continent trip', from = { 1424, .40, .30 }, to = { 1454, .32, .378 }, flights = true },
 }
 for _, sc in ipairs(walks) do
     for _, speed in ipairs({ 7, 14 }) do
@@ -759,6 +775,8 @@ for _, sc in ipairs(walks) do
         while not T.Current() and n < 600 do Steer(wp); n = n + 1 end
         Settle(wp)
         local label = ('%s at %d yd/s'):format(sc.name, speed)
+        check(not sc.flights or FirstWalk(T.Current()) >= speed * 60, label .. ': (control) the route begins with a walk of over a minute ('
+            .. math.floor(FirstWalk(T.Current())) .. ' yd)')
         local st = Follow(wp, speed)
         PerTrigger(st, label)
         check(st.yards >= speed * 60 * 0.5 and T.Current() and T.Current().wp == wp, label .. ': still following the route')
@@ -1875,10 +1893,14 @@ end
 -- not resumed for over a second in the same area goes on, urgently, and the
 -- search from where the player is follows it at once)
 -- ---------------------------------------------------------------------------
+-- (from the Hillsbrad road, as in (j): walking on for the whole minute)
+local thrallRoad = { from = { 1424, .40, .30 }, to = thrall.to }
 for _, shown in ipairs({ 0.4, 0.2 }) do
-    local w = Begin(thrall)
+    local w = Begin(thrallRoad)
     local n = 0
     while not (T.Current() and not Job()) and n < 6000 do Steer(w); n = n + 1 end
+    check(FirstWalk(T.Current()) >= 7 * 60, ('shown %.1f s at a time: (control) the route begins with a walk of over a minute (%d yd)'):format(
+        shown, FirstWalk(T.Current())))
     local f0, follow, resumed = #finishes, 0, 0
     local t0 = M.now
     while M.now - t0 < 60 do
