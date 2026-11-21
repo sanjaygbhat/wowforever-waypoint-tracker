@@ -2,7 +2,7 @@
 
 **Set a waypoint. Follow the arrow. That's it.**
 
-Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever. Find quests, NPCs and items by name, follow the fastest route, or use Nearest for services and trainers. It accepts `/way` coordinates and TomTom-compatible waypoints and shares spots as clickable map pins. This guide covers **1.5.0**, client **1.60.1**, interface **16001**.
+Waypoint Tracker is the 3D waypoint arrow and quest finder for World of Warcraft: Forever. Find quests, NPCs and items by name, follow the fastest route, or use Nearest for services and trainers. It accepts `/way` coordinates and TomTom-compatible waypoints and shares spots as clickable map pins. This guide covers **1.5.1**, client **1.60.1**, interface **16001**.
 
 [![A green arrow over a flying character near Grol'dom Farm, with Trade Rep, 932 yds and About 0:30 beneath it](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)](https://raw.githubusercontent.com/sanjaygbhat/wowforever-waypoint-tracker/main/docs/screenshots/01-arrow.jpg)
 
@@ -33,7 +33,7 @@ Nearest also covers mailboxes, merchants, innkeepers and meeting stones observed
 
 Use **Settings** for Blizzard Settings and **Esc → Edit Mode** for HUD placement. **Real routes** is on by default: the arrow follows passes, gates, transport, your hearthstone and class teleports. Turn it off in **Settings → Routes** for a straight arrow.
 
-**New in 1.5.0:** no freeze the first time you use Find, Nearest, Routes or Treasure (beta), because the database loads in small slices with progress below the window title; about 17% less memory once loaded; quest chain routes that stay on the step you're on; and a fix for "No player named ... is currently playing" messages from Route sharing & votes (beta). Updating from 1.4.1 needs only `/reload`. Full list: [changelog](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md).
+**New in 1.5.1:** a trainer or service inside the city you're in is walked to directly, routes into and out of walled cities go through the gate, the route moves on as soon as you land after a teleport or hearthstone, jumps are used only when they save real time, Nearest picks the spawn you'll reach first when the closest is behind a wall, and the arrow's third line says why when it can't follow a route. Updating from 1.5.0 needs a full game restart (a new file was added). Full list: [changelog](https://github.com/sanjaygbhat/wowforever-waypoint-tracker/blob/main/CHANGELOG.md).
 
 **Safe or fastest, your choice.** The default **Safe route** preference is danger-aware. When a quicker, riskier route saves at least 15 seconds and 5% of the trip, the arrow offers it for ten seconds and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take the quickest route every time without asking.
 

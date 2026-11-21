@@ -80,6 +80,8 @@ The arrow guides you through passes and gates and onto flight paths, boats, zepp
 
 **Safe or fastest, your choice.** The default **Safe route** preference is danger-aware. When a quicker, riskier route saves at least 15 seconds and 5% of the trip, the arrow offers it for ten seconds and you decide. Choose **Settings → Routes → Route preference → Always fastest** to take the quickest route every time without asking.
 
+**Cities and jumps.** A trainer or service inside the city you're in is a straight walk, and routes into and out of walled cities go through the gate. Your hearthstone, Astral Recall and teleport items are used only when they save at least 2 minutes, class teleports at least 45 seconds, and never into the place you're already in; the route moves on as soon as you land. When the arrow can't follow a route, its third line says why.
+
 It checks the travel abilities you have and their cooldowns. Open a flight master's map to learn your available flights. Distance appears under the arrow. For time to arrive too, turn on **Settings → Arrow → Show time to arrive** (off by default). As you move, it re-plans and works the route out a little at a time in the background, so the game stays smooth while you follow the current route.
 
 Turn Real routes off in **Settings → Routes** for a straight arrow.
