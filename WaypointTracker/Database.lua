@@ -1761,6 +1761,59 @@ end
 -- spawns: one sighting doesn't mean the others are gone).
 local MOVED_NPC_SPOTS = 2
 local NEAR_KNOWN = 0.02 -- 2% of the map: the same place
+
+-- The classic source lists a city NPC twice: on the walled city's map and on
+-- its parent zone's map, a few yards apart. Real routes reads "inside the
+-- wall" off a waypoint's map, so the zone-map copy sends you out of the gate.
+-- That copy goes when the same entry has a point on the city map close by
+-- and the copy lies inside the city map. Only classic-derived points go:
+-- curated, corrected and observed spots are kept. The worst real twin offset
+-- is 129 yd (a patrolling vendor); the rest are under 62 yd.
+local CITY_TWIN_YARDS = 150
+local cityMaps
+local function CityMaps()
+    if cityMaps then return cityMaps end
+    local T = ns.TravelData
+    if not T then return nil end
+    -- the walled city maps: the keys of the travel data's cities block only
+    cityMaps = {}
+    for line in (T.cities or ""):gmatch("[^\n]+") do
+        local m = tonumber(line:match("^%s*(%d+)"))
+        if m then cityMaps[m] = true end
+    end
+    return cityMaps
+end
+
+local function DropCityTwins(pts, classic)
+    local cities = CityMaps()
+    if not classic or not cities then return pts end
+    local onCity
+    for _, p in ipairs(pts) do
+        if cities[p.m] then
+            onCity = onCity or {}
+            onCity[#onCity + 1] = p
+        end
+    end
+    if not onCity then return pts end
+    local kept, limit = {}, CITY_TWIN_YARDS * CITY_TWIN_YARDS
+    for _, p in ipairs(pts) do
+        local twin = false
+        if classic[p] and not cities[p.m] and not p.curated and not p.fixed then
+            -- (a map the API cannot place keeps its point)
+            local c, wx, wy = Geo.MapToWorld(p.m, p.x, p.y, p)
+            for _, q in ipairs(c and onCity or EMPTY) do
+                local qc, qx, qy = Geo.MapToWorld(q.m, q.x, q.y, q)
+                if qc == c and (qx - wx) ^ 2 + (qy - wy) ^ 2 <= limit and Geo.TranslateToMap(p.m, p.x, p.y, q.m) then
+                    twin = true
+                    break
+                end
+            end
+        end
+        if not twin then kept[#kept + 1] = p end
+    end
+    return kept
+end
+
 function DB.Points(e)
     if not e then
         return {}
@@ -1769,7 +1822,7 @@ function DB.Points(e)
         return e.points
     end
     if e.classicCoords ~= e.coords then e.classic = nil end
-    local pts, curated, seen = {}, {}, {}
+    local pts, curated, seen, classic = {}, {}, {}, nil
     for _, w in ipairs(e.world or {}) do
         local x, y = Geo.WorldToMap(w[1], w[3], w[4], w[2] ~= 0 and w[2] or nil)
         local m = w[2] ~= 0 and w[2] or select(3, Geo.WorldToMap(w[1], w[3], w[4]))
@@ -1789,6 +1842,8 @@ function DB.Points(e)
         if not curated[m] and not (seen[m] and #list <= MOVED_NPC_SPOTS) then
             for _, p in ipairs(list) do
                 pts[#pts + 1] = p
+                classic = classic or {}
+                classic[p] = true
             end
         end
     end
@@ -1810,6 +1865,7 @@ function DB.Points(e)
         end
         pts = kept
     end
+    if classic then pts = DropCityTwins(pts, classic) end
     e.points = pts
     return pts
 end
