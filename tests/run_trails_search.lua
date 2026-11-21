@@ -28,18 +28,25 @@ check(ns.Get("realRoutes") and ns.Get("travelTrails") and not ns.Get("travelShar
     "defaults: Real routes and trails on, walked-path sharing off")
 Travel.Data()
 
--- Count the path searches Steer runs (its FindPath upvalue).
+-- Count the path searches Steer runs (its FindPath upvalue). The wrapper
+-- stays reachable from here for the whole run: Lua 5.1's lua_setupvalue
+-- puts its write barrier on the closure, not on the (shared, closed)
+-- upvalue, so a value only that upvalue refers to can be swept while a
+-- collection is under way, and then called (run_travel_sliced.lua, B13).
 local searches = 0
+local pinned = {}
 do
     local i = 1
     while true do
         local name, fn = debug.getupvalue(Trails.Steer, i)
         if not name then break end
         if name == "FindPath" then
-            debug.setupvalue(Trails.Steer, i, function(...)
+            local counting = function(...)
                 searches = searches + 1
                 return fn(...)
-            end)
+            end
+            pinned[#pinned + 1] = counting
+            debug.setupvalue(Trails.Steer, i, counting)
             break
         end
         i = i + 1

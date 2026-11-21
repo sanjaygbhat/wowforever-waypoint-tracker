@@ -284,7 +284,11 @@ local function oracle(g, start, goal, c, known, actual, allowUncertain)
             for _, l in ipairs(g.out[n.index]) do
                 local ground=l.method=="walk" or l.method=="gate" or l.method=="lift"
                 local state=ground and evidenceState(g,n,l.to)
-                if permitted(l, mode, c, known) and state~="TERRAIN_BLOCKED" and state~="UNAVAILABLE" and (allowUncertain or state~="UNCERTAIN") then
+                -- a city gate: its unmeasured traversal is priced
+                -- (geometryPenalty), not left for the uncertain retry
+                -- (Travel.lua's Relax)
+                local cityGate=l.method=="gate"
+                if permitted(l, mode, c, known) and state~="TERRAIN_BLOCKED" and state~="UNAVAILABLE" and (allowUncertain or state~="UNCERTAIN" or cityGate) then
                     local seconds=linkCost(g,l,mode,c,actual)
                     offer(l.to,l.method=="taxi" and (l.dialogue and 3 or 1) or 0,cost+seconds+(ground and geometryPenalty(g,n,l.to,seconds) or 0))
                 end
