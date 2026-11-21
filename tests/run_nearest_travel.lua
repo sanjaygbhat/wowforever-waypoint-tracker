@@ -114,8 +114,11 @@ end
 local function Clear(entries) for _, e in ipairs(entries) do e.points = nil end end
 
 -- 1. The Darnassus bank case with WP-1's collapse switched off: the trainer's
--- Teldrassil-map copy is the closest in a straight line, behind the city
--- wall for the planner. Nearest must still pick the Darnassus-side point.
+-- Teldrassil-map copy is the closest in a straight line. What the player
+-- cares about: no "Leave Darnassus", a direct walk inside the city, and the
+-- arrow at Ainethil. The map ID may be either copy's: the planner places a
+-- point by the city's terrain footprint (GoalPlace), so the Teldrassil-map
+-- copy is inside Darnassus too, and may win as the quicker walk.
 DB._KeepCityTwins(true)
 Clear(Alchemy())
 local spots = { { 0.40, 0.42, 'by the bank' }, { 0.45, 0.30, 'north-east of the bank' } }
@@ -128,14 +131,26 @@ for _, s in ipairs(spots) do
     local ms, n, wp = Clicked(function() return Find.GoToNearest('profession', 'alchemy') end)
     wp = Settle(wp)
     print(('  Nearest alchemy %s, twins kept: %.1f ms, %d planned'):format(s[3], ms, n))
-    check(wp and wp.m == 1457, 'twins kept, ' .. s[3] .. ': Nearest gives the Darnassus-map point (got ' .. tostring(wp and wp.m) .. ')')
     check(wp and (wp.title or ''):find('Ainethil', 1, true), 'twins kept, ' .. s[3] .. ': Ainethil')
-    check(n == 2, 'twins kept, ' .. s[3] .. ': two planned, the closer copy and the walkable one')
+    check(n <= 2, 'twins kept, ' .. s[3] .. ': at most two planned')
     if wp then
+        -- within a few yards of Ainethil's city-map point
+        local cityPoint
+        for _, q in ipairs(DB.Points(DB.units[4160])) do if q.m == 1457 then cityPoint = q end end
+        local ac, ax, ay = ns.Geo.MapToWorld(wp.m, wp.x, wp.y)
+        local bc, bx, by = ns.Geo.MapToWorld(1457, cityPoint and cityPoint.x or 0, cityPoint and cityPoint.y or 0)
+        local yards = ac and ac == bc and math.sqrt((ax - bx) ^ 2 + (ay - by) ^ 2) or math.huge
+        print(('  destination on map %s, %.1f yd from the city point'):format(tostring(wp.m), yards))
+        check(cityPoint and yards <= 15, 'twins kept, ' .. s[3] .. ': the arrow is at Ainethil (' .. ('%.0f'):format(yards) .. ' yd)')
         M.Tick(3)
-        check(Travel.Steer(wp) == nil, 'twins kept, ' .. s[3] .. ': no detour')
+        local steer = Travel.Steer(wp)
+        check(steer == nil, 'twins kept, ' .. s[3] .. ': no detour (' .. tostring(steer and steer.title) .. ')')
         local plan = Travel.Current()
         check(plan and plan.path and #plan.path == 2, 'twins kept, ' .. s[3] .. ': a two-stop plan')
+        local goal = plan and plan.path and plan.path[#plan.path].node
+        local here = Travel._PlayerPlace()
+        check(goal and here and goal.area == here.area and goal.city == 1457 and here.city == 1457,
+            'twins kept, ' .. s[3] .. ': a walk inside Darnassus (same area and city)')
     end
 end
 -- Real routes off: straight-line ranking, nothing planned
