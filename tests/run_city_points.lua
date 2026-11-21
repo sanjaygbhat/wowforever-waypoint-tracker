@@ -117,18 +117,28 @@ local function Yards(a, b)
     if not ac or ac ~= bc then return math.huge end
     return math.sqrt((ax - bx) ^ 2 + (ay - by) ^ 2)
 end
--- A zone-map point inside a city rectangle within 150 yd of a city-map point
--- of the same entry: the twin WP-1 removes. Returns the nearest such point.
-local function Twin(pts, p)
-    if CITY[p.m] then return nil end
+-- One spawn listed twice, the twin WP-1 removes from service and trainer
+-- entries: a zone-map point inside a city rectangle and a city-map point of
+-- the same entry that are each other's nearest, within 12 yd.
+local LIMIT = 12
+-- (`classic`: the entry's classic-derived points; only those are compared)
+local function Twin(pts, p, classic)
+    if CITY[p.m] or not classic[p] then return nil end
     local best, bestD
     for _, q in ipairs(pts) do
         if CITY[q.m] and Inside(p, q.m) then
             local d = Yards(p, q)
-            if d <= 150 and (not bestD or d < bestD) then best, bestD = q, d end
+            if not bestD or d < bestD then best, bestD = q, d end
         end
     end
-    return best
+    if not best or bestD > LIMIT then return nil end
+    for _, o in ipairs(pts) do
+        if o ~= p and classic[o] and not CITY[o.m] and Inside(o, best.m) then
+            local d = Yards(o, best)
+            if d < bestD or (d == bestD and o.x < p.x) then return nil end
+        end
+    end
+    return best, bestD
 end
 -- Kept by rule: curated, corrected and observed (personal, imported or
 -- shared-discovery) spots are never dropped; only classic-derived twins go.
@@ -150,40 +160,50 @@ local trainerServices = {}
 for s in pairs(ns.Trainers.services) do trainerServices[#trainerServices + 1] = s end
 for s in pairs(ns.Trainers.additionalServices or {}) do trainerServices[#trainerServices + 1] = s end
 table.sort(trainerServices)
-local entries, cityEntries, classicTwins, keptObserved = 0, 0, 0, 0
+local entries, cityEntries, dropped, wrong, seenBase = 0, 0, 0, 0, {}
 for _, side in ipairs({ 'Alliance', 'Horde' }) do
     faction = side
     local lists = {}
     for _, s in ipairs(SERVICES) do lists[#lists + 1] = { s, DB.ServiceEntries(s) } end
     for _, s in ipairs(trainerServices) do lists[#lists + 1] = { s, DB.TrainerEntries(s) } end
     for _, pair in ipairs(lists) do
-        for _, e in ipairs(pair[2]) do
+        for _, listed in ipairs(pair[2]) do
             entries = entries + 1
-            local pts, onCity = DB.Points(e), false
-            for _, p in ipairs(pts) do
-                if CITY[p.m] then onCity = true end
-                local q = Twin(pts, p)
-                if q then
-                    if Observed(e, p) then
-                        keptObserved = keptObserved + 1
-                    else
-                        classicTwins = classicTwins + 1
-                        if classicTwins <= 10 then
-                            print(('  twin: %s %s %s (%s) %d:%.4f,%.4f, %.0f yd from %d:%.4f,%.4f'):format(side, pair[1],
-                                tostring(e.name), tostring(e.id), p.m, p.x, p.y, Yards(p, q), q.m, q.x, q.y))
+            -- the database entry whose points the collapse works on
+            local e = (listed.kind == 'object' and DB.objects or DB.units)[listed.id] or listed
+            for _, p in ipairs(DB.Points(listed)) do if CITY[p.m] then cityEntries = cityEntries + 1; break end end
+            if not seenBase[e] and e.coords then
+                seenBase[e] = true
+                e.points = nil; DB._KeepCityTwins(true)
+                local all = DB.Points(e)
+                e.points = nil; DB._KeepCityTwins(nil)
+                -- (points from world positions are new tables each time: match by spot)
+                local kept, keptSet, classic = DB.Points(e), {}, {}
+                local function Key(p) return p.m .. ':' .. p.x .. ':' .. p.y end
+                for _, p in ipairs(kept) do keptSet[Key(p)] = (keptSet[Key(p)] or 0) + 1 end
+                for _, p in ipairs(all) do if not Observed(e, p) then classic[p] = true end end
+                for _, p in ipairs(all) do
+                    local q, d = Twin(all, p, classic)
+                    if q then dropped = dropped + 1 end
+                    local left = (keptSet[Key(p)] or 0) > 0
+                    if left then keptSet[Key(p)] = keptSet[Key(p)] - 1 end
+                    if (q ~= nil) == left then
+                        wrong = wrong + 1
+                        if wrong <= 10 then
+                            print(('  %s: %s %s (%s) %d:%.4f,%.4f%s'):format(q and 'twin kept' or 'dropped, not a twin', pair[1],
+                                tostring(e.name), tostring(e.id), p.m, p.x, p.y, q and (', %.0f yd from %d:%.4f,%.4f'):format(d, q.m, q.x, q.y) or ''))
                         end
                     end
                 end
             end
-            if onCity then cityEntries = cityEntries + 1 end
         end
     end
 end
 faction = 'Alliance'
-print(('Invariant: %d entries, %d with a city-map point, %d classic twins left, %d observed twins kept'):format(
-    entries, cityEntries, classicTwins, keptObserved))
-check(entries > 500 and cityEntries > 100, 'the invariant saw the service and trainer entries')
-check(classicTwins == 0, 'no classic-derived zone-map twin of a city-map point is left (1.5.0 left 179 in this count)')
+print(('Invariant: %d entries, %d with a city-map point, %d twins dropped, %d points wrong'):format(
+    entries, cityEntries, dropped, wrong))
+check(entries > 500 and cityEntries > 100 and dropped > 150, 'the invariant saw the service and trainer entries and their twins')
+check(wrong == 0, 'exactly the classic zone-map twins within 12 yd go (each other\'s nearest), and nothing else')
 
 -- 2. The Darnassus twins named in the report: city point kept, Teldrassil copy gone.
 local function Maps(e)
@@ -207,28 +227,65 @@ for _, id in ipairs({ 14860, 6491 }) do -- Flik (Mulgore), a Mulgore spirit heal
     check(e and Maps(e)[1412], 'Mulgore point kept: ' .. id)
 end
 
--- 4. The rules, on synthetic entries (the real Ainethil twin: 141 = Teldrassil,
--- 1657 = Darnassus; the city copy is 3 yd from the zone copy).
-local function Pts(e) return DB.Points(e) end
+-- 3b. Creatures, herbs and guards keep every spawn: separate spawns near a
+-- city are real (1.5.1 review: Lake Frenzy, Worg, Prairie Wolf Alpha's
+-- nearest went from 12 yd to 188 yd, Cursed Darkhound, Orgrimmar Grunt).
+local function Unchanged(e)
+    e.points = nil
+    DB._KeepCityTwins(true)
+    local all = #DB.Points(e)
+    e.points = nil
+    DB._KeepCityTwins(nil)
+    return all, #DB.Points(e)
+end
+for _, c in ipairs({ { 6033, 'Lake Frenzy' }, { 1765, 'Worg' }, { 2960, 'Prairie Wolf Alpha' },
+    { 1548, 'Cursed Darkhound' }, { 3296, 'Orgrimmar Grunt' } }) do
+    local e = DB.units[c[1]]
+    local all, kept = Unchanged(e or {})
+    check(e and all > 0 and kept == all, ('%s keeps every spawn (%d of %d)'):format(c[2], kept, all))
+end
+PlaceOnMap(1412, 0.395, 0.283) -- Mulgore, by Thunder Bluff
+M.Tick(0.2)
+local _, _, wolf = DB.NearestOf({ DB.units[2960] })
+check(wolf and wolf < 20, ('Prairie Wolf Alpha is still %s yd away'):format(wolf and ('%.0f'):format(wolf) or '?'))
+PlaceOnMap(1457, 0.40, 0.42)
+M.Tick(0.2)
+-- and the service and trainer collapse is unchanged for these
+for _, id in ipairs({ 4160, 11041, 11042 }) do
+    local all, kept = Unchanged(DB.units[id])
+    check(kept == all - 1, 'Darnassus trainer ' .. id .. ': exactly its one zone-map twin goes')
+end
+
+-- 4. The rules, on synthetic service entries (the real Ainethil twin: 141 =
+-- Teldrassil, 1657 = Darnassus; the city copy is 3 yd from the zone copy).
+local function Pts(e)
+    if e.svc == nil then e.svc = { vendor = true } end
+    if e.svc == false then e.svc = nil end
+    return DB.Points(e)
+end
 local twin = Pts({ kind = 'npc', id = -1, coords = '141:286,519;1657:549,240' })
 check(#twin == 1 and twin[1].m == 1457, 'classic twin collapses to the city point')
+local creature = Pts({ kind = 'npc', id = -12, svc = false, coords = '141:286,519;1657:549,240' })
+check(#creature == 2, 'not a service or trainer: the twin is kept')
+local two = Pts({ kind = 'npc', id = -13, coords = '141:286,519,287,518;1657:549,240' })
+check(#two == 2, 'two zone-map copies by one city point: only the nearer one goes')
 local cityOnly = Pts({ kind = 'npc', id = -2, coords = '1657:549,240' })
 local zoneOnly = Pts({ kind = 'npc', id = -3, coords = '141:286,519' })
 check(#cityOnly == 1 and #zoneOnly == 1 and zoneOnly[1].m == 1438, 'a lone zone-map point is never dropped')
--- far: inside the Darnassus rectangle, but more than 150 yd from the city point
+-- far: inside the Darnassus rectangle, but more than 12 yd from the city point
 local fx = 286
-while Yards({ m = 1438, x = fx / 1000, y = 0.519 }, cityOnly[1]) <= 160 do fx = fx - 1 end
+while Yards({ m = 1438, x = fx / 1000, y = 0.519 }, cityOnly[1]) <= 14 do fx = fx - 1 end
 local far = { m = 1438, x = fx / 1000, y = 0.519 }
-check(Inside(far, 1457) and Yards(far, cityOnly[1]) > 150, 'premise: far point inside Darnassus, > 150 yd')
+check(Inside(far, 1457) and Yards(far, cityOnly[1]) > 12, 'premise: far point inside Darnassus, > 12 yd')
 local kept = Pts({ kind = 'npc', id = -4, coords = ('141:%d,519;1657:549,240'):format(fx) })
-check(#kept == 2, 'a zone-map point more than 150 yd from the city point is kept')
--- near, but outside the city rectangle: never dropped (city guards at a gate)
+check(#kept == 2, 'a zone-map point more than 12 yd from the city point is kept')
+-- near, but outside the city rectangle: never dropped
 local dg, tg = geometry[1457], geometry[1438]
-local edge = { m = 1457, x = 0.98, y = 0.5, curated = true }
-local wx, wy = dg.top - 0.5 * dg.h, dg.left - 1.03 * dg.w -- 3% past the east edge
+local edge = { m = 1457, x = 0.998, y = 0.5, curated = true }
+local wx, wy = dg.top - 0.5 * dg.h, dg.left - 1.004 * dg.w -- just past the east edge
 local gx, gy = math.floor((tg.left - wy) / tg.w * 1000 + 0.5), math.floor((tg.top - wx) / tg.h * 1000 + 0.5)
 local gate = { m = 1438, x = gx / 1000, y = gy / 1000 }
-check(not Inside(gate, 1457) and Yards(gate, edge) <= 150, 'premise: zone point outside the Darnassus map, within 150 yd')
+check(not Inside(gate, 1457) and Yards(gate, edge) <= 12, ('premise: zone point outside the Darnassus map, %.0f yd away'):format(Yards(gate, edge)))
 local outside = Pts({ kind = 'npc', id = -5, coords = ('141:%d,%d'):format(gx, gy), extra = { edge } })
 check(#outside == 2, 'a zone-map point outside the city map is kept')
 local curated = Pts({ kind = 'npc', id = -6, coords = '141:286,519',
@@ -248,7 +305,7 @@ local unplaced = Pts({ kind = 'npc', id = -10, coords = '141:287,518;1657:549,24
 Geo.MapToWorld = mapToWorld
 check(#unplaced == 2, 'a point the map API cannot place is kept')
 -- the result is cached on the entry, as before
-local cached = { kind = 'npc', id = -11, coords = '141:286,519;1657:549,240' }
+local cached = { kind = 'npc', id = -11, svc = { vendor = true }, coords = '141:286,519;1657:549,240' }
 check(DB.Points(cached) == DB.Points(cached) and cached.points, 'points stay cached on the entry')
 
 -- 5. The reported case: Nearest Alchemy trainer from the Darnassus bank and

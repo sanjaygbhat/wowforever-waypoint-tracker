@@ -1762,17 +1762,20 @@ end
 local MOVED_NPC_SPOTS = 2
 local NEAR_KNOWN = 0.02 -- 2% of the map: the same place
 
--- The classic source lists a city NPC twice: on the walled city's map and on
--- its parent zone's map, a few yards apart. Real routes reads "inside the
--- wall" off a waypoint's map, so the zone-map copy sends you out of the gate.
--- That copy goes when the same entry has a point on the city map close by
--- and the copy lies inside the city map. Only classic-derived points go:
--- curated, corrected and observed spots are kept. Shipped data (1.5.1), each
--- copy to its nearest city point: 147 of 163 within 10 yd (a zone map's
--- 0.001 step is about 5 yd); 15 at 10-69 yd and Kyrai, a patrolling vendor,
--- at 129 yd, all NPCs listed once on each map. No classic copy inside a city
--- map lies farther than 129 yd from its entry's city points.
-local CITY_TWIN_YARDS = 150
+-- The classic source lists a city service NPC twice: on the walled city's
+-- map and on its parent zone's map, a few yards apart. The zone-map copy
+-- goes, for service and trainer NPCs/objects only (what Nearest offers),
+-- when it and a city-map point of the same entry are each other's nearest
+-- (one spawn listed twice, not two spawns), lie within CITY_TWIN_YARDS and
+-- the copy lies inside the city map. Only classic-derived points go:
+-- curated, corrected and observed spots are kept. Creatures, herbs and
+-- guards keep every spawn: their separate spawns near a city are real.
+-- (The planner places a point inside or outside a city by the client's
+-- terrain, so a twin that is left does not send anyone out of the gate.)
+-- Shipped data (1.5.1), such pairs: 203 within 6 yd (a zone map's 0.001
+-- step is about 5 yd), 220 within 12 yd; the next is 14.7 yd, then a tail
+-- up to 129 yd that is left alone.
+local CITY_TWIN_YARDS = 12
 local cityMaps
 local function CityMaps()
     if cityMaps then return cityMaps end
@@ -1787,11 +1790,20 @@ local function CityMaps()
     return cityMaps
 end
 
+-- a mailbox, innkeeper, flight master, vendor... or a trainer
+local function ServiceRole(e)
+    if e.svc and next(e.svc) then return true end
+    local kind, id = e.kind, e.id
+    if type(id) ~= "number" or (kind ~= "npc" and kind ~= "object") then return false end
+    if kind == "npc" and ns.Trainers.Index(DB.generation).members[id] then return true end
+    return #ServiceRows(nil, kind, id) > 0
+end
+
 local keepCityTwins -- tests: DB._KeepCityTwins
-local function DropCityTwins(pts, classic)
+local function DropCityTwins(e, pts, classic)
     if keepCityTwins then return pts end
     local cities = CityMaps()
-    if not classic or not cities then return pts end
+    if not cities then return pts end
     local onCity
     for _, p in ipairs(pts) do
         if cities[p.m] then
@@ -1799,22 +1811,44 @@ local function DropCityTwins(pts, classic)
             onCity[#onCity + 1] = p
         end
     end
-    if not onCity then return pts end
-    local kept, limit = {}, CITY_TWIN_YARDS * CITY_TWIN_YARDS
+    if not onCity or not ServiceRole(e) then return pts end
+    -- each classic zone-map point inside a city map: its nearest city point
+    local zone = {}
     for _, p in ipairs(pts) do
-        local twin = false
         if classic[p] and not cities[p.m] and not p.curated and not p.fixed then
             -- (a map the API cannot place keeps its point)
             local c, wx, wy = Geo.MapToWorld(p.m, p.x, p.y, p)
+            local best, bestD
             for _, q in ipairs(c and onCity or EMPTY) do
                 local qc, qx, qy = Geo.MapToWorld(q.m, q.x, q.y, q)
-                if qc == c and (qx - wx) ^ 2 + (qy - wy) ^ 2 <= limit and Geo.TranslateToMap(p.m, p.x, p.y, q.m) then
-                    twin = true
-                    break
+                local d = qc == c and (qx - wx) ^ 2 + (qy - wy) ^ 2
+                if d and (not bestD or d < bestD) and Geo.TranslateToMap(p.m, p.x, p.y, q.m) then best, bestD = q, d end
+            end
+            if best then zone[#zone + 1] = { p = p, q = best, d = bestD } end
+        end
+    end
+    if #zone == 0 then return pts end
+    -- one spawn listed twice: the pair is each other's nearest (no other
+    -- zone-map copy is closer to that city point)
+    local drop, limit, any = {}, CITY_TWIN_YARDS * CITY_TWIN_YARDS, false
+    for _, z in ipairs(zone) do
+        if z.d <= limit then
+            local mutual = true
+            local qc, qx, qy = Geo.MapToWorld(z.q.m, z.q.x, z.q.y, z.q)
+            for _, o in ipairs(zone) do
+                if o ~= z then
+                    local oc, ox, oy = Geo.MapToWorld(o.p.m, o.p.x, o.p.y, o.p)
+                    local d = oc == qc and (ox - qx) ^ 2 + (oy - qy) ^ 2
+                    if d and (d < z.d or (d == z.d and o.p.x < z.p.x)) then mutual = false; break end
                 end
             end
+            if mutual then drop[z.p], any = true, true end
         end
-        if not twin then kept[#kept + 1] = p end
+    end
+    if not any then return pts end
+    local kept = {}
+    for _, p in ipairs(pts) do
+        if not drop[p] then kept[#kept + 1] = p end
     end
     return kept
 end
@@ -1875,7 +1909,7 @@ function DB.Points(e)
         end
         pts = kept
     end
-    if classic then pts = DropCityTwins(pts, classic) end
+    if classic then pts = DropCityTwins(e, pts, classic) end
     e.points = pts
     return pts
 end

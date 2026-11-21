@@ -204,6 +204,35 @@ for _, case in ipairs(cases) do
     Travel.Choices = function(...) plans = plans + 1; return choices(...) end
 end
 
+-- 2b. A curated (verified) spot is never given up for a less certain one:
+-- the barrier case with only the walkable spawn from the classic data.
+do
+    PlaceOnMap(1416, 0.30, 0.565)
+    M.Tick(0.2)
+    local list = { { kind = 'npc', id = 990003, name = 'Verified', fac = 'AH', extra = { { m = 1416, x = 0.30, y = 0.553, curated = true } } },
+        { kind = 'npc', id = 990004, name = 'Classic', fac = 'AH', coords = '36:300,580' } }
+    local classic = DB.Points(list[2])[1]
+    check(classic and classic.m == 1416 and not classic.curated, 'premise: a classic Alterac point for the walkable one')
+    local _, n, e = Clicked(function() return Find._Quickest(list) end)
+    check(e and e.name == 'Verified' and n == 0, 'a curated spot is kept over a classic walkable one, nothing planned')
+end
+-- 2c. Travel.GoalArea, where present, is the walk test's placement: with
+-- it placing the Teldrassil-map twin inside Darnassus, nothing is planned.
+DB._KeepCityTwins(true)
+Clear(Alchemy())
+PlaceOnMap(1457, 0.40, 0.42)
+M.Tick(0.2)
+local goalArea = Travel.GoalArea
+Travel.GoalArea = function(m, x, y)
+    if m == 1438 and math.abs(x - 0.286) < 1e-9 and math.abs(y - 0.519) < 1e-9 then return Travel.AreaAt(1457, 0.5, 0.25) end
+    return Travel.AreaAt(m, x, y)
+end
+local _, gaPlans, gaE, gaP = Clicked(function() return Find._Quickest(Alchemy(), { faction = true }) end)
+check(gaE and gaE.id == 4160 and gaP.m == 1438 and gaPlans == 0, 'with Travel.GoalArea the twin is walkable: nothing planned')
+Travel.GoalArea = goalArea
+DB._KeepCityTwins(nil)
+Clear(Alchemy())
+
 -- 3. Budget: the closest is walkable, so nothing is planned (the usual click).
 WP.ClearAll(true)
 PlaceOnMap(1457, 0.40, 0.42)
